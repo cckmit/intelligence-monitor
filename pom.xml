@@ -21,6 +21,7 @@
         <module>unityplatform-microgateway</module>
         <!-- 数据库版本控制(flyway) -->
         <module>unityplatform-microdbversioncontrol</module>
+        <module>unityplatform-microregistrycenter</module>
     </modules>
 
     <properties>

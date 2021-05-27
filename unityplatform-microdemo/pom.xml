@@ -23,7 +23,17 @@
         <dependencies>
             <dependency>
                 <groupId>com.zhikuntech.intellimonitor</groupId>
+                <artifactId>demo-data</artifactId>
+                <version>${intelli-monitor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zhikuntech.intellimonitor</groupId>
                 <artifactId>demo-domain</artifactId>
+                <version>${intelli-monitor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zhikuntech.intellimonitor</groupId>
+                <artifactId>demo-prototype</artifactId>
                 <version>${intelli-monitor.version}</version>
             </dependency>
         </dependencies>
