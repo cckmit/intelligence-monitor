@@ -16,5 +16,14 @@
         <module>gateway-domain</module>
     </modules>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.zhikuntech.intellimonitor</groupId>
+                <artifactId>gateway-domain</artifactId>
+                <version>${intelli-monitor.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>

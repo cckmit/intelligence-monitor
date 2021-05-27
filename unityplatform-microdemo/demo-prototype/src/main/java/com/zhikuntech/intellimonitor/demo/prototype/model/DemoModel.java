@@ -17,4 +17,6 @@ public class DemoModel {
     private String uid;
 
     private String color;
+
+    private String serverName;
 }

@@ -20,6 +20,7 @@ public class DemoController {
     @GetMapping("/color")
     public DemoModel fetchColor() {
         DemoModel demoModel = DemoModel.builder()
+                .serverName("demo-app")
                 .uid(UUID.randomUUID().toString())
                 .color(UUID.randomUUID().toString())
                 .build();

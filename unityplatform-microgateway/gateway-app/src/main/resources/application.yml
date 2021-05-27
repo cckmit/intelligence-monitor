@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: intellimonitor-gateway
+  profiles:
+    active: local
+server:
+  port: 18090
+
+
+
