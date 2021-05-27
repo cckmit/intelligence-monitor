@@ -1,5 +1,9 @@
 # 一体化协同采集系统1.0
 
+## TODO 打包需知
+1.外部依赖发送更改时, install intelli-monitor-parent中的pom文件(必须)
+
+
 ## 项目依赖管理
 所有外部依赖放在[intelli-monitor-parent]中
 
