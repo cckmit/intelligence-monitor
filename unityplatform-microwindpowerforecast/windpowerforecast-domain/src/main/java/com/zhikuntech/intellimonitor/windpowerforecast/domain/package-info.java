@@ -1,0 +1,1 @@
+package com.zhikuntech.intellimonitor.windpowerforecast.domain;

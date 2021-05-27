@@ -1,4 +1,8 @@
 spring:
   profiles:
-    active: dev
+    active: local
+  application:
+    name: demo-app
 
+server:
+  port: 18080

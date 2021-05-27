@@ -12,6 +12,11 @@
     <artifactId>demo-app</artifactId>
 
     <dependencies>
+        <!-- Eureka Client -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.zhikuntech.intellimonitor</groupId>
             <artifactId>demo-domain</artifactId>

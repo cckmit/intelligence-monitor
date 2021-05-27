@@ -1,4 +1,4 @@
-package com.zhikuntech.intellimonitor.demo.domain.model;
+package com.zhikuntech.intellimonitor.demo.prototype.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class DemoModel {
+
+    private String uid;
 
     private String color;
 }

@@ -20,6 +20,10 @@
             <groupId>com.zhikuntech.intellimonitor</groupId>
             <artifactId>demo-data</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.zhikuntech.intellimonitor</groupId>
+            <artifactId>demo-prototype</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

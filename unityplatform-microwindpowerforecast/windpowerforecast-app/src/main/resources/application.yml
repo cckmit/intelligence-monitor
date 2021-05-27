@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    active: local
+  application:
+    name: wind-power-forecast-app
+
+server:
+  port: 18081
