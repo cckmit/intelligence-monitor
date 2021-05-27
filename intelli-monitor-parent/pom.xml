@@ -18,6 +18,8 @@
     <properties>
         <cloud.version>Hoxton.SR11</cloud.version>
         <cloud-alibaba.version>2.2.3.RELEASE</cloud-alibaba.version>
+        <lombok.version>1.18.6</lombok.version>
+        <mapstruct.version>1.2.0.Final</mapstruct.version>
     </properties>
 
     <!-- 管理所有外部依赖 -->
@@ -43,7 +45,35 @@
                 <scope>import</scope>
             </dependency>
             <!-- Cloud Alibaba Version -->
+            <!-- Lombok Version -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <scope>provided</scope>
+                <version>${lombok.version}</version>
+            </dependency>
+            <!-- Lombok Version -->
+            <!-- Start MAP STRUCT DO/DTO/VO/PO 等属性之间转换     -->
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-jdk8</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+            <!-- END MAP STRUCT DO/DTO/VO/PO 等属性之间转换     -->
         </dependencies>
     </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
 </project>
