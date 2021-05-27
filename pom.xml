@@ -14,10 +14,13 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>intelli-monitor-parent</module>
+        <!-- 使用demo -->
         <module>unityplatform-microdemo</module>
         <module>unityplatform-microwindpowerforecast</module>
         <module>unityplatform-core</module>
         <module>unityplatform-microgateway</module>
+        <!-- 数据库版本控制(flyway) -->
+        <module>unityplatform-microdbversioncontrol</module>
     </modules>
 
     <properties>
