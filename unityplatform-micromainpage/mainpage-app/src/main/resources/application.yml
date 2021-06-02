@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    active: local
+  application:
+    name: mainpage-app
+
+server:
+  port: 18082
