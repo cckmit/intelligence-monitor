@@ -22,6 +22,7 @@
         <mapstruct.version>1.2.0.Final</mapstruct.version>
         <knife4j.version>2.0.7</knife4j.version>
         <mybatis-plus.version>3.4.2</mybatis-plus.version>
+        <easypoi.version>3.2.0</easypoi.version>
     </properties>
 
     <!-- 管理所有外部依赖 -->
@@ -81,6 +82,18 @@
                 <version>${mybatis-plus.version}</version>
             </dependency>
             <!-- mybatis-plus -->
+            <!--easy poi-->
+            <dependency>
+                <groupId>cn.afterturn</groupId>
+                <artifactId>easypoi-base</artifactId>
+                <version>${easypoi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.afterturn</groupId>
+                <artifactId>easypoi-annotation</artifactId>
+                <version>${easypoi.version}</version>
+            </dependency>
+            <!--easy poi-->
         </dependencies>
     </dependencyManagement>
 
