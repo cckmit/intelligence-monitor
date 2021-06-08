@@ -23,6 +23,12 @@
         <knife4j.version>2.0.7</knife4j.version>
         <mybatis-plus.version>3.4.2</mybatis-plus.version>
         <easypoi.version>3.2.0</easypoi.version>
+        <fastjson.version>1.2.27</fastjson.version>
+        <!--golden相关依赖的版本号-->
+        <golden.version>3.0.34</golden.version>
+        <commons-logging.version>1.1.1</commons-logging.version>
+        <commons-beanutils.version>1.8.3</commons-beanutils.version>
+        <protobuf-java.version>2.6.1</protobuf-java.version>
     </properties>
 
     <!-- 管理所有外部依赖 -->
@@ -57,16 +63,16 @@
             </dependency>
             <!-- Lombok Version -->
             <!-- Start MAP STRUCT DO/DTO/VO/PO 等属性之间转换     -->
-            <dependency>
-                <groupId>org.mapstruct</groupId>
-                <artifactId>mapstruct-jdk8</artifactId>
-                <version>${mapstruct.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mapstruct</groupId>
-                <artifactId>mapstruct-processor</artifactId>
-                <version>${mapstruct.version}</version>
-            </dependency>
+            <!--<dependency>-->
+                <!--<groupId>org.mapstruct</groupId>-->
+                <!--<artifactId>mapstruct-jdk8</artifactId>-->
+                <!--<version>${mapstruct.version}</version>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.mapstruct</groupId>-->
+                <!--<artifactId>mapstruct-processor</artifactId>-->
+                <!--<version>${mapstruct.version}</version>-->
+            <!--</dependency>-->
             <!-- END MAP STRUCT DO/DTO/VO/PO 等属性之间转换     -->
             <!-- swagger -->
             <dependency>
@@ -83,16 +89,16 @@
             </dependency>
             <!-- mybatis-plus -->
             <!--easy poi-->
-            <dependency>
-                <groupId>cn.afterturn</groupId>
-                <artifactId>easypoi-base</artifactId>
-                <version>${easypoi.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.afterturn</groupId>
-                <artifactId>easypoi-annotation</artifactId>
-                <version>${easypoi.version}</version>
-            </dependency>
+            <!--<dependency>-->
+                <!--<groupId>cn.afterturn</groupId>-->
+                <!--<artifactId>easypoi-base</artifactId>-->
+                <!--<version>${easypoi.version}</version>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>cn.afterturn</groupId>-->
+                <!--<artifactId>easypoi-annotation</artifactId>-->
+                <!--<version>${easypoi.version}</version>-->
+            <!--</dependency>-->
             <!--easy poi-->
         </dependencies>
     </dependencyManagement>
