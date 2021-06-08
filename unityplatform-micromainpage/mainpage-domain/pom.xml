@@ -19,40 +19,16 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.47</version>
+            <version>${fastjson.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.7</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
-
-        <!--    golden数据库sdk依赖    -->
-        <dependency>
-            <groupId>com.golden</groupId>
-            <artifactId>golden-java-sdk</artifactId>
-            <version>3.0.34</version>
-        </dependency>
-        <dependency>
-            <groupId>com.golden</groupId>
-            <artifactId>protobuf-java</artifactId>
-            <version>2.6.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.golden</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.golden</groupId>
-            <artifactId>commons-beanutils</artifactId>
-            <version>1.8.3</version>
-        </dependency>
-        <!--    end  golden数据库sdk依赖    -->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -66,6 +42,34 @@
             <groupId>com.zhikuntech.intellimonitor</groupId>
             <artifactId>mainpage-prototype</artifactId>
         </dependency>
+        <!--golden相关依赖-[start]-->
+        <dependency>
+            <groupId>com.golden</groupId>
+            <artifactId>golden-java-sdk</artifactId>
+            <version>${golden.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>${commons-logging.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>${commons-beanutils.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>${protobuf-java.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-test</artifactId>
+            <version>2.3.1.RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+        <!--golden相关依赖-[end]-->
     </dependencies>
 
 </project>
