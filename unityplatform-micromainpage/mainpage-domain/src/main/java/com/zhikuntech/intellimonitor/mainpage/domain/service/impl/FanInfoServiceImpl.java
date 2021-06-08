@@ -28,4 +28,9 @@ public class FanInfoServiceImpl implements FanInfoService {
     public FanStatistics getStatistics() {
         return null;
     }
+
+    @Override
+    public void getStatistics(String user) {
+
+    }
 }

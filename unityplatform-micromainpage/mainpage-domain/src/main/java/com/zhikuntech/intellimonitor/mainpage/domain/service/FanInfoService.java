@@ -30,4 +30,11 @@ public interface FanInfoService {
      * @return 风场发电情况
      */
     FanStatistics getStatistics();
+
+    /**
+     * 通过websocket直接返回前端
+     * @param user 用户名,用于区分客户端
+     */
+    void getStatistics(String user);
+
 }
