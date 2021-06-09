@@ -34,6 +34,28 @@ public class InjectPropertiesUtil<T> {
         return t;
     }
 
+    public static <T> List<T> injectByAnnotation(List<T> t, RtdbData[] data) {
+        Field[] fields = t.get(0).getClass().getDeclaredFields();
+        for (T item : t) {
+            for (Field field : fields) {
+                GoldenId goldenId = field.getDeclaredAnnotation(GoldenId.class);
+                int value = null == goldenId ? 0 : goldenId.value();
+                for (RtdbData rtdbData : data) {
+                    if (value == rtdbData.getId()) {
+                        try {
+                            field.setAccessible(true);
+                            field.set(item, rtdbData.getValue());
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                            return null;
+                        }
+                    }
+                }
+            }
+        }
+        return t;
+    }
+
     public static <T> T injectByAnnotation(T t, List<ValueData> data) {
         Field[] fields = t.getClass().getDeclaredFields();
         for (Field field : fields) {
@@ -43,7 +65,11 @@ public class InjectPropertiesUtil<T> {
                 if (value == valueData.getId()) {
                     try {
                         field.setAccessible(true);
-                        field.set(t, valueData.getValue() == 0 ? valueData.getState() : valueData.getDate());
+                        if(valueData.getValue() == 0) {
+                            field.set(t, valueData.getState());
+                        }else {
+                            field.set(t,valueData.getValue());
+                        }
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                         return null;
