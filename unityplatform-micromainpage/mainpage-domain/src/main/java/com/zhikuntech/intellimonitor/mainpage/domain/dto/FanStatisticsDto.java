@@ -1,5 +1,7 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.zhikuntech.intellimonitor.mainpage.domain.golden.annotation.GoldenId;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -60,4 +62,18 @@ public class FanStatisticsDto {
      * 年上网电量
      */
     private Double annualOnlinePower;
+
+    /**
+     * 能量输出
+     */
+    @JsonIgnore
+    @GoldenId(value = 45)
+    private Double energyOutput;
+
+    /**
+     * 反向有功
+     */
+    @JsonIgnore
+    @GoldenId(value = 46)
+    private Double reverseActivePower;
 }

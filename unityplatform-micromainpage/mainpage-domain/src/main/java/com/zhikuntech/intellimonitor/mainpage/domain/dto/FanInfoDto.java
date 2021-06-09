@@ -27,7 +27,7 @@ public class FanInfoDto {
     /**
      * 风机类型
      */
-    private String tpye;
+    private String type;
 
     /**
      * 轮毂高度
