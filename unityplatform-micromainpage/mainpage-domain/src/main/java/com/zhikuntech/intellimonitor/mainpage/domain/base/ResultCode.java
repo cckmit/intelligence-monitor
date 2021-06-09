@@ -25,8 +25,10 @@ public enum ResultCode {
     TEMPLATE_PROCESS_FAIL(HttpConstant.HTTP_RES_CODE_500,  "模版加载失败"),
     PDF_CREAT_ERROR(HttpConstant.HTTP_RES_CODE_500,  "PDF生成失败"),
     LOG_BACK_IN(HttpConstant.UPM_SESSION_ID_EXPIRE,"重新登录"),
-    FILE_UPLOAD_FAILED(HttpConstant.RPC_RESULT_SUCCESS, "文件上传失败");
-
+    FILE_UPLOAD_FAILED(HttpConstant.RPC_RESULT_SUCCESS, "文件上传失败"),
+    GOLDEN_GETSNAPSHOTS_FAILED(HttpConstant.HTTP_RES_CODE_500,"获取指定id当前最新快照信息失败"),
+    GOLDEN_SUBSCRIBESNAPSHOTS_FAILED(HttpConstant.HTTP_RES_CODE_500,"订阅庚顿推送快照(实时)数据失败"),
+    USER_NOT_LOGIN_EXCEPTION(HttpConstant.HTTP_RES_CODE_500,"用户未登录");
 
     private final Integer code;
     private String msg;

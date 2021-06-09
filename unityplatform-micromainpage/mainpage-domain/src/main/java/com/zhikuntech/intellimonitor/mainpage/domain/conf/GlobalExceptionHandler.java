@@ -1,6 +1,13 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.conf;
 
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import com.zhikuntech.intellimonitor.mainpage.domain.base.BaseResponse;
+import com.zhikuntech.intellimonitor.mainpage.domain.exception.GetSnapshotsException;
+import com.zhikuntech.intellimonitor.mainpage.domain.exception.SubscribeGoldenException;
+import com.zhikuntech.intellimonitor.mainpage.domain.exception.UserNotLoginException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
  * @Author 杨锦程
@@ -8,7 +15,25 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
  * @Description 全局异常处理
  * @Version 1.0
  */
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    @ExceptionHandler(GetSnapshotsException.class)
+    public BaseResponse handleGetSnapshotsException(GetSnapshotsException getSnapshotsException){
+        LOGGER.error(getSnapshotsException.getCode().code().toString(),getSnapshotsException);
+        return BaseResponse.exception(getSnapshotsException);
+    }
+
+    @ExceptionHandler(SubscribeGoldenException.class)
+    public BaseResponse handSubscribeGoldenException(SubscribeGoldenException ex){
+        LOGGER.error(ex.getCode().code().toString(),ex);
+        return BaseResponse.exception(ex);
+    }
+
+    @ExceptionHandler(UserNotLoginException.class)
+    public BaseResponse handUserNotLoginException(UserNotLoginException ex){
+        LOGGER.error(ex.getCode().code().toString(),ex);
+        return BaseResponse.exception(ex);
+    }
 }
