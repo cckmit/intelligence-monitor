@@ -22,8 +22,8 @@ public class Knife4jConfiguration {
     public Docket defaultApi2() {
         Docket docket=new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(new ApiInfoBuilder()
-                        .title("风功率曲线首页接口文档")
-                        .description("风功率曲线首页接口文档")
+                        .title("智能监视系统首页接口文档")
+                        .description("智能监视系统首页接口文档")
                         .termsOfServiceUrl("http://www.xx.com/")
                         .contact("智鹍")
                         .version("1.0")
