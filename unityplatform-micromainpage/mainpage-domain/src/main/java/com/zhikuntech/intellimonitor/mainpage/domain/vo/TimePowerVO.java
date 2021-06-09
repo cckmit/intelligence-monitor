@@ -1,6 +1,8 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.vo;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.alibaba.fastjson.annotation.JSONField;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
@@ -12,15 +14,18 @@ import java.util.Date;
  * @Version 1.0
  */
 @Data
+@ApiModel("时间功率")
 public class TimePowerVO {
     /**
      * 时间
      */
-    @JsonFormat(pattern = "HH:mm:ss",timezone = "GMT+8")
+    @JSONField(format = "HH:mm:ss")
+    @ApiModelProperty("时间")
     private Date date;
 
     /**
      * 功率
      */
+    @ApiModelProperty("功率")
     private Double power;
 }
