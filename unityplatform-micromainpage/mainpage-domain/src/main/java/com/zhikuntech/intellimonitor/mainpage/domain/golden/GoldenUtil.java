@@ -1,5 +1,6 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.golden;
 
+import com.rtdb.api.callbackInter.RSDataChange;
 import com.rtdb.api.callbackInter.RSDataChangeEx;
 import com.rtdb.api.model.ValueData;
 import com.rtdb.api.util.DateUtil;
@@ -10,10 +11,12 @@ import com.rtdb.service.impl.*;
 import com.rtdb.service.inter.Base;
 import com.rtdb.service.inter.Historian;
 import com.rtdb.service.inter.Snapshot;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -21,6 +24,7 @@ import java.util.List;
  * 2021/6/7 10:50
  */
 @Component
+@Slf4j
 public class GoldenUtil {
 
     /**
@@ -48,9 +52,9 @@ public class GoldenUtil {
      */
     private static final ServerImplPool SERVER_IMPL_POOL = new ServerImplPool("47.114.57.32", 6327, "sa", "golden", 5, 10);
 
-
     /**
      * 获取表内ids
+     *
      * @param tableName 表名
      * @return int[]
      */
@@ -61,24 +65,23 @@ public class GoldenUtil {
         int count = base.getTableSizeByName(tableName);
         SearchCondition s = new SearchCondition();
         s.setTablemask(tableName);
-        return base.search(s, count, DataSort.SORT_BY_ID);
+        int[] search = base.search(s, count, DataSort.SORT_BY_ID);
+        server.close();
+        return search;
     }
 
     /**
      * 获取庚顿推送快照(实时)数据
      *
-     * @param param          用户自定义参数,主要用于区别客户端
-     * @param rsDataChangeEx 庚顿数据更新时触发，进行相关处理
+     * @param ids          根据id集合查询
+     * @param rsDataChange 庚顿数据更新时触发，进行相关处理
      * @throws Exception
      */
-    public void subscribeSnapshots(Object param, int[] ids, RSDataChangeEx rsDataChangeEx) throws Exception {
+    public void subscribeSnapshots(int[] ids, RSDataChange rsDataChange) throws Exception {
         server = SERVER_IMPL_POOL.getServerImpl();
         snap = new SnapshotImpl(server);
-
-        //errors.length必须与count相等
-        int[] errors = new int[ids.length];
-        snap.subscribeSnapshotsEx(param, ids, rsDataChangeEx, errors);
-//        RSDataChangeEx rs = (p, datas) -> {
+        snap.subscribeSnapshots(ids, rsDataChange);
+//        RSDataChange rs = (datas) -> {
 //            //todo 后续处理
 //            System.out.print(param + ": \t" + datas.length);
 //            for (RtdbData data : datas) {
@@ -87,6 +90,35 @@ public class GoldenUtil {
 //            }
 //            System.out.println(" end");
 //        };
+    }
+
+    /**
+     * @param tagNames 更具标签的名称查询
+     */
+    public void subscribeSnapshots(String[] tagNames, RSDataChange rsDataChange) throws Exception {
+        server = SERVER_IMPL_POOL.getServerImpl();
+        snap = new SnapshotImpl(server);
+        snap.subscribeSnapshots(tagNames, rsDataChange);
+//        RSDataChange rs = (datas) -> {
+//            //todo 后续处理
+//            System.out.print(param + ": \t" + datas.length);
+//            for (RtdbData data : datas) {
+//                System.out.print(",id: " + data.getId() + " :: " + data.getValue() + " :: "
+//                        + DateUtil.dateToString(data.getDate()) + " ");
+//            }
+//            System.out.println(" end");
+//        };
+    }
+
+
+    /**
+     * 取消订阅
+     *
+     * @throws Exception
+     */
+    public void cancel() throws Exception {
+        snap.cancelSubscribeSnapshots();
+        server.close();
     }
 
     /**
@@ -101,14 +133,18 @@ public class GoldenUtil {
         server = SERVER_IMPL_POOL.getServerImpl();
         historian = new HistorianImpl(server);
         Date date = DateUtil.stringToDate(dateTime);
-        return historian.getFloatSingleValue(id, date, RtdbHisMode.RTDB_PREVIOUS).getValue();
+        double value = historian.getFloatSingleValue(id, date, RtdbHisMode.RTDB_PREVIOUS).getValue();
+        server.close();
+        return value;
     }
 
     public double getInteger(int id, String dateTime) throws Exception {
         server = SERVER_IMPL_POOL.getServerImpl();
         historian = new HistorianImpl(server);
         Date date = DateUtil.stringToDate(dateTime);
-        return historian.getIntSingleValue(id, date, RtdbHisMode.RTDB_PREVIOUS).getValue();
+        double value = historian.getIntSingleValue(id, date, RtdbHisMode.RTDB_PREVIOUS).getValue();
+        server.close();
+        return value;
     }
 
     /**
@@ -120,6 +156,8 @@ public class GoldenUtil {
     public List<ValueData> getSnapshots(int[] ids) throws Exception {
         server = SERVER_IMPL_POOL.getServerImpl();
         snap = new SnapshotImpl(server);
-        return snap.getSnapshots(ids);
+        List<ValueData> snapshots = snap.getSnapshots(ids);
+        server.close();
+        return snapshots;
     }
 }

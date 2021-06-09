@@ -25,8 +25,8 @@ public class WebSocketTest {
 //        Random random=  new Random();
 //        int i = random.nextInt(10);
 //        log.info(Integer.toString(i));
-        int[] ids = {1, 2, 3, 4, 5, 6, 7, 8};
-        goldenUtil.subscribeSnapshots(user, ids, (p, datas) -> {
+        int[] ids = goldenUtil.getIds("fan");
+        goldenUtil.subscribeSnapshots(ids, (datas) -> {
             if (webSocketServer.getClients().containsKey(user)) {
                 StringBuilder sb = new StringBuilder();
                 for (RtdbData data : datas) {
