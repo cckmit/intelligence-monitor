@@ -15,7 +15,7 @@ public interface WinPowerCurveService {
      * 获取庚顿数据库中当前【风功率曲线】数据
      * @return
      */
-    WindPowerCurveVO getWindPowerCurve() throws Exception;
+    WindPowerCurveVO getWindPowerCurve();
 
     /**
      * 订阅【风功率曲线】相关标签点快照改变的通知
