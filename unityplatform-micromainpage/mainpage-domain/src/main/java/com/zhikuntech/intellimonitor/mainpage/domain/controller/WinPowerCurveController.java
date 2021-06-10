@@ -1,7 +1,6 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.controller;
 
 import com.zhikuntech.intellimonitor.mainpage.domain.base.BaseResponse;
-import com.zhikuntech.intellimonitor.mainpage.domain.base.ResultCode;
 import com.zhikuntech.intellimonitor.mainpage.domain.service.WinPowerCurveService;
 import com.zhikuntech.intellimonitor.mainpage.domain.vo.WindPowerCurveVO;
 import io.swagger.annotations.Api;
@@ -22,9 +21,16 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = "风功率曲线")
 @RestController
 @RequestMapping("/winPowerCurve")
-public class WinPowerCurveServiceController {
+public class WinPowerCurveController {
     @Autowired
     private WinPowerCurveService winPowerCurveService;
+
+    @GetMapping("/getAll")
+    @ApiOperation("获取所有时间内的【风功率曲线】数据")
+    public BaseResponse<WindPowerCurveVO> getWindPowerCurveOfAllTime(){
+        WindPowerCurveVO windPowerCurveVO = winPowerCurveService.getWindPowerCurveOfAllTime();
+        return BaseResponse.success(windPowerCurveVO);
+    }
 
     @GetMapping("/getCurrent")
     @ApiOperation("获取庚顿数据库中当前【风功率曲线】数据")

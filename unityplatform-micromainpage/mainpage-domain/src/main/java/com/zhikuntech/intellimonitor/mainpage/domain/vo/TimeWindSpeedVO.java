@@ -19,7 +19,7 @@ public class TimeWindSpeedVO {
     /**
      * 时间
      */
-    @JSONField(format = "HH:mm:ss")
+    @JSONField(format = "HH:mm")
     @ApiModelProperty("时间")
     private Date date;
 
