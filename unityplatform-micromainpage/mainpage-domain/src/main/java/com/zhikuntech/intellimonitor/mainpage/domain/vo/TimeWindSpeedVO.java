@@ -1,6 +1,7 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.vo;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -19,7 +20,7 @@ public class TimeWindSpeedVO {
     /**
      * 时间
      */
-    @JSONField(format = "HH:mm")
+    @JsonFormat(pattern = "HH:mm",timezone = "GMT+8")
     @ApiModelProperty("时间")
     private Date date;
 
