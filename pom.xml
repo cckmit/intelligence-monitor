@@ -23,6 +23,7 @@
         <module>unityplatform-microdbversioncontrol</module>
         <module>unityplatform-microregistrycenter</module>
         <module>unityplatform-micromainpage</module>
+        <module>unityplatform-microfanscada</module>
     </modules>
 
     <properties>
