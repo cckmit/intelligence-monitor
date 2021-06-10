@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfDataZrMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataZr">
+        <id column="id" property="id" />
+        <result column="org_id" property="orgId" />
+        <result column="order_num" property="orderNum" />
+        <result column="station_number" property="stationNumber" />
+        <result column="event_date_time" property="eventDateTime" />
+        <result column="actual_produce" property="actualProduce" />
+        <result column="machine_capacity" property="machineCapacity" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, org_id, order_num, station_number, event_date_time, actual_produce, machine_capacity, create_time
+    </sql>
+
+</mapper>
