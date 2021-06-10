@@ -26,12 +26,12 @@ public class FanInfoController {
 
     @GetMapping("/getRuntimeInfo")
     public BaseResponse<List<FanRuntimeDto>> getRuntimeInfos() throws Exception {
-        return BaseResponse.success(new ArrayList<>());
+        return BaseResponse.success(fanInfoService.getRuntimeInfos());
     }
 
-    @GetMapping("/getRuntimeInfo/{user}")
-    public void getRuntimeInfos(@PathVariable String user) throws Exception {
-        fanInfoService.getRuntimeInfos(user);
+    @GetMapping("/getRuntimeInfo/{username}")
+    public void getRuntimeInfos(@PathVariable String username) throws Exception {
+        fanInfoService.getRuntimeInfos(username);
     }
 
     @GetMapping("/getStatistics")
@@ -39,8 +39,8 @@ public class FanInfoController {
         return BaseResponse.success(new FanStatisticsDto());
     }
 
-    @GetMapping("/getStatistics/{user}")
-    public void getStatistics(@PathVariable String user) throws Exception {
+    @GetMapping("/getStatistics/{username}")
+    public void getStatistics(@PathVariable String username) throws Exception {
 
     }
 }

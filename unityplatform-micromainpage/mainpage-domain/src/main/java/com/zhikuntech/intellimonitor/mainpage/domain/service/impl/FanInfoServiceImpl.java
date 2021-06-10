@@ -39,18 +39,26 @@ public class FanInfoServiceImpl implements FanInfoService {
     public List<FanRuntimeDto> getRuntimeInfos() throws Exception {
         List<FanRuntimeDto> list = new ArrayList<>();
         int[] ids = goldenUtil.getIds("fan");
-        FanRuntimeDto fanRuntimeDto = new FanRuntimeDto();
         List<ValueData> valueData = goldenUtil.getSnapshots(ids);
-        FanRuntimeDto runtimeDto = InjectPropertiesUtil.injectByAnnotation(fanRuntimeDto, valueData);
-        list.add(runtimeDto);
-        return list;
+        for (int i = 0; i < 10; i++) {
+            FanRuntimeDto fanRuntimeDto = new FanRuntimeDto();
+            fanRuntimeDto.setNumber(i);
+            FanRuntimeDto dto = InjectPropertiesUtil.injectByAnnotation(fanRuntimeDto, valueData);
+            list.add(dto);
+        }
+        return InjectPropertiesUtil.injectByAnnotation(list, valueData);
     }
 
     @Override
     public void getRuntimeInfos(String user) throws Exception {
         if (webSocketServer.getClients().containsKey(user)) {
             int[] ids = goldenUtil.getIds("fan");
-            FanRuntimeDto fanRuntimeDto = new FanRuntimeDto();
+            List<FanRuntimeDto> list = new ArrayList<>(10);
+            for (int i = 0; i < 10; i++) {
+                FanRuntimeDto fanRuntimeDto = new FanRuntimeDto();
+                fanRuntimeDto.setNumber(i);
+                list.add(fanRuntimeDto);
+            }
             goldenUtil.subscribeSnapshots(ids, (data) -> {
                 if (!webSocketServer.getClients().containsKey(user)) {
                     try {
@@ -59,9 +67,9 @@ public class FanInfoServiceImpl implements FanInfoService {
                         log.info("websocket用户{}连接断开,庚顿订阅取消！", user);
                     }
                 }
-                FanRuntimeDto runtimeDto = InjectPropertiesUtil.injectByAnnotation(fanRuntimeDto, data);
-                if (null != runtimeDto) {
-                    String jsonString = JSONObject.toJSONString(runtimeDto);
+                List<FanRuntimeDto> dtos = InjectPropertiesUtil.injectByAnnotation(list, data);
+                if (null != dtos) {
+                    String jsonString = JSONObject.toJSONString(dtos);
                     webSocketServer.sendMessage(jsonString, user);
                 }
             });

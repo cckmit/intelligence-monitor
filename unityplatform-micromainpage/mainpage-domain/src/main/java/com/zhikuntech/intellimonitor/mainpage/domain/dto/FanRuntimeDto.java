@@ -2,6 +2,8 @@ package com.zhikuntech.intellimonitor.mainpage.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zhikuntech.intellimonitor.mainpage.domain.golden.annotation.GoldenId;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -12,6 +14,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
+@ApiModel("首页风机运行实时数据")
 public class FanRuntimeDto {
 
     @JsonIgnore
@@ -20,12 +23,14 @@ public class FanRuntimeDto {
     /**
      * 风机编号
      */
+    @ApiModelProperty("风机编号")
     private Integer number;
 
     /**
      * 风速
      */
     @GoldenId(value = 30)
+    @ApiModelProperty("风速")
     private Double windVelocity;
 
     /**
@@ -44,6 +49,7 @@ public class FanRuntimeDto {
      * 有功功率
      */
     @GoldenId(value = 31)
+    @ApiModelProperty("有功功率")
     private Double activePower;
 
     /**
@@ -56,6 +62,7 @@ public class FanRuntimeDto {
      * 发电机转速
      */
     @GoldenId(value = 32)
+    @ApiModelProperty("发电机转速")
     private Double generatorRate;
 
     /**
@@ -68,42 +75,49 @@ public class FanRuntimeDto {
      * 月发电量
      */
     @GoldenId(value = 42)
+    @ApiModelProperty("月发电量")
     private Double monthlyPowerGeneration;
 
     /**
      * 运行状态
      */
     @GoldenId(value = 43)
+    @ApiModelProperty("运行状态")
     private Long runningStatus;
 
     /**
      * 故障代码
      */
     @GoldenId(value = 44)
+    @ApiModelProperty("故障代码")
     private Long errorCode;
 
     /**
      * 前轴承温度
      */
     @GoldenId(value = 35)
+    @ApiModelProperty("前轴承温度")
     private Double frontBearingTemp;
 
     /**
      * 后轴承温度
      */
     @GoldenId(value = 36)
+    @ApiModelProperty("后轴承温度")
     private Double rearBearingTemp;
 
     /**
      * 变压器油温
      */
     @GoldenId(value = 39)
+    @ApiModelProperty("变压器油温")
     private Double transformerOilTemp;
 
     /**
      * 变压器室温
      */
     @GoldenId(value = 38)
+    @ApiModelProperty("机舱温度")
     private Double transformerTemp;
 
     /**
@@ -199,6 +213,7 @@ public class FanRuntimeDto {
      * 齿轮主轴承温度
      */
     @GoldenId(value = 37)
+    @ApiModelProperty("齿轮主轴承温度")
     private Double gearBearingTemp;
 
     /**

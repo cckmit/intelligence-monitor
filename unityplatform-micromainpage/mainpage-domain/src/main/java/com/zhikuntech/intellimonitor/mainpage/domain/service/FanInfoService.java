@@ -23,9 +23,9 @@ public interface FanInfoService {
     /**
      * 通过websocket直接返回前端
      *
-     * @param user 用户名,用于区分客户端
+     * @param username 用户名,用于区分客户端
      */
-     void getRuntimeInfos(String user)throws Exception;
+     void getRuntimeInfos(String username)throws Exception;
 
     /**
      * 获取风场发电情况
@@ -37,8 +37,8 @@ public interface FanInfoService {
     /**
      * 通过websocket直接返回前端
      *
-     * @param user 用户名,用于区分客户端
+     * @param username 用户名,用于区分客户端
      */
-    void getStatistics(String user) throws Exception;
+    void getStatistics(String username) throws Exception;
 
 }
