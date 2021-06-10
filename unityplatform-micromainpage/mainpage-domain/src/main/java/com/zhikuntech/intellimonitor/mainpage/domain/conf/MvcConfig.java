@@ -22,17 +22,17 @@ public class MvcConfig implements WebMvcConfigurer {
     /**
      * json组件替换为fastjson
      */
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        FastJsonHttpMessageConverter converter = new FastJsonHttpMessageConverter();
-        FastJsonConfig config = new FastJsonConfig();
-        config.setSerializerFeatures(SerializerFeature.BrowserCompatible,
-                SerializerFeature.DisableCircularReferenceDetect,
-                SerializerFeature.WriteMapNullValue,
-                SerializerFeature.WriteDateUseDateFormat,
-                SerializerFeature.SkipTransientField);
-        converter.setFastJsonConfig(config);
-        converter.setSupportedMediaTypes(
-                Arrays.asList(MediaType.APPLICATION_JSON_UTF8, MediaType.TEXT_HTML, MediaType.TEXT_PLAIN));
-        converters.add(0, converter);
-    }
+//    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+//        FastJsonHttpMessageConverter converter = new FastJsonHttpMessageConverter();
+//        FastJsonConfig config = new FastJsonConfig();
+//        config.setSerializerFeatures(SerializerFeature.BrowserCompatible,
+//                SerializerFeature.DisableCircularReferenceDetect,
+//                SerializerFeature.WriteMapNullValue,
+//                SerializerFeature.WriteDateUseDateFormat,
+//                SerializerFeature.SkipTransientField);
+//        converter.setFastJsonConfig(config);
+//        converter.setSupportedMediaTypes(
+//                Arrays.asList(MediaType.APPLICATION_JSON_UTF8, MediaType.TEXT_HTML, MediaType.TEXT_PLAIN));
+//        converters.add(0, converter);
+//    }
 }

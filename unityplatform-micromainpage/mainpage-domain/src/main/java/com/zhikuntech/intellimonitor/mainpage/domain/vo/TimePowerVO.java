@@ -20,7 +20,7 @@ public class TimePowerVO {
     /**
      * 时间
      */
-    @JSONField(format = "HH:mm")
+    @JsonFormat(pattern = "HH:mm",timezone = "GMT+8")
     @ApiModelProperty("时间")
     private Date date;
 

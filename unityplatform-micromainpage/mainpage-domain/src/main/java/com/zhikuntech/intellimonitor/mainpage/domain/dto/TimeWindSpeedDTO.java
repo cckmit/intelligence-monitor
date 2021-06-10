@@ -16,7 +16,7 @@ public class TimeWindSpeedDTO {
     /**
      * 时间
      */
-    @JsonFormat(pattern = "HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "HH:mm",timezone = "GMT+8")
     private Date date;
 
     /**
