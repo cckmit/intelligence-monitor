@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfDataNwpMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataNwp">
+        <id column="id" property="id" />
+        <result column="org_id" property="orgId" />
+        <result column="order_num" property="orderNum" />
+        <result column="station_number" property="stationNumber" />
+        <result column="event_date_time" property="eventDateTime" />
+        <result column="wind_speed" property="windSpeed" />
+        <result column="high_level" property="highLevel" />
+        <result column="wind_direction" property="windDirection" />
+        <result column="temperature" property="temperature" />
+        <result column="humidity" property="humidity" />
+        <result column="pressure" property="pressure" />
+        <result column="create_time" property="createTime" />
+        <result column="coordinates" property="coordinates" />
+        <result column="turbine_high" property="turbineHigh" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, org_id, order_num, station_number, event_date_time, wind_speed, high_level, wind_direction, temperature, humidity, pressure, create_time, coordinates, turbine_high
+    </sql>
+
+</mapper>
