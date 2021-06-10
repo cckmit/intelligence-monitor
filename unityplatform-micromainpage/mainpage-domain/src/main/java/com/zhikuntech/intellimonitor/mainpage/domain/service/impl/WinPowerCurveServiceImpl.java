@@ -2,7 +2,6 @@ package com.zhikuntech.intellimonitor.mainpage.domain.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.rtdb.api.callbackInter.RSDataChange;
-import com.rtdb.api.callbackInter.RSDataChangeEx;
 import com.rtdb.api.model.RtdbData;
 import com.zhikuntech.intellimonitor.mainpage.domain.base.ResultCode;
 import com.zhikuntech.intellimonitor.mainpage.domain.exception.GetSnapshotsException;
@@ -19,10 +18,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.text.NumberFormat;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -40,7 +37,63 @@ public class WinPowerCurveServiceImpl implements WinPowerCurveService {
     private WebSocketServer webSocketServer;
 
     @Override
-    public WindPowerCurveVO getWindPowerCurve(){
+    public WindPowerCurveVO getWindPowerCurveOfAllTime() {
+        //1:调用远程接口查询获取....
+        //先模拟数据
+        WindPowerCurveVO windPowerCurveVO = new WindPowerCurveVO();
+        int count = 24 * 4;
+        Random random = new Random();
+        Double d = random.nextDouble() * 100 + 20;  //指定范围
+        //保留位数
+        NumberFormat nf = NumberFormat.getNumberInstance();
+        nf.setMaximumFractionDigits(2);
+
+        List<TimePowerVO> shortTermForecastPowerList = new ArrayList<>();
+        List<TimePowerVO> supShortTermForecastPowerList = new ArrayList<>();
+        List<TimePowerVO> actualPowerList = new ArrayList<>();
+        List<TimeWindSpeedVO> weatherForecastPowerList = new ArrayList<>();
+        List<TimeWindSpeedVO> measuredWindSpeedList = new ArrayList<>();
+
+        for (int i = 0; i < count; i++) {
+            //减去8小时时区时间
+            Date date = new Date(15 * (i + 1) * 60 * 1000 - 8 * 60 * 60 *1000);
+            TimePowerVO shortTermForecastPower = new TimePowerVO();
+            shortTermForecastPower.setDate(date);
+            shortTermForecastPower.setPower(Double.parseDouble(nf.format(random.nextDouble() * 100 + 20)));
+
+            TimePowerVO supShortTermForecastPower = new TimePowerVO();
+            supShortTermForecastPower.setDate(date);
+            supShortTermForecastPower.setPower(Double.parseDouble(nf.format(random.nextDouble() * 100 + 20)));
+
+            TimePowerVO actualPower = new TimePowerVO();
+            actualPower.setDate(date);
+            actualPower.setPower(Double.parseDouble(nf.format(random.nextDouble() * 100 + 20)));
+
+            TimeWindSpeedVO weatherForecastPower = new TimeWindSpeedVO();
+            weatherForecastPower.setDate(date);
+            weatherForecastPower.setSpeedTime(Double.parseDouble(nf.format(random.nextDouble() * 100 + 20)));
+
+            TimeWindSpeedVO measuredWindSpeed = new TimeWindSpeedVO();
+            measuredWindSpeed.setDate(date);
+            measuredWindSpeed.setSpeedTime(Double.parseDouble(nf.format(random.nextDouble() * 100 + 20)));
+
+            shortTermForecastPowerList.add(shortTermForecastPower);
+            supShortTermForecastPowerList.add(supShortTermForecastPower);
+            actualPowerList.add(actualPower);
+            weatherForecastPowerList.add(weatherForecastPower);
+            measuredWindSpeedList.add(measuredWindSpeed);
+            //添加数据
+            windPowerCurveVO.setActualPower(actualPowerList);
+            windPowerCurveVO.setMeasuredWindSpeed(measuredWindSpeedList);
+            windPowerCurveVO.setShortTermForecastPower(shortTermForecastPowerList);
+            windPowerCurveVO.setSupShortTermForecastPower(supShortTermForecastPowerList);
+            windPowerCurveVO.setWeatherForecastPower(weatherForecastPowerList);
+        }
+        return windPowerCurveVO;
+    }
+
+    @Override
+    public WindPowerCurveVO getWindPowerCurve() {
         int[] ids = new int[]{1};
         try {
             goldenUtil.getSnapshots(ids);  //此处异常统一处理
@@ -55,7 +108,7 @@ public class WinPowerCurveServiceImpl implements WinPowerCurveService {
         timeWindSpeedVO.setDate(new Date());
         timeWindSpeedVO.setSpeedTime(421.234);
         List<TimePowerVO> shortTermForecastPower = new ArrayList<>();
-        List<TimePowerVO>  supShortTermForecastPower = new ArrayList<>();
+        List<TimePowerVO> supShortTermForecastPower = new ArrayList<>();
         List<TimePowerVO> actualPower = new ArrayList<>();
         List<TimeWindSpeedVO> weatherForecastPower = new ArrayList<>();
         List<TimeWindSpeedVO> measuredWindSpeed = new ArrayList<>();
@@ -74,18 +127,17 @@ public class WinPowerCurveServiceImpl implements WinPowerCurveService {
     }
 
     @Override
-    public boolean subscribeWindPowerCurve(String username){
+    public boolean subscribeWindPowerCurve(String username) {
         ConcurrentHashMap<String, WebSocketServer> clients = webSocketServer.getClients();
-        int[] ids = new int[]{11,12,13,14,15};
+        int[] ids = new int[]{11, 12, 13, 14, 15};
         //判断用户是否连接
-//        if (clients.containsKey(username)){
-        if (true){
+        if (clients.containsKey(username)){
             //订阅
             try {
-                goldenUtil.subscribeSnapshots(ids,new RSDataChange(){
+                goldenUtil.subscribeSnapshots(ids, new RSDataChange() {
                     @Override
                     public void run(RtdbData[] rtdbData) {
-                        LOGGER.info("rtdbData=>"+Arrays.toString(rtdbData));  //数据
+                        LOGGER.info("rtdbData=>" + Arrays.toString(rtdbData));  //数据
 
                         //websocket推送给客户端
                         WindPowerCurveVO windPowerCurveVO = new WindPowerCurveVO();
@@ -110,7 +162,7 @@ public class WinPowerCurveServiceImpl implements WinPowerCurveService {
                         measuredWindSpeed.setSpeedTime((Double) rtdbData[4].getValue());
 
                         List<TimePowerVO> shortTermForecastPowerList = new ArrayList<>();
-                        List<TimePowerVO>  supShortTermForecastPowerList = new ArrayList<>();
+                        List<TimePowerVO> supShortTermForecastPowerList = new ArrayList<>();
                         List<TimePowerVO> actualPowerList = new ArrayList<>();
                         List<TimeWindSpeedVO> weatherForecastPowerList = new ArrayList<>();
                         List<TimeWindSpeedVO> measuredWindSpeedList = new ArrayList<>();
@@ -127,16 +179,16 @@ public class WinPowerCurveServiceImpl implements WinPowerCurveService {
                         windPowerCurveVO.setSupShortTermForecastPower(supShortTermForecastPowerList);
                         windPowerCurveVO.setWeatherForecastPower(weatherForecastPowerList);
 
-                        LOGGER.info("windPowerCurveVO=>{}",windPowerCurveVO);
-                        webSocketServer.sendMessage(JSON.toJSONString(windPowerCurveVO),username);
+                        LOGGER.info("windPowerCurveVO=>{}", JSON.toJSONString(windPowerCurveVO));
+                        webSocketServer.sendMessage(JSON.toJSONString(windPowerCurveVO), username);
                     }
                 });
                 return true;
             } catch (Exception e) {
-                e.printStackTrace();
+                //e.printStackTrace();
                 throw new SubscribeGoldenException(ResultCode.GOLDEN_SUBSCRIBESNAPSHOTS_FAILED);
             }
-        }else {
+        } else {
             throw new UserNotLoginException(ResultCode.USER_NOT_LOGIN_EXCEPTION);
         }
     }
