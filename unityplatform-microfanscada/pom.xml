@@ -12,10 +12,12 @@
     <artifactId>unityplatform-microfanscada</artifactId>
     <packaging>pom</packaging>
     <modules>
+
+        <module>fanscada-data</module>
         <module>fanscada-app</module>
         <module>fanscada-domain</module>
-        <module>fanscada-facade</module>
         <module>fanscada-prototype</module>
+        <module>fanscada-facade</module>
     </modules>
 
 
