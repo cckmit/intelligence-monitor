@@ -50,7 +50,7 @@ public class GoldenUtil {
     /**
      * 庚顿数据库连接池
      */
-    private static final ServerImplPool SERVER_IMPL_POOL = new ServerImplPool("47.114.57.32", 6327, "sa", "golden", 5, 10);
+    private static final ServerImplPool SERVER_IMPL_POOL = new ServerImplPool("1.117.33.103", 6327, "sa", "golden", 5, 10);
 
     /**
      * 获取表内ids
@@ -60,6 +60,7 @@ public class GoldenUtil {
      */
     public int[] getIds(String tableName) throws Exception {
         server = SERVER_IMPL_POOL.getServerImpl();
+        server.setTimeOut(3000);
         base = new BaseImpl(server);
         //获取当前表容量
         int count = base.getTableSizeByName(tableName);
@@ -79,6 +80,7 @@ public class GoldenUtil {
      */
     public void subscribeSnapshots(int[] ids, RSDataChange rsDataChange) throws Exception {
         server = SERVER_IMPL_POOL.getServerImpl();
+        server.setTimeOut(3000);
         snap = new SnapshotImpl(server);
         snap.subscribeSnapshots(ids, rsDataChange);
 //        RSDataChange rs = (datas) -> {
@@ -97,6 +99,7 @@ public class GoldenUtil {
      */
     public void subscribeSnapshots(String[] tagNames, RSDataChange rsDataChange) throws Exception {
         server = SERVER_IMPL_POOL.getServerImpl();
+        server.setTimeOut(3000);
         snap = new SnapshotImpl(server);
         snap.subscribeSnapshots(tagNames, rsDataChange);
 //        RSDataChange rs = (datas) -> {
@@ -131,6 +134,7 @@ public class GoldenUtil {
      */
     public double getFloat(int id, String dateTime) throws Exception {
         server = SERVER_IMPL_POOL.getServerImpl();
+        server.setTimeOut(3000);
         historian = new HistorianImpl(server);
         Date date = DateUtil.stringToDate(dateTime);
         double value = historian.getFloatSingleValue(id, date, RtdbHisMode.RTDB_PREVIOUS).getValue();
@@ -140,6 +144,7 @@ public class GoldenUtil {
 
     public double getInteger(int id, String dateTime) throws Exception {
         server = SERVER_IMPL_POOL.getServerImpl();
+        server.setTimeOut(3000);
         historian = new HistorianImpl(server);
         Date date = DateUtil.stringToDate(dateTime);
         double value = historian.getIntSingleValue(id, date, RtdbHisMode.RTDB_PREVIOUS).getValue();
@@ -155,6 +160,7 @@ public class GoldenUtil {
      */
     public List<ValueData> getSnapshots(int[] ids) throws Exception {
         server = SERVER_IMPL_POOL.getServerImpl();
+        server.setTimeOut(3000);
         snap = new SnapshotImpl(server);
         List<ValueData> snapshots = snap.getSnapshots(ids);
         server.close();

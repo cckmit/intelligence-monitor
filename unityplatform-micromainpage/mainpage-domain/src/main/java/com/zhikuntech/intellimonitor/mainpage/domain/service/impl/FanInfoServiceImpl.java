@@ -54,7 +54,7 @@ public class FanInfoServiceImpl implements FanInfoService {
         if (webSocketServer.getClients().containsKey(user)) {
             int[] ids = goldenUtil.getIds("fan");
             List<FanRuntimeDto> list = new ArrayList<>(10);
-            for (int i = 0; i < 10; i++) {
+            for (int i = 1; i <= 10; i++) {
                 FanRuntimeDto fanRuntimeDto = new FanRuntimeDto();
                 fanRuntimeDto.setNumber(i);
                 list.add(fanRuntimeDto);

@@ -67,13 +67,13 @@ public class FanStatisticsDto {
      * 能量输出
      */
     @JsonIgnore
-    @GoldenId(value = 45)
+    @GoldenId(value = 13)
     private Double energyOutput;
 
     /**
      * 反向有功
      */
     @JsonIgnore
-    @GoldenId(value = 46)
+    @GoldenId(value = 14)
     private Double reverseActivePower;
 }
