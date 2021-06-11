@@ -61,8 +61,7 @@ public class FanInfoServiceImpl implements FanInfoService {
             }
             goldenUtil.subscribeSnapshots(user, ids, (data) -> {
                 if (!webSocketServer.getClients().containsKey(user)) {
-                    goldenUtil.cancel(user);
-                    log.info("websocket用户{}连接断开,庚顿订阅取消！", user);
+                   return;
                 } else {
                     List<FanRuntimeDto> dtos = InjectPropertiesUtil.injectByAnnotation(list, data);
                     if (null != dtos) {
@@ -71,7 +70,6 @@ public class FanInfoServiceImpl implements FanInfoService {
                     }
                 }
             });
-            log.info("订阅结束");
         }
     }
 

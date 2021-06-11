@@ -48,7 +48,7 @@ public class GoldenUtil {
     /**
      * 庚顿数据库连接池
      */
-    private static ServerImplPool pool = new ServerImplPool("1.117.33.103", 6327, "sa", "golden", 5, 10);
+    private static ServerImplPool pool = new ServerImplPool("1.117.33.103", 6327, "sa", "golden", 50, 100);
 
     private static ConcurrentHashMap<String, ServerImpl> servers = new ConcurrentHashMap<>();
 
@@ -116,26 +116,26 @@ public class GoldenUtil {
     }
 
 
-    /**
-     * 取消订阅
-     *
-     * @throws Exception
-     */
-    public void cancel(String username) {
-        Snapshot snap = snaps.get(username);
-        ServerImpl server = servers.get(username);
-        try {
-            snap.cancelSubscribeSnapshots();
-            snap.close();
-            server.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.error(e.getMessage());
-        }
-//        pool.releaseServerImpl(server);
-        snaps.remove(username);
-        servers.remove(username);
-    }
+//    /**
+//     * 取消订阅
+//     *
+//     * @throws Exception
+//     */
+//    public void cancel(String username) {
+//        Snapshot snap = snaps.get(username);
+//        ServerImpl server = servers.get(username);
+//        try {
+//            snap.cancelSubscribeSnapshots();
+//            snap.close();
+//            server.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            log.error(e.getMessage());
+//        }
+////        pool.releaseServerImpl(server);
+//        snaps.remove(username);
+//        servers.remove(username);
+//    }
 
     /**
      * 获取指定时间的数据

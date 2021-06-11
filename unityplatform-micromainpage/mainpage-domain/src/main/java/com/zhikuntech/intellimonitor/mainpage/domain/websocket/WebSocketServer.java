@@ -80,7 +80,7 @@ public class WebSocketServer {
             WebSocketServer webSocketServer = clients.get(username);
             if (null != webSocketServer) {
 //                log.info("服务端给客户端[{}]发送消息{}", username, message);
-                webSocketServer.session.getAsyncRemote().sendText(message);
+                webSocketServer.session.getBasicRemote().sendText(message);
             }
         } catch (Exception e) {
             log.error("服务端发送消息给客户端失败：", e);
