@@ -29,6 +29,7 @@
         <commons-logging.version>1.1.1</commons-logging.version>
         <commons-beanutils.version>1.8.3</commons-beanutils.version>
         <commons-io.version>2.6</commons-io.version>
+        <commons-collection4.version>4.4</commons-collection4.version>
         <protobuf-java.version>2.6.1</protobuf-java.version>
     </properties>
 
@@ -64,16 +65,16 @@
             </dependency>
             <!-- Lombok Version -->
             <!-- Start MAP STRUCT DO/DTO/VO/PO 等属性之间转换     -->
-            <!--<dependency>-->
-                <!--<groupId>org.mapstruct</groupId>-->
-                <!--<artifactId>mapstruct-jdk8</artifactId>-->
-                <!--<version>${mapstruct.version}</version>-->
-            <!--</dependency>-->
-            <!--<dependency>-->
-                <!--<groupId>org.mapstruct</groupId>-->
-                <!--<artifactId>mapstruct-processor</artifactId>-->
-                <!--<version>${mapstruct.version}</version>-->
-            <!--</dependency>-->
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-jdk8</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
             <!-- END MAP STRUCT DO/DTO/VO/PO 等属性之间转换     -->
             <!-- swagger -->
             <dependency>
@@ -90,16 +91,16 @@
             </dependency>
             <!-- mybatis-plus -->
             <!--easy poi-->
-            <!--<dependency>-->
-                <!--<groupId>cn.afterturn</groupId>-->
-                <!--<artifactId>easypoi-base</artifactId>-->
-                <!--<version>${easypoi.version}</version>-->
-            <!--</dependency>-->
-            <!--<dependency>-->
-                <!--<groupId>cn.afterturn</groupId>-->
-                <!--<artifactId>easypoi-annotation</artifactId>-->
-                <!--<version>${easypoi.version}</version>-->
-            <!--</dependency>-->
+            <dependency>
+                <groupId>cn.afterturn</groupId>
+                <artifactId>easypoi-base</artifactId>
+                <version>${easypoi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.afterturn</groupId>
+                <artifactId>easypoi-annotation</artifactId>
+                <version>${easypoi.version}</version>
+            </dependency>
             <!--easy poi-->
             <!-- commons utils -->
             <dependency>
@@ -107,6 +108,12 @@
                 <artifactId>commons-io</artifactId>
                 <version>${commons-io.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>${commons-collection4.version}</version>
+            </dependency>
+            <!-- commons utils -->
         </dependencies>
     </dependencyManagement>
 
@@ -116,6 +123,7 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+
     </dependencies>
 
     <build>

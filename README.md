@@ -42,5 +42,7 @@
 192.168.3.171:3306
 db: monitor_sys
 
-
-
+## 当前模块
+1.unityplatform-micromainpage
+2.unityplatform-microfanscada
+3.unityplatform-microwindpowerforecast
