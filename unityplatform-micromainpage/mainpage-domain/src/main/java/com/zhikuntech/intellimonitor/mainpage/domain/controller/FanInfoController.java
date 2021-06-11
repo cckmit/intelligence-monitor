@@ -6,6 +6,7 @@ import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanStatisticsDto;
 import com.zhikuntech.intellimonitor.mainpage.domain.service.FanInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/fanInfo")
 @Api(tags = "首页风机实时数据")
+@Slf4j
 public class FanInfoController {
 
     @Autowired
@@ -30,12 +32,14 @@ public class FanInfoController {
     @GetMapping("/getRuntimeInfo")
     @ApiOperation("获取当前最新风机运行时数据")
     public BaseResponse<List<FanRuntimeDto>> getRuntimeInfos() throws Exception {
+        log.info("/getRuntimeInfo");
         return BaseResponse.success(fanInfoService.getRuntimeInfos());
     }
 
     @GetMapping("/getRuntimeInfo/{username}")
     @ApiOperation("websocket推送实时运行数据")
     public void getRuntimeInfos(@PathVariable String username) throws Exception {
+        log.info("/getRuntimeInfo"+username);
         fanInfoService.getRuntimeInfos(username);
     }
 

@@ -8,3 +8,10 @@ eureka:
   instance:
     prefer-ip-address: true
     instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
+golden:
+  ip: 1.117.33.103
+  port: 6327
+  user: sa
+  password: golden
+  poolSize: 5
+  maxSize: 10

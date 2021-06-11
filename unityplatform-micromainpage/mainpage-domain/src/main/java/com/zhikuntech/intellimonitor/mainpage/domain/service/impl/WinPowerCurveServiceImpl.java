@@ -56,7 +56,7 @@ public class WinPowerCurveServiceImpl implements WinPowerCurveService {
 
         for (int i = 0; i < count; i++) {
             //减去8小时时区时间
-            Date date = new Date(15 * (i + 1) * 60 * 1000 - 8 * 60 * 60 *1000);
+            Date date = new Date(15 * (i + 1) * 60 * 1000 - 8 * 60 * 60 * 1000);
             TimePowerVO shortTermForecastPower = new TimePowerVO();
             shortTermForecastPower.setDate(date);
             shortTermForecastPower.setPower(Double.parseDouble(nf.format(random.nextDouble() * 100 + 20)));
@@ -131,10 +131,10 @@ public class WinPowerCurveServiceImpl implements WinPowerCurveService {
         ConcurrentHashMap<String, WebSocketServer> clients = webSocketServer.getClients();
         int[] ids = new int[]{11, 12, 13, 14, 15};
         //判断用户是否连接
-        if (clients.containsKey(username)){
+        if (clients.containsKey(username)) {
             //订阅
             try {
-                goldenUtil.subscribeSnapshots(ids, new RSDataChange() {
+                goldenUtil.subscribeSnapshots(username, ids, new RSDataChange() {
                     @Override
                     public void run(RtdbData[] rtdbData) {
                         LOGGER.info("rtdbData=>" + Arrays.toString(rtdbData));  //数据

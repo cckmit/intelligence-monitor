@@ -1,7 +1,6 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.golden;
 
 import com.rtdb.api.callbackInter.RSDataChange;
-import com.rtdb.api.callbackInter.RSDataChangeEx;
 import com.rtdb.api.model.ValueData;
 import com.rtdb.api.util.DateUtil;
 import com.rtdb.enums.DataSort;
@@ -12,6 +11,7 @@ import com.rtdb.service.inter.Base;
 import com.rtdb.service.inter.Historian;
 import com.rtdb.service.inter.Snapshot;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -27,30 +27,32 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class GoldenUtil {
 
-    /**
-     * 庚顿数据库网络连接接口
-     */
-    private ServerImpl server;
+    @Value("${golden.ip}")
+    private String ip;
 
-    /**
-     * 庚顿数据库快照数据接口
-     */
-    private Snapshot snap;
+    @Value("${golden.port}")
+    private Integer port;
 
-    /**
-     * 庚顿数据库历史数据接口
-     */
-    private Historian historian;
+    @Value("${golden.user}")
+    private String user;
 
-    /**
-     * 庚顿数据库基础接口
-     */
-    private Base base;
+    @Value("${golden.password}")
+    private String password;
+
+    @Value("${golden.poolSize}")
+    private Integer poolSize;
+
+    @Value("${golden.maxSize}")
+    private Integer maxSize;
 
     /**
      * 庚顿数据库连接池
      */
-    private static final ServerImplPool SERVER_IMPL_POOL = new ServerImplPool("1.117.33.103", 6327, "sa", "golden", 5, 10);
+    private static ServerImplPool pool = new ServerImplPool("1.117.33.103", 6327, "sa", "golden", 5, 10);
+
+    private static ConcurrentHashMap<String, ServerImpl> servers = new ConcurrentHashMap<>();
+
+    private static ConcurrentHashMap<String, Snapshot> snaps = new ConcurrentHashMap<>();
 
     /**
      * 获取表内ids
@@ -59,9 +61,8 @@ public class GoldenUtil {
      * @return int[]
      */
     public int[] getIds(String tableName) throws Exception {
-        server = SERVER_IMPL_POOL.getServerImpl();
-        server.setTimeOut(3000);
-        base = new BaseImpl(server);
+        ServerImpl server = pool.getServerImpl();
+        BaseImpl base = new BaseImpl(server);
         //获取当前表容量
         int count = base.getTableSizeByName(tableName);
         SearchCondition s = new SearchCondition();
@@ -78,10 +79,11 @@ public class GoldenUtil {
      * @param rsDataChange 庚顿数据更新时触发，进行相关处理
      * @throws Exception
      */
-    public void subscribeSnapshots(int[] ids, RSDataChange rsDataChange) throws Exception {
-        server = SERVER_IMPL_POOL.getServerImpl();
-        server.setTimeOut(3000);
-        snap = new SnapshotImpl(server);
+    public void subscribeSnapshots(String username, int[] ids, RSDataChange rsDataChange) throws Exception {
+        ServerImpl server = pool.getServerImpl();
+        Snapshot snap = new SnapshotImpl(server);
+        servers.put(username, server);
+        snaps.put(username, snap);
         snap.subscribeSnapshots(ids, rsDataChange);
 //        RSDataChange rs = (datas) -> {
 //            //todo 后续处理
@@ -97,10 +99,10 @@ public class GoldenUtil {
     /**
      * @param tagNames 更具标签的名称查询
      */
-    public void subscribeSnapshots(String[] tagNames, RSDataChange rsDataChange) throws Exception {
-        server = SERVER_IMPL_POOL.getServerImpl();
-        server.setTimeOut(3000);
-        snap = new SnapshotImpl(server);
+    public void subscribeSnapshots(String username, String[] tagNames, RSDataChange rsDataChange) throws Exception {
+        ServerImpl server = pool.getServerImpl();
+        Snapshot snap = new SnapshotImpl(server);
+        servers.put(username, server);
         snap.subscribeSnapshots(tagNames, rsDataChange);
 //        RSDataChange rs = (datas) -> {
 //            //todo 后续处理
@@ -119,9 +121,20 @@ public class GoldenUtil {
      *
      * @throws Exception
      */
-    public void cancel() throws Exception {
-        snap.cancelSubscribeSnapshots();
-        server.close();
+    public void cancel(String username) {
+        Snapshot snap = snaps.get(username);
+        ServerImpl server = servers.get(username);
+        try {
+            snap.cancelSubscribeSnapshots();
+            snap.close();
+            server.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }
+//        pool.releaseServerImpl(server);
+        snaps.remove(username);
+        servers.remove(username);
     }
 
     /**
@@ -133,9 +146,8 @@ public class GoldenUtil {
      * RTDB_INTER(3); 取指定时间的内插值数据
      */
     public double getFloat(int id, String dateTime) throws Exception {
-        server = SERVER_IMPL_POOL.getServerImpl();
-        server.setTimeOut(3000);
-        historian = new HistorianImpl(server);
+        ServerImpl server = pool.getServerImpl();
+        Historian historian = new HistorianImpl(server);
         Date date = DateUtil.stringToDate(dateTime);
         double value = historian.getFloatSingleValue(id, date, RtdbHisMode.RTDB_PREVIOUS).getValue();
         server.close();
@@ -143,9 +155,8 @@ public class GoldenUtil {
     }
 
     public double getInteger(int id, String dateTime) throws Exception {
-        server = SERVER_IMPL_POOL.getServerImpl();
-        server.setTimeOut(3000);
-        historian = new HistorianImpl(server);
+        ServerImpl server = pool.getServerImpl();
+        Historian historian = new HistorianImpl(server);
         Date date = DateUtil.stringToDate(dateTime);
         double value = historian.getIntSingleValue(id, date, RtdbHisMode.RTDB_PREVIOUS).getValue();
         server.close();
@@ -159,11 +170,11 @@ public class GoldenUtil {
      * @return 指定id集合最新快照信息
      */
     public List<ValueData> getSnapshots(int[] ids) throws Exception {
-        server = SERVER_IMPL_POOL.getServerImpl();
-        server.setTimeOut(3000);
-        snap = new SnapshotImpl(server);
+        ServerImpl server = pool.getServerImpl();
+        Snapshot snap = new SnapshotImpl(server);
         List<ValueData> snapshots = snap.getSnapshots(ids);
         server.close();
+//        pool.releaseServerImpl(server);
         return snapshots;
     }
 }

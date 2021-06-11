@@ -62,8 +62,8 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(String message) {
-        log.info("服务端收到客户端[{}]的消息:{}", username, message);
-        this.sendMessage("Hello, " + message, username);
+//        log.info("服务端收到客户端[{}]的消息:{}", username, message);
+//        this.sendMessage("Hello, " + message, username);
     }
 
     @OnError
@@ -79,7 +79,7 @@ public class WebSocketServer {
         try {
             WebSocketServer webSocketServer = clients.get(username);
             if (null != webSocketServer) {
-                log.info("服务端给客户端[{}]发送消息{}", username, message);
+//                log.info("服务端给客户端[{}]发送消息{}", username, message);
                 webSocketServer.session.getAsyncRemote().sendText(message);
             }
         } catch (Exception e) {

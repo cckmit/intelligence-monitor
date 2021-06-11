@@ -15,6 +15,8 @@ public class BackendToGolden {
 
     private int goldenId;
 
-    private int num;
+    private int number;
+
+    private String description;
 
 }

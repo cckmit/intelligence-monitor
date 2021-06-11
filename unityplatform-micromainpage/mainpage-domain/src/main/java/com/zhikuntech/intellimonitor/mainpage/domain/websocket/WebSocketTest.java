@@ -26,13 +26,13 @@ public class WebSocketTest {
 //        int i = random.nextInt(10);
 //        log.info(Integer.toString(i));
         int[] ids = goldenUtil.getIds("fan");
-        goldenUtil.subscribeSnapshots(ids, (datas) -> {
+        goldenUtil.subscribeSnapshots(user, ids, (datas) -> {
             if (webSocketServer.getClients().containsKey(user)) {
                 StringBuilder sb = new StringBuilder();
                 for (RtdbData data : datas) {
                     sb.append(data.getValue().toString());
                 }
-                webSocketServer.sendMessage(sb.toString(),user);
+                webSocketServer.sendMessage(sb.toString(), user);
             }
         });
     }
