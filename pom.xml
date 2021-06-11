@@ -24,7 +24,6 @@
         <module>unityplatform-microregistrycenter</module>
         <module>unityplatform-micromainpage</module>
         <module>unityplatform-microfanscada</module>
-        <module>fanscada-facade</module>
     </modules>
 
     <properties>
