@@ -2,7 +2,6 @@ package com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper;
 
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataCdq;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
 
 /**
  * <p>
@@ -10,9 +9,8 @@ import org.apache.ibatis.annotations.Mapper;
  * </p>
  *
  * @author liukai
- * @since 2021-06-10
+ * @since 2021-06-11
  */
-@Mapper
 public interface WfDataCdqMapper extends BaseMapper<WfDataCdq> {
 
 }

@@ -12,11 +12,16 @@
         <result column="actual_produce" property="actualProduce" />
         <result column="machine_capacity" property="machineCapacity" />
         <result column="create_time" property="createTime" />
+        <result column="sample_ids" property="sampleIds" />
+        <result column="sample_cap" property="sampleCap" />
+        <result column="cap" property="cap" />
+        <result column="body_time" property="bodyTime" />
+        <result column="row_raw_data" property="rowRawData" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, org_id, order_num, station_number, event_date_time, actual_produce, machine_capacity, create_time
+        id, org_id, order_num, station_number, event_date_time, actual_produce, machine_capacity, create_time, sample_ids, sample_cap, cap, body_time, row_raw_data
     </sql>
 
 </mapper>

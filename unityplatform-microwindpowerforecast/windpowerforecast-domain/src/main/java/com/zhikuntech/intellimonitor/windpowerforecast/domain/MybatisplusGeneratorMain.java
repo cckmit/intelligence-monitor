@@ -4,10 +4,13 @@ import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.InjectionConfig;
 import com.baomidou.mybatisplus.generator.config.*;
+import com.baomidou.mybatisplus.generator.config.builder.ConfigBuilder;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
+import com.baomidou.mybatisplus.generator.config.rules.FileType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +40,9 @@ public class MybatisplusGeneratorMain {
         //xml
         gc.setBaseResultMap(true);
         gc.setBaseColumnList(true);
+
+        // 覆盖文件
+//        gc.setFileOverride(true);
 
 
         // gc.setSwagger2(true); 实体属性 Swagger2 注解
@@ -89,19 +95,25 @@ public class MybatisplusGeneratorMain {
                 return outP;
             }
         });
-//        cfg.setFileCreate(new IFileCreate() {
-//            @Override
-//            public boolean isCreate(ConfigBuilder configBuilder, FileType fileType, String filePath) {
-//                return false;
-//            }
-//        });
+        cfg.setFileCreate(new IFileCreate() {
+            @Override
+            public boolean isCreate(ConfigBuilder configBuilder, FileType fileType, String filePath) {
+
+                if (fileType == FileType.SERVICE || fileType == FileType.SERVICE_IMPL) {
+                    // 已经生成的service可以不重复生成
+                    return !new File(filePath).exists();
+                }
+                // 默认生成文件
+                return true;
+            }
+        });
         cfg.setFileOutConfigList(focList);
         mpg.setCfg(cfg);
 
         // 配置模版
         TemplateConfig templateConfig = new TemplateConfig();
         templateConfig.setXml(null);
-//        templateConfig.setController(null);
+        templateConfig.setController(null);
         mpg.setTemplate(templateConfig);
 
         // 策略配置
@@ -112,7 +124,7 @@ public class MybatisplusGeneratorMain {
         strategy.setRestControllerStyle(true);
 
         //- 表名称
-        strategy.setInclude("wf_data_nwp");
+        strategy.setInclude("wf_data_cdq");
         strategy.setControllerMappingHyphenStyle(true);
 
         mpg.setStrategy(strategy);
