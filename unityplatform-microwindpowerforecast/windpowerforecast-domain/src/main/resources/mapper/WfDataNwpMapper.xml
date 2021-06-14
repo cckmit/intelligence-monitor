@@ -8,6 +8,7 @@
         <result column="org_id" property="orgId" />
         <result column="order_num" property="orderNum" />
         <result column="station_number" property="stationNumber" />
+        <result column="body_time" property="bodyTime" />
         <result column="event_date_time" property="eventDateTime" />
         <result column="wind_speed" property="windSpeed" />
         <result column="high_level" property="highLevel" />
@@ -18,11 +19,12 @@
         <result column="create_time" property="createTime" />
         <result column="coordinates" property="coordinates" />
         <result column="turbine_high" property="turbineHigh" />
+        <result column="header_date" property="headerDate" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, org_id, order_num, station_number, event_date_time, wind_speed, high_level, wind_direction, temperature, humidity, pressure, create_time, coordinates, turbine_high
+        id, org_id, order_num, station_number, body_time, event_date_time, wind_speed, high_level, wind_direction, temperature, humidity, pressure, create_time, coordinates, turbine_high, header_date
     </sql>
 
 </mapper>

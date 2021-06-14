@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+
+import lombok.*;
 
 /**
  * <p>
@@ -14,8 +14,11 @@ import lombok.EqualsAndHashCode;
  * </p>
  *
  * @author liukai
- * @since 2021-06-10
+ * @since 2021-06-14
  */
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class WfDataNwp implements Serializable {
@@ -33,7 +36,7 @@ public class WfDataNwp implements Serializable {
     /**
      * 顺序号
      */
-    private Integer orderNum;
+    private String orderNum;
 
     /**
      * 统一编码
@@ -41,7 +44,12 @@ public class WfDataNwp implements Serializable {
     private String stationNumber;
 
     /**
-     * 事件时间
+     * 数据体数据,数值表示
+     */
+    private Integer bodyTime;
+
+    /**
+     * 事件时间,根据数据体时间计算得出
      */
     private LocalDateTime eventDateTime;
 
@@ -89,6 +97,11 @@ public class WfDataNwp implements Serializable {
      * 风场风机轮毂高度
      */
     private BigDecimal turbineHigh;
+
+    /**
+     * 头部时间
+     */
+    private LocalDateTime headerDate;
 
 
 }

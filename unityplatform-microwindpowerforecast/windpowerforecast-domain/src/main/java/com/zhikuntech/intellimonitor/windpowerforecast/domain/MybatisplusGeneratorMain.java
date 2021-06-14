@@ -26,10 +26,10 @@ public class MybatisplusGeneratorMain {
 
     public static void main(String[] args) {
 
-        if (true) {
-            // rem close
-            return;
-        }
+//        if (true) {
+//            // rem close
+//            return;
+//        }
 
         // 代码生成器
         AutoGenerator mpg = new AutoGenerator();
@@ -56,8 +56,10 @@ public class MybatisplusGeneratorMain {
 
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
+        // 116.63.173.57
         // 192.168.3.171
-        dsc.setUrl("jdbc:mysql://192.168.3.171:3306/monitor_sys?useUnicode=true&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8&useSSL=false");
+        dsc.setUrl("jdbc:mysql://116.63.173.57:33061/monitor_sys?useUnicode=true&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8&useSSL=false");
+//        dsc.setUrl("jdbc:mysql://192.168.3.171:3306/monitor_sys?useUnicode=true&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8&useSSL=false");
         dsc.setDriverName("com.mysql.cj.jdbc.Driver");
         dsc.setUsername("develop");
         dsc.setPassword("Aman@2020");
@@ -129,7 +131,7 @@ public class MybatisplusGeneratorMain {
         strategy.setRestControllerStyle(true);
 
         //- 表名称
-        strategy.setInclude("wf_data_dq");
+        strategy.setInclude("wf_data_nwp");
         strategy.setControllerMappingHyphenStyle(true);
 
         mpg.setStrategy(strategy);

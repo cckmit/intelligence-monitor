@@ -7,6 +7,7 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.CdqHead
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataCdqService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.CdqAnd4CWindForSuperShortTimePatternUtils;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.ConstantsOfWf;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.NumberProcessUtils;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.TimeProcessUtils;
 import org.apache.commons.collections4.CollectionUtils;
@@ -14,7 +15,6 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class WfDataCdqServiceImpl extends ServiceImpl<WfDataCdqMapper, WfDataCdq
 
             List<WfDataCdq> dataCdqs = new ArrayList<>();
             for (CdqBodyParse cdqBodyPars : cdqBodyParses) {
-                WfDataCdq wfDataCdq = WfDataCdq.builder().orgId("333").build();
+                WfDataCdq wfDataCdq = WfDataCdq.builder().orgId(ConstantsOfWf.DEV_ORG_ID).build();
                 dataCdqs.add(wfDataCdq);
 
                 int bodyTime = Integer.parseInt(cdqBodyPars.getBodyTime());

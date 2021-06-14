@@ -1,8 +1,6 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.utils;
 
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.CdqBodyParse;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.CdqHeaderParse;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.ZrBodyParse;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
@@ -49,12 +47,12 @@ public class ParseDataFileUtil {
 //        ZrAnd24BwindForActualPowerPatternUtils.processZr(strings);
 
 
-
-
         // 短期功率     dq      72wind      浙江.红山风电_72wind_20170323.rb
         inputStream = obtainInputStream("浙江.普陀风电场_72wind_20210303.rb");
         strings = IOUtils.readLines(inputStream, Charset.forName("GBK"));
-
+        DqHeaderParse dqHeaderParse = DqAnd72windForShortTimePatternUtils.processDqHeader(strings);
+        List<DqBodyParse> dqBodyParses = DqAnd72windForShortTimePatternUtils.processDqBody(strings);
+        System.out.println();
 
         // 超短期功率    cdq     4Cwind      浙江.红山风电_4Cwind_201703221700.rb
         inputStream = obtainInputStream("浙江.普陀风电场_4Cwind_202103020115.rb");

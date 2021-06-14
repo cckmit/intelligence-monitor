@@ -1,20 +1,20 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl;
 
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataCdq;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataDq;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfDataDqMapper;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.DqBodyParse;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.DqHeaderParse;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataDqService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.ConstantsOfWf;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.DqAnd72windForShortTimePatternUtils;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.NumberProcessUtils;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.TimeProcessUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -57,23 +57,27 @@ public class WfDataDqServiceImpl extends ServiceImpl<WfDataDqMapper, WfDataDq> i
 
             List<WfDataDq> wfDataDqs = new ArrayList<>();
             for (DqBodyParse dqBodyPars : dqBodyParses) {
-                WfDataDq wfDataCdq = WfDataDq.builder().orgId("333").build();
-                wfDataDqs.add(wfDataCdq);
+                WfDataDq wfDataDq = WfDataDq.builder().orgId(ConstantsOfWf.DEV_ORG_ID).build();
+                wfDataDqs.add(wfDataDq);
 
                 int bodyTime = Integer.parseInt(dqBodyPars.getBodyTime());
                 LocalDateTime eventTime = headerDate.plusMinutes((bodyTime - 1) * 15);
                 // body
-                wfDataCdq.setEventDateTime(eventTime);
-                wfDataCdq.setCreateTime(createTime);
-                wfDataCdq.setBodyTime(bodyTime);
-                wfDataCdq.setOrderNum(dqBodyPars.getOrderNum());
-                wfDataCdq.setStationNumber(dqBodyPars.getStationNumber());
-                wfDataCdq.setForecastProduce(new BigDecimal(dqBodyPars.getUpProduce()));
+                wfDataDq.setEventDateTime(eventTime);
+                wfDataDq.setCreateTime(createTime);
+                wfDataDq.setBodyTime(bodyTime);
+                wfDataDq.setOrderNum(dqBodyPars.getOrderNum());
+                wfDataDq.setStationNumber(dqBodyPars.getStationNumber());
+                wfDataDq.setForecastProduce(NumberProcessUtils.strToBigDecimal(dqBodyPars.getUpProduce()));
+                wfDataDq.setForecastCheck(NumberProcessUtils.strToBigDecimal(dqBodyPars.getStopMachineCheckCapacity()));
                 // header
-
+                wfDataDq.setSampleCap(NumberProcessUtils.strToBigDecimal(dqHeaderParse.getDqSampleCap()));
+                wfDataDq.setSampleIds(dqHeaderParse.getDqSampleIds());
+                wfDataDq.setCap(NumberProcessUtils.strToBigDecimal(dqHeaderParse.getDqCap()));
+                wfDataDq.setHeaderDate(headerDate);
             }
 
-            if (CollectionUtils.isNotEmpty(dqBodyParses)) {
+            if (CollectionUtils.isNotEmpty(wfDataDqs)) {
                 saveBatch(wfDataDqs);
             }
         } catch (Exception ex) {
