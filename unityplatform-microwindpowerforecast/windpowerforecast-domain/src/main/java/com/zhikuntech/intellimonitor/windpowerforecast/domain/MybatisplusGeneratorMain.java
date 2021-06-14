@@ -26,6 +26,11 @@ public class MybatisplusGeneratorMain {
 
     public static void main(String[] args) {
 
+        if (true) {
+            // rem close
+            return;
+        }
+
         // 代码生成器
         AutoGenerator mpg = new AutoGenerator();
 
@@ -124,7 +129,7 @@ public class MybatisplusGeneratorMain {
         strategy.setRestControllerStyle(true);
 
         //- 表名称
-        strategy.setInclude("wf_data_cdq");
+        strategy.setInclude("wf_data_dq");
         strategy.setControllerMappingHyphenStyle(true);
 
         mpg.setStrategy(strategy);

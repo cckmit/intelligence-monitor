@@ -8,15 +8,20 @@
         <result column="org_id" property="orgId" />
         <result column="order_num" property="orderNum" />
         <result column="station_number" property="stationNumber" />
+        <result column="body_time" property="bodyTime" />
         <result column="event_date_time" property="eventDateTime" />
         <result column="forecast_produce" property="forecastProduce" />
         <result column="forecast_check" property="forecastCheck" />
         <result column="create_time" property="createTime" />
+        <result column="sample_ids" property="sampleIds" />
+        <result column="sample_cap" property="sampleCap" />
+        <result column="cap" property="cap" />
+        <result column="header_date" property="headerDate" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, org_id, order_num, station_number, event_date_time, forecast_produce, forecast_check, create_time
+        id, org_id, order_num, station_number, body_time, event_date_time, forecast_produce, forecast_check, create_time, sample_ids, sample_cap, cap, header_date
     </sql>
 
 </mapper>

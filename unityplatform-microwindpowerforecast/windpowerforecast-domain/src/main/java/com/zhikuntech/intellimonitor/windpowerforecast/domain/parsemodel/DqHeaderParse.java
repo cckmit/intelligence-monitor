@@ -12,26 +12,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class CdqBodyParse {
+public class DqHeaderParse {
+
 
     /**
-     * 顺序号
+     * 日期格式:
+     * yyyy-MM-dd HH:mm
      */
-    private String orderNum;
+    private String dqDate;
 
-    /**
-     * 统一编码
-     */
-    private String stationNumber;
+    private String dqSampleIds;
 
-    /**
-     * 数据体中的时间
-     */
-    private String bodyTime;
+    private String dqSampleCap;
 
-    /**
-     * 上报出力值
-     */
-    private String upProduce;
+    private String dqCap;
 
 }

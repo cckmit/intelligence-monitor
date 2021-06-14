@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IWfDataDqService extends IService<WfDataDq> {
 
+    void batchSave();
 }

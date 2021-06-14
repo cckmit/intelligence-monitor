@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+
+import lombok.*;
 
 /**
  * <p>
@@ -14,8 +14,11 @@ import lombok.EqualsAndHashCode;
  * </p>
  *
  * @author liukai
- * @since 2021-06-10
+ * @since 2021-06-12
  */
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class WfDataDq implements Serializable {
@@ -33,12 +36,17 @@ public class WfDataDq implements Serializable {
     /**
      * 顺序
      */
-    private Integer orderNum;
+    private String orderNum;
 
     /**
      * 统一编码
      */
     private String stationNumber;
+
+    /**
+     * body中的日期,值为序号
+     */
+    private Integer bodyTime;
 
     /**
      * 事件生成事件
@@ -59,6 +67,26 @@ public class WfDataDq implements Serializable {
      * 创建时间
      */
     private LocalDateTime createTime;
+
+    /**
+     * 本机编号的字符串，以’,’分割
+     */
+    private String sampleIds;
+
+    /**
+     * 本机装机容量
+     */
+    private BigDecimal sampleCap;
+
+    /**
+     * 风场额定装机容量
+     */
+    private BigDecimal cap;
+
+    /**
+     * 头部日期,格式: [yyyy-MM-dd HH:mm:ss]
+     */
+    private LocalDateTime headerDate;
 
 
 }

@@ -12,7 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class CdqBodyParse {
+public class DqBodyParse {
+
 
     /**
      * 顺序号
@@ -33,5 +34,10 @@ public class CdqBodyParse {
      * 上报出力值
      */
     private String upProduce;
+
+    /**
+     * 停机检修容量
+     */
+    private String stopMachineCheckCapacity;
 
 }
