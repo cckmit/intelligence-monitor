@@ -1,4 +1,4 @@
-package com.zhikuntech.intellimonitor.mainpage.domain.base;
+package com.zhikuntech.intellimonitor.core.commons.base;
 
 import java.io.Serializable;
 import java.util.List;
