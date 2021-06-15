@@ -58,8 +58,8 @@ public class MybatisplusGeneratorMain {
         DataSourceConfig dsc = new DataSourceConfig();
         // 116.63.173.57
         // 192.168.3.171
-        dsc.setUrl("jdbc:mysql://116.63.173.57:33061/monitor_sys?useUnicode=true&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8&useSSL=false");
-//        dsc.setUrl("jdbc:mysql://192.168.3.171:3306/monitor_sys?useUnicode=true&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8&useSSL=false");
+//        dsc.setUrl("jdbc:mysql://116.63.173.57:33061/monitor_sys?useUnicode=true&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8&useSSL=false");
+        dsc.setUrl("jdbc:mysql://192.168.3.171:3306/monitor_sys?useUnicode=true&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8&useSSL=false");
         dsc.setDriverName("com.mysql.cj.jdbc.Driver");
         dsc.setUsername("develop");
         dsc.setPassword("Aman@2020");
@@ -131,7 +131,7 @@ public class MybatisplusGeneratorMain {
         strategy.setRestControllerStyle(true);
 
         //- 表名称
-        strategy.setInclude("wf_data_nwp");
+        strategy.setInclude("wf_data_cf");
         strategy.setControllerMappingHyphenStyle(true);
 
         mpg.setStrategy(strategy);

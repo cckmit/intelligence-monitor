@@ -34,12 +34,25 @@ public class NormalUsagePlayController {
         return BaseResponse.success(weatherHighDTO);
     }
 
+    /*
+        TODO 曲线展示 -> 待确认: 以哪个为基准(短期预测功率/超短期预测功率) [时间为15min]
+            查询参数:
+                时间
+                数字天气预报
+                实测气象
+
+     */
+
 
     //# 实测气象数据
 
     /*
         TODO 风向玫瑰图
         TODO 风能玫瑰图
+
+        待确定问题,正好落在 N/NNE/NE等上面该如何计算
+        待确定夹角问题
+
 
         16个方位:
             N
