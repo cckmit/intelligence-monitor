@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-public class FanInfoDto {
+public class FanInfoDTO {
 
     private Integer id;
 

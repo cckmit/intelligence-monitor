@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Accessors(chain = true)
-public class WarningDto {
+public class WarningDTO {
 
     private Integer id;
 

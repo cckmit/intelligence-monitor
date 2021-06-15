@@ -39,6 +39,11 @@
             </dependency>
             <dependency>
                 <groupId>com.zhikuntech.intellimonitor</groupId>
+                <artifactId>mainpage-facade</artifactId>
+                <version>${intelli-monitor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zhikuntech.intellimonitor</groupId>
                 <artifactId>core-commons</artifactId>
                 <version>${intelli-monitor.version}</version>
             </dependency>

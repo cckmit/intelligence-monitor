@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @ApiModel("首页风机运行实时数据")
-public class FanRuntimeDto {
+public class FanRuntimeDTO {
 
     @JsonIgnore
     private Integer id;

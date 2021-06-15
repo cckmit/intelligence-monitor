@@ -2,8 +2,8 @@ package com.zhikuntech.intellimonitor.mainpage.domain.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.rtdb.api.model.ValueData;
-import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanRuntimeDto;
-import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanStatisticsDto;
+import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanRuntimeDTO;
+import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanStatisticsDTO;
 import com.zhikuntech.intellimonitor.mainpage.domain.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.golden.InjectPropertiesUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.service.FanInfoService;
@@ -34,15 +34,15 @@ public class FanInfoServiceImpl implements FanInfoService {
     private RedisUtil redisUtil;
 
     @Override
-    public List<FanRuntimeDto> getRuntimeInfos() throws Exception {
-        List<FanRuntimeDto> list = new ArrayList<>();
+    public List<FanRuntimeDTO> getRuntimeInfos() throws Exception {
+        List<FanRuntimeDTO> list = new ArrayList<>();
 //        int[] ids = goldenUtil.getIds("fan");
         int[] ids = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
         List<ValueData> valueData = goldenUtil.getSnapshots(ids);
         for (int i = 1; i <= 10; i++) {
-            FanRuntimeDto fanRuntimeDto = new FanRuntimeDto();
+            FanRuntimeDTO fanRuntimeDto = new FanRuntimeDTO();
             fanRuntimeDto.setNumber(i);
-            FanRuntimeDto dto = InjectPropertiesUtil.injectByAnnotation(fanRuntimeDto, valueData);
+            FanRuntimeDTO dto = InjectPropertiesUtil.injectByAnnotation(fanRuntimeDto, valueData);
             list.add(dto);
         }
         return InjectPropertiesUtil.injectByAnnotation(list, valueData);
@@ -53,21 +53,21 @@ public class FanInfoServiceImpl implements FanInfoService {
         if (webSocketServer.getClients().containsKey(user)) {
 //            int[] ids = goldenUtil.getIds("fan");
             int[] ids = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
-            List<FanRuntimeDto> list = new ArrayList<>(10);
+            List<FanRuntimeDTO> list = new ArrayList<>(10);
             goldenUtil.subscribeSnapshots(user, ids, (data) -> {
                 if (!webSocketServer.getClients().containsKey(user)) {
                     return;
                 } else {
                     for (int i = 1; i <= 10; i++) {
-                        FanRuntimeDto fanRuntimeDto = new FanRuntimeDto();
+                        FanRuntimeDTO fanRuntimeDto = new FanRuntimeDTO();
                         fanRuntimeDto.setNumber(i);
                         list.add(fanRuntimeDto);
                     }
-                    List<FanRuntimeDto> dtos = InjectPropertiesUtil.injectByAnnotation(list, data);
+                    List<FanRuntimeDTO> dtos = InjectPropertiesUtil.injectByAnnotation(list, data);
                     if (null != dtos) {
                         Object obj = redisUtil.get("powerGeneration");
                         double powerGeneration = null == obj ? 0 : (double) obj;
-                        for (FanRuntimeDto dto : dtos) {
+                        for (FanRuntimeDTO dto : dtos) {
                             dto.setMonthlyPowerGeneration(dto.getMonthlyPowerGeneration() - powerGeneration);
                         }
                         String jsonString = JSONObject.toJSONString(dtos);
@@ -79,17 +79,22 @@ public class FanInfoServiceImpl implements FanInfoService {
     }
 
     @Override
-    public FanStatisticsDto getStatistics() throws Exception {
-        int[] ids = {13, 14};
-        FanStatisticsDto fanStatisticsDto = new FanStatisticsDto();
+    public FanStatisticsDTO getStatistics() throws Exception {
+        int[] ids = {1, 2, 13, 14};
+        FanStatisticsDTO fanStatisticsDto = new FanStatisticsDTO();
         List<ValueData> valueData = goldenUtil.getSnapshots(ids);
-        FanStatisticsDto dto = InjectPropertiesUtil.injectByAnnotation(fanStatisticsDto, valueData);
-//        if(null==dto){
-//            return null;
-//        }
-//        dto.setNum(63);
-//        dto.setActivePower(dto.getEnergyOutput());
-//        dto.set
+        FanStatisticsDTO dto = InjectPropertiesUtil.injectByAnnotation(fanStatisticsDto, valueData);
+        if (null != dto) {
+            dto.setNum(63);
+            dto.setCapacity(63 * 4d);
+            dto.setActivePower(63 * dto.getActivePower());
+            dto.setDailyOnlinePower(dto.getReverseActivePower());
+            dto.setMonthlyOnlinePower(dto.getReverseActivePower());
+            dto.setAnnualOnlinePower(dto.getReverseActivePower());
+            dto.setDailyPowerGeneration(dto.getEnergyOutput());
+            dto.setMonthlyPowerGeneration(dto.getEnergyOutput());
+            dto.setAnnualPowerGeneration(dto.getEnergyOutput());
+        }
         return dto;
     }
 
@@ -101,7 +106,7 @@ public class FanInfoServiceImpl implements FanInfoService {
                 if (!webSocketServer.getClients().containsKey(user)) {
                     return;
                 } else {
-                    FanStatisticsDto dto = InjectPropertiesUtil.injectByAnnotation(new FanStatisticsDto(), data);
+                    FanStatisticsDTO dto = InjectPropertiesUtil.injectByAnnotation(new FanStatisticsDTO(), data);
                     if (null != dto) {
                         dto.setNum(63);
                         dto.setCapacity(63 * 4d);
