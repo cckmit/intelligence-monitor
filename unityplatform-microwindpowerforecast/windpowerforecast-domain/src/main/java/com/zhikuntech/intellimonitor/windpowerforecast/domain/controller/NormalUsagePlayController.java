@@ -34,4 +34,44 @@ public class NormalUsagePlayController {
         return BaseResponse.success(weatherHighDTO);
     }
 
+
+    //# 实测气象数据
+
+    /*
+        TODO 风向玫瑰图
+        TODO 风能玫瑰图
+
+        16个方位:
+            N
+            NNE
+            NE
+            ENE
+            E
+            ESE
+            SE
+            SSE
+            S
+            SSW
+            SW
+            WSW
+            W
+            WNW
+            NW
+            NNW
+
+     */
+
+
+
+
+
+    /*
+        TODO    列表模式
+            参数: 时间  高度
+
+     */
+
+
+    //# 实测气象数据
+
 }
