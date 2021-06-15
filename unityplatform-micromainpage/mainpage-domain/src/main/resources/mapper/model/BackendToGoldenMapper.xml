@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhikuntech.intellimonitor.mainpage.domain.mapper.model.BackendToGoldenMapper">
+    <resultMap id="backendToGoldenResultMap" type="com.zhikuntech.intellimonitor.mainpage.domain.model.BackendToGolden">
+        <id property="id" column="id"/>
+        <result property="backendId" column="backendId"/>
+        <result property="goldenId" column="goldenId"/>
+        <result property="number" column="number"/>
+        <result property="description" column="description"/>
+        <result property="tagName" column="tagName"/>
+    </resultMap>
+
+    <select id="getGoldenIdByBackendIdOrNumber" resultType="java.lang.Integer">
+        <if test="backendToGoldenQuery.backendId != null or backendToGoldenQuery.number != null">
+            select goldenId
+            from backen_to_golden
+            <where>
+                <choose>
+                    <when test="backendToGoldenQuery.backendId != null">
+                        and backendId = #{backendToGoldenQuery.backendId}
+                    </when>
+                    <when test="backendToGoldenQuery.number != null">
+                        and number = #{backendToGoldenQuery.number}
+                    </when>
+                </choose>
+            </where>
+        </if>
+    </select>
+
+    <select id="listGoldenIdByBackendIdOrNumber" resultType="java.lang.Integer">
+        select goldenId
+        from backen_to_golden
+        <choose>
+          <when test="backendToGoldenQueryList.backendIdList.size gt 0">
+              where
+              backendId
+              in
+              <foreach collection="backendToGoldenQueryList.backendIdList" open="(" close=")" separator="," item="backendId">
+                  #{backendId}
+              </foreach>
+          </when>
+          <when test="backendToGoldenQueryList.numberList.size gt 0">
+              where
+              number
+              in
+              <foreach collection="backendToGoldenQueryList.numberList" open="(" close=")" separator="," item="number">
+                  #{number}
+              </foreach>
+          </when>
+        </choose>
+    </select>
+
+
+</mapper>
