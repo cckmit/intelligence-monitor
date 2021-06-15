@@ -1,6 +1,6 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.controller;
 
-import com.zhikuntech.intellimonitor.mainpage.domain.base.BaseResponse;
+import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
 import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanRuntimeDto;
 import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanStatisticsDto;
 import com.zhikuntech.intellimonitor.mainpage.domain.service.FanInfoService;

@@ -1,5 +1,8 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataNwp;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfDataNwpMapper;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.NwpBodyParse;
@@ -7,6 +10,7 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.NwpHead
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataNwpService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
@@ -28,9 +32,25 @@ import static com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.Parse
  * @author liukai
  * @since 2021-06-10
  */
+@Slf4j
 @Service
 public class WfDataNwpServiceImpl extends ServiceImpl<WfDataNwpMapper, WfDataNwp> implements IWfDataNwpService {
 
+
+    @Override
+    public List<WfDataNwp> queryBatch() {
+//        getBaseMapper().selectPage();
+
+        QueryWrapper<WfDataNwp> queryWrapper = new QueryWrapper<>();
+        List<WfDataNwp> wfDataNwps = getBaseMapper().selectList(queryWrapper);
+        log.info("query result: [{}]", wfDataNwps);
+
+        IPage<WfDataNwp> page = new Page<>(2, 2);
+        IPage<WfDataNwp> records = getBaseMapper().selectPage(page, queryWrapper);
+
+
+        return wfDataNwps;
+    }
 
     @Override
     public void batchSave() {
