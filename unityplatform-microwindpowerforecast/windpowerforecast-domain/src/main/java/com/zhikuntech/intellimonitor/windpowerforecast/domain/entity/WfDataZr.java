@@ -15,7 +15,7 @@ import lombok.*;
  * </p>
  *
  * @author liukai
- * @since 2021-06-11
+ * @since 2021-06-15
  */
 @AllArgsConstructor
 @NoArgsConstructor
@@ -85,6 +85,21 @@ public class WfDataZr implements Serializable {
     private LocalTime bodyTime;
 
     private String rowRawData;
+
+    /**
+     * 获取状态(0获取成功, 1获取失败)
+     */
+    private Integer status;
+
+    /**
+     * 获取数据的时间
+     */
+    private LocalDateTime fetchTime;
+
+    /**
+     * 失败原因(status为1, 则有此字段有数据说明)
+     */
+    private String failMsg;
 
 
 }

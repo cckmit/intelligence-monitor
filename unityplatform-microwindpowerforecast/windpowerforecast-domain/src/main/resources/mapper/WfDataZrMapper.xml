@@ -17,11 +17,14 @@
         <result column="cap" property="cap" />
         <result column="body_time" property="bodyTime" />
         <result column="row_raw_data" property="rowRawData" />
+        <result column="status" property="status" />
+        <result column="fetch_time" property="fetchTime" />
+        <result column="fail_msg" property="failMsg" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, org_id, order_num, station_number, event_date_time, actual_produce, machine_capacity, create_time, sample_ids, sample_cap, cap, body_time, row_raw_data
+        id, org_id, order_num, station_number, event_date_time, actual_produce, machine_capacity, create_time, sample_ids, sample_cap, cap, body_time, row_raw_data, status, fetch_time, fail_msg
     </sql>
 
 </mapper>
