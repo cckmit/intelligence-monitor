@@ -10,7 +10,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
  * @create 2021/6/10 18:08
  **/
 @SpringBootApplication
-@EnableEurekaClient
+//@EnableEurekaClient
 public class FanScadaApplication {
     public static void main(String[] args) {
         SpringApplication.run(FanScadaApplication.class,args);

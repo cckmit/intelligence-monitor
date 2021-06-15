@@ -54,18 +54,22 @@ public class FanInfoServiceImpl implements FanInfoService {
 //            int[] ids = goldenUtil.getIds("fan");
             int[] ids = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
             List<FanRuntimeDto> list = new ArrayList<>(10);
-            for (int i = 1; i <= 10; i++) {
-                FanRuntimeDto fanRuntimeDto = new FanRuntimeDto();
-                fanRuntimeDto.setNumber(i);
-                list.add(fanRuntimeDto);
-            }
             goldenUtil.subscribeSnapshots(user, ids, (data) -> {
                 if (!webSocketServer.getClients().containsKey(user)) {
                     return;
                 } else {
+                    for (int i = 1; i <= 10; i++) {
+                        FanRuntimeDto fanRuntimeDto = new FanRuntimeDto();
+                        fanRuntimeDto.setNumber(i);
+                        list.add(fanRuntimeDto);
+                    }
                     List<FanRuntimeDto> dtos = InjectPropertiesUtil.injectByAnnotation(list, data);
                     if (null != dtos) {
-
+                        Object obj = redisUtil.get("powerGeneration");
+                        double powerGeneration = null == obj ? 0 : (double) obj;
+                        for (FanRuntimeDto dto : dtos) {
+                            dto.setMonthlyPowerGeneration(dto.getMonthlyPowerGeneration() - powerGeneration);
+                        }
                         String jsonString = JSONObject.toJSONString(dtos);
                         webSocketServer.sendMessage(jsonString, user);
                     }
@@ -92,7 +96,7 @@ public class FanInfoServiceImpl implements FanInfoService {
     @Override
     public void getStatistics(String user) throws Exception {
         if (webSocketServer.getClients().containsKey(user)) {
-            int[] ids = {1,2,13, 14};
+            int[] ids = {1, 2, 13, 14};
             goldenUtil.subscribeSnapshots(user, ids, (data) -> {
                 if (!webSocketServer.getClients().containsKey(user)) {
                     return;
@@ -100,8 +104,8 @@ public class FanInfoServiceImpl implements FanInfoService {
                     FanStatisticsDto dto = InjectPropertiesUtil.injectByAnnotation(new FanStatisticsDto(), data);
                     if (null != dto) {
                         dto.setNum(63);
-                        dto.setCapacity(63*4d);
-                        dto.setActivePower(63*dto.getActivePower());
+                        dto.setCapacity(63 * 4d);
+                        dto.setActivePower(63 * dto.getActivePower());
                         dto.setDailyOnlinePower(dto.getReverseActivePower());
                         dto.setMonthlyOnlinePower(dto.getReverseActivePower());
                         dto.setAnnualOnlinePower(dto.getReverseActivePower());

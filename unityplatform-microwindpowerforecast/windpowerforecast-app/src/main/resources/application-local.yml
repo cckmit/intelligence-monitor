@@ -19,7 +19,13 @@ spring:
 
 
 
+
 #knife4j:
 #  enable: true
+
+logging:
+  level:
+    com.zhikuntech.intellimonitor.windpowerforecast.domain.service: debug
+    com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper: debug
 
 

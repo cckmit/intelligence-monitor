@@ -51,6 +51,7 @@ public class FanInfoController {
     @GetMapping("/getStatistics/{username}")
     @ApiOperation("websocket推送实时统计数据")
     public void getStatistics(@PathVariable String username) throws Exception {
-
+        log.info("/getStatistics"+username);
+        fanInfoService.getStatistics(username);
     }
 }

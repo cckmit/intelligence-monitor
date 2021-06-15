@@ -22,12 +22,12 @@ public class WebSocketServer {
     /**
      * 记录当前在线连接数
      */
-    private static AtomicInteger onlineCount = new AtomicInteger(0);
+    public static AtomicInteger onlineCount = new AtomicInteger(0);
 
     /**
      * 存放所有在线的客户端
      */
-    private static ConcurrentHashMap<String, WebSocketServer> clients = new ConcurrentHashMap<>();
+    public static ConcurrentHashMap<String, WebSocketServer> clients = new ConcurrentHashMap<>();
 
     private Session session;
 
@@ -93,10 +93,6 @@ public class WebSocketServer {
             log.info("服务端给客户端[{}]发送消息{}", wb.username, message);
             toSession.getAsyncRemote().sendText(message);
         }
-    }
-
-    public Integer getOnline() {
-        return onlineCount.get();
     }
 
     public ConcurrentHashMap<String, WebSocketServer> getClients() {
