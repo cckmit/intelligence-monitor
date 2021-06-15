@@ -89,7 +89,7 @@ public class WinPowerCurveServiceImpl implements WinPowerCurveService {
             windPowerCurveVO.setMeasuredWindSpeed(measuredWindSpeedList);
             windPowerCurveVO.setShortTermForecastPower(shortTermForecastPowerList);
             windPowerCurveVO.setSupShortTermForecastPower(supShortTermForecastPowerList);
-            windPowerCurveVO.setWeatherForecastWindSpeed(weatherForecastPowerList);
+            windPowerCurveVO.setWeatherForecastPower(weatherForecastPowerList);
         }
         return windPowerCurveVO;
     }
@@ -124,7 +124,7 @@ public class WinPowerCurveServiceImpl implements WinPowerCurveService {
         windPowerCurveVO.setMeasuredWindSpeed(measuredWindSpeed);
         windPowerCurveVO.setShortTermForecastPower(shortTermForecastPower);
         windPowerCurveVO.setSupShortTermForecastPower(supShortTermForecastPower);
-        windPowerCurveVO.setWeatherForecastWindSpeed(weatherForecastPower);
+        windPowerCurveVO.setWeatherForecastPower(weatherForecastPower);
         return windPowerCurveVO;
     }
 
@@ -180,7 +180,7 @@ public class WinPowerCurveServiceImpl implements WinPowerCurveService {
                         windPowerCurveVO.setMeasuredWindSpeed(measuredWindSpeedList);
                         windPowerCurveVO.setShortTermForecastPower(shortTermForecastPowerList);
                         windPowerCurveVO.setSupShortTermForecastPower(supShortTermForecastPowerList);
-                        windPowerCurveVO.setWeatherForecastWindSpeed(weatherForecastPowerList);
+                        windPowerCurveVO.setWeatherForecastPower(weatherForecastPowerList);
 
                         LOGGER.info("windPowerCurveVO=>{}", JSON.toJSONString(windPowerCurveVO));
                         webSocketServer.sendMessage(JSON.toJSONString(windPowerCurveVO), username);
