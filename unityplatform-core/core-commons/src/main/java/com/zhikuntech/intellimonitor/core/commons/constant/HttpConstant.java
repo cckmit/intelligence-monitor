@@ -1,4 +1,4 @@
-package com.zhikuntech.intellimonitor.mainpage.domain.constant;
+package com.zhikuntech.intellimonitor.core.commons.constant;
 
 
 public interface HttpConstant {

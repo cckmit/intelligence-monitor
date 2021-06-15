@@ -1,10 +1,10 @@
-package com.zhikuntech.intellimonitor.mainpage.domain.base;
+package com.zhikuntech.intellimonitor.core.commons.base;
 
-import com.zhikuntech.intellimonitor.mainpage.domain.exception.BaseException;
+import com.zhikuntech.intellimonitor.core.commons.exception.BaseException;
 import lombok.Data;
 import org.springframework.util.StringUtils;
 
-import static com.zhikuntech.intellimonitor.mainpage.domain.base.ResultCode.SUCCESS;
+import static com.zhikuntech.intellimonitor.core.commons.base.ResultCode.SUCCESS;
 
 
 @Data

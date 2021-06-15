@@ -1,7 +1,7 @@
-package com.zhikuntech.intellimonitor.mainpage.domain.exception;
+package com.zhikuntech.intellimonitor.core.commons.exception;
 
 
-import com.zhikuntech.intellimonitor.mainpage.domain.base.ResultCode;
+import com.zhikuntech.intellimonitor.core.commons.base.ResultCode;
 
 public abstract class BaseException extends RuntimeException {
 

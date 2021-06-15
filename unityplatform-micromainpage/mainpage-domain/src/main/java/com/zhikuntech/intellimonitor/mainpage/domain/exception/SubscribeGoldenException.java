@@ -1,6 +1,7 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.exception;
 
-import com.zhikuntech.intellimonitor.mainpage.domain.base.ResultCode;
+import com.zhikuntech.intellimonitor.core.commons.base.ResultCode;
+import com.zhikuntech.intellimonitor.core.commons.exception.BaseException;
 
 /**
  * @Author 杨锦程
@@ -8,7 +9,7 @@ import com.zhikuntech.intellimonitor.mainpage.domain.base.ResultCode;
  * @Description 订阅庚顿点位异常
  * @Version 1.0
  */
-public class SubscribeGoldenException extends BaseException{
+public class SubscribeGoldenException extends BaseException {
     public SubscribeGoldenException(ResultCode code) {
         super(code);
     }

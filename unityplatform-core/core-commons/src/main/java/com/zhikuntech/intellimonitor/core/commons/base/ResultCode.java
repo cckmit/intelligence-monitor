@@ -1,6 +1,6 @@
-package com.zhikuntech.intellimonitor.mainpage.domain.base;
+package com.zhikuntech.intellimonitor.core.commons.base;
 
-import com.zhikuntech.intellimonitor.mainpage.domain.constant.HttpConstant;
+import com.zhikuntech.intellimonitor.core.commons.constant.HttpConstant;
 
 public enum ResultCode {
 

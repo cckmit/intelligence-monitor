@@ -3,7 +3,7 @@ package com.zhikuntech.intellimonitor.mainpage.domain.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.rtdb.api.callbackInter.RSDataChange;
 import com.rtdb.api.model.RtdbData;
-import com.zhikuntech.intellimonitor.mainpage.domain.base.ResultCode;
+import com.zhikuntech.intellimonitor.core.commons.base.ResultCode;
 import com.zhikuntech.intellimonitor.mainpage.domain.exception.GetSnapshotsException;
 import com.zhikuntech.intellimonitor.mainpage.domain.exception.SubscribeGoldenException;
 import com.zhikuntech.intellimonitor.mainpage.domain.exception.UserNotLoginException;

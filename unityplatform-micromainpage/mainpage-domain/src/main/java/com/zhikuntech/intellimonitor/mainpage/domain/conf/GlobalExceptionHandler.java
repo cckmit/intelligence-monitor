@@ -1,6 +1,6 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.conf;
 
-import com.zhikuntech.intellimonitor.mainpage.domain.base.BaseResponse;
+import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
 import com.zhikuntech.intellimonitor.mainpage.domain.exception.GetSnapshotsException;
 import com.zhikuntech.intellimonitor.mainpage.domain.exception.SubscribeGoldenException;
 import com.zhikuntech.intellimonitor.mainpage.domain.exception.UserNotLoginException;

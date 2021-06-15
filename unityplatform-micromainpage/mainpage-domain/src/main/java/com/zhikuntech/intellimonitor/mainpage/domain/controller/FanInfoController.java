@@ -1,6 +1,6 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.controller;
 
-import com.zhikuntech.intellimonitor.mainpage.domain.base.BaseResponse;
+import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
 import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanRuntimeDto;
 import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanStatisticsDto;
 import com.zhikuntech.intellimonitor.mainpage.domain.service.FanInfoService;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
