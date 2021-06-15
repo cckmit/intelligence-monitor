@@ -13,5 +13,5 @@ golden:
   port: 6327
   user: sa
   password: golden
-  poolSize: 5
-  maxSize: 10
+  poolSize: 25
+  maxSize: 50

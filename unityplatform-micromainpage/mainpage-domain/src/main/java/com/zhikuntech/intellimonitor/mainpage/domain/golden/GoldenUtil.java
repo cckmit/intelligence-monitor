@@ -7,13 +7,14 @@ import com.rtdb.enums.DataSort;
 import com.rtdb.enums.RtdbHisMode;
 import com.rtdb.model.SearchCondition;
 import com.rtdb.service.impl.*;
-import com.rtdb.service.inter.Base;
 import com.rtdb.service.inter.Historian;
 import com.rtdb.service.inter.Snapshot;
+import com.zhikuntech.intellimonitor.mainpage.domain.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,10 +46,15 @@ public class GoldenUtil {
     @Value("${golden.maxSize}")
     private Integer maxSize;
 
+    private ServerImplPool pool;
+
     /**
-     * 庚顿数据库连接池
+     * 初始化庚顿数据库连接池
      */
-    private static ServerImplPool pool = new ServerImplPool("1.117.33.103", 6327, "sa", "golden", 50, 100);
+    @PostConstruct
+    private void init() {
+        pool = new ServerImplPool(ip, port, user, password, poolSize, maxSize);
+    }
 
     private static ConcurrentHashMap<String, ServerImpl> servers = new ConcurrentHashMap<>();
 
@@ -61,6 +67,7 @@ public class GoldenUtil {
      * @return int[]
      */
     public int[] getIds(String tableName) throws Exception {
+        check();
         ServerImpl server = pool.getServerImpl();
         BaseImpl base = new BaseImpl(server);
         //获取当前表容量
@@ -80,6 +87,7 @@ public class GoldenUtil {
      * @throws Exception
      */
     public void subscribeSnapshots(String username, int[] ids, RSDataChange rsDataChange) throws Exception {
+        check();
         ServerImpl server = pool.getServerImpl();
         Snapshot snap = new SnapshotImpl(server);
         servers.put(username, server);
@@ -100,6 +108,7 @@ public class GoldenUtil {
      * @param tagNames 更具标签的名称查询
      */
     public void subscribeSnapshots(String username, String[] tagNames, RSDataChange rsDataChange) throws Exception {
+        check();
         ServerImpl server = pool.getServerImpl();
         Snapshot snap = new SnapshotImpl(server);
         servers.put(username, server);
@@ -116,26 +125,35 @@ public class GoldenUtil {
     }
 
 
-//    /**
-//     * 取消订阅
-//     *
-//     * @throws Exception
-//     */
-//    public void cancel(String username) {
-//        Snapshot snap = snaps.get(username);
-//        ServerImpl server = servers.get(username);
-//        try {
-//            snap.cancelSubscribeSnapshots();
-//            snap.close();
-//            server.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            log.error(e.getMessage());
-//        }
-////        pool.releaseServerImpl(server);
-//        snaps.remove(username);
-//        servers.remove(username);
-//    }
+    /**
+     * 取消订阅
+     */
+    public void cancel(String username) {
+        log.info(pool.getRealSize() + "");
+        Snapshot snap = snaps.get(username);
+        ServerImpl server = servers.get(username);
+        try {
+            snap.cancelSubscribeSnapshots();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        try {
+            server.close();
+        } catch (Exception e) {
+            log.info(e.getMessage());
+        }
+        snaps.remove(username);
+        servers.remove(username);
+        log.info(pool.getRealSize() + "");
+    }
+
+    private void cancel() {
+        servers.keySet().forEach(e -> {
+            if (!WebSocketServer.clients.containsKey(e)) {
+                cancel(e);
+            }
+        });
+    }
 
     /**
      * 获取指定时间的数据
@@ -146,6 +164,7 @@ public class GoldenUtil {
      * RTDB_INTER(3); 取指定时间的内插值数据
      */
     public double getFloat(int id, String dateTime) throws Exception {
+        check();
         ServerImpl server = pool.getServerImpl();
         Historian historian = new HistorianImpl(server);
         Date date = DateUtil.stringToDate(dateTime);
@@ -155,6 +174,7 @@ public class GoldenUtil {
     }
 
     public double getInteger(int id, String dateTime) throws Exception {
+        check();
         ServerImpl server = pool.getServerImpl();
         Historian historian = new HistorianImpl(server);
         Date date = DateUtil.stringToDate(dateTime);
@@ -170,11 +190,21 @@ public class GoldenUtil {
      * @return 指定id集合最新快照信息
      */
     public List<ValueData> getSnapshots(int[] ids) throws Exception {
+        check();
         ServerImpl server = pool.getServerImpl();
         Snapshot snap = new SnapshotImpl(server);
         List<ValueData> snapshots = snap.getSnapshots(ids);
         server.close();
-//        pool.releaseServerImpl(server);
         return snapshots;
     }
+
+    private void check() throws Exception {
+        if (pool.getRealSize() == maxSize) {
+            throw new Exception("golden数据库连接池已满，连接失败！");
+        }
+        if (pool.getRealSize() > maxSize / 4) {
+            cancel();
+        }
+    }
+
 }

@@ -26,11 +26,13 @@ public class FanStatisticsDto {
     /**
      * 当前有功功率
      */
+    @GoldenId(value = 2)
     private Double activePower;
 
     /**
      * 平均风速
      */
+    @GoldenId(value = 1)
     private Double averageWindVelocity;
 
     /**

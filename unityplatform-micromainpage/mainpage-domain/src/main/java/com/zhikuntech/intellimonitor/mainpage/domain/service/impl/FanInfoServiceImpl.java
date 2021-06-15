@@ -61,10 +61,11 @@ public class FanInfoServiceImpl implements FanInfoService {
             }
             goldenUtil.subscribeSnapshots(user, ids, (data) -> {
                 if (!webSocketServer.getClients().containsKey(user)) {
-                   return;
+                    return;
                 } else {
                     List<FanRuntimeDto> dtos = InjectPropertiesUtil.injectByAnnotation(list, data);
                     if (null != dtos) {
+
                         String jsonString = JSONObject.toJSONString(dtos);
                         webSocketServer.sendMessage(jsonString, user);
                     }
@@ -90,6 +91,28 @@ public class FanInfoServiceImpl implements FanInfoService {
 
     @Override
     public void getStatistics(String user) throws Exception {
-
+        if (webSocketServer.getClients().containsKey(user)) {
+            int[] ids = {1,2,13, 14};
+            goldenUtil.subscribeSnapshots(user, ids, (data) -> {
+                if (!webSocketServer.getClients().containsKey(user)) {
+                    return;
+                } else {
+                    FanStatisticsDto dto = InjectPropertiesUtil.injectByAnnotation(new FanStatisticsDto(), data);
+                    if (null != dto) {
+                        dto.setNum(63);
+                        dto.setCapacity(63*4d);
+                        dto.setActivePower(63*dto.getActivePower());
+                        dto.setDailyOnlinePower(dto.getReverseActivePower());
+                        dto.setMonthlyOnlinePower(dto.getReverseActivePower());
+                        dto.setAnnualOnlinePower(dto.getReverseActivePower());
+                        dto.setDailyPowerGeneration(dto.getEnergyOutput());
+                        dto.setMonthlyPowerGeneration(dto.getEnergyOutput());
+                        dto.setAnnualPowerGeneration(dto.getEnergyOutput());
+                        String jsonString = JSONObject.toJSONString(dto);
+                        webSocketServer.sendMessage(jsonString, user);
+                    }
+                }
+            });
+        }
     }
 }

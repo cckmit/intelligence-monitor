@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,6 +51,7 @@ public class FanInfoController {
     @GetMapping("/getStatistics/{username}")
     @ApiOperation("websocket推送实时统计数据")
     public void getStatistics(@PathVariable String username) throws Exception {
-
+        log.info("/getStatistics"+username);
+        fanInfoService.getStatistics(username);
     }
 }
