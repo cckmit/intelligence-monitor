@@ -1,17 +1,17 @@
-package com.zhikuntech.intellimonitor.windpowerforecast.domain.controller;
+package com.zhikuntech.intellimonitor.windpowerforecast.domain.controller.normalusage;
 
 import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
+import com.zhikuntech.intellimonitor.core.commons.base.Pager;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.WeatherHighDTO;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.CfListDTO;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.CfListPatternQuery;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataCfService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataNwpService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 常用展示
@@ -24,18 +24,16 @@ import java.util.Arrays;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class NormalUsagePlayController {
 
+    private final IWfDataNwpService iWfDataNwpService;
 
-
-
-    // TODO 查询实测气象高度, 预测气象高度
-
+    private final IWfDataCfService iWfDataCfService;
 
     @ApiOperation("查询实测气象高度, 预测气象高度")
     @GetMapping("/high")
     public BaseResponse<WeatherHighDTO> fetchHigh() {
         WeatherHighDTO weatherHighDTO = new WeatherHighDTO();
-        weatherHighDTO.setActHigh(Arrays.asList(new BigDecimal("10"), new BigDecimal("20"), new BigDecimal("30")));
-        weatherHighDTO.setVirtualHigh(Arrays.asList(new BigDecimal("10"), new BigDecimal("25"), new BigDecimal("55")));
+        weatherHighDTO.setActHigh(iWfDataCfService.queryHigh());
+        weatherHighDTO.setVirtualHigh(iWfDataNwpService.queryHigh());
         return BaseResponse.success(weatherHighDTO);
     }
 
@@ -49,12 +47,14 @@ public class NormalUsagePlayController {
         TODO 曲线展示（曲线模式）-> 数据是否一致 (已确认, 数据一致)
 
 
+
+
         TODO 日发电量计算
 
      */
 
 
-    //# 实测气象数据
+    //# 实测气象数据 - 风玫瑰图
 
     /*
         TODO 风向玫瑰图
@@ -87,18 +87,15 @@ public class NormalUsagePlayController {
      */
 
 
+    @ApiOperation("风玫瑰图-列表模式查询")
+    @PostMapping("/query-cf-list")
+    public BaseResponse<Pager<CfListDTO>> cfListQuery(@RequestBody CfListPatternQuery query) {
+        Pager<CfListDTO> results = iWfDataCfService.cfListQuery(query);
+        return BaseResponse.success(results);
+    }
 
 
 
-    /*
-        TODO    列表模式
-            参数: 时间  高度
-
-     */
-
-
-
-
-    //# 实测气象数据
+    //# 实测气象数据 - 风玫瑰图
 
 }

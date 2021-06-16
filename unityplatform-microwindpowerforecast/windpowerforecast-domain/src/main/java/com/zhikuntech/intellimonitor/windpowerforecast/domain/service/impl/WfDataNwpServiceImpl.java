@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.ParseDataFileUtil.obtainInputStream;
 
@@ -60,9 +61,15 @@ public class WfDataNwpServiceImpl extends ServiceImpl<WfDataNwpMapper, WfDataNwp
 
     @Override
     public List<BigDecimal> queryHigh() {
-        // TODO 查询高度
-
-        return null;
+        QueryWrapper<WfDataNwp> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("DISTINCT high_level").orderByAsc("high_level");
+        List<WfDataNwp> wfDataNwps = getBaseMapper().selectList(queryWrapper);
+        if (CollectionUtils.isEmpty(wfDataNwps)) {
+            return new ArrayList<>();
+        }
+        return wfDataNwps.stream()
+                .filter(Objects::nonNull).map(WfDataNwp::getHighLevel)
+                .filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     @Override
