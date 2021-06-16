@@ -13,7 +13,7 @@
     <select id="getGoldenIdByBackendIdOrNumber" resultType="java.lang.Integer">
         <if test="backendToGoldenQuery.backendId != null or backendToGoldenQuery.number != null">
             select goldenId
-            from backen_to_golden
+            from mp_backen_to_golden
             <where>
                 <choose>
                     <when test="backendToGoldenQuery.backendId != null">
@@ -29,7 +29,7 @@
 
     <select id="listGoldenIdByBackendIdOrNumber" resultType="java.lang.Integer">
         select goldenId
-        from backen_to_golden
+        from mp_backen_to_golden
         <choose>
           <when test="backendToGoldenQueryList.backendIdList.size gt 0">
               where
