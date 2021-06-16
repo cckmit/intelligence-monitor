@@ -2,7 +2,21 @@
 eureka:
   client:
     service-url:
-      defaultZone: http://192.168.3.174:8761/eureka/
+      defaultZone: http://192.168.30.60:8761/eureka/
   instance:
     prefer-ip-address: true
     instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
+
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://192.168.3.171:3306/monitor_sys?useUnicode=true&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8&useSSL=false
+    username: develop
+    password: Aman@2020
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+logging:
+  level:
+    com.zhikuntech.intellimonitor.windpowerforecast.domain.service: debug
+    com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper: debug
+
