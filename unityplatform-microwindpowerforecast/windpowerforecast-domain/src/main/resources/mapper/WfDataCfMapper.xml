@@ -30,4 +30,6 @@
         id, org_id, order_num, station_number, body_time, event_date_time, wind_speed, high_level, wind_direction, temperature, humidity, pressure, create_time, coordinates, turbine_high, header_date, status, fetch_time, fail_msg
     </sql>
 
+
+
 </mapper>

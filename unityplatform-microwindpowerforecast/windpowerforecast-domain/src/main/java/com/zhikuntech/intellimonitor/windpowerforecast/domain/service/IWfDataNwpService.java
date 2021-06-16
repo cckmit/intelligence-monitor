@@ -3,6 +3,7 @@ package com.zhikuntech.intellimonitor.windpowerforecast.domain.service;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataNwp;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -16,6 +17,8 @@ import java.util.List;
 public interface IWfDataNwpService extends IService<WfDataNwp> {
 
     List<WfDataNwp> queryBatch();
+
+    List<BigDecimal> queryHigh();
 
     void batchSave();
 }

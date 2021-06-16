@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfTimeBaseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfTimeBase">
+        <id column="id" property="id" />
+        <result column="time_ratio" property="timeRatio" />
+        <result column="date_time" property="dateTime" />
+        <result column="date_time_str" property="dateTimeStr" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, time_ratio, date_time, date_time_str
+    </sql>
+
+</mapper>
