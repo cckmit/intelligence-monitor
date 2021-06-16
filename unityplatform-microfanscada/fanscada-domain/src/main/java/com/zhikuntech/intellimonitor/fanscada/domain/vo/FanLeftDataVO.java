@@ -12,15 +12,27 @@ import lombok.Data;
 public class FanLeftDataVO {
 
     /**
-     * ups
+     * ups数据
      */
-    @ApiModelProperty("ups")
-    private UpsTelemetryVO ups;
+    @ApiModelProperty("ups数据")
+    private UpsTelemetryVO upsData;
 
     /**
-     * 直流
+     * 直流屏数据
      */
-    @ApiModelProperty("直流")
-    private DcScreenVO dc;
+    @ApiModelProperty("直流屏数据")
+    private DcScreenVO dcData;
+
+    /**
+     * ups状态
+     */
+    @ApiModelProperty("ups状态")
+    private UpsTelemetryStatusVO upsStatus;
+
+    /**
+     * 直流屏状态
+     */
+    @ApiModelProperty("直流屏状态")
+    private DcScreenStatusVO dcStatus;
 
 }

@@ -6,10 +6,9 @@ import com.zhikuntech.intellimonitor.core.commons.base.ResultCode;
 import com.zhikuntech.intellimonitor.fanscada.domain.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.fanscada.domain.golden.InjectPropertiesUtil;
 import com.zhikuntech.intellimonitor.fanscada.domain.service.FanDetailTwoService;
-import com.zhikuntech.intellimonitor.fanscada.domain.vo.DcScreenVO;
-import com.zhikuntech.intellimonitor.fanscada.domain.vo.FanLeftDataVO;
-import com.zhikuntech.intellimonitor.fanscada.domain.vo.UpsTelemetryVO;
+import com.zhikuntech.intellimonitor.fanscada.domain.vo.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -21,32 +20,41 @@ import java.util.List;
 public class FanDetailTwoServiceImpl implements FanDetailTwoService {
 
     @Override
-    public BaseResponse<FanLeftDataVO> getLeftData(Integer fanId) {
+    public BaseResponse<FanLeftDataVO> getData(Integer fanId) {
         GoldenUtil goldenUtil = new GoldenUtil();
         // todo 根据风机ID获取数据项ID
-        int[] ids = new int[30];
+        int[] ids = new int[61];
         int start = 68;
         for (int i = 0; i < 30; i++) {
             ids[i] = i + start;
         }
+        start = 103;
+        for (int i = 0; i < 31; i++) {
+            int temp = 30 + i;
+            ids[temp] = i + start;
+        }
+
+
         List<ValueData> list = null;
         try {
             list = goldenUtil.getSnapshots(ids);
+            if (CollectionUtils.isEmpty(list)) {
+                return BaseResponse.failure(ResultCode.DATD_NOT_EXCEPTION, "暂无数据");
+            }
+            UpsTelemetryVO ups = InjectPropertiesUtil.injectByAnnotationCustomize(new UpsTelemetryVO(), list);
+            DcScreenVO dc = InjectPropertiesUtil.injectByAnnotationCustomize(new DcScreenVO(), list);
+            UpsTelemetryStatusVO upsStatus = InjectPropertiesUtil.injectByAnnotationCustomize(new UpsTelemetryStatusVO(), list);
+            DcScreenStatusVO dcStatus = InjectPropertiesUtil.injectByAnnotationCustomize(new DcScreenStatusVO(), list);
+
+            FanLeftDataVO leftDataVO = new FanLeftDataVO();
+            leftDataVO.setDcData(dc);
+            leftDataVO.setUpsData(ups);
+            leftDataVO.setUpsStatus(upsStatus);
+            leftDataVO.setDcStatus(dcStatus);
+            return BaseResponse.success(leftDataVO);
         } catch (Exception e) {
-            return BaseResponse.failure(ResultCode.PARAMETER_ERROR, "参数错误");
+            e.printStackTrace();
+            return BaseResponse.failure(ResultCode.REQUEST_ERROR, "请求失败");
         }
-        UpsTelemetryVO ups = new UpsTelemetryVO();
-        DcScreenVO dc = new DcScreenVO();
-        dc = InjectPropertiesUtil.injectByAnnotationCustomize(dc, list);
-        ups = InjectPropertiesUtil.injectByAnnotationCustomize(ups, list);
-        if (dc == null || ups == null) {
-            return BaseResponse.failure(ResultCode.PARAMETER_ERROR, "参数错误");
-        }
-        FanLeftDataVO leftDataVO = new FanLeftDataVO();
-        leftDataVO.setDc(dc);
-        leftDataVO.setUps(ups);
-
-        return BaseResponse.success(leftDataVO);
     }
-
 }
