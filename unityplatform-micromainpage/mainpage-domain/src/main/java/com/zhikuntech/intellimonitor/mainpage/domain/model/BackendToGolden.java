@@ -17,25 +17,25 @@ public class BackendToGolden {
      * 表id
      */
     @ApiModelProperty("表id")
-    private int id;
+    private Integer id;
 
     /**
      * 映射关系中mysql数据库表中编号
      */
     @ApiModelProperty("映射关系中mysql数据库表中编号")
-    private int backendId;
+    private Integer backendId;
 
     /**
      * 映射关系中golden数据库表中id
      */
     @ApiModelProperty("映射关系中golden数据库表中id")
-    private int goldenId;
+    private Integer goldenId;
 
     /**
      * 风机编号
      */
     @ApiModelProperty("风机编号")
-    private int number;
+    private Integer number;
 
     /**
      * 描述信息
