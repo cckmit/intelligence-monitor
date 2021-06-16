@@ -3,6 +3,7 @@ package com.zhikuntech.intellimonitor.fanscada.domain.controller;
 import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
 import com.zhikuntech.intellimonitor.fanscada.domain.service.FanDetailTwoService;
 import com.zhikuntech.intellimonitor.fanscada.domain.vo.FanLeftDataVO;
+import com.zhikuntech.intellimonitor.fanscada.domain.vo.UpsTelemetryStatusVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -25,10 +26,10 @@ public class FanDetailTwoController {
     @Autowired
     private FanDetailTwoService fanDetailTwoService;
 
-    @ApiOperation(value = "分图二#左侧数据")
+    @ApiOperation(value = "分图二数据")
     @ApiImplicitParam(name = "fanId", value = "风机Id", paramType = "Integer", required = true)
     @GetMapping("/leftData/{fanId}")
-    public BaseResponse<FanLeftDataVO> getLeftData(@PathVariable("fanId") Integer fanId) {
-        return fanDetailTwoService.getLeftData(fanId);
+    public BaseResponse<FanLeftDataVO> getData(@PathVariable("fanId") Integer fanId) {
+        return fanDetailTwoService.getData(fanId);
     }
 }

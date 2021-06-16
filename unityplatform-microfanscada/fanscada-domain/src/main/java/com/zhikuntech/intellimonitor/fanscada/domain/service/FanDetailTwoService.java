@@ -3,7 +3,6 @@ package com.zhikuntech.intellimonitor.fanscada.domain.service;
 import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
 import com.zhikuntech.intellimonitor.fanscada.domain.vo.FanLeftDataVO;
 
-import java.util.List;
 
 /**
  * @author: DAI
@@ -17,6 +16,6 @@ public interface FanDetailTwoService {
      * @param fanId 风机Id
      * @return 结果
      */
-    BaseResponse<FanLeftDataVO> getLeftData(Integer fanId);
+    BaseResponse<FanLeftDataVO> getData(Integer fanId);
 
 }
