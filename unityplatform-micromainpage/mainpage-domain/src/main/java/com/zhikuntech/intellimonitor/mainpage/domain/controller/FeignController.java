@@ -1,11 +1,9 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.controller;
 
 import com.rtdb.api.model.ValueData;
-import com.zhikuntech.intellimonitor.mainpage.domain.dto.ActWeatherDataVO;
+import com.zhikuntech.intellimonitor.mainpage.domain.dto.ActWeatherDataDTO;
 import com.zhikuntech.intellimonitor.mainpage.domain.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.golden.InjectPropertiesUtil;
-import com.zhikuntech.intellimonitor.mainpage.domain.utils.BeanConvertUtils;
-import com.zhikuntech.intellimonitor.mainpage.prototype.dto.ActWeatherDataDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +24,9 @@ public class FeignController {
 
     @GetMapping("/getWeatherData")
     public ActWeatherDataDTO getCurrentData() throws Exception {
-        ActWeatherDataVO dto = new ActWeatherDataVO();
+        ActWeatherDataDTO dto = new ActWeatherDataDTO();
         List<ValueData> valueData = goldenUtil.getSnapshots(new int[]{1, 2, 3, 4, 5, 6});
-        ActWeatherDataVO actWeatherDataVO = InjectPropertiesUtil.injectByAnnotation(dto, valueData);
-        return BeanConvertUtils.copyProperties(actWeatherDataVO, ActWeatherDataDTO.class);
+        dto = InjectPropertiesUtil.injectByAnnotation(dto, valueData);
+        return dto;
     }
 }

@@ -11,41 +11,41 @@ import java.math.BigDecimal;
  * @author liukai
  */
 @Data
-public class ActWeatherDataVO {
+public class ActWeatherDataDTO {
 
     /**
      * 风速
      */
     @GoldenId(1)
-    private Double windSpeed;
+    private BigDecimal windSpeed;
 
     /**
      * 高层
      */
     @GoldenId(2)
-    private Double highLevel;
+    private BigDecimal highLevel;
 
     /**
      * 风向
      */
     @GoldenId(3)
-    private Double windDirection;
+    private BigDecimal windDirection;
 
     /**
      * 温度
      */
     @GoldenId(4)
-    private Double temperature;
+    private BigDecimal temperature;
 
     /**
      * 湿度
      */
     @GoldenId(5)
-    private Double humidity;
+    private BigDecimal humidity;
 
     /**
      * 气压
      */
     @GoldenId(6)
-    private Double pressure;
+    private BigDecimal pressure;
 }

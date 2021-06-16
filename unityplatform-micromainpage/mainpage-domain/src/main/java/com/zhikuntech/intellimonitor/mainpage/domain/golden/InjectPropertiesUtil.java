@@ -6,6 +6,7 @@ import com.zhikuntech.intellimonitor.mainpage.domain.golden.annotation.GoldenId;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -67,10 +68,18 @@ public class InjectPropertiesUtil<T> {
                 if (value == valueData.getId()) {
                     try {
                         field.setAccessible(true);
-                        if(valueData.getValue() == 0) {
-                            field.set(t, valueData.getState());
-                        }else {
-                            field.set(t,valueData.getValue());
+                        if (field.getType().equals(BigDecimal.class)) {
+                            if (valueData.getValue() == 0) {
+                                field.set(t, new BigDecimal(valueData.getState()));
+                            } else {
+                                field.set(t, BigDecimal.valueOf(valueData.getValue()));
+                            }
+                        } else {
+                            if (valueData.getValue() == 0) {
+                                field.set(t, valueData.getState());
+                            } else {
+                                field.set(t, valueData.getValue());
+                            }
                         }
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
