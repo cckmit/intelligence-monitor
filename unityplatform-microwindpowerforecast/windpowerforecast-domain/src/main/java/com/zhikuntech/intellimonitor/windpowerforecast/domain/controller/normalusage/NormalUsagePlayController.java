@@ -63,7 +63,7 @@ public class NormalUsagePlayController {
 
 
     @ApiOperation("风玫瑰图-曲线模式查询")
-    @PostMapping("/query-cf-list")
+    @PostMapping("/query-cf-curve")
     public BaseResponse<List<CfCurveDTO>> cfCurveQuery(@RequestBody CfCurvePatternQuery query) {
         List<CfCurveDTO> results = iWfDataCfService.cfCurveQuery(query);
         return BaseResponse.success(results);
