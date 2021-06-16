@@ -14,7 +14,7 @@ import lombok.*;
  * </p>
  *
  * @author liukai
- * @since 2021-06-14
+ * @since 2021-06-16
  */
 @AllArgsConstructor
 @NoArgsConstructor
@@ -102,6 +102,11 @@ public class WfDataNwp implements Serializable {
      * 头部时间
      */
     private LocalDateTime headerDate;
+
+    /**
+     * 计算功率
+     */
+    private BigDecimal calcPower;
 
 
 }

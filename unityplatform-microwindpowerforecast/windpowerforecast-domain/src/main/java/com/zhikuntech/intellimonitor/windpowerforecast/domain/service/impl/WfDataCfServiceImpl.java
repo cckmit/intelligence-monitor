@@ -3,9 +3,11 @@ package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.CfCurveDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.CfListDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataCf;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfDataCfMapper;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.CfCurvePatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.CfListPatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataCfService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -43,6 +46,70 @@ public class WfDataCfServiceImpl extends ServiceImpl<WfDataCfMapper, WfDataCf> i
         return wfDataCfs.stream()
                 .filter(Objects::nonNull).map(WfDataCf::getHighLevel)
                 .filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CfCurveDTO> cfCurveQuery(CfCurvePatternQuery query) {
+        // TODO params check
+        if (Objects.isNull(query)) {
+            return new ArrayList<>();
+        }
+        /*
+
+        待确定问题,正好落在 N/NNE/NE等上面该如何计算 => (前闭后开)
+        待确定夹角问题
+
+        ====>使用前闭合后开的统计方式
+
+        16个方位:
+            N
+            NNE
+            NE
+            ENE
+            E
+            ESE
+            SE
+            SSE
+            S
+            SSW
+            SW
+            WSW
+            W
+            WNW
+            NW
+            NNW
+
+     */
+        QueryWrapper<WfDataCf> queryWrapper = new QueryWrapper<>();
+        String queryMode = query.getQueryMode();
+        String high = query.getHigh();
+        String dateStr = query.getDateStr();
+        queryWrapper.eq("high_level", high);
+        queryWrapper.gt("event_date_time", dateStr + " 00:00:00");
+        queryWrapper.le("event_date_time", dateStr + " 23:59:59");
+
+        List<WfDataCf> wfDataCfs = getBaseMapper().selectList(queryWrapper);
+        if (CollectionUtils.isEmpty(wfDataCfs)) {
+            return new ArrayList<>();
+        }
+
+
+        final List<CfCurveDTO> results = new ArrayList<>();
+
+        final HashMap<String, List<Object>> container = new HashMap<>(16);
+
+        wfDataCfs.stream()
+                .filter(Objects::nonNull)
+                .forEach(item -> {
+
+                });
+
+        container.forEach((k, v) -> {
+            // TODO CALC
+
+        });
+
+        return results;
     }
 
     @Override

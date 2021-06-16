@@ -3,7 +3,9 @@ package com.zhikuntech.intellimonitor.windpowerforecast.domain.controller.normal
 import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.WeatherHighDTO;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.CfCurveDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.CfListDTO;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.CfCurvePatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.CfListPatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataCfService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataNwpService;
@@ -12,6 +14,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 常用展示
@@ -56,36 +60,14 @@ public class NormalUsagePlayController {
 
     //# 实测气象数据 - 风玫瑰图
 
-    /*
-        TODO 风向玫瑰图
-        TODO 风能玫瑰图
-
-        待确定问题,正好落在 N/NNE/NE等上面该如何计算
-        待确定夹角问题
 
 
-        ====>使用前闭合后开的统计方式
-
-        16个方位:
-            N
-            NNE
-            NE
-            ENE
-            E
-            ESE
-            SE
-            SSE
-            S
-            SSW
-            SW
-            WSW
-            W
-            WNW
-            NW
-            NNW
-
-     */
-
+    @ApiOperation("风玫瑰图-曲线模式查询")
+    @PostMapping("/query-cf-list")
+    public BaseResponse<List<CfCurveDTO>> cfCurveQuery(@RequestBody CfCurvePatternQuery query) {
+        List<CfCurveDTO> results = iWfDataCfService.cfCurveQuery(query);
+        return BaseResponse.success(results);
+    }
 
     @ApiOperation("风玫瑰图-列表模式查询")
     @PostMapping("/query-cf-list")

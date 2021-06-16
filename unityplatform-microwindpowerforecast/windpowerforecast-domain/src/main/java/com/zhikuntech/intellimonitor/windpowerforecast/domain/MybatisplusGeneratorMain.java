@@ -70,7 +70,8 @@ public class MybatisplusGeneratorMain {
         final PackageConfig pc = new PackageConfig();
 //        pc.setModuleName("testuu");
         pc.setParent("com.zhikuntech.intellimonitor.windpowerforecast.domain");
-        pc.setXml("com/zhikuntech/intellimonitor/fanscada/domain/mapper");
+        pc.setXml("mapper");
+//        pc.setXml("com/zhikuntech/intellimonitor/fanscada/domain/mapper");
         mpg.setPackageInfo(pc);
 
 
@@ -88,7 +89,8 @@ public class MybatisplusGeneratorMain {
             @Override
             public String outputFile(TableInfo tableInfo) {
 
-                String outP = projectPath + "/mybatis-plus-generator/src/main/resources/com.zhikuntech.intellimonitor.fanscada.domain.mapper/"
+//                String outP = projectPath + "/mybatis-plus-generator/src/main/resources/com.zhikuntech.intellimonitor.fanscada.domain.mapper/"
+                String outP = projectPath + "/mybatis-plus-generator/src/main/resources/mapper/"
                         + pc.getModuleName()
                         + "/"
                         + tableInfo.getEntityName()
@@ -96,7 +98,8 @@ public class MybatisplusGeneratorMain {
                         + StringPool.DOT_XML
                         ;
 
-                outP = projectPath + "/unityplatform-microwindpowerforecast/windpowerforecast-domain/src/main/resources/com.zhikuntech.intellimonitor.fanscada.domain.mapper/"
+//                outP = projectPath + "/unityplatform-microwindpowerforecast/windpowerforecast-domain/src/main/resources/com.zhikuntech.intellimonitor.fanscada.domain.mapper/"
+                outP = projectPath + "/unityplatform-microwindpowerforecast/windpowerforecast-domain/src/main/resources/mapper/"
                         + pc.getModuleName()
                         + "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
                 return outP;
@@ -131,7 +134,7 @@ public class MybatisplusGeneratorMain {
         strategy.setRestControllerStyle(true);
 
         //- 表名称
-        strategy.setInclude("wf_analyse_dq");
+        strategy.setInclude("wf_basic_mapping");
         strategy.setControllerMappingHyphenStyle(true);
 
         mpg.setStrategy(strategy);
