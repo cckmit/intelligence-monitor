@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfAnalyseCdqMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfAnalyseCdq">
+        <id column="id" property="id" />
+        <result column="newest" property="newest" />
+        <result column="calc_date" property="calcDate" />
+        <result column="avg_rmse" property="avgRmse" />
+        <result column="avg_mae" property="avgMae" />
+        <result column="biggest_diff" property="biggestDiff" />
+        <result column="about_r" property="aboutR" />
+        <result column="r1_ratio" property="r1Ratio" />
+        <result column="r2_ratio" property="r2Ratio" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, newest, calc_date, avg_rmse, avg_mae, biggest_diff, about_r, r1_ratio, r2_ratio
+    </sql>
+
+</mapper>

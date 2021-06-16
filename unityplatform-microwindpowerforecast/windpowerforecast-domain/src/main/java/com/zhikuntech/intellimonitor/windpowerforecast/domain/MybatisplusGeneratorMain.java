@@ -131,7 +131,7 @@ public class MybatisplusGeneratorMain {
         strategy.setRestControllerStyle(true);
 
         //- 表名称
-        strategy.setInclude("wf_data_zr");
+        strategy.setInclude("wf_analyse_dq");
         strategy.setControllerMappingHyphenStyle(true);
 
         mpg.setStrategy(strategy);

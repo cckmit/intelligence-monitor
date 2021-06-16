@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataNwp;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfDataCfMapper;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfDataNwpMapper;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.NwpBodyParse;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.NwpHeaderParse;
@@ -15,7 +16,9 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -36,6 +39,9 @@ import static com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.Parse
 @Service
 public class WfDataNwpServiceImpl extends ServiceImpl<WfDataNwpMapper, WfDataNwp> implements IWfDataNwpService {
 
+    @Resource
+    private WfDataCfMapper wfDataCfMapper;
+
 
     @Override
     public List<WfDataNwp> queryBatch() {
@@ -50,6 +56,13 @@ public class WfDataNwpServiceImpl extends ServiceImpl<WfDataNwpMapper, WfDataNwp
 
 
         return wfDataNwps;
+    }
+
+    @Override
+    public List<BigDecimal> queryHigh() {
+        // TODO 查询高度
+
+        return null;
     }
 
     @Override

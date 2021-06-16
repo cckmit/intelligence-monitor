@@ -4,6 +4,8 @@ import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.WeatherHighDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +21,10 @@ import java.util.Arrays;
 @Api(tags = "常用展示")
 @RestController
 @RequestMapping("/normal-usage-play")
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class NormalUsagePlayController {
+
+
 
 
     // TODO 查询实测气象高度, 预测气象高度
@@ -41,7 +46,7 @@ public class NormalUsagePlayController {
                 数字天气预报
                 实测气象
 
-        TODO 曲线展示（曲线模式）-> 数据是否一致
+        TODO 曲线展示（曲线模式）-> 数据是否一致 (已确认, 数据一致)
 
 
         TODO 日发电量计算
