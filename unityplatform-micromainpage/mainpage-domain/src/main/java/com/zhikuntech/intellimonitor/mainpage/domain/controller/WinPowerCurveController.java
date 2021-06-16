@@ -2,6 +2,7 @@ package com.zhikuntech.intellimonitor.mainpage.domain.controller;
 
 import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
 import com.zhikuntech.intellimonitor.mainpage.domain.service.WinPowerCurveService;
+import com.zhikuntech.intellimonitor.mainpage.domain.vo.TimePowerVO;
 import com.zhikuntech.intellimonitor.mainpage.domain.vo.WindPowerCurveVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @Author 杨锦程
@@ -46,4 +49,18 @@ public class WinPowerCurveController {
         boolean result = winPowerCurveService.subscribeWindPowerCurve(username);
         return BaseResponse.success(result);
     }
+
+//    @GetMapping("/getShortTermForecastPower")
+//    @ApiOperation("获取短期预测功率")
+//    public BaseResponse getShortTermForecastPower(){
+//        List<TimePowerVO> shortTermForecastPowerList = winPowerCurveService.getShortTermForecastPower();
+//        return BaseResponse.success(shortTermForecastPowerList);
+//    }
+//
+//    @GetMapping("/getSupShortTermForecastPower")
+//    @ApiOperation("获取超短期预测功率")
+//    public BaseResponse getSupShortTermForecastPower(){
+//        List<TimePowerVO> supShortTermForecastPowerList = winPowerCurveService.getSupShortTermForecastPower();
+//        return BaseResponse.success(supShortTermForecastPowerList);
+//    }
 }
