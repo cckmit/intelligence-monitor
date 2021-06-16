@@ -59,6 +59,8 @@ public class NormalUsagePlayController {
         待确定夹角问题
 
 
+        ====>使用前闭合后开的统计方式
+
         16个方位:
             N
             NNE
@@ -88,6 +90,8 @@ public class NormalUsagePlayController {
             参数: 时间  高度
 
      */
+
+
 
 
     //# 实测气象数据
