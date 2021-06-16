@@ -1,8 +1,8 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.controller;
 
 import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
-import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanRuntimeDto;
-import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanStatisticsDto;
+import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanRuntimeDTO;
+import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanStatisticsDTO;
 import com.zhikuntech.intellimonitor.mainpage.domain.service.FanInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,7 +30,7 @@ public class FanInfoController {
 
     @GetMapping("/getRuntimeInfo")
     @ApiOperation("获取当前最新风机运行时数据")
-    public BaseResponse<List<FanRuntimeDto>> getRuntimeInfos() throws Exception {
+    public BaseResponse<List<FanRuntimeDTO>> getRuntimeInfos() throws Exception {
         log.info("/getRuntimeInfo");
         return BaseResponse.success(fanInfoService.getRuntimeInfos());
     }
@@ -44,8 +44,8 @@ public class FanInfoController {
 
     @GetMapping("/getStatistics")
     @ApiOperation("获取当前最新风场统计数据")
-    public BaseResponse<FanStatisticsDto> getStatistics() throws Exception {
-        return BaseResponse.success(new FanStatisticsDto());
+    public BaseResponse<FanStatisticsDTO> getStatistics() throws Exception {
+        return BaseResponse.success(fanInfoService.getStatistics());
     }
 
     @GetMapping("/getStatistics/{username}")

@@ -1,7 +1,7 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.service;
 
-import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanRuntimeDto;
-import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanStatisticsDto;
+import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanRuntimeDTO;
+import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanStatisticsDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +18,7 @@ public interface FanInfoService {
      *
      * @return 全风场风机实时数据
      */
-    List<FanRuntimeDto> getRuntimeInfos() throws Exception;
+    List<FanRuntimeDTO> getRuntimeInfos() throws Exception;
 
     /**
      * 通过websocket直接返回前端
@@ -32,7 +32,7 @@ public interface FanInfoService {
      *
      * @return 风场发电情况
      */
-    FanStatisticsDto getStatistics() throws Exception;
+    FanStatisticsDTO getStatistics() throws Exception;
 
     /**
      * 通过websocket直接返回前端

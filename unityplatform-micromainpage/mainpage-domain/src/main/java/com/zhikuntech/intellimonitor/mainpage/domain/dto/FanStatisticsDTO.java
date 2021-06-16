@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-public class FanStatisticsDto {
+public class FanStatisticsDTO {
 
     /**
      * 风机台数
