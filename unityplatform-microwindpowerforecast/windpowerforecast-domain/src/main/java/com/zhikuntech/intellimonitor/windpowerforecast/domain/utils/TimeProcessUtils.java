@@ -1,6 +1,7 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.utils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -26,6 +27,21 @@ public class TimeProcessUtils {
         return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
     }
 
+    public static String formatLocalDateTimeWithSecondPattern(LocalDateTime localDateTime) {
+        return DateFormatUtils.format(localDateTimeToMilli(localDateTime), PATTERN_0);
+    }
+
+    public static String formatLocalDateTimeWithMinutePattern(LocalDateTime localDateTime) {
+        return DateFormatUtils.format(localDateTimeToMilli(localDateTime), PATTERN_1);
+    }
+
+    public static LocalDateTime parseLocalDateTimeWithSecondPattern(String dateStr) {
+        return LocalDateTime.parse(dateStr, FORMAT_0);
+    }
+
+    public static LocalDateTime parseLocalDateTimeWithMinutePattern(String dateStr) {
+        return LocalDateTime.parse(dateStr, FORMAT_1);
+    }
 
     public static LocalDateTime parseHeaderByPatternOrExcept(String dtStr) {
         if (StringUtils.isBlank(dtStr)) {
