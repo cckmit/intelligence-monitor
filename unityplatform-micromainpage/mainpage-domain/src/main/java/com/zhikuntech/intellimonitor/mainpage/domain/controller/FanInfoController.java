@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -53,5 +54,12 @@ public class FanInfoController {
     public void getStatistics(@PathVariable String username) throws Exception {
         log.info("/getStatistics"+username);
         fanInfoService.getStatistics(username);
+    }
+
+    @GetMapping("/export")
+    @ApiOperation("导出当前最新风机运行时数据")
+    public void export(HttpServletResponse response) throws Exception {
+        log.info("export");
+        fanInfoService.export(response);
     }
 }

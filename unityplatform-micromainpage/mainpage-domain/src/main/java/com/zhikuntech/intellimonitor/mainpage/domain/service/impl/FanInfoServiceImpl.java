@@ -7,12 +7,15 @@ import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanStatisticsDTO;
 import com.zhikuntech.intellimonitor.mainpage.domain.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.golden.InjectPropertiesUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.service.FanInfoService;
+import com.zhikuntech.intellimonitor.mainpage.domain.utils.EasyExcelUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.utils.RedisUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +48,11 @@ public class FanInfoServiceImpl implements FanInfoService {
             FanRuntimeDTO dto = InjectPropertiesUtil.injectByAnnotation(fanRuntimeDto, valueData);
             list.add(dto);
         }
+        for (FanRuntimeDTO dto : list) {
+            Object obj = redisUtil.get("powerGeneration_day_"+dto.getNumber());
+            double powerGeneration = null == obj ? 0 : (double) obj;
+            dto.setMonthlyPowerGeneration(dto.getMonthlyPowerGeneration() - powerGeneration);
+        }
         return InjectPropertiesUtil.injectByAnnotation(list, valueData);
     }
 
@@ -65,7 +73,7 @@ public class FanInfoServiceImpl implements FanInfoService {
                     }
                     List<FanRuntimeDTO> dtos = InjectPropertiesUtil.injectByAnnotation(list, data);
                     if (null != dtos) {
-                        Object obj = redisUtil.get("powerGeneration");
+                        Object obj = redisUtil.get("powerGeneration_month");
                         double powerGeneration = null == obj ? 0 : (double) obj;
                         for (FanRuntimeDTO dto : dtos) {
                             dto.setMonthlyPowerGeneration(dto.getMonthlyPowerGeneration() - powerGeneration);
@@ -123,5 +131,46 @@ public class FanInfoServiceImpl implements FanInfoService {
                 }
             });
         }
+    }
+
+    @Override
+    public void export(HttpServletResponse response) throws Exception {
+        int[] ids = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+        List<FanRuntimeDTO> list = new ArrayList<>();
+        List<ValueData> valueData = goldenUtil.getSnapshots(ids);
+        for (int i = 1; i <= 10; i++) {
+            FanRuntimeDTO fanRuntimeDto = new FanRuntimeDTO();
+            fanRuntimeDto.setNumber(i);
+            FanRuntimeDTO dto = InjectPropertiesUtil.injectByAnnotation(fanRuntimeDto, valueData);
+            list.add(dto);
+        }
+        response.setHeader("Content-disposition", "filename=" + URLEncoder.encode("风机列表", "UTF-8") + ".xlsx");
+        EasyExcelUtil.export(response.getOutputStream(),"风机列表",list);
+    }
+
+    private void injecctPorerties(List<FanStatisticsDTO> dtos) {
+        Object obj1 = redisUtil.get("powerGeneration_day");
+        double dailyPowerGeneration = null == obj1 ? 0 : (double) obj1;
+        Object obj2 = redisUtil.get("powerGeneration_month");
+        double monthlyPowerGeneration = null == obj2 ? 0 : (double) obj2;
+        Object obj3 = redisUtil.get("powerGeneration_year");
+        double annualPowerGeneration = null == obj3 ? 0 : (double) obj3;
+        Object obj4 = redisUtil.get("onLinePower_day");
+        double dailyOnlinePower = null == obj4 ? 0 : (double) obj4;
+        Object obj5 = redisUtil.get("onLinePower_month");
+        double monthlyOnlinePower = null == obj5 ? 0 : (double) obj5;
+        Object obj6 = redisUtil.get("onLinePower_year");
+        double annualOnlinePower = null == obj6 ? 0 : (double) obj6;
+        dtos.stream().parallel().forEach(e->{
+            e.setDailyOnlinePower(e.getReverseActivePower() - dailyOnlinePower);
+            e.setMonthlyOnlinePower(e.getReverseActivePower() - monthlyOnlinePower);
+            e.setAnnualOnlinePower(e.getReverseActivePower() - annualOnlinePower);
+            e.setDailyPowerGeneration(e.getEnergyOutput() - dailyPowerGeneration);
+            e.setMonthlyPowerGeneration(e.getEnergyOutput() - monthlyPowerGeneration);
+            e.setAnnualPowerGeneration(e.getEnergyOutput() - annualPowerGeneration);
+        });
+//        dtos.stream().parallel().map(dto->{
+//            dto.
+//        })
     }
 }

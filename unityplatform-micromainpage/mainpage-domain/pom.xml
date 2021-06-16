@@ -85,6 +85,12 @@
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
         </dependency>
+        <!--easy-excel导入导出-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>2.1.1</version>
+        </dependency>
         <!--引入core模块-->
         <dependency>
             <groupId>com.zhikuntech.intellimonitor</groupId>

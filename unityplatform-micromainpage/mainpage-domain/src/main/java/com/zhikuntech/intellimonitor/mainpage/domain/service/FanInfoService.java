@@ -4,6 +4,7 @@ import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanRuntimeDTO;
 import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanStatisticsDTO;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ public interface FanInfoService {
      *
      * @param username 用户名,用于区分客户端
      */
-     void getRuntimeInfos(String username)throws Exception;
+    void getRuntimeInfos(String username) throws Exception;
 
     /**
      * 获取风场发电情况
@@ -40,5 +41,11 @@ public interface FanInfoService {
      * @param username 用户名,用于区分客户端
      */
     void getStatistics(String username) throws Exception;
+
+    /**
+     * 导出风机列表
+     * @throws Exception
+     */
+    void export(HttpServletResponse response) throws Exception;
 
 }

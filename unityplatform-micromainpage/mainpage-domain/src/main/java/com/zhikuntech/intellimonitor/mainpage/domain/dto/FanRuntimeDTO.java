@@ -1,6 +1,6 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zhikuntech.intellimonitor.mainpage.domain.golden.annotation.GoldenId;
 import io.swagger.annotations.ApiModel;
@@ -18,13 +18,11 @@ import lombok.experimental.Accessors;
 @ApiModel("首页风机运行实时数据")
 public class FanRuntimeDTO {
 
-    @JsonIgnore
-    private Integer id;
-
     /**
      * 风机编号
      */
     @ApiModelProperty("风机编号")
+    @ExcelProperty(value = "风机编号", index = 0)
     private Integer number;
 
     /**
@@ -32,72 +30,47 @@ public class FanRuntimeDTO {
      */
     @GoldenId(value = 1)
     @ApiModelProperty("风速")
+    @ExcelProperty(value = "风速(m/s)", index = 1)
     private Double windVelocity;
-
-    /**
-     * 风向
-     */
-    @JsonIgnore
-    private Double windDirection;
-
-    /**
-     * 功率因数
-     */
-    @JsonIgnore
-    private Double powerFactor;
 
     /**
      * 有功功率
      */
     @GoldenId(value = 2)
     @ApiModelProperty("有功功率")
+    @ExcelProperty(value = "功率(kW)", index = 2)
     private Double activePower;
-
-    /**
-     * 无功功率
-     */
-    @JsonIgnore
-    private Double reactivePower;
 
     /**
      * 发电机转速
      */
     @GoldenId(value = 3)
     @ApiModelProperty("发电机转速")
+    @ExcelProperty(value = "发电机转速(rpm)", index = 3)
     private Double generatorRate;
-
-    /**
-     * 频率
-     */
-    @JsonIgnore
-    private Double frequency;
 
     /**
      * 月发电量
      */
     @GoldenId(value = 4)
     @ApiModelProperty("月发电量")
+    @ExcelProperty(value = "月总发电量(万kW)", index = 4)
     private Double monthlyPowerGeneration;
 
     /**
-     * 运行状态
+     * 环境温度
      */
-    @GoldenId(value = 12)
-    @ApiModelProperty("运行状态")
-    private Long runningStatus;
-
-    /**
-     * 故障代码
-     */
-    @GoldenId(value = 11)
-    @ApiModelProperty("故障代码")
-    private Long errorCode;
+    @GoldenId(value = 5)
+    @ApiModelProperty("月发电量")
+    @ExcelProperty(value = "月总发电量(万kW)", index = 5)
+    private Double ambientTemp;
 
     /**
      * 前轴承温度
      */
     @GoldenId(value = 6)
     @ApiModelProperty("前轴承温度")
+    @ExcelProperty(value = "前轴承温度", index = 6)
     private Double frontBearingTemp;
 
     /**
@@ -105,128 +78,46 @@ public class FanRuntimeDTO {
      */
     @GoldenId(value = 7)
     @ApiModelProperty("后轴承温度")
+    @ExcelProperty(value = "后轴承温度", index = 7)
     private Double rearBearingTemp;
-
-    /**
-     * 变压器油温
-     */
-    @GoldenId(value = 10)
-    @ApiModelProperty("变压器油温")
-    private Double transformerOilTemp;
-
-    /**
-     * 变压器室温
-     */
-    @GoldenId(value = 9)
-    @ApiModelProperty("机舱温度")
-    private Double transformerTemp;
-
-    /**
-     * 浆距角A
-     */
-    @JsonIgnore
-    private Double angelA;
-
-    /**
-     * 浆距角B
-     */
-    @JsonIgnore
-    private Double angelB;
-
-    /**
-     * 浆距角C
-     */
-    @JsonIgnore
-    private Double angelC;
-
-    /**
-     * U相电流
-     */
-    @JsonIgnore
-    private Double iu;
-
-    /**
-     * V相电流
-     */
-    @JsonIgnore
-    private Double iv;
-
-    /**
-     * W相电流
-     */
-    @JsonIgnore
-    private Double iw;
-
-    /**
-     * U相电压
-     */
-    @JsonIgnore
-    private Double uu;
-
-    /**
-     * V相电压
-     */
-    @JsonIgnore
-    private Double uv;
-
-    /**
-     * W相电压
-     */
-    @JsonIgnore
-    private Double uw;
-    /**
-     * 变频器冷却水温度
-     */
-    @JsonIgnore
-    private Double inverterWaterTemp;
-
-    /**
-     * 轮毂温度
-     */
-    @JsonIgnore
-    private Double hubTemp;
-
-    /**
-     * 轮毂主轴承温度
-     */
-    @JsonIgnore
-    private Double hubBearingTemp;
-
-    /**
-     * 液压油温
-     */
-    @JsonIgnore
-    private Double hydraulicOilTemp;
-
-    /**
-     * 高速轴驱动温度
-     */
-    @JsonIgnore
-    private Double highShaftDriveTemp;
-
-    /**
-     * 低速轴驱动温度
-     */
-    @JsonIgnore
-    private Double lowShaftDriveTemp;
 
     /**
      * 齿轮主轴承温度
      */
     @GoldenId(value = 8)
     @ApiModelProperty("齿轮主轴承温度")
+    @ExcelProperty(value = "齿轮轴承温度", index = 8)
     private Double gearBearingTemp;
 
     /**
-     * IMS靠近风轮轴承温度
+     * 变压器室温
      */
-    @JsonIgnore
-    private Double imsBearingTemp;
+    @GoldenId(value = 9)
+    @ApiModelProperty("机舱温度")
+    @ExcelProperty(value = "机舱温度", index = 9)
+    private Double transformerTemp;
 
     /**
-     * 液压站压力
+     * 变压器油温
      */
-    @JsonIgnore
-    private Double hydraulicStationPressure;
+    @GoldenId(value = 10)
+    @ApiModelProperty("变压器油温")
+    @ExcelProperty(value = "变压器油温", index = 10)
+    private Double transformerOilTemp;
 
+    /**
+     * 故障代码
+     */
+    @GoldenId(value = 11)
+    @ApiModelProperty("故障代码")
+    @ExcelProperty(value = "故障代码", index = 11)
+    private Long errorCode;
+
+    /**
+     * 运行状态
+     */
+    @GoldenId(value = 12)
+    @ApiModelProperty("运行状态")
+    @ExcelProperty(value = "运行状态", index = 12)
+    private Long runningStatus;
 }
