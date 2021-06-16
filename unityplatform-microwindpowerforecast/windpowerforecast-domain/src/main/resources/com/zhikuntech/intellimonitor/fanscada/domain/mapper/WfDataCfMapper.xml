@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfDataNwpMapper">
+<!DOCTYPE com.zhikuntech.intellimonitor.fanscada.domain.mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-com.zhikuntech.intellimonitor.fanscada.domain.mapper.dtd">
+<com.zhikuntech.intellimonitor.fanscada.domain.mapper namespace="com.zhikuntech.intellimonitor.windpowerforecast.domain.com.zhikuntech.intellimonitor.fanscada.domain.mapper.WfDataCfMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataNwp">
+    <resultMap id="BaseResultMap" type="com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataCf">
         <id column="id" property="id" />
         <result column="org_id" property="orgId" />
         <result column="order_num" property="orderNum" />
@@ -20,11 +20,14 @@
         <result column="coordinates" property="coordinates" />
         <result column="turbine_high" property="turbineHigh" />
         <result column="header_date" property="headerDate" />
+        <result column="status" property="status" />
+        <result column="fetch_time" property="fetchTime" />
+        <result column="fail_msg" property="failMsg" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, org_id, order_num, station_number, body_time, event_date_time, wind_speed, high_level, wind_direction, temperature, humidity, pressure, create_time, coordinates, turbine_high, header_date
+        id, org_id, order_num, station_number, body_time, event_date_time, wind_speed, high_level, wind_direction, temperature, humidity, pressure, create_time, coordinates, turbine_high, header_date, status, fetch_time, fail_msg
     </sql>
 
-</mapper>
+</com.zhikuntech.intellimonitor.fanscada.domain.mapper>

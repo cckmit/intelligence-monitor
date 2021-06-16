@@ -1,10 +1,10 @@
 package com.zhikuntech.intellimonitor.fanscada.domain.service.impl;
 
 
+import com.zhikuntech.intellimonitor.fanscada.domain.mapper.BackendToGoldenMapper;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGoldenQuery;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGoldenQueryList;
 import com.zhikuntech.intellimonitor.fanscada.domain.service.BackendToGoldenService;
-import mapper.BackendToGoldenMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +18,7 @@ import java.util.List;
  */
 @Service
 public class BackendToGoldenServiceImpl implements BackendToGoldenService {
+
     @Autowired
     private BackendToGoldenMapper backendToGoldenMapper;
 

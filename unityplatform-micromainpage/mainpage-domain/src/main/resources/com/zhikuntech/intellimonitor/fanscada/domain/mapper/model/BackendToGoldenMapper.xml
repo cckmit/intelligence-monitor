@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zhikuntech.intellimonitor.mainpage.domain.mapper.model.BackendToGoldenMapper">
+<!DOCTYPE com.zhikuntech.intellimonitor.fanscada.domain.mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-com.zhikuntech.intellimonitor.fanscada.domain.mapper.dtd">
+<com.zhikuntech.intellimonitor.fanscada.domain.mapper namespace="com.zhikuntech.intellimonitor.mainpage.domain.com.zhikuntech.intellimonitor.fanscada.domain.mapper.model.BackendToGoldenMapper">
     <resultMap id="backendToGoldenResultMap" type="com.zhikuntech.intellimonitor.mainpage.domain.model.BackendToGolden">
         <id property="id" column="id"/>
         <result property="backendId" column="backendId"/>
@@ -51,4 +51,4 @@
     </select>
 
 
-</mapper>
+</com.zhikuntech.intellimonitor.fanscada.domain.mapper>

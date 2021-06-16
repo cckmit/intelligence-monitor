@@ -13,7 +13,7 @@ spring:
     port: 6379
 
 mybatis:
-  mapper-locations: classpath:mapper/**/*.xml
+  mapper-locations: classpath:com.zhikuntech.intellimonitor.fanscada.domain.mapper/**/*.xml
   type-aliases-package: com.zhikuntech.intellimonitor.mainpage.domain.model.*,com.zhikuntech.intellimonitor.mainpage.domain.po.*
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

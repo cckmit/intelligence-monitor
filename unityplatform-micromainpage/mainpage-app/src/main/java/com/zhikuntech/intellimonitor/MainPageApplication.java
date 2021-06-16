@@ -11,7 +11,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
  */
 @SpringBootApplication
 @EnableEurekaClient
-@MapperScan("com.zhikuntech.intellimonitor.mainpage.domain.mapper")
+@MapperScan("com.zhikuntech.intellimonitor.mainpage.domain.com.zhikuntech.intellimonitor.fanscada.domain.mapper")
 public class MainPageApplication {
     public static void main(String[] args) {
         SpringApplication.run(MainPageApplication.class, args);

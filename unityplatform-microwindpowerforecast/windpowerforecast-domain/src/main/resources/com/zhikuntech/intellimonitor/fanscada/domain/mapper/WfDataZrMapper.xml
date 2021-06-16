@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfDataZrMapper">
+<!DOCTYPE com.zhikuntech.intellimonitor.fanscada.domain.mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-com.zhikuntech.intellimonitor.fanscada.domain.mapper.dtd">
+<com.zhikuntech.intellimonitor.fanscada.domain.mapper namespace="com.zhikuntech.intellimonitor.windpowerforecast.domain.com.zhikuntech.intellimonitor.fanscada.domain.mapper.WfDataZrMapper">
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataZr">
@@ -27,4 +27,4 @@
         id, org_id, order_num, station_number, event_date_time, actual_produce, machine_capacity, create_time, sample_ids, sample_cap, cap, body_time, row_raw_data, status, fetch_time, fail_msg
     </sql>
 
-</mapper>
+</com.zhikuntech.intellimonitor.fanscada.domain.mapper>
