@@ -1,9 +1,7 @@
 package com.zhikuntech.intellimonitor.fanscada.domain.vo;
 
-import com.zhikuntech.intellimonitor.fanscada.domain.golden.annotation.GoldenId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import javafx.beans.NamedArg;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
