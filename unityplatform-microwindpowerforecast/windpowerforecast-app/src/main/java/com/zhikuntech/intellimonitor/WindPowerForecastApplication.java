@@ -11,7 +11,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  *
  * @author liukai
  */
-@MapperScan({"com.zhikuntech.intellimonitor.windpowerforecast.domain.com.zhikuntech.intellimonitor.fanscada.domain.mapper"})
+@MapperScan({"com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper"})
 @EnableFeignClients
 @EnableEurekaClient
 @SpringBootApplication
