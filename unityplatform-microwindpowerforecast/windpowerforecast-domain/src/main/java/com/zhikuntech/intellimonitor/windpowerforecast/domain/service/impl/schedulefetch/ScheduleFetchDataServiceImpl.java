@@ -93,13 +93,13 @@ public class ScheduleFetchDataServiceImpl implements ScheduleFetchDataService {
 
     //# cron -> 定时任务, 1min/次
 
-    @Scheduled(cron = "0 * * * * ?")
+    @Scheduled(cron = "30 * * * * ?")
     public void scheduleGenPower() {
         log.info("schedule method: [{}]", "scheduleGenPower");
         scheduleFetchActPower();
     }
 
-    @Scheduled(cron = "0 * * * * ?")
+    @Scheduled(cron = "30 * * * * ?")
     public void scheduleGenWeather() {
         log.info("schedule method: [{}]", "scheduleGenWeather");
         scheduleFetchActWeather();

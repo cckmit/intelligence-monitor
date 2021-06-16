@@ -1,5 +1,8 @@
 package com.zhikuntech.intellimonitor.core.commons.base;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -9,6 +12,18 @@ import java.util.List;
  * 用于传输后端进行分页的列表数据。
  */
 public class Pager<T> implements Serializable {
+
+    /**
+     * 总页数
+     */
+    @Getter@Setter
+    private Integer totalPage;
+
+    /**
+     * 当前页数量
+     */
+    @Getter@Setter
+    private Integer pageSize;
 
     /**
      * 总记录数。
