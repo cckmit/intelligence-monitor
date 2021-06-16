@@ -15,9 +15,11 @@ import java.util.List;
 @Slf4j
 public class InjectPropertiesUtil<T> {
     public static <T> T injectByAnnotation(T t, RtdbData[] data) {
+
         Field[] fields = t.getClass().getDeclaredFields();
         for (Field field : fields) {
             GoldenId goldenId = field.getDeclaredAnnotation(GoldenId.class);
+
             int value = null == goldenId ? 0 : goldenId.value();
             for (RtdbData rtdbData : data) {
                 if (value == rtdbData.getId()) {
