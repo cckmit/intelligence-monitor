@@ -12,15 +12,14 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataCfService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.calc.CalcUtils;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.calc.DirectionUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.math.RoundingMode;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -34,6 +33,9 @@ import java.util.stream.Collectors;
 @Service
 public class WfDataCfServiceImpl extends ServiceImpl<WfDataCfMapper, WfDataCf> implements IWfDataCfService {
 
+
+    public static final BigDecimal ZERO_DECIMAL = new BigDecimal("0");
+    public static final BigDecimal DECIMAL_100 = new BigDecimal("100");
 
     @Override
     public List<BigDecimal> queryHigh() {
@@ -54,32 +56,8 @@ public class WfDataCfServiceImpl extends ServiceImpl<WfDataCfMapper, WfDataCf> i
         if (Objects.isNull(query)) {
             return new ArrayList<>();
         }
-        /*
 
-        待确定问题,正好落在 N/NNE/NE等上面该如何计算 => (前闭后开)
-        待确定夹角问题
-
-        ====>使用前闭合后开的统计方式
-
-        16个方位:
-            N
-            NNE
-            NE
-            ENE
-            E
-            ESE
-            SE
-            SSE
-            S
-            SSW
-            SW
-            WSW
-            W
-            WNW
-            NW
-            NNW
-
-     */
+        // 查询
         QueryWrapper<WfDataCf> queryWrapper = new QueryWrapper<>();
         String queryMode = query.getQueryMode();
         String high = query.getHigh();
@@ -93,20 +71,63 @@ public class WfDataCfServiceImpl extends ServiceImpl<WfDataCfMapper, WfDataCf> i
             return new ArrayList<>();
         }
 
-
-        final List<CfCurveDTO> results = new ArrayList<>();
-
-        final HashMap<String, List<Object>> container = new HashMap<>(16);
+        // 收集方位
+        final HashMap<String, List<WfDataCf>> container = new HashMap<>(16);
 
         wfDataCfs.stream()
                 .filter(Objects::nonNull)
                 .forEach(item -> {
-
+                    BigDecimal windDirection = item.getWindDirection();
+                    String drc = DirectionUtils.locateDirection(windDirection);
+                    if (Objects.isNull(drc)) {
+                        return;
+                    }
+                    // 判断方向
+                    List<WfDataCf> tmp = container.get(drc);
+                    if (CollectionUtils.isEmpty(tmp)) {
+                        tmp = new ArrayList<>();
+                        container.put(drc, tmp);
+                    }
+                    tmp.add(item);
                 });
+
+        final List<CfCurveDTO> results = new ArrayList<>();
+
+        Collection<List<WfDataCf>> values = container.values();
+        if (CollectionUtils.isEmpty(values)) {
+            return results;
+        }
+        List<WfDataCf> allValueData = values.stream().filter(Objects::nonNull).flatMap(Collection::stream).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(allValueData)) {
+            return results;
+        }
+        final int allSize = allValueData.size();
+        final BigDecimal decimalAllSize = BigDecimal.valueOf(allSize);
+        BigDecimal allPower = allValueData.stream().filter(Objects::nonNull).map(WfDataCf::getCalcPower).filter(Objects::nonNull)
+                .reduce(ZERO_DECIMAL, BigDecimal::add);
 
         container.forEach((k, v) -> {
             // TODO CALC
+            assert CollectionUtils.isNotEmpty(v);
+            int num = v.size();
+            BigDecimal rangePower = v.stream().filter(Objects::nonNull).map(WfDataCf::getCalcPower).filter(Objects::nonNull)
+                    .reduce(ZERO_DECIMAL, BigDecimal::add);
+            BigDecimal numRatio = BigDecimal.valueOf(num).divide(decimalAllSize, 4, RoundingMode.HALF_UP)
+                    .multiply(DECIMAL_100).setScale(2, RoundingMode.HALF_UP);
 
+            BigDecimal powerRatio = null;
+            if (allPower.compareTo(ZERO_DECIMAL) > 0) {
+                powerRatio = rangePower.divide(allPower, 4, RoundingMode.HALF_UP)
+                        .multiply(DECIMAL_100).setScale(2, RoundingMode.HALF_UP);
+            }
+            CfCurveDTO cfCurveDTO = CfCurveDTO.builder()
+                    .directionName(k)
+                    .num(num)
+                    .numRatio(numRatio)
+                    .calcPower(rangePower)
+                    .calcPowerRatio(powerRatio)
+                    .build();
+            results.add(cfCurveDTO);
         });
 
         return results;
