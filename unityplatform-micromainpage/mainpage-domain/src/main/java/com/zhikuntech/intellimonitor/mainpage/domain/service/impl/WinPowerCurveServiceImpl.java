@@ -45,7 +45,8 @@ public class WinPowerCurveServiceImpl implements WinPowerCurveService {
         WindPowerCurveVO windPowerCurveVO = new WindPowerCurveVO();
         int count = 24 * 4;
         Random random = new Random();
-        Double d = random.nextDouble() * 100 + 20;  //指定范围
+        Double d = random.nextDouble() * 100 + 20;
+        //指定范围
         //保留位数
         NumberFormat nf = NumberFormat.getNumberInstance();
         nf.setMaximumFractionDigits(2);
