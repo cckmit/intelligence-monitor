@@ -16,9 +16,6 @@ import java.util.List;
  * @create 2021/6/11 16:24
  **/
 public class demo {
-
-
-
     public static void main(String[] args) {
         GoldenUtil goldenUtil = new GoldenUtil();
 
@@ -30,7 +27,6 @@ public class demo {
             FanBaseInfo fanBaseInfo1 = InjectPropertiesUtil.injectByAnnotationDoubleToBigDecimal(new FanBaseInfo(), snapshots);
 
             System.out.println(fanBaseInfo1);
-
 
         } catch (Exception e) {
             e.printStackTrace();

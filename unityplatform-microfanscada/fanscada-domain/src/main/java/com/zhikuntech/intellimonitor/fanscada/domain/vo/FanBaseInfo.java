@@ -40,4 +40,7 @@ public class FanBaseInfo {
     @GoldenId(value = 23)
     @ApiModelProperty("无功功率")
     private BigDecimal reactivePower;
+
+    @ApiModelProperty("状态")
+    private String fanStatus;
 }

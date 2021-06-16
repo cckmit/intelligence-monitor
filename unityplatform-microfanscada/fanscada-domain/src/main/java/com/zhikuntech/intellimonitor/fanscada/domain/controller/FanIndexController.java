@@ -7,6 +7,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,11 +26,19 @@ public class FanIndexController {
     @Autowired
     private FanIndexService fanIndexService;
 
-    @ApiOperation("")
-    @GetMapping()
-    public BaseResponse<List<Loop>> getFanBaseInfoList() {
-        return this.fanIndexService.getFanBaseInfoList();
+    @ApiOperation("实时获取scada首页的风机列表")
+    @GetMapping("/getList/{userName}")
+    public void getFanBaseInfoList(@PathVariable String userName){
+        try {
+            fanIndexService.getFanBaseInfoList(userName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+
+    //=======================================================以下移植到新controller
+
+    //@ApiOperation("")
 
 }

@@ -13,6 +13,6 @@ public interface FanIndexService {
      * 查询回路
      * @return
      */
-    BaseResponse<List<Loop>> getFanBaseInfoList();
+    void getFanBaseInfoList(String userName) throws Exception;
 
 }
