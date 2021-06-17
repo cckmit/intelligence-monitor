@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.NwpDayElectricGenDTO;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.DqDayElectricGenDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.NwpListPatternDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataNwp;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfDataCfMapper;
@@ -25,7 +25,9 @@ import javax.annotation.Resource;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -116,13 +118,6 @@ public class WfDataNwpServiceImpl extends ServiceImpl<WfDataNwpMapper, WfDataNwp
         List<NwpListPatternDTO> nwpListPatternDTOS = timeBaseMapper.nwpCurvePattern(preStr, postStr, 15);
 
         return nwpListPatternDTOS;
-    }
-
-    @Override
-    public List<NwpDayElectricGenDTO> dayElectricGen() {
-        // TODO
-
-        return new ArrayList<>();
     }
 
     @Override

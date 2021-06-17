@@ -1,7 +1,7 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.service;
 
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.NwpDayElectricGenDTO;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.DqDayElectricGenDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.NwpListPatternDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataNwp;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -34,11 +34,7 @@ public interface IWfDataNwpService extends IService<WfDataNwp> {
      */
     List<NwpListPatternDTO> nwpCurveQuery(NwpListPatternQuery query);
 
-    /**
-     * 日发电量预测计算
-     * @return 日发电量数组
-     */
-    List<NwpDayElectricGenDTO> dayElectricGen();
+
 
     /**
      * 测试:

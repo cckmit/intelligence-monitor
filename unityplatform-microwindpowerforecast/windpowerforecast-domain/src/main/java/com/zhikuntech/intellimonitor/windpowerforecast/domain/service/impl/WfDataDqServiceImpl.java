@@ -1,5 +1,7 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.DqDayElectricGenDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataDq;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfDataDqMapper;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.DqBodyParse;
@@ -15,11 +17,13 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.nio.charset.Charset;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.time.LocalTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.ParseDataFileUtil.obtainInputStream;
 
@@ -34,6 +38,59 @@ import static com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.Parse
 @Service
 public class WfDataDqServiceImpl extends ServiceImpl<WfDataDqMapper, WfDataDq> implements IWfDataDqService {
 
+
+
+    @Override
+    public List<DqDayElectricGenDTO> dayElectricGen() {
+        LocalDateTime nowDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
+        String timeStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(nowDateTime.plusMinutes(15));
+
+        QueryWrapper<WfDataDq> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("header_date", timeStr);
+        List<WfDataDq> wfDataNwps = getBaseMapper().selectList(queryWrapper);
+        if (CollectionUtils.isEmpty(wfDataNwps)) {
+            return new ArrayList<>();
+        }
+
+        List<DqDayElectricGenDTO> calcTmp = new ArrayList<>();
+        // 计算结果
+        wfDataNwps.stream()
+                .filter(Objects::nonNull)
+                .filter(dq -> Objects.nonNull(dq.getEventDateTime()) && Objects.nonNull(dq.getForecastProduce())).forEach(item -> {
+            LocalDateTime eventDateTime = item.getEventDateTime();
+            eventDateTime = eventDateTime.minusMinutes(1);
+            DqDayElectricGenDTO tmp = DqDayElectricGenDTO.builder()
+                    .date(eventDateTime)
+                    .calcUseDate(eventDateTime.toLocalDate())
+                    .electricGen(item.getForecastProduce())
+                    .build();
+            calcTmp.add(tmp);
+        });
+
+        List<DqDayElectricGenDTO> electricGenDTOS = new ArrayList<>();
+        Map<LocalDate, List<DqDayElectricGenDTO>> collect = calcTmp.stream().collect(Collectors.groupingBy(DqDayElectricGenDTO::getCalcUseDate));
+        collect.forEach((k, l) -> {
+            //# 积分
+            BigDecimal multi = new BigDecimal("0.125");
+
+            BigDecimal calc = new BigDecimal("0");
+            int size = l.size();
+            for (int i = 0; i < size - 1; i++) {
+                BigDecimal genPre = l.get(i).getElectricGen();
+                BigDecimal genPost = l.get(i + 1).getElectricGen();
+                calc = calc.add(genPre).add(genPost);
+            }
+            calc = calc.multiply(multi).setScale(3, BigDecimal.ROUND_HALF_EVEN);
+            //# 积分
+            DqDayElectricGenDTO dqDayElectricGenDTO = DqDayElectricGenDTO.builder()
+                    .electricGen(calc)
+                    .calcUseDate(k)
+                    .date(LocalDateTime.of(k, LocalTime.MIN))
+                    .build();
+            electricGenDTOS.add(dqDayElectricGenDTO);
+        });
+        return electricGenDTOS.stream().sorted(Comparator.comparing(DqDayElectricGenDTO::getDate)).collect(Collectors.toList());
+    }
 
     @Override
     public void batchSave() {

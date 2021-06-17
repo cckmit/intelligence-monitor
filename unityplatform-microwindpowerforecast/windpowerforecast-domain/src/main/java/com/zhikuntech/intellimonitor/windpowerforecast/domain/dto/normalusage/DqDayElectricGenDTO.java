@@ -1,5 +1,7 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -8,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -20,10 +23,17 @@ import java.time.LocalDateTime;
 @Builder
 @Data
 @ApiModel("日发电量预测")
-public class NwpDayElectricGenDTO {
+public class DqDayElectricGenDTO {
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @ApiModelProperty("日期")
     private LocalDateTime date;
+
+    /**
+     * 计算使用日期
+     */
+    @JsonIgnore
+    private LocalDate calcUseDate;
 
     @ApiModelProperty("发电量")
     private BigDecimal electricGen;
