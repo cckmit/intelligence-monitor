@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhikuntech.intellimonitor.fanscada.domain.mapper.FsBasicParameterMapper">
+  <resultMap id="BaseResultMap" type="com.zhikuntech.intellimonitor.fanscada.domain.vo.FsBasicParameterVO">
+    <!--@mbg.generated-->
+    <!--@Table fs_basic_parameter-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="number" jdbcType="VARCHAR" property="number" />
+    <result column="manufacturer" jdbcType="VARCHAR" property="manufacturer" />
+    <result column="model" jdbcType="VARCHAR" property="model" />
+    <result column="hub_height" jdbcType="VARCHAR" property="hubHeight" />
+    <result column="in_wind_speed" jdbcType="VARCHAR" property="inWindSpeed" />
+    <result column="out_wind_speed" jdbcType="VARCHAR" property="outWindSpeed" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, `number`, manufacturer, model, hub_height, in_wind_speed, out_wind_speed, create_time,
+    update_time
+  </sql>
+</mapper>
