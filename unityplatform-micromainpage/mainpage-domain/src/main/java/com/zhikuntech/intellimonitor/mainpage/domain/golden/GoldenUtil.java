@@ -194,6 +194,7 @@ public class GoldenUtil {
         ServerImpl server = pool.getServerImpl();
         Snapshot snap = new SnapshotImpl(server);
         List<ValueData> snapshots = snap.getSnapshots(ids);
+        snap.close();
         server.close();
         return snapshots;
     }
@@ -207,4 +208,11 @@ public class GoldenUtil {
         }
     }
 
+    public ServerImplPool getPool(){
+        return this.pool;
+    }
+
+    public ConcurrentHashMap<String,ServerImpl> getServer(){
+        return servers;
+    }
 }

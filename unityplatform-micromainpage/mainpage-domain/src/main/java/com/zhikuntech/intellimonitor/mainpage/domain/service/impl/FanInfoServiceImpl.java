@@ -58,14 +58,18 @@ public class FanInfoServiceImpl implements FanInfoService {
 
     @Override
     public void getRuntimeInfos(String user) throws Exception {
-        if (webSocketServer.getClients().containsKey(user)) {
+        if(goldenUtil.getServer().containsKey(user)){
+            return;
+        }
+        if (WebSocketServer.clients.containsKey(user)) {
 //            int[] ids = goldenUtil.getIds("fan");
             int[] ids = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
             List<FanRuntimeDTO> list = new ArrayList<>(10);
             goldenUtil.subscribeSnapshots(user, ids, (data) -> {
-                if (!webSocketServer.getClients().containsKey(user)) {
+                if (!WebSocketServer.clients.containsKey(user)) {
                     return;
                 } else {
+                    long l0 = System.currentTimeMillis();
                     for (int i = 1; i <= 10; i++) {
                         FanRuntimeDTO fanRuntimeDto = new FanRuntimeDTO();
                         fanRuntimeDto.setNumber(i);
@@ -81,6 +85,8 @@ public class FanInfoServiceImpl implements FanInfoService {
                         String jsonString = JSONObject.toJSONString(dtos);
                         webSocketServer.sendMessage(jsonString, user);
                     }
+                    long l1 = System.currentTimeMillis();
+                    log.info("当前用户{}，处理时间{}，消息时间{}",user,l1-l0,data[0].getDate());
                 }
             });
         }
@@ -108,10 +114,13 @@ public class FanInfoServiceImpl implements FanInfoService {
 
     @Override
     public void getStatistics(String user) throws Exception {
-        if (webSocketServer.getClients().containsKey(user)) {
+        if(goldenUtil.getServer().containsKey(user)){
+            return;
+        }
+        if (WebSocketServer.clients.containsKey(user)) {
             int[] ids = {1, 2, 13, 14};
             goldenUtil.subscribeSnapshots(user, ids, (data) -> {
-                if (!webSocketServer.getClients().containsKey(user)) {
+                if (!WebSocketServer.clients.containsKey(user)) {
                     return;
                 } else {
                     FanStatisticsDTO dto = InjectPropertiesUtil.injectByAnnotation(new FanStatisticsDTO(), data);

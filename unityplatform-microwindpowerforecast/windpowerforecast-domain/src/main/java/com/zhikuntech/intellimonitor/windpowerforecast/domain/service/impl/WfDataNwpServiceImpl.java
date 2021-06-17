@@ -3,11 +3,14 @@ package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.NwpDayElectricGenDTO;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.NwpListPatternDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataNwp;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfDataCfMapper;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfDataNwpMapper;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.NwpBodyParse;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.NwpHeaderParse;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.NwpListPatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataNwpService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.*;
@@ -43,6 +46,20 @@ public class WfDataNwpServiceImpl extends ServiceImpl<WfDataNwpMapper, WfDataNwp
     @Resource
     private WfDataCfMapper wfDataCfMapper;
 
+
+    @Override
+    public List<NwpListPatternDTO> nwpListQuery(NwpListPatternQuery query) {
+        // TODO
+
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<NwpDayElectricGenDTO> dayElectricGen() {
+        // TODO
+
+        return new ArrayList<>();
+    }
 
     @Override
     public List<WfDataNwp> queryBatch() {
