@@ -92,6 +92,11 @@ public class WinPowerCurveServiceImpl implements WinPowerCurveService {
             windPowerCurveVO.setSupShortTermForecastPower(supShortTermForecastPowerList);
             windPowerCurveVO.setWeatherForecastPower(weatherForecastPowerList);
         }
+
+        System.out.println("shortTermForecastPowerList->");
+        Double reduce = shortTermForecastPowerList.stream().reduce(0D, (sum, p) -> sum += p.getPower(), Double::sum);
+        System.out.println(reduce);
+
         return windPowerCurveVO;
     }
 
@@ -195,5 +200,30 @@ public class WinPowerCurveServiceImpl implements WinPowerCurveService {
         } else {
             throw new UserNotLoginException(ResultCode.USER_NOT_LOGIN_EXCEPTION);
         }
+    }
+
+    @Override
+    public List<TimePowerVO> getShortTermForecastPower() {
+        return null;
+    }
+
+    @Override
+    public List<TimePowerVO> getSupShortTermForecastPower() {
+        return null;
+    }
+
+    @Override
+    public List<TimePowerVO> getActualPower() {
+        return null;
+    }
+
+    @Override
+    public List<TimeWindSpeedVO> getWeatherForecastPower() {
+        return null;
+    }
+
+    @Override
+    public List<TimeWindSpeedVO> getMeasuredWindSpeed() {
+        return null;
     }
 }

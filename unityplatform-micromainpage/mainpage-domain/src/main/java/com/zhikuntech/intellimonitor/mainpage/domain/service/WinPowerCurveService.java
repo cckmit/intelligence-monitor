@@ -1,7 +1,11 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.service;
 
+import com.zhikuntech.intellimonitor.mainpage.domain.vo.TimePowerVO;
+import com.zhikuntech.intellimonitor.mainpage.domain.vo.TimeWindSpeedVO;
 import com.zhikuntech.intellimonitor.mainpage.domain.vo.WindPowerCurveVO;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @Author 杨锦程
@@ -34,4 +38,34 @@ public interface WinPowerCurveService {
      * @return 订阅结果
      */
     boolean subscribeWindPowerCurve(String username);
+
+    /**
+     * 获取短期预测功率
+     * @return
+     */
+    List<TimePowerVO> getShortTermForecastPower();
+
+    /**
+     * 获取超短期预测功率
+     * @return
+     */
+    List<TimePowerVO> getSupShortTermForecastPower();
+
+    /**
+     * 获取实际功率
+     * @return
+     */
+    List<TimePowerVO> getActualPower();
+
+    /**
+     * 获取天气预报风速
+     * @return
+     */
+    List<TimeWindSpeedVO> getWeatherForecastPower();
+
+    /**
+     * 获取实测风速
+     * @return
+     */
+    List<TimeWindSpeedVO> getMeasuredWindSpeed();
 }
