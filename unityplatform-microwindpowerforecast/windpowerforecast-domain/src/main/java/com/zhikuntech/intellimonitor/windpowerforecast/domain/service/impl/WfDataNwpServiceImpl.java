@@ -3,11 +3,14 @@ package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.NwpDayElectricGenDTO;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.NwpListPatternDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataNwp;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfDataCfMapper;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfDataNwpMapper;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.NwpBodyParse;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.NwpHeaderParse;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.NwpListPatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataNwpService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.*;
@@ -24,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.ParseDataFileUtil.obtainInputStream;
 
@@ -44,6 +48,20 @@ public class WfDataNwpServiceImpl extends ServiceImpl<WfDataNwpMapper, WfDataNwp
 
 
     @Override
+    public List<NwpListPatternDTO> nwpListQuery(NwpListPatternQuery query) {
+        // TODO
+
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<NwpDayElectricGenDTO> dayElectricGen() {
+        // TODO
+
+        return new ArrayList<>();
+    }
+
+    @Override
     public List<WfDataNwp> queryBatch() {
 //        getBaseMapper().selectPage();
 
@@ -60,9 +78,15 @@ public class WfDataNwpServiceImpl extends ServiceImpl<WfDataNwpMapper, WfDataNwp
 
     @Override
     public List<BigDecimal> queryHigh() {
-        // TODO 查询高度
-
-        return null;
+        QueryWrapper<WfDataNwp> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("DISTINCT high_level").orderByAsc("high_level");
+        List<WfDataNwp> wfDataNwps = getBaseMapper().selectList(queryWrapper);
+        if (CollectionUtils.isEmpty(wfDataNwps)) {
+            return new ArrayList<>();
+        }
+        return wfDataNwps.stream()
+                .filter(Objects::nonNull).map(WfDataNwp::getHighLevel)
+                .filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     @Override

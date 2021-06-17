@@ -14,7 +14,7 @@ import lombok.*;
  * </p>
  *
  * @author liukai
- * @since 2021-06-15
+ * @since 2021-06-16
  */
 @AllArgsConstructor
 @NoArgsConstructor
@@ -117,6 +117,11 @@ public class WfDataCf implements Serializable {
      * 失败原因(status为1, 则有此字段有数据说明)
      */
     private String failMsg;
+
+    /**
+     * 功率计算
+     */
+    private BigDecimal calcPower;
 
 
 }

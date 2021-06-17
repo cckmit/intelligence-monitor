@@ -1,7 +1,10 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.service;
 
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.NwpDayElectricGenDTO;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.NwpListPatternDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataNwp;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.NwpListPatternQuery;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -16,9 +19,34 @@ import java.util.List;
  */
 public interface IWfDataNwpService extends IService<WfDataNwp> {
 
+    /**
+     * 曲线展示-列表查询
+     * @param query 查询
+     * @return  预测数据数组
+     */
+    List<NwpListPatternDTO> nwpListQuery(NwpListPatternQuery query);
+
+    /**
+     * 日发电量预测计算
+     * @return 日发电量数组
+     */
+    List<NwpDayElectricGenDTO> dayElectricGen();
+
+    /**
+     * 测试:
+     * 批量查询数据
+     * @return 批量获取数据
+     */
     List<WfDataNwp> queryBatch();
 
+    /**
+     * 查询气象预测高度
+     * @return 气象预测高度结果
+     */
     List<BigDecimal> queryHigh();
 
+    /**
+     * 批量保存数据
+     */
     void batchSave();
 }
