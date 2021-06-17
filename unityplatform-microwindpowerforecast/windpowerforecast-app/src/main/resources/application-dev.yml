@@ -10,7 +10,8 @@ eureka:
 spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://192.168.3.171:3306/monitor_sys?useUnicode=true&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8&useSSL=false
+    url: jdbc:mysql://116.63.173.57:33061/monitor_sys?useUnicode=true&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8&useSSL=false
+#    url: jdbc:mysql://192.168.3.171:3306/monitor_sys?useUnicode=true&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8&useSSL=false
     username: develop
     password: Aman@2020
     driver-class-name: com.mysql.cj.jdbc.Driver
