@@ -52,14 +52,70 @@ public class WfDataNwpServiceImpl extends ServiceImpl<WfDataNwpMapper, WfDataNwp
     private WfTimeBaseMapper timeBaseMapper;
 
     @Override
-    public Pager<List<NwpListPatternDTO>> nwpListQuery(NwpListPatternQuery query) {
+    public Pager<NwpListPatternDTO> nwpListQuery(NwpListPatternQuery query) {
         // TODO
-
+        Pager<NwpListPatternDTO> resultPage = new Pager<>(0, new ArrayList<>());
+        if (Objects.isNull(query)) {
+            return resultPage;
+        }
         // 获取时间基准信息(15min step)
+        String queryMode = query.getQueryMode();
+        String dateStrPre = query.getDateStrPre();
+        String dateStrPost = query.getDateStrPost();
+        LocalDateTime pre = DateProcessUtils.parseToLocalDateTime(dateStrPre);
+        LocalDateTime post = DateProcessUtils.parseToLocalDateTime(dateStrPost);
+        if (pre == null || post == null) {
+            return resultPage;
+        }
+        String preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(pre);
+        String postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(post.plusDays(1));
+        // criteria
+//        QueryWrapper<WfTimeBase> timeBaseQueryWrapper = new QueryWrapper<>();
+//        timeBaseQueryWrapper.gt("date_time", preStr);
+//        timeBaseQueryWrapper.le("date_time", postStr);
+//        timeBaseQueryWrapper.eq("time_ratio", 15);
+//        List<WfTimeBase> wfTimeBases = timeBaseMapper.selectList(timeBaseQueryWrapper);
+//        if (CollectionUtils.isEmpty(wfTimeBases)) {
+//            // TODO 判断基础时间信息是否没有生成
+//            return resultPage;
+//        }
 
-        // 查询
+        Integer pageNumber = query.getPageNumber();
+        Integer pageSize = query.getPageSize();
+        Page<NwpListPatternDTO> page = new Page<>(pageNumber, pageSize);
 
-        return null;
+        List<NwpListPatternDTO> nwpListPatternDTOS = timeBaseMapper.nwpListPattern(page, preStr, postStr, 15);
+        if (CollectionUtils.isEmpty(nwpListPatternDTOS)) {
+            return resultPage;
+        }
+        resultPage.setList(nwpListPatternDTOS);
+        resultPage.setTotalCount((int) page.getTotal());
+        resultPage.setPageSize(pageSize);
+        resultPage.setPageSize(pageSize);
+
+        return resultPage;
+    }
+
+    @Override
+    public List<NwpListPatternDTO> nwpCurveQuery(NwpListPatternQuery query) {
+        if (Objects.isNull(query)) {
+            return new ArrayList<>();
+        }
+        // 获取时间基准信息(15min step)
+        String queryMode = query.getQueryMode();
+        String dateStrPre = query.getDateStrPre();
+        String dateStrPost = query.getDateStrPost();
+        LocalDateTime pre = DateProcessUtils.parseToLocalDateTime(dateStrPre);
+        LocalDateTime post = DateProcessUtils.parseToLocalDateTime(dateStrPost);
+        if (pre == null || post == null) {
+            return new ArrayList<>();
+        }
+        String preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(pre);
+        String postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(post.plusDays(1));
+
+        List<NwpListPatternDTO> nwpListPatternDTOS = timeBaseMapper.nwpCurvePattern(preStr, postStr, 15);
+
+        return nwpListPatternDTOS;
     }
 
     @Override
