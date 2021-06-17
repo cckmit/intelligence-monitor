@@ -8,6 +8,7 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author 代志豪
@@ -27,11 +28,13 @@ public class WebSocketServer {
     /**
      * 存放所有在线的客户端
      */
-    public static ConcurrentHashMap<String, WebSocketServer> clients = new ConcurrentHashMap<>();
+    public static ConcurrentHashMap<String, Session> clients = new ConcurrentHashMap<>();
 
     private Session session;
 
     private String username;
+
+    private ReentrantLock lock = new ReentrantLock();
 
     /**
      * 连接建立成功调用的方法
@@ -41,7 +44,7 @@ public class WebSocketServer {
         onlineCount.incrementAndGet();
         this.session = session;
         this.username = username;
-        clients.put(this.username, this);
+        clients.put(this.username, this.session);
         log.info("有新连接加入：{}，当前在线人数为：{}", this.username, onlineCount.get());
     }
 
@@ -76,26 +79,24 @@ public class WebSocketServer {
      * 服务端发送消息给客户端
      */
     public void sendMessage(String message, String username) {
+        lock.lock();
         try {
-            WebSocketServer webSocketServer = clients.get(username);
-            if (null != webSocketServer) {
+            Session session = clients.get(username);
+            if (null != session) {
 //                log.info("服务端给客户端[{}]发送消息{}", username, message);
-                webSocketServer.session.getBasicRemote().sendText(message);
+                session.getBasicRemote().sendText(message);
             }
         } catch (Exception e) {
             log.error("服务端发送消息给客户端失败：", e);
+        } finally {
+            lock.unlock();
         }
     }
 
     public void sendAllMessage(String message) {
-        for (WebSocketServer wb : clients.values()) {
-            Session toSession = wb.session;
-            log.info("服务端给客户端[{}]发送消息{}", wb.username, message);
-            toSession.getAsyncRemote().sendText(message);
+        for (Session session : clients.values()) {
+//            log.info("服务端给客户端[{}]发送消息{}", username, message);
+            session.getAsyncRemote().sendText(message);
         }
-    }
-
-    public ConcurrentHashMap<String, WebSocketServer> getClients() {
-        return clients;
     }
 }

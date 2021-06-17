@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.websocket.Session;
 import java.text.NumberFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -131,7 +132,7 @@ public class WinPowerCurveServiceImpl implements WinPowerCurveService {
 
     @Override
     public boolean subscribeWindPowerCurve(String username) {
-        ConcurrentHashMap<String, WebSocketServer> clients = webSocketServer.getClients();
+        ConcurrentHashMap<String, Session> clients = WebSocketServer.clients;
         String clientId = "";  //客户端标识
         int[] ids = new int[]{11, 12, 13, 14, 15};
         //判断用户是否连接
