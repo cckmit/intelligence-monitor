@@ -2,13 +2,19 @@ package com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.statisticsana
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 /**
  * @author liukai
  */
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Data
 @ApiModel("[均值]功率分析")
 public class AvgPowerAnalysisDTO {

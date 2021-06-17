@@ -19,18 +19,18 @@ import lombok.NoArgsConstructor;
 @ApiModel("风玫瑰图-列表模式查询")
 public class CfListPatternQuery {
 
-    @ApiModelProperty("查询模式:[日/月]->[day/month], 目前只支持日查询")
+    @ApiModelProperty(value = "查询模式:[日/月]->[day/month], 目前只支持日查询", required = true)
     private String queryMode;
 
-    @ApiModelProperty("日期字符串:[yyyy-MM-dd]")
+    @ApiModelProperty(value = "日期字符串:[yyyy-MM-dd]", required = true)
     private String dateStr;
 
-    @ApiModelProperty("高度")
+    @ApiModelProperty(value = "高度", required = true)
     private String high;
 
-    @ApiModelProperty("每页数据数量")
+    @ApiModelProperty(value = "每页数据数量", required = true)
     private Integer pageSize;
 
-    @ApiModelProperty("页码")
+    @ApiModelProperty(value = "页码", required = true)
     private Integer pageNumber;
 }

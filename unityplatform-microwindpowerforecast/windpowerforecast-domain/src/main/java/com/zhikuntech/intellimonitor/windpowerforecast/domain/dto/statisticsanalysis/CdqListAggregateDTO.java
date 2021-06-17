@@ -5,8 +5,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.List;
-
 /**
  * @author liukai
  */
@@ -15,7 +13,7 @@ import java.util.List;
 public class CdqListAggregateDTO {
 
     @ApiModelProperty("分页结果")
-    private Pager<List<CdqPowerAnalysisDTO>> pager;
+    private Pager<CdqPowerAnalysisDTO> pager;
 
     @ApiModelProperty("[均值]功率分析")
     private AvgPowerAnalysisDTO avgAna;

@@ -13,6 +13,7 @@ import java.util.Objects;
  */
 public class TimeProcessUtils {
 
+    private static final String PATTERN_DATE_0 = "yyyy-MM-dd";
 
     private static final String PATTERN_0 = "yyyy-MM-dd HH:mm:ss";
 
@@ -21,6 +22,7 @@ public class TimeProcessUtils {
     static DateTimeFormatter FORMAT_0 = DateTimeFormatter.ofPattern(PATTERN_0);
 
     static DateTimeFormatter FORMAT_1 = DateTimeFormatter.ofPattern(PATTERN_1);
+
 
 
     public static long localDateTimeToMilli(LocalDateTime localDateTime) {

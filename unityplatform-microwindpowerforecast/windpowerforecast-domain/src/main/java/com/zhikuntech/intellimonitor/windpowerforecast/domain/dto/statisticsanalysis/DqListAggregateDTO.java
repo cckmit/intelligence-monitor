@@ -15,7 +15,7 @@ import java.util.List;
 public class DqListAggregateDTO {
 
     @ApiModelProperty("分页结果")
-    private Pager<List<DqPowerAnalysisDTO>> pager;
+    private Pager<DqPowerAnalysisDTO> pager;
 
     @ApiModelProperty("[均值]功率分析")
     private AvgPowerAnalysisDTO avgAna;
