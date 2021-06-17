@@ -1,10 +1,45 @@
-
-
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true #使用小写service-id
+      routes: #配置路由路径
+        - id: mainpage-app
+          uri: lb://mainpage-app
+          predicates:
+            - Path=/mainpage-app/**
+          filters:
+            - StripPrefix=1
+        - id: demo-app
+          uri: lb://demo-app
+          predicates:
+            - Path=/demo-app/**
+          filters:
+            - StripPrefix=1
+        - id: fanscada-app
+          uri: lb://fanscada-app
+          predicates:
+            - Path=/fanscada-app/**
+          filters:
+            - StripPrefix=1
+        - id: wind-power-forecast-app
+          uri: lb://wind-power-forecast-app
+          predicates:
+            - Path=/wind-power-forecast-app/**
+          filters:
+            - StripPrefix=1
 eureka:
   client:
+    register-with-eureka: true #是否将自己注册到注册中心
+    fetch-registry: true #是否从注册中心服务注册信息
     service-url:
       defaultZone: http://127.0.0.1:8761/eureka/
   instance:
     prefer-ip-address: true
     instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
 
+logging:
+  level:
+    org.springframework.cloud.gateway: debug
