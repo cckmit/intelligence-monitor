@@ -47,21 +47,19 @@ public class NormalUsagePlayController {
 
     //# 预测气象数据
 
-    /*
-        TODO 曲线展示(列表模式) -> 待确认: 以哪个为基准(短期预测功率/超短期预测功率) [时间为15min]
-            查询参数:
-                时间
-                数字天气预报
-                实测气象
+    @ApiOperation("曲线展示-曲线模式查询")
+    @PostMapping("/query-nwp-curve")
+    public BaseResponse<List<NwpListPatternDTO>> nwpCurveQuery(@RequestBody NwpListPatternQuery query) {
+        List<NwpListPatternDTO> results = nwpService.nwpCurveQuery(query);
+        return BaseResponse.success(results);
+    }
 
-        TODO 曲线展示（曲线模式）-> 数据是否一致 (已确认, 数据一致)
-     */
 
     @ApiOperation("曲线展示-列表模式查询")
     @PostMapping("/query-nwp-list")
-    public BaseResponse<List<NwpListPatternDTO>> nwpListQuery(@RequestBody NwpListPatternQuery query) {
-
-        return null;
+    public BaseResponse<Pager<NwpListPatternDTO>> nwpListQuery(@RequestBody NwpListPatternQuery query) {
+        Pager<NwpListPatternDTO> results = nwpService.nwpListQuery(query);
+        return BaseResponse.success(results);
     }
 
     @ApiOperation("日发电量计算")

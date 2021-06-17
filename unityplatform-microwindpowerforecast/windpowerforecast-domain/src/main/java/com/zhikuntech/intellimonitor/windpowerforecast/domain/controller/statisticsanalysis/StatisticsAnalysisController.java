@@ -1,10 +1,17 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.controller.statisticsanalysis;
 
+import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.statisticsanalysis.CdqListAggregateDTO;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.statisticsanalysis.DqListAggregateDTO;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.statisticsanalysis.PowerAnalysisQuery;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfAnalyseCdqService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfAnalyseDqService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,20 +29,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class StatisticsAnalysisController {
 
+    private final IWfAnalyseDqService dqService;
 
+    private final IWfAnalyseCdqService cdqService;
 
-    @ApiOperation("短期功率")
+    @ApiOperation("功率分析-短期功率")
     @PostMapping("/query-dq")
-    public void dq() {
-        // TODO
-
+    public BaseResponse<DqListAggregateDTO> dqPowerAnalysis(@RequestBody PowerAnalysisQuery query) {
+        DqListAggregateDTO result = dqService.dqPowerAnalysis(query);
+        return BaseResponse.success(result);
     }
 
-    @ApiOperation("超短期功率")
+    @ApiOperation("功率分析-超短期功率")
     @PostMapping("/query-cdq")
-    public void cdq() {
-        // TODO
-
+    public BaseResponse<CdqListAggregateDTO> cdqPowerAnalysis(@RequestBody PowerAnalysisQuery query) {
+        CdqListAggregateDTO result = cdqService.cdqPowerAnalysis(query);
+        return BaseResponse.success(result);
     }
 
 }
