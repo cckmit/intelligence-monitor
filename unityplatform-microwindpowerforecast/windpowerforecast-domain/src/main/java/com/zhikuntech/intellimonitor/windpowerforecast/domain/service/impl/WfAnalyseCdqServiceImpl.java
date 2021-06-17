@@ -1,7 +1,9 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl;
 
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.statisticsanalysis.CdqListAggregateDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfAnalyseCdq;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfAnalyseCdqMapper;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.statisticsanalysis.PowerAnalysisQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfAnalyseCdqService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -17,4 +19,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class WfAnalyseCdqServiceImpl extends ServiceImpl<WfAnalyseCdqMapper, WfAnalyseCdq> implements IWfAnalyseCdqService {
 
+    @Override
+    public CdqListAggregateDTO cdqPowerAnalysis(PowerAnalysisQuery query) {
+        // TODO
+
+        return null;
+    }
 }

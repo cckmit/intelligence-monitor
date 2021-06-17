@@ -59,9 +59,9 @@ public class NormalUsagePlayController {
 
     @ApiOperation("曲线展示-列表模式查询")
     @PostMapping("/query-nwp-list")
-    public BaseResponse<List<NwpListPatternDTO>> nwpListQuery(@RequestBody NwpListPatternQuery query) {
-
-        return null;
+    public BaseResponse<Pager<List<NwpListPatternDTO>>> nwpListQuery(@RequestBody NwpListPatternQuery query) {
+        Pager<List<NwpListPatternDTO>> results = nwpService.nwpListQuery(query);
+        return BaseResponse.success(results);
     }
 
     @ApiOperation("日发电量计算")

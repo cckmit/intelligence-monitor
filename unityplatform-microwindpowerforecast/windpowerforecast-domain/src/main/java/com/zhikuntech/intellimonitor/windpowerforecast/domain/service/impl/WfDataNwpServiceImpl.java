@@ -3,11 +3,13 @@ package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zhikuntech.intellimonitor.core.commons.base.Pager;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.NwpDayElectricGenDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.NwpListPatternDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataNwp;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfDataCfMapper;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfDataNwpMapper;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfTimeBaseMapper;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.NwpBodyParse;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.NwpHeaderParse;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.NwpListPatternQuery;
@@ -46,12 +48,18 @@ public class WfDataNwpServiceImpl extends ServiceImpl<WfDataNwpMapper, WfDataNwp
     @Resource
     private WfDataCfMapper wfDataCfMapper;
 
+    @Resource
+    private WfTimeBaseMapper timeBaseMapper;
 
     @Override
-    public List<NwpListPatternDTO> nwpListQuery(NwpListPatternQuery query) {
+    public Pager<List<NwpListPatternDTO>> nwpListQuery(NwpListPatternQuery query) {
         // TODO
 
-        return new ArrayList<>();
+        // 获取时间基准信息(15min step)
+
+        // 查询
+
+        return null;
     }
 
     @Override
