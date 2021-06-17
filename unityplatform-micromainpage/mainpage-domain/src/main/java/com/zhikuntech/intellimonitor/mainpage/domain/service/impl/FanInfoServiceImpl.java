@@ -86,7 +86,7 @@ public class FanInfoServiceImpl implements FanInfoService {
                         webSocketServer.sendMessage(jsonString, user);
                     }
                     long l1 = System.currentTimeMillis();
-                    log.info("当前用户{}，处理时间{}，消息时间{}",user,l1-l0,data[0].getDate());
+                    log.info("实时数据，当前用户{}，处理时间{}，消息时间{}",user,l1-l0,data[0].getDate());
                 }
             });
         }
@@ -123,6 +123,7 @@ public class FanInfoServiceImpl implements FanInfoService {
                 if (!WebSocketServer.clients.containsKey(user)) {
                     return;
                 } else {
+                    long l0 = System.currentTimeMillis();
                     FanStatisticsDTO dto = InjectPropertiesUtil.injectByAnnotation(new FanStatisticsDTO(), data);
                     if (null != dto) {
                         dto.setNum(63);
@@ -137,6 +138,8 @@ public class FanInfoServiceImpl implements FanInfoService {
                         String jsonString = JSONObject.toJSONString(dto);
                         webSocketServer.sendMessage(jsonString, user);
                     }
+                    long l1 = System.currentTimeMillis();
+                    log.info("统计数据，当前用户{}，处理时间{}，消息时间{}",user,l1-l0,data[0].getDate());
                 }
             });
         }
@@ -153,7 +156,8 @@ public class FanInfoServiceImpl implements FanInfoService {
             FanRuntimeDTO dto = InjectPropertiesUtil.injectByAnnotation(fanRuntimeDto, valueData);
             list.add(dto);
         }
-        response.setHeader("Content-disposition", "filename=" + URLEncoder.encode("风机列表", "UTF-8") + ".xlsx");
+        response.setHeader("Access-Control-Expose-Headers" ,"*");
+        response.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode("风机列表", "UTF-8") + ".xlsx");
         EasyExcelUtil.export(response.getOutputStream(),"风机列表",list);
     }
 
