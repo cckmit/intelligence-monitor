@@ -32,7 +32,7 @@ public class BackendToGoldenController {
     @GetMapping("/getGoldenIdByBackendIdOrNumber")
     @ApiOperation("根据数据库表中编号或者风机编号查询golden数据库表中id（单条）")
     public BaseResponse getGoldenIdByBackendIdOrNumber(@RequestBody BackendToGoldenQuery backendToGoldenQuery){
-        List<BackendToGolden> goldenIdList = backendToGoldenService.getGoldenIdByBackendIdOrNumber(backendToGoldenQuery);
+        List<Integer> goldenIdList = backendToGoldenService.getGoldenIdByBackendIdOrNumber(backendToGoldenQuery);
         LOGGER.info("goldenIdList->{}",goldenIdList);
         return BaseResponse.success(goldenIdList);
     }

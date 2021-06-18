@@ -49,7 +49,7 @@ public class FanInfoServiceImpl implements FanInfoService {
         for (int i = 1; i <= 63; i++) {
             FanRuntimeDTO fanRuntimeDto = new FanRuntimeDTO();
             fanRuntimeDto.setNumber(i);
-            FanRuntimeDTO dto = InjectPropertiesUtil.injectByAnnotation(fanRuntimeDto, i, valueData);
+            FanRuntimeDTO dto = InjectPropertiesUtil.injectByAnnotation(fanRuntimeDto, valueData);
             list.add(dto);
         }
         for (FanRuntimeDTO dto : list) {
@@ -68,28 +68,28 @@ public class FanInfoServiceImpl implements FanInfoService {
         if (WebSocketServer.clients.containsKey(user)) {
             int[] ids = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
             List<FanRuntimeDTO> list = new ArrayList<>(10);
-            for (int i = 1; i <= 10; i++) {
-                FanRuntimeDTO fanRuntimeDto = new FanRuntimeDTO();
-                fanRuntimeDto.setNumber(i);
-                list.add(fanRuntimeDto);
-            }
             goldenUtil.subscribeSnapshots(user, ids, (data) -> {
                 if (!WebSocketServer.clients.containsKey(user)) {
                     return;
                 } else {
                     long l0 = System.currentTimeMillis();
+                    for (int i = 1; i <= 10; i++) {
+                        FanRuntimeDTO fanRuntimeDto = new FanRuntimeDTO();
+                        fanRuntimeDto.setNumber(i);
+                        list.add(fanRuntimeDto);
+                    }
                     List<FanRuntimeDTO> dtos = InjectPropertiesUtil.injectByAnnotation(list, data);
                     if (null != dtos) {
                         for (FanRuntimeDTO dto : dtos) {
                             double powerGeneration = 0;
                             Object obj = redisUtil.get(FanConstant.MONTHLY_POWER + dto.getNumber());
-//                            powerGeneration = null == obj ? 0 : (double) obj;
-                            if (null == obj) {
-                                int id = (int) redisUtil.get(FanConstant.GOLDEN_ID_POWER + dto.getNumber());
-                                powerGeneration = fanInfoInit.dataResetFloat(FanConstant.MONTHLY_POWER + dto.getNumber(), id, 0);
-                            } else {
-                                powerGeneration = (double) obj;
-                            }
+                            powerGeneration = null == obj ? 0 : (double) obj;
+//                            if (null == obj) {
+//                                int id = (int) redisUtil.get(FanConstant.GOLDEN_ID_POWER + dto.getNumber());
+//                                powerGeneration = fanInfoInit.dataReset(FanConstant.MONTHLY_POWER + dto.getNumber(), id, null, null);
+//                            } else {
+//                                powerGeneration = (double) obj;
+//                            }
                             dto.setMonthlyPowerGeneration(dto.getMonthlyPowerGeneration() - powerGeneration);
                         }
                         String jsonString = JSONObject.toJSONString(dtos);
@@ -126,14 +126,14 @@ public class FanInfoServiceImpl implements FanInfoService {
         if (WebSocketServer.clients.containsKey(user)) {
             int[] ids = {1, 2, 13, 14};
             List<FanStatisticsDTO> list = new ArrayList<>();
-            for (int i = 1; i <= 63; i++) {
-                list.add(new FanStatisticsDTO());
-            }
             goldenUtil.subscribeSnapshots(user, ids, (data) -> {
                 if (!WebSocketServer.clients.containsKey(user)) {
                     return;
                 } else {
                     long l0 = System.currentTimeMillis();
+                    for (int i = 1; i <= 63; i++) {
+                        list.add(new FanStatisticsDTO());
+                    }
                     List<FanStatisticsDTO> dtos = InjectPropertiesUtil.injectByAnnotation(list, data);
                     if (null != dtos) {
                         FanStatisticsDTO dto = injecctPorerties(dtos);
@@ -155,7 +155,7 @@ public class FanInfoServiceImpl implements FanInfoService {
         for (int i = 1; i <= 10; i++) {
             FanRuntimeDTO fanRuntimeDto = new FanRuntimeDTO();
             fanRuntimeDto.setNumber(i);
-            FanRuntimeDTO dto = InjectPropertiesUtil.injectByAnnotation(fanRuntimeDto, i, valueData);
+            FanRuntimeDTO dto = InjectPropertiesUtil.injectByAnnotation(fanRuntimeDto, valueData);
             list.add(dto);
         }
         response.setHeader("Access-Control-Expose-Headers", "*");

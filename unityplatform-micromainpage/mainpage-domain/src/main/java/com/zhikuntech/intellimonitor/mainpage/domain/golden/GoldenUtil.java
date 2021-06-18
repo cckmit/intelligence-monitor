@@ -173,14 +173,14 @@ public class GoldenUtil {
         return value;
     }
 
-    public int getInteger(int id, String dateTime) throws Exception {
+    public double getInteger(int id, String dateTime) throws Exception {
         check();
         ServerImpl server = pool.getServerImpl();
         Historian historian = new HistorianImpl(server);
         Date date = DateUtil.stringToDate(dateTime);
         double value = historian.getIntSingleValue(id, date, RtdbHisMode.RTDB_PREVIOUS).getValue();
         server.close();
-        return (int)value;
+        return value;
     }
 
     /**
