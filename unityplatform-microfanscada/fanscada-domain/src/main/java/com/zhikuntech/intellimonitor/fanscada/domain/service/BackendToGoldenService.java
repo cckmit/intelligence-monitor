@@ -1,8 +1,11 @@
 package com.zhikuntech.intellimonitor.fanscada.domain.service;
 
 
+import com.zhikuntech.intellimonitor.fanscada.domain.golden.annotation.GoldenId;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGoldenQuery;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGoldenQueryList;
+import com.zhikuntech.intellimonitor.fanscada.domain.pojo.GoldenIdQuery;
+import io.swagger.models.auth.In;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,4 +30,11 @@ public interface BackendToGoldenService {
      * @return
      */
     List<Integer> listGoldenIdByBackendIdOrNumber(BackendToGoldenQueryList backendToGoldenQueryList);
+
+    /**
+     *
+     * @param goldenIdQuery
+     * @return
+     */
+    List<Integer> getGoldenIdByNumberAndId(GoldenIdQuery goldenIdQuery);
 }

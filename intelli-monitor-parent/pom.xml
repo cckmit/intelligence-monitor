@@ -32,6 +32,7 @@
         <commons-collection4.version>4.4</commons-collection4.version>
         <protobuf-java.version>2.6.1</protobuf-java.version>
         <druid.version>1.1.10</druid.version>
+        <openfegin.version>2.2.8.RELEASE</openfegin.version>
     </properties>
 
     <!-- 管理所有外部依赖 -->
@@ -125,7 +126,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-openfeign</artifactId>
-                <version>2.2.8.RELEASE</version>
+                <version>${openfegin.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

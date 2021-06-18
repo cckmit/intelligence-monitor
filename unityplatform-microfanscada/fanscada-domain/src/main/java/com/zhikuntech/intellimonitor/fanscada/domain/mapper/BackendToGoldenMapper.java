@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGolden;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGoldenQuery;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGoldenQueryList;
+import com.zhikuntech.intellimonitor.fanscada.domain.pojo.GoldenIdQuery;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -25,4 +26,7 @@ public interface BackendToGoldenMapper extends BaseMapper<BackendToGolden> {
      * @return
      */
     List<Integer> listGoldenIdByBackendIdOrNumber(@Param("backendToGoldenQueryList") BackendToGoldenQueryList backendToGoldenQueryList);
+
+
+    List<Integer> getGoldenIdByWindNumberAndId(@Param("dataIds") List<Integer> dataIds);
 }
