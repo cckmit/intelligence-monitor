@@ -22,7 +22,7 @@ public class BackendToGoldenServiceImpl implements BackendToGoldenService {
     private BackendToGoldenMapper backendToGoldenMapper;
 
     @Override
-    public List<Integer> getGoldenIdByBackendIdOrNumber(BackendToGoldenQuery backendToGoldenQuery) {
+    public List<BackendToGolden> getGoldenIdByBackendIdOrNumber(BackendToGoldenQuery backendToGoldenQuery) {
         return backendToGoldenMapper.getGoldenIdByBackendIdOrNumber(backendToGoldenQuery);
     }
 

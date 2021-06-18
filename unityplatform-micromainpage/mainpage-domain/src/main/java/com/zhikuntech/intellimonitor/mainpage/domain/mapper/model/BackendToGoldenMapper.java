@@ -21,7 +21,7 @@ public interface BackendToGoldenMapper extends BaseMapper<BackendToGolden> {
      * 根据数据库表中编号或者风机编号查询golden数据库表中id（单条）
      * @return
      */
-    List<Integer> getGoldenIdByBackendIdOrNumber(@Param("backendToGoldenQuery") BackendToGoldenQuery backendToGoldenQuery);
+    List<BackendToGolden> getGoldenIdByBackendIdOrNumber(@Param("backendToGoldenQuery") BackendToGoldenQuery backendToGoldenQuery);
 
     /**
      * 根据数据库表中编号或者风机编号查询golden数据库表中id（批量）

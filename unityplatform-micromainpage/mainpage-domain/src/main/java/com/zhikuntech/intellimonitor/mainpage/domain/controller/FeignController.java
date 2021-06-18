@@ -26,7 +26,7 @@ public class FeignController {
     public ActWeatherDataDTO getCurrentData() throws Exception {
         ActWeatherDataDTO dto = new ActWeatherDataDTO();
         List<ValueData> valueData = goldenUtil.getSnapshots(new int[]{1, 2, 3, 4, 5, 6});
-        dto = InjectPropertiesUtil.injectByAnnotation(dto, valueData);
+        dto = InjectPropertiesUtil.injectByAnnotation(dto, null,valueData);
         return dto;
     }
 }
