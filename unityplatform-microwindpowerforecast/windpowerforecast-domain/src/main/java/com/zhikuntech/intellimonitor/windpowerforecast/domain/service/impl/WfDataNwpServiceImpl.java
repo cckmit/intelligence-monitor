@@ -93,7 +93,7 @@ public class WfDataNwpServiceImpl extends ServiceImpl<WfDataNwpMapper, WfDataNwp
         resultPage.setList(nwpListPatternDTOS);
         resultPage.setTotalCount((int) page.getTotal());
         resultPage.setPageSize(pageSize);
-        resultPage.setPageSize(pageSize);
+        resultPage.setTotalPage((int) page.getPages());
 
         return resultPage;
     }
