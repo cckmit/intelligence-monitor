@@ -7,7 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author 代志豪
@@ -48,6 +50,40 @@ public class InjectPropertiesUtil<T> {
                         try {
                             field.setAccessible(true);
                             field.set(item, rtdbData.getValue());
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                            return null;
+                        }
+                    }
+                }
+            }
+        }
+        return t;
+    }
+
+    public static <T> List<T> injectByAnnotation(List<T> t, List<ValueData> data) {
+        Field[] fields = t.get(0).getClass().getDeclaredFields();
+        for (T item : t) {
+            for (Field field : fields) {
+                GoldenId goldenId = field.getDeclaredAnnotation(GoldenId.class);
+                int value = null == goldenId ? 0 : goldenId.value();
+                for (ValueData valueData : data) {
+                    if (value == valueData.getId()) {
+                        try {
+                            field.setAccessible(true);
+                            if (field.getType().equals(BigDecimal.class)) {
+                                if (valueData.getValue() == 0) {
+                                    field.set(item, new BigDecimal(valueData.getState()));
+                                } else {
+                                    field.set(item, BigDecimal.valueOf(valueData.getValue()));
+                                }
+                            } else {
+                                if (valueData.getValue() == 0) {
+                                    field.set(item, valueData.getState());
+                                } else {
+                                    field.set(item, valueData.getValue());
+                                }
+                            }
                         } catch (IllegalAccessException e) {
                             e.printStackTrace();
                             return null;

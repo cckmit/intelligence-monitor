@@ -5,12 +5,13 @@ import com.zhikuntech.intellimonitor.core.commons.base.Pager;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.WeatherHighDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.CfCurveDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.CfListDTO;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.NwpDayElectricGenDTO;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.DqDayElectricGenDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.NwpListPatternDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.CfCurvePatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.CfListPatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.NwpListPatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataCfService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataDqService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataNwpService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,6 +36,8 @@ public class NormalUsagePlayController {
 
     private final IWfDataCfService cfService;
 
+    private final IWfDataDqService dqService;
+
     @ApiOperation("查询实测气象高度, 预测气象高度")
     @GetMapping("/high")
     public BaseResponse<WeatherHighDTO> fetchHigh() {
@@ -47,27 +50,25 @@ public class NormalUsagePlayController {
 
     //# 预测气象数据
 
-    /*
-        TODO 曲线展示(列表模式) -> 待确认: 以哪个为基准(短期预测功率/超短期预测功率) [时间为15min]
-            查询参数:
-                时间
-                数字天气预报
-                实测气象
+    @ApiOperation("曲线展示-曲线模式查询")
+    @PostMapping("/query-nwp-curve")
+    public BaseResponse<List<NwpListPatternDTO>> nwpCurveQuery(@RequestBody NwpListPatternQuery query) {
+        List<NwpListPatternDTO> results = nwpService.nwpCurveQuery(query);
+        return BaseResponse.success(results);
+    }
 
-        TODO 曲线展示（曲线模式）-> 数据是否一致 (已确认, 数据一致)
-     */
 
     @ApiOperation("曲线展示-列表模式查询")
     @PostMapping("/query-nwp-list")
-    public BaseResponse<Pager<List<NwpListPatternDTO>>> nwpListQuery(@RequestBody NwpListPatternQuery query) {
-        Pager<List<NwpListPatternDTO>> results = nwpService.nwpListQuery(query);
+    public BaseResponse<Pager<NwpListPatternDTO>> nwpListQuery(@RequestBody NwpListPatternQuery query) {
+        Pager<NwpListPatternDTO> results = nwpService.nwpListQuery(query);
         return BaseResponse.success(results);
     }
 
     @ApiOperation("日发电量计算")
     @GetMapping("/query-nwp-day-electric-gens")
-    public BaseResponse<List<NwpDayElectricGenDTO>> dayElectricGen() {
-        List<NwpDayElectricGenDTO> results = nwpService.dayElectricGen();
+    public BaseResponse<List<DqDayElectricGenDTO>> dayElectricGen() {
+        List<DqDayElectricGenDTO> results = dqService.dayElectricGen();
         return BaseResponse.success(results);
     }
 

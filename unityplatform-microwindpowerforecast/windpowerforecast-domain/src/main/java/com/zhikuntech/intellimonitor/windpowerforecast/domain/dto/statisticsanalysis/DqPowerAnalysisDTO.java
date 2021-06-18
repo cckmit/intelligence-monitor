@@ -1,5 +1,6 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.statisticsanalysis;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -20,8 +21,9 @@ import java.time.LocalDateTime;
 @ApiModel("短期预测功率分析")
 public class DqPowerAnalysisDTO {
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @ApiModelProperty("日期")
-    private LocalDateTime date;
+    private LocalDateTime calcDate;
 
     /**
      * 均方根误差

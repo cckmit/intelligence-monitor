@@ -15,4 +15,58 @@
         id, time_ratio, date_time, date_time_str
     </sql>
 
+    <select id="nwpListPattern"
+            resultType="com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.NwpListPatternDTO">
+        select tb.date_time dateTime,
+               dq.forecast_produce dqPower,
+               cdq.forecast_produce cdqPower,
+               zr.actual_produce actPower,
+               nwp.wind_speed nwpWindSpeed,
+               nwp.pressure nwpPressure,
+               nwp.temperature nwpTemperature,
+               nwp.humidity nwpHumidity,
+               nwp.wind_direction nwpWindDirection,
+               wdc.wind_speed cfWindSpeed,
+               wdc.pressure cfPressure,
+               wdc.temperature cfTemperature,
+               wdc.humidity cfHumidity,
+               wdc.wind_direction cfWindDirection
+        from wf_time_base tb
+                 left join wf_data_dq dq on tb.date_time = dq.event_date_time
+                 left join wf_data_cdq cdq on tb.date_time = cdq.event_date_time
+                 left join wf_data_zr zr on tb.date_time = zr.event_date_time
+                 left join wf_data_nwp nwp on tb.date_time = nwp.event_date_time
+                 left join wf_data_cf wdc on tb.date_time = wdc.event_date_time
+        where tb.time_ratio = #{timeRatio}
+          and tb.date_time > #{datePre}
+          and tb.date_time &lt;= #{datePost}
+    </select>
+
+    <select id="nwpCurvePattern"
+            resultType="com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.NwpListPatternDTO">
+        select tb.date_time dateTime,
+               dq.forecast_produce dqPower,
+               cdq.forecast_produce cdqPower,
+               zr.actual_produce actPower,
+               nwp.wind_speed nwpWindSpeed,
+               nwp.pressure nwpPressure,
+               nwp.temperature nwpTemperature,
+               nwp.humidity nwpHumidity,
+               nwp.wind_direction nwpWindDirection,
+               wdc.wind_speed cfWindSpeed,
+               wdc.pressure cfPressure,
+               wdc.temperature cfTemperature,
+               wdc.humidity cfHumidity,
+               wdc.wind_direction cfWindDirection
+        from wf_time_base tb
+                 left join wf_data_dq dq on tb.date_time = dq.event_date_time
+                 left join wf_data_cdq cdq on tb.date_time = cdq.event_date_time
+                 left join wf_data_zr zr on tb.date_time = zr.event_date_time
+                 left join wf_data_nwp nwp on tb.date_time = nwp.event_date_time
+                 left join wf_data_cf wdc on tb.date_time = wdc.event_date_time
+        where tb.time_ratio = #{timeRatio}
+          and tb.date_time > #{datePre}
+          and tb.date_time &lt;= #{datePost}
+    </select>
+
 </mapper>
