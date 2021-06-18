@@ -134,7 +134,7 @@ public class MybatisplusGeneratorMain {
         strategy.setRestControllerStyle(true);
 
         //- 表名称
-        strategy.setInclude("wf_time_base");
+        strategy.setInclude("wf_data_capacity");
         strategy.setControllerMappingHyphenStyle(true);
 
         mpg.setStrategy(strategy);

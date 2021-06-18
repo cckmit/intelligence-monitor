@@ -12,6 +12,7 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.ConstantsOfW
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.DqAnd72windForShortTimePatternUtils;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.NumberProcessUtils;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.TimeProcessUtils;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.calc.CalcUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
@@ -71,16 +72,7 @@ public class WfDataDqServiceImpl extends ServiceImpl<WfDataDqMapper, WfDataDq> i
         Map<LocalDate, List<DqDayElectricGenDTO>> collect = calcTmp.stream().collect(Collectors.groupingBy(DqDayElectricGenDTO::getCalcUseDate));
         collect.forEach((k, l) -> {
             //# 积分
-            BigDecimal multi = new BigDecimal("0.125");
-
-            BigDecimal calc = new BigDecimal("0");
-            int size = l.size();
-            for (int i = 0; i < size - 1; i++) {
-                BigDecimal genPre = l.get(i).getElectricGen();
-                BigDecimal genPost = l.get(i + 1).getElectricGen();
-                calc = calc.add(genPre).add(genPost);
-            }
-            calc = calc.multiply(multi).setScale(3, BigDecimal.ROUND_HALF_EVEN);
+            BigDecimal calc = CalcUtils.calcFutureDayElectricGen(l);
             //# 积分
             DqDayElectricGenDTO dqDayElectricGenDTO = DqDayElectricGenDTO.builder()
                     .electricGen(calc)
