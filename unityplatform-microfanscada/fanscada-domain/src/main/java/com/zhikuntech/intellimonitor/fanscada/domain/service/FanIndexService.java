@@ -1,9 +1,6 @@
 package com.zhikuntech.intellimonitor.fanscada.domain.service;
 
 
-import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
-import com.zhikuntech.intellimonitor.fanscada.domain.vo.Loop;
-
 import java.util.List;
 
 public interface FanIndexService {
@@ -13,6 +10,7 @@ public interface FanIndexService {
      * 查询回路
      * @return
      */
+    void getFanBaseInfoList(String userName, List<Integer> list) throws Exception;
     void getFanBaseInfoList(String userName) throws Exception;
 
 }

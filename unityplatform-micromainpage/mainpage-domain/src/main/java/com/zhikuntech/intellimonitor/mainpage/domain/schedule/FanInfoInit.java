@@ -57,7 +57,6 @@ public class FanInfoInit {
         }
     }
 
-
     private static String getTime(Integer month, Integer day) {
         Calendar cal = Calendar.getInstance();
         cal.set(cal.get(Calendar.YEAR), null == month ? cal.get(Calendar.MONTH) : month,

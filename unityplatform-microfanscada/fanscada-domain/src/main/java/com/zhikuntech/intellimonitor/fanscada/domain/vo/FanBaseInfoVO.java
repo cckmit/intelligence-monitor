@@ -19,28 +19,37 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(value = "",description = "首页风机返回类")
-public class FanBaseInfo {
+public class FanBaseInfoVO {
 
     @ApiModelProperty("编号")
     private String fanNumber;
 
-    @GoldenId(value = 22)
+    @GoldenId(value = 1)
     @ApiModelProperty("风速")
     private BigDecimal windSpeed;
 
-    @GoldenId(value = 24)
+    @GoldenId(value = 3)
     @ApiModelProperty("转速")
     private BigDecimal rotateSpeed;
 
-
-    @GoldenId(value = 21)
+    @GoldenId(value = 2)
     @ApiModelProperty("有功功率")
     private BigDecimal activePower;
 
-    @GoldenId(value = 23)
+    @GoldenId(value = 179)
     @ApiModelProperty("无功功率")
     private BigDecimal reactivePower;
 
+    @GoldenId(value = 12)
     @ApiModelProperty("状态")
-    private String fanStatus;
+    private Integer fanStatus;
+
+    @GoldenId(value = 13)
+    @ApiModelProperty("总发电量")
+    private BigDecimal energy;
+
+    @ApiModelProperty("日发电量")
+    private Double energyForDay;
+
+
 }
