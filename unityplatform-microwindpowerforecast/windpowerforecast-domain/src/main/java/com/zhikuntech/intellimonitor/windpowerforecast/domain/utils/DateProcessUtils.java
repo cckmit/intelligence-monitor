@@ -5,8 +5,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Objects;
 
@@ -38,6 +40,18 @@ public class DateProcessUtils {
 
     public static LocalDateTime parseToLocalDateTime(String dateStr) {
         return dateToLocalDateTime(parseDateY4M2D2(dateStr));
+    }
+
+    public static LocalDate parseToLocalDate(String dateStr) {
+        return dateToLocalDateTime(parseDateY4M2D2(dateStr)).toLocalDate();
+    }
+
+    public static String fetchDayBegin(LocalDate localDate) {
+        return localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
+
+    public static String fetchTomorrowBegin(LocalDate localDate) {
+        return localDate.plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
 }
