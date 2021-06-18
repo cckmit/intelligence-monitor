@@ -44,7 +44,7 @@ public class WebSocketServer {
         onlineCount.incrementAndGet();
         this.session = session;
         this.username = username;
-        clients.put(this.username, this.session);
+        clients.put(username, session);
         log.info("有新连接加入：{}，当前在线人数为：{}", this.username, onlineCount.get());
     }
 

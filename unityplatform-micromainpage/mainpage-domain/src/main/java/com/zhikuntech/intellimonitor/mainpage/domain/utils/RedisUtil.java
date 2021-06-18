@@ -141,6 +141,9 @@ public class RedisUtil {
         return redisTemplate.keys(key);
     }
 
+    public Set<String> getKeys(String pattern) {
+        return stringRedisTemplate.keys(pattern + "*");
+    }
 
     /**
      * 获取键值
