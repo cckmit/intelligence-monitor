@@ -11,6 +11,8 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.CfListPatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataCfService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.DateProcessUtils;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.TimeProcessUtils;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.calc.CalcUtils;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.calc.DirectionUtils;
 import org.apache.commons.collections4.CollectionUtils;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -61,10 +64,21 @@ public class WfDataCfServiceImpl extends ServiceImpl<WfDataCfMapper, WfDataCf> i
         QueryWrapper<WfDataCf> queryWrapper = new QueryWrapper<>();
         String queryMode = query.getQueryMode();
         String high = query.getHigh();
-        String dateStr = query.getDateStr();
+
+        String dateStrPre = query.getDateStrPre();
+        String dateStrPost = query.getDateStrPost();
+
+        LocalDateTime pre = DateProcessUtils.parseToLocalDateTime(dateStrPre);
+        LocalDateTime post = DateProcessUtils.parseToLocalDateTime(dateStrPost);
+        if (pre == null || post == null) {
+            return new ArrayList<>();
+        }
+        String preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(pre);
+        String postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(post.plusDays(1));
+
         queryWrapper.eq("high_level", high);
-        queryWrapper.gt("event_date_time", dateStr + " 00:00:00");
-        queryWrapper.le("event_date_time", dateStr + " 23:59:59");
+        queryWrapper.gt("event_date_time", preStr);
+        queryWrapper.le("event_date_time", postStr);
 
         List<WfDataCf> wfDataCfs = getBaseMapper().selectList(queryWrapper);
         if (CollectionUtils.isEmpty(wfDataCfs)) {
@@ -138,7 +152,6 @@ public class WfDataCfServiceImpl extends ServiceImpl<WfDataCfMapper, WfDataCf> i
         // TODO param check
 
         Pager<CfListDTO> pager = new Pager<>(0, new ArrayList<>());
-        pager.setTotalPage(0);
         if (Objects.isNull(query)) {
             return pager;
         }
@@ -147,11 +160,21 @@ public class WfDataCfServiceImpl extends ServiceImpl<WfDataCfMapper, WfDataCf> i
         // criteria
         String queryMode = query.getQueryMode();
         String high = query.getHigh();
-        String dateStr = query.getDateStr();
+
+        String dateStrPre = query.getDateStrPre();
+        String dateStrPost = query.getDateStrPost();
+
+        LocalDateTime pre = DateProcessUtils.parseToLocalDateTime(dateStrPre);
+        LocalDateTime post = DateProcessUtils.parseToLocalDateTime(dateStrPost);
+        if (pre == null || post == null) {
+            return pager;
+        }
+        String preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(pre);
+        String postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(post.plusDays(1));
 
         queryWrapper.eq("high_level", StringUtils.trim(high));
-        queryWrapper.gt("event_date_time", dateStr + " 00:00:00");
-        queryWrapper.le("event_date_time", dateStr + " 23:59:59");
+        queryWrapper.gt("event_date_time", preStr);
+        queryWrapper.le("event_date_time", postStr);
 
         // page
         Page<WfDataCf> queryPage = new Page<>();
@@ -181,8 +204,6 @@ public class WfDataCfServiceImpl extends ServiceImpl<WfDataCfMapper, WfDataCf> i
         }
 
         pager.setTotalCount((int) results.getTotal());
-        pager.setPageSize((int) results.getSize());
-        pager.setTotalPage((int) results.getPages());
 
 
         return pager;

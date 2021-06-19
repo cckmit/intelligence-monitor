@@ -78,8 +78,6 @@ public class WfAnalyseCdqServiceImpl extends ServiceImpl<WfAnalyseCdqMapper, WfA
 
             Pager<CdqPowerAnalysisDTO> resultPage = new Pager<>(0, tmp);
             aggregateDTO.setPager(resultPage);
-            resultPage.setTotalPage((int) page.getPages());
-            resultPage.setPageSize((int) page.getSize());
             resultPage.setTotalCount((int) page.getTotal());
         }
 
