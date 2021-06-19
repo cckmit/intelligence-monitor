@@ -217,7 +217,110 @@ public class DqCalcServiceImpl implements DqCalcService {
             log.warn("过滤数据后无计算数据可用");
             return;
         }
-        // 算法
+
+
+
+        //# 算法-计算Ermse[均方根误差]
+        final BigDecimal fnRes = calcErmse(aggrs);
+        //# 算法-计算Ermse[均方根误差]
+
+        //# 算法-计算EMAE[平均绝对误差]
+        final BigDecimal emae = calcEMAE(aggrs);
+        //# 算法-计算EMAE[平均绝对误差]
+
+        //# TODO 最大预测误差
+
+        //# TODO 最大预测误差
+
+        //# TODO 相关系数R
+
+        //# TODO 相关系数R
+
+        //# 准确率r1
+        BigDecimal r1Ratio = new BigDecimal("0");
+        for (ErmseAggregateCalc aggr : aggrs) {
+            List<BigDecimal> dqProduces = aggr.getDqProduce();
+            List<BigDecimal> zrCapsProduces = aggr.getZrCapsProduce();
+
+            // ck
+            BigDecimal ck = aggr.getCap();
+            // ppk
+            BigDecimal ppk = new BigDecimal("0");
+            for (BigDecimal dqProduce : dqProduces) {
+                ppk = ppk.add(dqProduce);
+            }
+            ppk = ppk.divide(BigDecimal.valueOf(dqProduces.size()), 3, RoundingMode.HALF_UP);
+            // pmk
+            BigDecimal pmk = new BigDecimal("0");
+            for (BigDecimal zrCapsProduce : zrCapsProduces) {
+                pmk = pmk.add(zrCapsProduce);
+            }
+            pmk = pmk.divide(BigDecimal.valueOf(zrCapsProduces.size()), 3, RoundingMode.HALF_UP);
+
+
+        }
+        //# 准确率r1
+        BigDecimal r1 = new BigDecimal("0");
+        // (1 - Ermse) * 100%
+        r1 = new BigDecimal("1").subtract(fnRes, new MathContext(3, RoundingMode.HALF_EVEN)).multiply(new BigDecimal("100"));
+        //# 准确率r1
+
+        //# TODO 合格率r2
+
+        //# TODO 合格率r2
+
+        // 存储
+        LocalDateTime bgDate = TimeProcessUtils.parseLocalDateTimeWithSecondPattern(bg);
+        LocalDateTime dayBegin = LocalDateTime.of(bgDate.toLocalDate(), LocalTime.MIN);
+        QueryWrapper<WfAnalyseDq> analyseDqQueryWrapper = new QueryWrapper<>();
+        analyseDqQueryWrapper.ge("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dayBegin));
+        WfAnalyseDq analyseDq = analyseDqService.getBaseMapper().selectOne(analyseDqQueryWrapper);
+        if (Objects.nonNull(analyseDq)) {
+            analyseDq.setAvgRmse(fnRes);
+            analyseDq.setAvgMae(emae);
+            analyseDqService.getBaseMapper().updateById(analyseDq);
+        } else {
+            // todo
+            WfAnalyseDq nst = WfAnalyseDq.builder()
+                    .calcDate(dayBegin)
+                    .avgMae(fnRes)
+                    .avgMae(emae)
+                    .build();
+            analyseDqService.getBaseMapper().insert(nst);
+        }
+    }
+
+    private static BigDecimal calcEMAE(List<ErmseAggregateCalc> aggrs) {
+        BigDecimal emae = new BigDecimal("0");
+        for (ErmseAggregateCalc aggr : aggrs) {
+            List<BigDecimal> dqProduces = aggr.getDqProduce();
+            List<BigDecimal> zrCapsProduces = aggr.getZrCapsProduce();
+
+            // ck
+            BigDecimal ck = aggr.getCap();
+            // ppk
+            BigDecimal ppk = new BigDecimal("0");
+            for (BigDecimal dqProduce : dqProduces) {
+                ppk = ppk.add(dqProduce);
+            }
+            ppk = ppk.divide(BigDecimal.valueOf(dqProduces.size()), 3, RoundingMode.HALF_UP);
+            // pmk
+            BigDecimal pmk = new BigDecimal("0");
+            for (BigDecimal zrCapsProduce : zrCapsProduces) {
+                pmk = pmk.add(zrCapsProduce);
+            }
+            pmk = pmk.divide(BigDecimal.valueOf(zrCapsProduces.size()), 3, RoundingMode.HALF_UP);
+
+            // |pmk - ppk| / ck
+            BigDecimal kkk = pmk.subtract(ppk).abs().divide(ck, 3, RoundingMode.HALF_EVEN);
+            emae = emae.add(kkk);
+        }
+        // r / n
+        emae = emae.divide(new BigDecimal(aggrs.size()), 3, RoundingMode.HALF_EVEN);
+        return emae;
+    }
+
+    private static BigDecimal calcErmse(List<ErmseAggregateCalc> aggrs) {
         BigDecimal allAggre = new BigDecimal("0");
         for (ErmseAggregateCalc aggr : aggrs) {
             List<BigDecimal> dqProduces = aggr.getDqProduce();
@@ -238,7 +341,7 @@ public class DqCalcServiceImpl implements DqCalcService {
             }
             pmk = pmk.divide(BigDecimal.valueOf(zrCapsProduces.size()), 3, RoundingMode.HALF_UP);
 
-            // (pmk - ppk) / ck
+            // [(pmk - ppk) / ck] ^ 2
             BigDecimal kkk = pmk.subtract(ppk).divide(ck, 3, RoundingMode.HALF_EVEN)
                     .pow(2);
             allAggre = allAggre.add(kkk);
@@ -246,25 +349,7 @@ public class DqCalcServiceImpl implements DqCalcService {
         // sqrt(r/n)
         double v = allAggre.divide(new BigDecimal(aggrs.size()), 3, RoundingMode.HALF_EVEN).doubleValue();
         v = Math.sqrt(v);
-        final BigDecimal fnRes = new BigDecimal(v, new MathContext(3, RoundingMode.HALF_EVEN));
-
-        // 存储
-        LocalDateTime bgDate = TimeProcessUtils.parseLocalDateTimeWithSecondPattern(bg);
-        LocalDateTime dayBegin = LocalDateTime.of(bgDate.toLocalDate(), LocalTime.MIN);
-        QueryWrapper<WfAnalyseDq> analyseDqQueryWrapper = new QueryWrapper<>();
-        analyseDqQueryWrapper.ge("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dayBegin));
-        WfAnalyseDq analyseDq = analyseDqService.getBaseMapper().selectOne(analyseDqQueryWrapper);
-        if (Objects.nonNull(analyseDq)) {
-            analyseDq.setAvgRmse(fnRes);
-            analyseDqService.getBaseMapper().updateById(analyseDq);
-        } else {
-            // todo
-            WfAnalyseDq nst = WfAnalyseDq.builder()
-                    .calcDate(dayBegin)
-                    .avgMae(fnRes)
-                    .build();
-            analyseDqService.getBaseMapper().insert(nst);
-        }
+        return new BigDecimal(v, new MathContext(3, RoundingMode.HALF_EVEN));
     }
 
 
