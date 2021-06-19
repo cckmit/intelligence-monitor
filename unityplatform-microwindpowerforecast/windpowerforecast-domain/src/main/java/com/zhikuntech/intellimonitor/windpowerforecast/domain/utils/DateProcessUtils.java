@@ -20,12 +20,19 @@ public class DateProcessUtils {
 
     private static final DateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
-    public static Date parseDateY4M2D2(String dateStr) {
+    /**
+     * {@code synchronized }
+     * 关键字必须
+     * @param dateStr   日期字符串
+     * @return          {@link Date}
+     */
+    public static synchronized Date parseDateY4M2D2(String dateStr) {
         Date parse = null;
         try {
             dateStr = StringUtils.trim(dateStr);
             parse = FORMAT.parse(dateStr);
         } catch (Exception ex) {
+            ex.printStackTrace();
             log.error("parse date[{}] occur error:[{}]", dateStr, ex.getMessage());
         }
         return parse;
