@@ -39,4 +39,6 @@ public interface BackendToGoldenService extends IService<BackendToGolden> {
     int[] getGoldenIdByNumberAndId(GoldenIdQuery goldenIdQuery);
 
     Integer getGoldenIdByNumberAndId(Integer fanNumber, int value);
+
+    List<BackendToGolden> selectList(List<Integer> list);
 }
