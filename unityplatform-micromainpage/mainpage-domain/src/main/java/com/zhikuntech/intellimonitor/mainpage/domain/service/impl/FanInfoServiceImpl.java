@@ -74,29 +74,32 @@ public class FanInfoServiceImpl implements FanInfoService {
                 list.add(fanRuntimeDto);
             }
             goldenUtil.subscribeSnapshots(user, ids, (data) -> {
-                if (!WebSocketServer.clients.containsKey(user)) {
-                    return;
-                } else {
-                    long l0 = System.currentTimeMillis();
-                    List<FanRuntimeDTO> dtos = InjectPropertiesUtil.injectByAnnotation(list, data);
-                    if (null != dtos) {
-                        for (FanRuntimeDTO dto : dtos) {
-                            double powerGeneration = 0;
-                            Object obj = redisUtil.get(FanConstant.MONTHLY_POWER + dto.getNumber());
+                try {
+                    if (WebSocketServer.clients.containsKey(user)) {
+                        long l0 = System.currentTimeMillis();
+                        List<FanRuntimeDTO> dtos = InjectPropertiesUtil.injectByAnnotation(list, data);
+                        if (null != dtos) {
+                            for (FanRuntimeDTO dto : dtos) {
+                                double powerGeneration = 0;
+                                Object obj = redisUtil.get(FanConstant.MONTHLY_POWER + dto.getNumber());
 //                            powerGeneration = null == obj ? 0 : (double) obj;
-                            if (null == obj) {
-                                int id = (int) redisUtil.get(FanConstant.GOLDEN_ID_POWER + dto.getNumber());
-                                powerGeneration = fanInfoInit.dataResetFloat(FanConstant.MONTHLY_POWER + dto.getNumber(), id, 0);
-                            } else {
-                                powerGeneration = (double) obj;
+                                if (null == obj) {
+                                    int id = (int) redisUtil.get(FanConstant.GOLDEN_ID_POWER + dto.getNumber());
+                                    powerGeneration = fanInfoInit.dataResetFloat(FanConstant.MONTHLY_POWER + dto.getNumber(), id, 0);
+                                } else {
+                                    powerGeneration = (double) obj;
+                                }
+                                dto.setMonthlyPowerGeneration(dto.getMonthlyPowerGeneration() - powerGeneration);
                             }
-                            dto.setMonthlyPowerGeneration(dto.getMonthlyPowerGeneration() - powerGeneration);
+                            String jsonString = JSONObject.toJSONString(dtos);
+                            webSocketServer.sendMessage(jsonString, user);
                         }
-                        String jsonString = JSONObject.toJSONString(dtos);
-                        webSocketServer.sendMessage(jsonString, user);
+                        long l1 = System.currentTimeMillis();
+                        log.info("实时数据，当前用户{}，处理时间{}，消息时间{}", user, l1 - l0, data[0].getDate());
                     }
-                    long l1 = System.currentTimeMillis();
-                    log.info("实时数据，当前用户{}，处理时间{}，消息时间{}", user, l1 - l0, data[0].getDate());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    goldenUtil.cancel(user);
                 }
             });
         }
@@ -130,18 +133,21 @@ public class FanInfoServiceImpl implements FanInfoService {
                 list.add(new FanStatisticsDTO());
             }
             goldenUtil.subscribeSnapshots(user, ids, (data) -> {
-                if (!WebSocketServer.clients.containsKey(user)) {
-                    return;
-                } else {
-                    long l0 = System.currentTimeMillis();
-                    List<FanStatisticsDTO> dtos = InjectPropertiesUtil.injectByAnnotation(list, data);
-                    if (null != dtos) {
-                        FanStatisticsDTO dto = injecctPorerties(dtos);
-                        String jsonString = JSONObject.toJSONString(dto);
-                        webSocketServer.sendMessage(jsonString, user);
+                try {
+                    if (WebSocketServer.clients.containsKey(user)) {
+                        long l0 = System.currentTimeMillis();
+                        List<FanStatisticsDTO> dtos = InjectPropertiesUtil.injectByAnnotation(list, data);
+                        if (null != dtos) {
+                            FanStatisticsDTO dto = injecctPorerties(dtos);
+                            String jsonString = JSONObject.toJSONString(dto);
+                            webSocketServer.sendMessage(jsonString, user);
+                        }
+                        long l1 = System.currentTimeMillis();
+                        log.info("统计数据，当前用户{}，处理时间{}，消息时间{}", user, l1 - l0, data[0].getDate());
                     }
-                    long l1 = System.currentTimeMillis();
-                    log.info("统计数据，当前用户{}，处理时间{}，消息时间{}", user, l1 - l0, data[0].getDate());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    goldenUtil.cancel(user);
                 }
             });
         }
