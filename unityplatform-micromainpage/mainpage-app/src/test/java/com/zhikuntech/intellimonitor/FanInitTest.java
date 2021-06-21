@@ -50,13 +50,14 @@ public class FanInitTest {
 //        redisUtil.set(FanConstant.MONTHLY_ONLINE_ALL, 0.0);
 //        redisUtil.set(FanConstant.ANNUAL_ONLINE_ALL, 0.0);
 
-        BackendToGoldenQuery query = new BackendToGoldenQuery();
-        List<BackendToGolden> list = backendToGoldenService.getGoldenIdByBackendIdOrNumber(query);
-        for (int i = 1; i < 64; i++) {
-            for (BackendToGolden e : list) {
-                redisUtil.setString(FanConstant.GOLDEN_ID + e.getBackendId() + "_" + i, e.getGoldenId().toString());
-            }
-        }
+//        BackendToGoldenQuery query = new BackendToGoldenQuery();
+//        query.setNumber(1);
+//        List<BackendToGolden> list = backendToGoldenService.getGoldenIdByBackendIdOrNumber(query);
+//        for (int i = 1; i < 64; i++) {
+//            for (BackendToGolden e : list) {
+//                redisUtil.setString(FanConstant.GOLDEN_ID + e.getBackendId() + "_" + i, e.getGoldenId().toString());
+//            }
+//        }
 
     }
 

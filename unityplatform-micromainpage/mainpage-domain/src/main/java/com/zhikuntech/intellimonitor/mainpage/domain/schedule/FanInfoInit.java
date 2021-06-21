@@ -9,13 +9,12 @@ import com.zhikuntech.intellimonitor.mainpage.domain.service.BackendToGoldenServ
 import com.zhikuntech.intellimonitor.mainpage.domain.utils.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -24,7 +23,10 @@ import java.util.stream.Collectors;
  */
 @Component
 @Slf4j
-public class FanInfoInit {
+public class FanInfoInit implements CommandLineRunner {
+
+    public static Map<String,Integer> GOLDEN_ID_MAP = new HashMap<>();
+
     @Autowired
     private RedisUtil redisUtil;
 
@@ -98,6 +100,18 @@ public class FanInfoInit {
         for (Integer i : collect) {
             for (BackendToGolden e : list) {
                 redisUtil.setString(FanConstant.GOLDEN_ID + e.getBackendId() + "_" + i, e.getGoldenId().toString());
+            }
+        }
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        BackendToGoldenQuery query = new BackendToGoldenQuery();
+        query.setNumber(1);
+        List<BackendToGolden> list = backendToGoldenService.getGoldenIdByBackendIdOrNumber(query);
+        for (int i = 1; i < 64; i++) {
+            for (BackendToGolden e : list) {
+                GOLDEN_ID_MAP.put(FanConstant.GOLDEN_ID + e.getBackendId() + "_" + i, e.getGoldenId());
             }
         }
     }
