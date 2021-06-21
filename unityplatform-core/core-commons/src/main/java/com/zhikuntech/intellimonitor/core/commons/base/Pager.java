@@ -1,6 +1,7 @@
 package com.zhikuntech.intellimonitor.core.commons.base;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +30,24 @@ public class Pager<T> implements Serializable {
     public Pager(int totalCount, List<T> list) {
         this.totalCount = totalCount;
         this.list = list;
+    }
+
+    /**
+     * 构造函数。
+     *
+     * @param list       当前页的记录列表。
+     */
+    public Pager(List<T> list) {
+        this.list = list;
+        if (list == null) {
+            this.totalCount = 0;
+        } else {
+            this.totalCount = list.size();
+        }
+    }
+
+    public static <O> Pager<O> emptyPager() {
+        return new Pager<>(new ArrayList<>());
     }
 
     /**

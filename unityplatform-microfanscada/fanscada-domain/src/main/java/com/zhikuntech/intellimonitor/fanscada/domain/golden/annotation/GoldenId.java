@@ -14,4 +14,6 @@ import java.lang.annotation.Target;
 public @interface GoldenId {
 
      int value() default 0;
+
+     int num() default 0;
 }
