@@ -20,6 +20,7 @@ public class BackendToGolden {
      * 表id
      */
     @ApiModelProperty("表id")
+    @TableField("id")
     private int id;
 
     /**
@@ -40,12 +41,14 @@ public class BackendToGolden {
      * 风机编号
      */
     @ApiModelProperty("风机编号")
+    @TableField("number")
     private int number;
 
     /**
      * 描述信息
      */
     @ApiModelProperty("描述信息")
+    @TableField("description")
     private String description;
 
     /**

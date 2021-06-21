@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfAssessChangeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfAssessChange">
+        <id column="id" property="id" />
+        <result column="org_id" property="orgId" />
+        <result column="day_ref_id" property="dayRefId" />
+        <result column="calc_date" property="calcDate" />
+        <result column="dq_hiatus" property="dqHiatus" />
+        <result column="dq_ratio" property="dqRatio" />
+        <result column="cdq_hiatus" property="cdqHiatus" />
+        <result column="cdq_ratio" property="cdqRatio" />
+        <result column="exec_person" property="execPerson" />
+        <result column="guardian" property="guardian" />
+        <result column="fix_reason" property="fixReason" />
+        <result column="fix_time" property="fixTime" />
+        <result column="create_time" property="createTime" />
+        <result column="newest" property="newest" />
+        <result column="pre_id" property="preId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, org_id, day_ref_id, calc_date, dq_hiatus, dq_ratio, cdq_hiatus, cdq_ratio, exec_person, guardian, fix_reason, fix_time, create_time, newest, pre_id
+    </sql>
+
+</mapper>

@@ -1,11 +1,11 @@
 package com.zhikuntech.intellimonitor.fanscada.domain.service;
 
 
-import com.zhikuntech.intellimonitor.fanscada.domain.golden.annotation.GoldenId;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGolden;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGoldenQuery;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGoldenQueryList;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.GoldenIdQuery;
-import io.swagger.models.auth.In;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
  * @Version 1.0
  */
 @Service
-public interface BackendToGoldenService {
+public interface BackendToGoldenService extends IService<BackendToGolden> {
     /**
      * 根据数据库表中编号或者风机编号查询golden数据库表中id（单条）
      * @return
@@ -36,7 +36,7 @@ public interface BackendToGoldenService {
      * @param goldenIdQuery
      * @return
      */
-    List<Integer> getGoldenIdByNumberAndId(GoldenIdQuery goldenIdQuery);
+    int[] getGoldenIdByNumberAndId(GoldenIdQuery goldenIdQuery);
 
     Integer getGoldenIdByNumberAndId(Integer fanNumber, int value);
 }
