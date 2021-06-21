@@ -32,6 +32,20 @@ public class Pager<T> implements Serializable {
     }
 
     /**
+     * 构造函数。
+     *
+     * @param list       当前页的记录列表。
+     */
+    public Pager(List<T> list) {
+        this.list = list;
+        if (list == null) {
+            this.totalCount = 0;
+        } else {
+            this.totalCount = list.size();
+        }
+    }
+
+    /**
      * @return the totalCount
      */
     public int getTotalCount() {
