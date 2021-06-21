@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfAssessMonthMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfAssessMonth">
+        <id column="id" property="id" />
+        <result column="org_id" property="orgId" />
+        <result column="version" property="version" />
+        <result column="calc_date" property="calcDate" />
+        <result column="auto_electric" property="autoElectric" />
+        <result column="auto_pay" property="autoPay" />
+        <result column="fnl_electric" property="fnlElectric" />
+        <result column="fnl_pay" property="fnlPay" />
+        <result column="schedule_electric" property="scheduleElectric" />
+        <result column="schedule_pay" property="schedulePay" />
+        <result column="contrast_electric" property="contrastElectric" />
+        <result column="contrast_pay" property="contrastPay" />
+        <result column="fnl_contrast_electric" property="fnlContrastElectric" />
+        <result column="fnl_contrast_pay" property="fnlContrastPay" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, org_id, version, calc_date, auto_electric, auto_pay, fnl_electric, fnl_pay, schedule_electric, schedule_pay, contrast_electric, contrast_pay, fnl_contrast_electric, fnl_contrast_pay, create_time, update_time
+    </sql>
+
+</mapper>

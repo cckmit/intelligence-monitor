@@ -61,6 +61,13 @@
         order by `number`
 
     </select>
+    <select id="getList" resultType="com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGolden">
+        select * from mp_backen_to_golden
+        where backendId in
+        <foreach collection="list" item="backendId" open="(" close=")" separator=",">
+            #{backendId}
+        </foreach>
+    </select>
 
 
 </mapper>

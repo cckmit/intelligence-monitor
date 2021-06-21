@@ -1,12 +1,13 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.golden;
 
+import com.alibaba.druid.util.StringUtils;
 import com.rtdb.api.model.RtdbData;
 import com.rtdb.api.model.ValueData;
 import com.zhikuntech.intellimonitor.core.commons.constant.FanConstant;
 import com.zhikuntech.intellimonitor.mainpage.domain.golden.annotation.GoldenId;
+import com.zhikuntech.intellimonitor.mainpage.domain.schedule.FanInfoInit;
 import com.zhikuntech.intellimonitor.mainpage.domain.utils.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -18,13 +19,12 @@ import java.util.List;
  */
 @Slf4j
 public class InjectPropertiesUtil<T> {
-    public static <T> T injectByAnnotation(T t, RtdbData[] data) {
 
+    public static <T> T injectByAnnotation(T t, Integer num, RtdbData[] data) {
         Field[] fields = t.getClass().getDeclaredFields();
         for (Field field : fields) {
             GoldenId goldenId = field.getDeclaredAnnotation(GoldenId.class);
-
-            int value = null == goldenId ? 0 : goldenId.value();
+            int value = null == goldenId ? 0 : getGoldenId(goldenId.value(), num);
             for (RtdbData rtdbData : data) {
                 if (value == rtdbData.getId()) {
                     try {
@@ -42,10 +42,11 @@ public class InjectPropertiesUtil<T> {
 
     public static <T> List<T> injectByAnnotation(List<T> t, RtdbData[] data) {
         Field[] fields = t.get(0).getClass().getDeclaredFields();
-        for (T item : t) {
+        for (int i = 0; i < t.size(); i++) {
             for (Field field : fields) {
+                T item = t.get(i);
                 GoldenId goldenId = field.getDeclaredAnnotation(GoldenId.class);
-                int value = null == goldenId ? 0 : goldenId.value();
+                int value = null == goldenId ? 0 : getGoldenId(goldenId.value(), i + 1);
                 for (RtdbData rtdbData : data) {
                     if (value == rtdbData.getId()) {
                         try {
@@ -67,9 +68,8 @@ public class InjectPropertiesUtil<T> {
         for (int i = 0; i < t.size(); i++) {
             for (Field field : fields) {
                 GoldenId goldenId = field.getDeclaredAnnotation(GoldenId.class);
-                int value = null == goldenId ? 0 : goldenId.value();
-                value = getGoldenId(value, i);
                 T item = t.get(i);
+                int value = null == goldenId ? 0 : getGoldenId(goldenId.value(), i + 1);
                 for (ValueData valueData : data) {
                     if (value == valueData.getId()) {
                         try {
@@ -98,12 +98,11 @@ public class InjectPropertiesUtil<T> {
         return t;
     }
 
-    public static <T> T injectByAnnotation(T t, Integer num,List<ValueData> data) {
+    public static <T> T injectByAnnotation(T t, Integer num, List<ValueData> data) {
         Field[] fields = t.getClass().getDeclaredFields();
         for (Field field : fields) {
             GoldenId goldenId = field.getDeclaredAnnotation(GoldenId.class);
-            int value = null == goldenId ? 0 : goldenId.value();
-            value = getGoldenId(value, num);
+            int value = null == goldenId ? 0 : getGoldenId(goldenId.value(), num);
             for (ValueData valueData : data) {
                 if (value == valueData.getId()) {
                     try {
@@ -137,16 +136,12 @@ public class InjectPropertiesUtil<T> {
      */
     private static int getGoldenId(Integer value, Integer fanNumber) {
         String redisKey;
-        if (null==fanNumber){
+        if (null == fanNumber) {
             redisKey = FanConstant.GOLDEN_ID + value;
-        }else {
+        } else {
             redisKey = FanConstant.GOLDEN_ID + value + "_" + fanNumber;
         }
-        RedisUtil redisUtil = new RedisUtil();
-        String string = redisUtil.getString(redisKey);
-        if (StringUtils.isEmpty(string)) {
-            return 0;
-        }
-        return Integer.parseInt(string);
+        Integer integer = FanInfoInit.GOLDEN_ID_MAP.get(redisKey);
+        return null == integer ? 0 : integer;
     }
 }
