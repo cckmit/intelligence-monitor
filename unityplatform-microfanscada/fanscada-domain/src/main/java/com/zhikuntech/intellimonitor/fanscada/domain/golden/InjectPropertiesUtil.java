@@ -211,25 +211,27 @@ public class InjectPropertiesUtil<T> {
 
         QueryWrapper<BackendToGolden> query = new QueryWrapper<>();
         query.eq("number", number);
+        query.in("backendId", backendList);
         List<BackendToGolden> backendToGoldenList = mapper.selectList(query);
         try {
             List<ValueData> valueDataList = goldenUtil.getSnapshots(goldenIds);
             for (Field field : fields) {
-                int fieldValue = field.getAnnotation(GoldenId.class).value();
                 if (field.getAnnotation(GoldenId.class) == null) {
                     continue;
                 }
+                int fieldValue = field.getAnnotation(GoldenId.class).value();
                 BackendToGolden backend = null;
                 for (BackendToGolden backendToGolden : backendToGoldenList) {
                     if (backendToGolden.getBackendId() == fieldValue) {
                         backend = backendToGolden;
+                        break;
                     }
                 }
                 if (backend == null) {
                     continue;
                 }
                 for (ValueData valueData : valueDataList) {
-                    if (valueData.getId() == backend.getGoldenId()) {
+                     if (valueData.getId() == backend.getGoldenId()) {
                         field.setAccessible(true);
                         Double dataValue = valueData.getValue();
                         Class<?> fieldType = field.getType();
