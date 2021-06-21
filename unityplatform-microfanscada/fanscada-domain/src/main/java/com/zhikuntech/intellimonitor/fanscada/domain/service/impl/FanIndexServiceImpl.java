@@ -15,6 +15,7 @@ import com.zhikuntech.intellimonitor.fanscada.domain.vo.FanBaseInfoVO;
 import com.zhikuntech.intellimonitor.fanscada.domain.vo.LoopVO;
 import com.zhikuntech.intellimonitor.fanscada.domain.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -90,17 +91,16 @@ public class FanIndexServiceImpl implements FanIndexService {
         //获取所有风场的number,封装其对应的数据字段ID
         //风速,转速,有功功率,无功功率,状态,日发电总量=有功能量输出,
         List<Integer> idList = new ArrayList<>();
-        idList.add(21);
-        idList.add(22);
-        idList.add(23);
-        idList.add(24);
-        idList.add(177);
-        idList.add(101);
+        idList.add(1);
+        idList.add(2);
+        idList.add(3);
+        idList.add(12);
+        idList.add(13);
+        idList.add(179);
 
         GoldenIdQuery query = new GoldenIdQuery();
         query.setDataIds(idList);
-        List<Integer> goldenIds = backendToGoldenService.getGoldenIdByNumberAndId(query);
-        int[] ints = goldenIds.stream().mapToInt(Integer::intValue).toArray();
+        int[] ints= backendToGoldenService.getGoldenIdByNumberAndId(query);
 
         if (WebSocketServer.clients.containsKey(username)) {
             List<FanBaseInfoVO> list1 = new ArrayList<>();
@@ -217,20 +217,20 @@ public class FanIndexServiceImpl implements FanIndexService {
         }
     }
 
+
     @Override
     public List<LoopVO> getFanBaseInfoList() throws Exception {
         List<Integer> idList = new ArrayList<>();
-        idList.add(21);
-        idList.add(22);
-        idList.add(23);
-        idList.add(24);
-        idList.add(177);
-        idList.add(101);
+        idList.add(1);
+        idList.add(2);
+        idList.add(3);
+        idList.add(12);
+        idList.add(13);
+        idList.add(179);
 
         GoldenIdQuery query = new GoldenIdQuery();
         query.setDataIds(idList);
-        List<Integer> goldenIds = backendToGoldenService.getGoldenIdByNumberAndId(query);
-        int[] ints = goldenIds.stream().mapToInt(Integer::intValue).toArray();
+        int[] ints =  backendToGoldenService.getGoldenIdByNumberAndId(query);
 
         List<FanBaseInfoVO> list = new ArrayList<>();
         for (int i = 1; i < 64; i++) {
@@ -249,7 +249,7 @@ public class FanIndexServiceImpl implements FanIndexService {
         List<FanBaseInfoVO> list9 = new ArrayList<>();
         List<FanBaseInfoVO> list10 = new ArrayList<>();
         List<ValueData> snapshots = goldenUtil.getSnapshots(ints);
-        List<FanBaseInfoVO> fanBaseInfoVOS = InjectPropertiesUtil.injectByAnnotationForBigdecimal(list, snapshots);
+        List<FanBaseInfoVO> fanBaseInfoVOS = InjectPropertiesUtil.injectByAnnotationForBigdecimal(list, snapshots,redisUtil,backendToGoldenService);
         if (fanBaseInfoVOS==null){
             return null;
         }
@@ -314,6 +314,9 @@ public class FanIndexServiceImpl implements FanIndexService {
                 }
                 //当日零点的总发电量
                 String string = redisUtil.getString(FanConstant.DAILY_POWER);
+                if (StringUtils.isBlank(string)){
+                    string = "0";
+                }
                 BigDecimal v = BigDecimal.valueOf(Double.parseDouble(string));
                 BigDecimal dayEnergy = energy.subtract(v);//日发电量
 
@@ -332,7 +335,5 @@ public class FanIndexServiceImpl implements FanIndexService {
             resultList.add(loopVO);
         }
         return resultList;
-
-
     }
 }
