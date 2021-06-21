@@ -1,10 +1,14 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfTimeBase;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfTimeBaseMapper;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfTimeBaseService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.DateProcessUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -12,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 /**
@@ -28,13 +33,33 @@ public class WfTimeBaseServiceImpl extends ServiceImpl<WfTimeBaseMapper, WfTimeB
 
     @Override
     public void generateCurDateData() {
+        // 生成当日的数据
+        this.generateCurDateData(LocalDate.now());
+    }
+
+    @Override
+    public
+    // 同步调用
+    synchronized
+    void generateCurDateData(LocalDate currentDate) {
+        //# 生成前判断数据是否已经存在
+        String bgStr = DateProcessUtils.fetchDayBegin(currentDate);
+        String endStr = DateProcessUtils.fetchTomorrowBegin(currentDate);
+        QueryWrapper<WfTimeBase> timeBaseQueryWrapper = new QueryWrapper<>();
+        timeBaseQueryWrapper.gt("date_time", bgStr);
+        timeBaseQueryWrapper.le("date_time", endStr);
+        List<WfTimeBase> timeBaseList = getBaseMapper().selectList(timeBaseQueryWrapper);
+        if (CollectionUtils.isNotEmpty(timeBaseList)) {
+            log.warn("时间:[{}]已存在.", currentDate);
+            return;
+        }
+        //# 生成前判断数据是否已经存在
 
         /*
             时间基准
          */
-        LocalDate now = LocalDate.now();
         LocalTime min = LocalTime.MIN;
-        LocalDateTime dayBase = LocalDateTime.of(now, min);
+        LocalDateTime dayBase = LocalDateTime.of(currentDate, min);
 
         /*
             一分钟
@@ -83,15 +108,22 @@ public class WfTimeBaseServiceImpl extends ServiceImpl<WfTimeBaseMapper, WfTimeB
         saveBatch(baseMinuteOne);
         saveBatch(baseMinuteFive);
         saveBatch(baseMinuteFif);
+
     }
 
-    @Override
-    public void generateCurDateData(LocalDate localDate) {
-        // TODO
-    }
+    static Pattern yyyyMMddPattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
 
     @Override
-    public void generateCurDateData(String localDate) {
-        // TODO
+    public void generateCurDateData(String dateStr) {
+        // 格式校验
+        dateStr = StringUtils.trim(dateStr);
+        boolean matches = yyyyMMddPattern.matcher(dateStr).matches();
+        if (!matches) {
+            log.warn("时间[{}]不符合格式[yyyy-MM-dd]", dateStr);
+            return;
+        }
+
+        LocalDate localDate = DateProcessUtils.parseToLocalDate(dateStr);
+        this.generateCurDateData(localDate);
     }
 }

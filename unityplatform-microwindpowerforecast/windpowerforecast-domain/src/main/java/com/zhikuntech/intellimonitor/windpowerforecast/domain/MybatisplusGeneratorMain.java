@@ -109,7 +109,7 @@ public class MybatisplusGeneratorMain {
             @Override
             public boolean isCreate(ConfigBuilder configBuilder, FileType fileType, String filePath) {
 
-                if (fileType == FileType.SERVICE || fileType == FileType.SERVICE_IMPL) {
+                if (fileType == FileType.SERVICE || fileType == FileType.SERVICE_IMPL || fileType == FileType.MAPPER) {
                     // 已经生成的service可以不重复生成
                     return !new File(filePath).exists();
                 }
@@ -134,7 +134,7 @@ public class MybatisplusGeneratorMain {
         strategy.setRestControllerStyle(true);
 
         //- 表名称
-        strategy.setInclude("wf_basic_mapping");
+        strategy.setInclude("wf_data_capacity");
         strategy.setControllerMappingHyphenStyle(true);
 
         mpg.setStrategy(strategy);

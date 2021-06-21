@@ -1,5 +1,10 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -8,9 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 /**
  * 预测天气列表
@@ -24,14 +27,23 @@ import java.time.LocalTime;
 @ApiModel("曲线展示-列表模式")
 public class NwpListPatternDTO {
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("日期时间")
     private LocalDateTime dateTime;
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @ApiModelProperty("日期")
-    private LocalDate date;
+    private LocalDateTime date;
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonFormat(pattern = "HH:mm")
     @ApiModelProperty("时间")
-    private LocalTime time;
+    private LocalDateTime time;
 
     @ApiModelProperty("短期预测功率（MW）")
     private BigDecimal dqPower;

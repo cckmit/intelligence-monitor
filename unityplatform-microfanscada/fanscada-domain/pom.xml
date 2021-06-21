@@ -57,37 +57,46 @@
             <version>${protobuf-java.version}</version>
         </dependency>
         <!--golden相关依赖-[end]-->
-<!--        fegin-->
+        <!--        fegin-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <version>2.2.8.RELEASE</version>
         </dependency>
         <!--mybatis-plus-->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>${mybatis-plus.version}</version>
         </dependency>
         <!--mysql-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
         </dependency>
         <!--druid连接池-->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
+            <version>${druid.version}</version>
         </dependency>
         <!--引入core模块-->
         <dependency>
             <groupId>com.zhikuntech.intellimonitor</groupId>
             <artifactId>core-commons</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-spring-boot-starter</artifactId>
         </dependency>
-
+        <!--远程调用模块-->
+        <dependency>
+            <groupId>com.zhikuntech.intellimonitor</groupId>
+            <artifactId>fanscada-facade</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.zhikuntech.intellimonitor</groupId>
             <artifactId>fanscada-prototype</artifactId>

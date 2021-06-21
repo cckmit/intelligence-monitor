@@ -9,7 +9,7 @@ import lombok.Data;
  * @description：
  */
 @Data
-public class FanLeftDataVO {
+public class FanDetailDataVO {
 
     /**
      * ups数据
@@ -26,13 +26,13 @@ public class FanLeftDataVO {
     /**
      * ups状态
      */
-    @ApiModelProperty("ups状态")
+    @ApiModelProperty("ups状态 0=关,1=开")
     private UpsTelemetryStatusVO upsStatus;
 
     /**
      * 直流屏状态
      */
-    @ApiModelProperty("直流屏状态")
+    @ApiModelProperty("直流屏状态 0=关,1=开")
     private DcScreenStatusVO dcStatus;
 
 }

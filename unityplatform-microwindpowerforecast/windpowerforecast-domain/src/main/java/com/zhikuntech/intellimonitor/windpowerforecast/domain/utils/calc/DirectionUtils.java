@@ -43,9 +43,9 @@ public class DirectionUtils {
 
     public static final String DRC_NAME_SSW_SW = "ssw-sw";
 
-    public static final String DRC_NAME_SW_WSW = "sw_wsw";
+    public static final String DRC_NAME_SW_WSW = "sw-wsw";
 
-    public static final String DRC_NAME_WSW_W = "wsw_w";
+    public static final String DRC_NAME_WSW_W = "wsw-w";
 
 
     /*
@@ -58,7 +58,7 @@ public class DirectionUtils {
 
     public static final String DRC_NAME_NW_NNW = "nw-nnw";
 
-    public static final String DRC_NAME_NNW_N = "nnw_n";
+    public static final String DRC_NAME_NNW_N = "nnw-n";
 
 
     /**

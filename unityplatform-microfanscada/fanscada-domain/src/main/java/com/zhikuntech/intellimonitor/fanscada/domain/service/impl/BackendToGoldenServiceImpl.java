@@ -4,7 +4,9 @@ package com.zhikuntech.intellimonitor.fanscada.domain.service.impl;
 import com.zhikuntech.intellimonitor.fanscada.domain.mapper.BackendToGoldenMapper;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGoldenQuery;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGoldenQueryList;
+import com.zhikuntech.intellimonitor.fanscada.domain.pojo.GoldenIdQuery;
 import com.zhikuntech.intellimonitor.fanscada.domain.service.BackendToGoldenService;
+import org.bouncycastle.asn1.x509.qualified.QCStatement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,4 +33,11 @@ public class BackendToGoldenServiceImpl implements BackendToGoldenService {
     public List<Integer> listGoldenIdByBackendIdOrNumber(BackendToGoldenQueryList backendToGoldenQueryList) {
         return backendToGoldenMapper.listGoldenIdByBackendIdOrNumber(backendToGoldenQueryList);
     }
+
+    @Override
+    public List<Integer> getGoldenIdByNumberAndId(GoldenIdQuery goldenIdQuery) {
+        List<Integer> dataIds = goldenIdQuery.getDataIds();
+        return backendToGoldenMapper.getGoldenIdByWindNumberAndId(dataIds);
+    }
+
 }

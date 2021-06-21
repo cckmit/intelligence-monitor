@@ -56,4 +56,12 @@ public class UpsTelemetryStatusVO {
     @ApiModelProperty("24V电源2报警")
     private Integer powerAlarm2;
 
+    @GoldenId(value = 172)
+    @ApiModelProperty("网络状态1")
+    private Integer networkStatus1;
+
+    @GoldenId(value = 173)
+    @ApiModelProperty("网络状态2")
+    private Integer networkStatus2;
+
 }

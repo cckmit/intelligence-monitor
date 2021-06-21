@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(value = "",description = "首页风机返回类")
-public class FanBaseInfo {
+public class FanBaseInfoVO {
 
     @ApiModelProperty("编号")
     private String fanNumber;
@@ -41,6 +41,16 @@ public class FanBaseInfo {
     @ApiModelProperty("无功功率")
     private BigDecimal reactivePower;
 
+    @GoldenId(value = 177)
     @ApiModelProperty("状态")
-    private String fanStatus;
+    private Integer fanStatus;
+
+    @GoldenId(value = 101)
+    @ApiModelProperty("总发电量")
+    private BigDecimal energy;
+
+    @ApiModelProperty("日发电量")
+    private Double energyForDay;
+
+
 }

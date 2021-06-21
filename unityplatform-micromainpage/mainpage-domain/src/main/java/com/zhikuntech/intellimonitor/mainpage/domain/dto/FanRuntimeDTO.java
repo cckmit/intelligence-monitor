@@ -61,8 +61,8 @@ public class FanRuntimeDTO {
      * 环境温度
      */
     @GoldenId(value = 5)
-    @ApiModelProperty("月发电量")
-    @ExcelProperty(value = "月总发电量(万kW)", index = 5)
+    @ApiModelProperty("环境温度")
+    @ExcelProperty(value = "环境温度", index = 5)
     private Double ambientTemp;
 
     /**
