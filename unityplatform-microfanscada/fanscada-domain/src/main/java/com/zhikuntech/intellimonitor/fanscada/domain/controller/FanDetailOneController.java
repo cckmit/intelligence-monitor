@@ -25,7 +25,7 @@ public class FanDetailOneController {
     private FanDetailOneService fanDetailOneService;
 
     @ApiOperation(value = "分图一#右侧数据")
-    @ApiImplicitParam(name = "number", value = "风机编号，随意写", paramType = "String", required = true)
+    @ApiImplicitParam(name = "number", value = "风机编号(44)", paramType = "String", required = true)
     @GetMapping("/modelData")
     public BaseResponse<FanModelDataVO> getData(@RequestParam String number) {
         return fanDetailOneService.getData(number);

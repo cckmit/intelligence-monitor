@@ -1,5 +1,6 @@
 package com.zhikuntech.intellimonitor.fanscada.domain.vo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.zhikuntech.intellimonitor.fanscada.domain.golden.annotation.GoldenId;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -20,24 +21,28 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class WheelSpiderVO {
 
-    @GoldenId(value = 161)
+    @GoldenId(value = 105)
     @ApiModelProperty("偏航状态")
     private BigDecimal yawingStatus;
 
-    @GoldenId(value = 162)
+    @GoldenId(value = 106)
     @ApiModelProperty("偏航角度")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
     private BigDecimal yawingAngle;
 
-    @GoldenId(value = 163)
+    @GoldenId(value = 115)
     @ApiModelProperty("轮毂温度")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
     private BigDecimal wheelSpiderTemperature;
 
-    @GoldenId(value = 164)
+    @GoldenId(value = 116)
     @ApiModelProperty("轮毂主轴承温度")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
     private BigDecimal wheelmainTemperature;
 
-    @GoldenId(value = 165)
+    @GoldenId(value = 107)
     @ApiModelProperty("液压油温")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
     private BigDecimal hydraulicTemperature;
 
 
