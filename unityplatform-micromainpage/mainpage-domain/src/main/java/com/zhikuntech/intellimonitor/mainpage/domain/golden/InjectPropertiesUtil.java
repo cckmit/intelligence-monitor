@@ -2,14 +2,15 @@ package com.zhikuntech.intellimonitor.mainpage.domain.golden;
 
 import com.rtdb.api.model.RtdbData;
 import com.rtdb.api.model.ValueData;
+import com.zhikuntech.intellimonitor.core.commons.constant.FanConstant;
 import com.zhikuntech.intellimonitor.mainpage.domain.golden.annotation.GoldenId;
+import com.zhikuntech.intellimonitor.mainpage.domain.utils.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author 代志豪
@@ -63,10 +64,12 @@ public class InjectPropertiesUtil<T> {
 
     public static <T> List<T> injectByAnnotation(List<T> t, List<ValueData> data) {
         Field[] fields = t.get(0).getClass().getDeclaredFields();
-        for (T item : t) {
+        for (int i = 0; i < t.size(); i++) {
             for (Field field : fields) {
                 GoldenId goldenId = field.getDeclaredAnnotation(GoldenId.class);
                 int value = null == goldenId ? 0 : goldenId.value();
+                value = getGoldenId(value, i);
+                T item = t.get(i);
                 for (ValueData valueData : data) {
                     if (value == valueData.getId()) {
                         try {
@@ -95,11 +98,12 @@ public class InjectPropertiesUtil<T> {
         return t;
     }
 
-    public static <T> T injectByAnnotation(T t, List<ValueData> data) {
+    public static <T> T injectByAnnotation(T t, Integer num,List<ValueData> data) {
         Field[] fields = t.getClass().getDeclaredFields();
         for (Field field : fields) {
             GoldenId goldenId = field.getDeclaredAnnotation(GoldenId.class);
             int value = null == goldenId ? 0 : goldenId.value();
+            value = getGoldenId(value, num);
             for (ValueData valueData : data) {
                 if (value == valueData.getId()) {
                     try {
@@ -125,5 +129,24 @@ public class InjectPropertiesUtil<T> {
             }
         }
         return t;
+    }
+
+
+    /**
+     * 获取该字段所映射的goldenId
+     */
+    private static int getGoldenId(Integer value, Integer fanNumber) {
+        String redisKey;
+        if (null==fanNumber){
+            redisKey = FanConstant.GOLDEN_ID + value;
+        }else {
+            redisKey = FanConstant.GOLDEN_ID + value + "_" + fanNumber;
+        }
+        RedisUtil redisUtil = new RedisUtil();
+        String string = redisUtil.getString(redisKey);
+        if (StringUtils.isEmpty(string)) {
+            return 0;
+        }
+        return Integer.parseInt(string);
     }
 }

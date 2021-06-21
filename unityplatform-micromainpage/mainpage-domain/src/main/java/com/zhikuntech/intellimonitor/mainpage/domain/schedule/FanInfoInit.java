@@ -3,6 +3,9 @@ package com.zhikuntech.intellimonitor.mainpage.domain.schedule;
 import com.rtdb.api.model.ValueData;
 import com.zhikuntech.intellimonitor.core.commons.constant.FanConstant;
 import com.zhikuntech.intellimonitor.mainpage.domain.golden.GoldenUtil;
+import com.zhikuntech.intellimonitor.mainpage.domain.model.BackendToGolden;
+import com.zhikuntech.intellimonitor.mainpage.domain.model.BackendToGoldenQuery;
+import com.zhikuntech.intellimonitor.mainpage.domain.service.BackendToGoldenService;
 import com.zhikuntech.intellimonitor.mainpage.domain.utils.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author 代志豪
@@ -26,6 +30,9 @@ public class FanInfoInit {
 
     @Autowired
     private GoldenUtil goldenUtil;
+
+    @Autowired
+    private BackendToGoldenService backendToGoldenService;
 
     /**
      * 每日0:00执行
@@ -47,9 +54,9 @@ public class FanInfoInit {
         redisUtil.set(FanConstant.DAILY_POWER_ALL, onlineSum);
     }
 
-    public double dataReset(String key, Integer id, Integer month, Integer day) {
+    public double dataResetFloat(String key, Integer id, Integer type) {
         try {
-            double value = goldenUtil.getFloat(id, getTime(month, day));
+            double value = goldenUtil.getFloat(id, getTime(type));
             redisUtil.set(key, value);
             return value;
         } catch (Exception e) {
@@ -57,12 +64,41 @@ public class FanInfoInit {
         }
     }
 
-    private static String getTime(Integer month, Integer day) {
+    public int dataResetInteger(String key, Integer id, Integer type) {
+        try {
+            int value = goldenUtil.getInteger(id, getTime(type));
+            redisUtil.set(key, value);
+            return value;
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+
+    /**
+     * 获取当日、月、年 0:00时间
+     *
+     * @param type 0：当日; 1:当月; 2:当年
+     * @return 时间字符串
+     */
+    private String getTime(Integer type) {
         Calendar cal = Calendar.getInstance();
-        cal.set(cal.get(Calendar.YEAR), null == month ? cal.get(Calendar.MONTH) : month,
-                null == day ? cal.get(Calendar.DAY_OF_MONTH) : day, 0, 0, 0);
+        cal.set(cal.get(Calendar.YEAR), type > 0 ? cal.get(Calendar.MONTH) : Calendar.JANUARY,
+                type == 1 ? cal.get(Calendar.DAY_OF_MONTH) : 1, 0, 0, 0);
         Date beginOfDate = cal.getTime();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return formatter.format(beginOfDate);
+    }
+
+
+    public void goldenIdToRedis() {
+        BackendToGoldenQuery query = new BackendToGoldenQuery();
+        List<BackendToGolden> list = backendToGoldenService.getGoldenIdByBackendIdOrNumber(query);
+        List<Integer> collect = list.stream().parallel().distinct().map(BackendToGolden::getNumber).collect(Collectors.toList());
+        for (Integer i : collect) {
+            for (BackendToGolden e : list) {
+                redisUtil.setString(FanConstant.GOLDEN_ID + e.getBackendId() + "_" + i, e.getGoldenId().toString());
+            }
+        }
     }
 }

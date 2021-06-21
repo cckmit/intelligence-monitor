@@ -80,4 +80,9 @@ public interface FanConstant {
      * 发电量对应goldenId
      */
     String GOLDEN_ID_POWER = "goldenIdPower_";
+
+    /**
+     * goldenId
+     */
+    String GOLDEN_ID = "goldenId_";
 }

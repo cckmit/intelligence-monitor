@@ -10,43 +10,39 @@
         <result property="tagName" column="tagName"/>
     </resultMap>
 
-    <select id="getGoldenIdByBackendIdOrNumber" resultType="java.lang.Integer">
-        <if test="backendToGoldenQuery.backendId != null or backendToGoldenQuery.number != null">
-            select goldenId
-            from mp_backen_to_golden
-            <where>
-                <choose>
-                    <when test="backendToGoldenQuery.backendId != null">
-                        and backendId = #{backendToGoldenQuery.backendId}
-                    </when>
-                    <when test="backendToGoldenQuery.number != null">
-                        and number = #{backendToGoldenQuery.number}
-                    </when>
-                </choose>
-            </where>
+    <select id="getGoldenIdByBackendIdOrNumber" resultMap="backendToGoldenResultMap">
+        select `goldenId`,`number`,`backendId` from mp_backen_to_golden where
+        <if test="backendToGoldenQuery.backendId != null">
+            backendId = #{backendToGoldenQuery.backendId} and
         </if>
+        <if test="backendToGoldenQuery.number != null">
+            number = #{backendToGoldenQuery.number} and
+        </if>
+        id is not null;
     </select>
 
     <select id="listGoldenIdByBackendIdOrNumber" resultType="java.lang.Integer">
         select goldenId
         from mp_backen_to_golden
         <choose>
-          <when test="backendToGoldenQueryList.backendIdList.size gt 0">
-              where
-              backendId
-              in
-              <foreach collection="backendToGoldenQueryList.backendIdList" open="(" close=")" separator="," item="backendId">
-                  #{backendId}
-              </foreach>
-          </when>
-          <when test="backendToGoldenQueryList.numberList.size gt 0">
-              where
-              number
-              in
-              <foreach collection="backendToGoldenQueryList.numberList" open="(" close=")" separator="," item="number">
-                  #{number}
-              </foreach>
-          </when>
+            <when test="backendToGoldenQueryList.backendIdList.size gt 0">
+                where
+                backendId
+                in
+                <foreach collection="backendToGoldenQueryList.backendIdList" open="(" close=")" separator=","
+                         item="backendId">
+                    #{backendId}
+                </foreach>
+            </when>
+            <when test="backendToGoldenQueryList.numberList.size gt 0">
+                where
+                number
+                in
+                <foreach collection="backendToGoldenQueryList.numberList" open="(" close=")" separator=","
+                         item="number">
+                    #{number}
+                </foreach>
+            </when>
         </choose>
     </select>
 

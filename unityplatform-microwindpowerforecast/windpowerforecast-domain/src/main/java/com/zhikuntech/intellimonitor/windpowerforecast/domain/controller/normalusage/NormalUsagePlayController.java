@@ -9,6 +9,7 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.Dq
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.NwpListPatternDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.CfCurvePatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.CfListPatternQuery;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.NwpCurvePatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.NwpListPatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataCfService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataDqService;
@@ -52,7 +53,7 @@ public class NormalUsagePlayController {
 
     @ApiOperation("曲线展示-曲线模式查询")
     @PostMapping("/query-nwp-curve")
-    public BaseResponse<List<NwpListPatternDTO>> nwpCurveQuery(@RequestBody NwpListPatternQuery query) {
+    public BaseResponse<List<NwpListPatternDTO>> nwpCurveQuery(@RequestBody NwpCurvePatternQuery query) {
         List<NwpListPatternDTO> results = nwpService.nwpCurveQuery(query);
         return BaseResponse.success(results);
     }

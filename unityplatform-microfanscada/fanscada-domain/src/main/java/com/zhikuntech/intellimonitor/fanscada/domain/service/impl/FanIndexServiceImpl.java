@@ -3,7 +3,6 @@ package com.zhikuntech.intellimonitor.fanscada.domain.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.rtdb.api.model.RtdbData;
-import com.zhikuntech.intellimonitor.core.commons.constant.FanConstant;
 import com.zhikuntech.intellimonitor.fanscada.domain.constant.FanLoopNumber;
 import com.zhikuntech.intellimonitor.fanscada.domain.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.fanscada.domain.golden.InjectPropertiesUtil;
@@ -109,7 +108,6 @@ public class FanIndexServiceImpl implements FanIndexService {
         GoldenIdQuery query = new GoldenIdQuery();
         query.setDataIds(idList);
         List<Integer> goldenIds = backendToGoldenService.getGoldenIdByNumberAndId(query);
-
         int[] ints = goldenIds.stream().mapToInt(Integer::intValue).toArray();
 
         if (WebSocketServer.clients.containsKey(username)) {
@@ -200,8 +198,9 @@ public class FanIndexServiceImpl implements FanIndexService {
                                 energy = BigDecimal.valueOf(0.0);
                             }
                             //当日零点的总发电量
-                            String string = redisUtil.get(FanConstant.DAILY_POWER+fanBaseInfoVO.getFanNumber()).toString();
-                            BigDecimal v = BigDecimal.valueOf(Double.parseDouble("100"));
+                            String string = redisUtil.getString("");
+                            string = "100";
+                            BigDecimal v = BigDecimal.valueOf(Double.parseDouble(string));
                             BigDecimal dayEnergy = energy.subtract(v);//日发电量
 
                             activePowerSum = activePowerSum.add(activePower);
@@ -217,6 +216,7 @@ public class FanIndexServiceImpl implements FanIndexService {
                         loopVO.setWindSpeedAvg(windSpeedSum.divide(BigDecimal.valueOf(fanBaseInfoVOS.size()), BigDecimal.ROUND_HALF_UP));
                         loopVO.setGeneratingCapacityForDay(dayEnergySum);
                         resultList.add(loopVO);
+
                     }
                     String jsonString = JSONObject.toJSONString(resultList);
                     log.info(jsonString);

@@ -79,8 +79,6 @@ public class WfAnalyseDqServiceImpl extends ServiceImpl<WfAnalyseDqMapper, WfAna
 
             Pager<DqPowerAnalysisDTO> resultPage = new Pager<>(0, tmp);
             aggregateDTO.setPager(resultPage);
-            resultPage.setTotalPage((int) page.getPages());
-            resultPage.setPageSize((int) page.getSize());
             resultPage.setTotalCount((int) page.getTotal());
         }
 

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author liukai
@@ -47,11 +48,13 @@ public class ScheduleFetchDataServiceImpl implements ScheduleFetchDataService {
         String strNow = TimeProcessUtils.formatLocalDateTimeWithMinutePattern(now);
         LocalDateTime minutePattern = TimeProcessUtils.parseLocalDateTimeWithMinutePattern(strNow);
 
+        int windPower = ThreadLocalRandom.current().nextInt(1, 360);
+
         // TODO Mock数据
         WfDataZr wfDataZr = WfDataZr.builder()
                 .orgId(ConstantsOfWf.DEV_ORG_ID)
                 .createTime(now)
-                .actualProduce(new BigDecimal("100"))
+                .actualProduce(new BigDecimal(windPower))
                 .eventDateTime(minutePattern)
                 .status(0)
                 .fetchTime(now)
@@ -72,16 +75,19 @@ public class ScheduleFetchDataServiceImpl implements ScheduleFetchDataService {
         String strNow = TimeProcessUtils.formatLocalDateTimeWithMinutePattern(now);
         LocalDateTime minutePattern = TimeProcessUtils.parseLocalDateTimeWithMinutePattern(strNow);
         // TODO Mock数据
+        int windDirect = ThreadLocalRandom.current().nextInt(1, 360);
+
         WfDataCf wfDataCf = WfDataCf.builder()
                 .orgId(ConstantsOfWf.DEV_ORG_ID)
                 .createTime(now)
                 .windSpeed(new BigDecimal("45"))
                 .highLevel(new BigDecimal("70"))
-                .windDirection(new BigDecimal("45"))
+                .windDirection(new BigDecimal(windDirect))
                 .temperature(new BigDecimal("45"))
                 .humidity(new BigDecimal("45"))
                 .pressure(new BigDecimal("45"))
                 .turbineHigh(new BigDecimal("30"))
+                .calcPower(new BigDecimal(windDirect * 0.618))
                 .eventDateTime(minutePattern)
                 .status(0)
                 .fetchTime(now)

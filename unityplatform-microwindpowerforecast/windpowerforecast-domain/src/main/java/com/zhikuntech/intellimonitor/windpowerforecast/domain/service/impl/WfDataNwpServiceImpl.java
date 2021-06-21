@@ -12,6 +12,7 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfDataNwpMa
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfTimeBaseMapper;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.NwpBodyParse;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.NwpHeaderParse;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.NwpCurvePatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.NwpListPatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataNwpService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -92,14 +93,12 @@ public class WfDataNwpServiceImpl extends ServiceImpl<WfDataNwpMapper, WfDataNwp
         }
         resultPage.setList(nwpListPatternDTOS);
         resultPage.setTotalCount((int) page.getTotal());
-        resultPage.setPageSize(pageSize);
-        resultPage.setPageSize(pageSize);
 
         return resultPage;
     }
 
     @Override
-    public List<NwpListPatternDTO> nwpCurveQuery(NwpListPatternQuery query) {
+    public List<NwpListPatternDTO> nwpCurveQuery(NwpCurvePatternQuery query) {
         if (Objects.isNull(query)) {
             return new ArrayList<>();
         }

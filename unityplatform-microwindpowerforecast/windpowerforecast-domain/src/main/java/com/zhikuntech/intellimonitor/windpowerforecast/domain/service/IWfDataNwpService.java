@@ -5,6 +5,7 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.Dq
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.NwpListPatternDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataNwp;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.NwpCurvePatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.NwpListPatternQuery;
 
 import java.math.BigDecimal;
@@ -32,7 +33,7 @@ public interface IWfDataNwpService extends IService<WfDataNwp> {
      * @param query 查询
      * @return 预测数据数组
      */
-    List<NwpListPatternDTO> nwpCurveQuery(NwpListPatternQuery query);
+    List<NwpListPatternDTO> nwpCurveQuery(NwpCurvePatternQuery query);
 
 
 

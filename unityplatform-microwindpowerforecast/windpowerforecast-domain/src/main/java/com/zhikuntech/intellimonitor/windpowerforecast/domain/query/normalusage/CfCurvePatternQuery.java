@@ -23,7 +23,10 @@ public class CfCurvePatternQuery {
     private String queryMode;
 
     @ApiModelProperty(value = "日期字符串:[yyyy-MM-dd]", required = true)
-    private String dateStr;
+    private String dateStrPre;
+
+    @ApiModelProperty(value = "日期字符串:[yyyy-MM-dd]", required = true)
+    private String dateStrPost;
 
     @ApiModelProperty(value = "高度", required = true)
     private String high;

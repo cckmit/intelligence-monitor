@@ -24,27 +24,28 @@ public class FanBaseInfoVO {
     @ApiModelProperty("编号")
     private String fanNumber;
 
-    @GoldenId(value = 1)
+    @GoldenId(value = 22)
     @ApiModelProperty("风速")
     private BigDecimal windSpeed;
 
-    @GoldenId(value = 3)
+    @GoldenId(value = 24)
     @ApiModelProperty("转速")
     private BigDecimal rotateSpeed;
 
-    @GoldenId(value = 2)
+
+    @GoldenId(value = 21)
     @ApiModelProperty("有功功率")
     private BigDecimal activePower;
 
-    @GoldenId(value = 179)
+    @GoldenId(value = 23)
     @ApiModelProperty("无功功率")
     private BigDecimal reactivePower;
 
-    @GoldenId(value = 12)
+    @GoldenId(value = 177)
     @ApiModelProperty("状态")
     private Integer fanStatus;
 
-    @GoldenId(value = 13)
+    @GoldenId(value = 101)
     @ApiModelProperty("总发电量")
     private BigDecimal energy;
 

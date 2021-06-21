@@ -91,7 +91,7 @@ public class InjectPropertiesUtil<T> {
                     int Id = Integer.parseInt(string);
 
                     for (RtdbData rtdbData : data) {
-                        if (value == rtdbData.getId()) {
+                        if (Id == rtdbData.getId()) {
                             try {
                                 field.setAccessible(true);
                                 if (field.getType().equals(BigDecimal.class)) {
