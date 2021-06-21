@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rtdb.api.model.RtdbData;
 import com.rtdb.api.model.ValueData;
 import com.zhikuntech.intellimonitor.core.commons.constant.FanConstant;
+import com.zhikuntech.intellimonitor.fanscada.domain.config.DataInitConf;
 import com.zhikuntech.intellimonitor.fanscada.domain.golden.annotation.GoldenId;
 import com.zhikuntech.intellimonitor.fanscada.domain.mapper.BackendToGoldenMapper;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGolden;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Resource;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -84,8 +86,8 @@ public class InjectPropertiesUtil<T> {
 
 
     public static <T> List<T> injectByAnnotationForBigdecimal(List<T> t, RtdbData[] data) {
+        long l = System.currentTimeMillis();
         Field[] fields = t.get(0).getClass().getDeclaredFields();
-
         for (T item : t) {
             for (Field field : fields) {
                 if (field.getAnnotation(GoldenId.class) != null) {
@@ -93,16 +95,8 @@ public class InjectPropertiesUtil<T> {
                     int value = null == goldenId ? 0 : goldenId.value();
                     Integer fanNumber = ((FanBaseInfoVO) item).getFanNumber();
                     //获取该字段所映射的golden id
-                    String redisKey = FanConstant.GOLDEN_ID +value+"_"+fanNumber;
-                    RedisUtil redisUtil = new RedisUtil();
-                    String string = redisUtil.getString(redisKey);
-                    int id;
-                    if (StringUtils.isBlank(string)){
-                        BackendToGoldenService backendToGoldenService = new BackendToGoldenServiceImpl();
-                         id = backendToGoldenService.getGoldenIdByNumberAndId(fanNumber, value);
-                    }else {
-                        id = Integer.parseInt(string);
-                    }
+                    String key = FanConstant.GOLDEN_ID + value + "_" + fanNumber;
+                    Integer id = DataInitConf.initMap.get(key);
                     for (RtdbData rtdbData : data) {
                         if (id == rtdbData.getId()) {
                             try {
@@ -122,6 +116,8 @@ public class InjectPropertiesUtil<T> {
                 }
             }
         }
+        long l1 = System.currentTimeMillis();
+        log.info("数据封装==================="+(l1-l));
         return t;
     }
 
@@ -155,7 +151,7 @@ public class InjectPropertiesUtil<T> {
         return t;
     }
 
-    public static <T> List<T> injectByAnnotationForBigdecimal(List<T> t, List<ValueData> data, RedisUtil redisUtil, BackendToGoldenService backendToGoldenService) {
+    public static <T> List<T> injectByAnnotationForBigdecimal(List<T> t, List<ValueData> data) {
         Field[] fields = t.get(0).getClass().getDeclaredFields();
         for (T item : t) {
             for (Field field : fields) {
@@ -164,14 +160,8 @@ public class InjectPropertiesUtil<T> {
                     int value = null == goldenId ? 0 : goldenId.value();
                     Integer fanNumber = ((FanBaseInfoVO) item).getFanNumber();
                     //获取该字段所映射的golden id
-                    String redisKey = FanConstant.GOLDEN_ID + value + "_" + fanNumber;
-                    String string = redisUtil.getString(redisKey);
-                    int id;
-                    if (StringUtils.isBlank(string)) {
-                        id = backendToGoldenService.getGoldenIdByNumberAndId(fanNumber, value);
-                    } else {
-                        id = Integer.parseInt(string);
-                    }
+                    String key = FanConstant.GOLDEN_ID + value + "_" + fanNumber;
+                    Integer id = DataInitConf.initMap.get(key);
                     for (ValueData ValueData : data) {
                         if (id == ValueData.getId()) {
                             try {
@@ -201,7 +191,7 @@ public class InjectPropertiesUtil<T> {
      * @date: Creat in 2021/6/21 11:43
      * @describe: 获取庚顿数据
      */
-    public static <T> T injectByAnnotationCustomize(T t, String number, BackendToGoldenMapper mapper,GoldenUtil goldenUtil) {
+    public static <T> T injectByAnnotationCustomize(T t, String number, BackendToGoldenMapper mapper, GoldenUtil goldenUtil) {
         long start = System.currentTimeMillis();
         // 获取注解的backendList
         Field[] fields = t.getClass().getDeclaredFields();
@@ -262,4 +252,5 @@ public class InjectPropertiesUtil<T> {
         }
         return t;
     }
+
 }

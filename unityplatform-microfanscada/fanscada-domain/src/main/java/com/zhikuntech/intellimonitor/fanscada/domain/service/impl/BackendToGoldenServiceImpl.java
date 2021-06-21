@@ -56,4 +56,10 @@ public class BackendToGoldenServiceImpl extends ServiceImpl<BackendToGoldenMappe
         return backendToGolden.getGoldenId();
     }
 
+    @Override
+    public List<BackendToGolden> selectList(List<Integer> list) {
+
+        return backendToGoldenMapper.getList(list);
+    }
+
 }
