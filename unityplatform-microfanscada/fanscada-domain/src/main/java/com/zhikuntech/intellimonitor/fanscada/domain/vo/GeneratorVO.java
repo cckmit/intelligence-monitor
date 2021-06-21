@@ -22,8 +22,7 @@ import java.math.BigDecimal;
 public class GeneratorVO {
     @GoldenId(value = 78)
     @ApiModelProperty("发电机状态")
-    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
-    private BigDecimal generatorstatus;
+    private Boolean generatorstatus;
 
     @GoldenId(value = 91)
     @ApiModelProperty("V相绕组温度")

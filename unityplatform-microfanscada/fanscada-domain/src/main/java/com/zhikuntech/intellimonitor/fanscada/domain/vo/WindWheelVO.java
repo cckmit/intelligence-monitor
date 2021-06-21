@@ -69,8 +69,7 @@ public class WindWheelVO {
 
     @GoldenId(value = 90)
     @ApiModelProperty("故障代码")
-    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
-    private BigDecimal errorCode;
+    private Integer errorCode;
 
     @GoldenId(value = 79)
     @ApiModelProperty("功率因数")
