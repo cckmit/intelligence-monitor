@@ -1,6 +1,7 @@
 package com.zhikuntech.intellimonitor.core.commons.base;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,6 +44,10 @@ public class Pager<T> implements Serializable {
         } else {
             this.totalCount = list.size();
         }
+    }
+
+    public static <O> Pager<O> emptyPager() {
+        return new Pager<>(new ArrayList<>());
     }
 
     /**
