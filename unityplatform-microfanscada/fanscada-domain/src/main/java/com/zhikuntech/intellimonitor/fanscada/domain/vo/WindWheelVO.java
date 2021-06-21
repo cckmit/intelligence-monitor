@@ -28,10 +28,10 @@ public class WindWheelVO {
     @ApiModelProperty("桨距角B")
     private BigDecimal kexAngle_B;
 
-
     @GoldenId(value = 138)
     @ApiModelProperty("桨距角C")
     private BigDecimal kexAngle_C;
+
 
     @GoldenId(value = 139)
     @ApiModelProperty("风轮转速")

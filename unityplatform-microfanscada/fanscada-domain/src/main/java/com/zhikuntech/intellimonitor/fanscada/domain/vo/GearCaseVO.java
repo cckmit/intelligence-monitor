@@ -42,4 +42,5 @@ public class GearCaseVO {
     @GoldenId(value = 171)
     @ApiModelProperty("液压站压力")
     private BigDecimal hydraulicstationpressure;
+
 }

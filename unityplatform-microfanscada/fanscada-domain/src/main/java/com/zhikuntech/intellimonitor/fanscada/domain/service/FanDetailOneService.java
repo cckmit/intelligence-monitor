@@ -15,6 +15,7 @@ public interface FanDetailOneService {
     /**
      * 查询数据
      *
+     *
      * @param number 风机编号
      * @return 结果
      */

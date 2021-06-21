@@ -26,9 +26,9 @@ public class FanDetailOneServiceImpl implements FanDetailOneService {
 
         GoldenUtil goldenUtil = new GoldenUtil();
         // todo 根据风机ID获取数据项ID
-        int[] ids = new int[40];
+        int[] ids = new int[43];
         int start = 134;
-        for (int i = 0; i < 40; i++) {
+        for (int i = 0; i < 43; i++) {
             ids[i] = i + start;
         }
         List<ValueData> list = null;

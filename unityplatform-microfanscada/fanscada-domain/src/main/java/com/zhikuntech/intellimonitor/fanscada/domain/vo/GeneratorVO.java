@@ -35,6 +35,7 @@ public class GeneratorVO {
     @ApiModelProperty("W相绕组温度")
     private BigDecimal wphasewindingTemperature;
 
+
     @GoldenId(value = 149)
     @ApiModelProperty("发电机转速")
     private BigDecimal ratedGeneratorspeed;

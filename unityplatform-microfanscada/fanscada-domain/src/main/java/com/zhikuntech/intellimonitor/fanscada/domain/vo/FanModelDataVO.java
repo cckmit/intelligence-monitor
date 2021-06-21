@@ -32,6 +32,7 @@ public class FanModelDataVO {
 
     /**
      * 轮毂与偏航状态
+     *
      */
     @ApiModelProperty("轮毂")
     private WheelSpiderVO wheelSpiderdata;
