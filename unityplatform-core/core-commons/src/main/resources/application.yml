@@ -1,0 +1,6 @@
+sftp:
+  ip: 192.168.3.179
+  port: 22
+  username: mysftp
+  password: sftp1234
+  dst: /upload
