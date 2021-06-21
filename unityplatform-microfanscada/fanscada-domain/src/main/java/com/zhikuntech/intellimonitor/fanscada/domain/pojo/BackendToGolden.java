@@ -1,5 +1,7 @@
 package com.zhikuntech.intellimonitor.fanscada.domain.pojo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,6 +13,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel("mysql数据库和golden数据库关于点位的映射关系")
+@TableName("mp_backen_to_golden")
 public class BackendToGolden {
 
     /**
@@ -23,12 +26,14 @@ public class BackendToGolden {
      * 映射关系中mysql数据库表中编号
      */
     @ApiModelProperty("映射关系中mysql数据库表中编号")
+    @TableField("backendId")
     private int backendId;
 
     /**
      * 映射关系中golden数据库表中id
      */
     @ApiModelProperty("映射关系中golden数据库表中id")
+    @TableField("goldenId")
     private int goldenId;
 
     /**
@@ -47,6 +52,7 @@ public class BackendToGolden {
      * 标签点名称
      */
     @ApiModelProperty("标签点名称")
+    @TableField("tagName")
     private String tagName;
 
 }

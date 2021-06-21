@@ -5,8 +5,10 @@ import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
 import com.zhikuntech.intellimonitor.core.commons.base.ResultCode;
 import com.zhikuntech.intellimonitor.fanscada.domain.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.fanscada.domain.golden.InjectPropertiesUtil;
+import com.zhikuntech.intellimonitor.fanscada.domain.mapper.BackendToGoldenMapper;
 import com.zhikuntech.intellimonitor.fanscada.domain.service.FanDetailOneService;
 import com.zhikuntech.intellimonitor.fanscada.domain.vo.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -21,26 +23,17 @@ import java.util.List;
  */
 @Service
 public class FanDetailOneServiceImpl implements FanDetailOneService {
+
+    @Autowired
+    private BackendToGoldenMapper backend;
+
     @Override
     public BaseResponse<FanModelDataVO> getData(String number) {
-
-        GoldenUtil goldenUtil = new GoldenUtil();
-        // todo 根据风机ID获取数据项ID
-        int[] ids = new int[43];
-        int start = 134;
-        for (int i = 0; i < 43; i++) {
-            ids[i] = i + start;
-        }
-        List<ValueData> list = null;
         try {
-            list = goldenUtil.getSnapshots(ids);
-            if (CollectionUtils.isEmpty(list)) {
-                return BaseResponse.failure(ResultCode.DATD_NOT_EXCEPTION, "暂无数据");
-            }
-            WindWheelVO windWheelVO = InjectPropertiesUtil.injectByAnnotationCustomize(new WindWheelVO(), list);
-            WheelSpiderVO wheelSpiderVO = InjectPropertiesUtil.injectByAnnotationCustomize(new WheelSpiderVO(), list);
-            GearCaseVO gear = InjectPropertiesUtil.injectByAnnotationCustomize(new GearCaseVO(), list);
-            GeneratorVO generatorVO = InjectPropertiesUtil.injectByAnnotationCustomize(new GeneratorVO(), list);
+            WindWheelVO windWheelVO = InjectPropertiesUtil.injectByAnnotationCustomize(new WindWheelVO(), number, backend);
+            WheelSpiderVO wheelSpiderVO = InjectPropertiesUtil.injectByAnnotationCustomize(new WheelSpiderVO(), number, backend);
+            GearCaseVO gear = InjectPropertiesUtil.injectByAnnotationCustomize(new GearCaseVO(), number, backend);
+            GeneratorVO generatorVO = InjectPropertiesUtil.injectByAnnotationCustomize(new GeneratorVO(), number, backend);
 
             FanModelDataVO modelDataVO = new FanModelDataVO();
             modelDataVO.setWindWheeldata(windWheelVO);
