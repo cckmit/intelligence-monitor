@@ -155,7 +155,7 @@ public class InjectPropertiesUtil<T> {
         return t;
     }
 
-    public static <T> List<T> injectByAnnotationForBigdecimal(List<T> t, List<ValueData> data) {
+    public static <T> List<T> injectByAnnotationForBigdecimal(List<T> t, List<ValueData> data, RedisUtil redisUtil, BackendToGoldenService backendToGoldenService) {
         Field[] fields = t.get(0).getClass().getDeclaredFields();
         for (T item : t) {
             for (Field field : fields) {
@@ -164,14 +164,12 @@ public class InjectPropertiesUtil<T> {
                     int value = null == goldenId ? 0 : goldenId.value();
                     Integer fanNumber = ((FanBaseInfoVO) item).getFanNumber();
                     //获取该字段所映射的golden id
-                    String redisKey = FanConstant.GOLDEN_ID +value+"_"+fanNumber;
-                    RedisUtil redisUtil = new RedisUtil();
+                    String redisKey = FanConstant.GOLDEN_ID + value + "_" + fanNumber;
                     String string = redisUtil.getString(redisKey);
                     int id;
-                    if (StringUtils.isBlank(string)){
-                        BackendToGoldenService backendToGoldenService = new BackendToGoldenServiceImpl();
+                    if (StringUtils.isBlank(string)) {
                         id = backendToGoldenService.getGoldenIdByNumberAndId(fanNumber, value);
-                    }else {
+                    } else {
                         id = Integer.parseInt(string);
                     }
                     for (ValueData ValueData : data) {
@@ -188,7 +186,6 @@ public class InjectPropertiesUtil<T> {
                                 return null;
                             }
                         }
-
                     }
                 }
             }
