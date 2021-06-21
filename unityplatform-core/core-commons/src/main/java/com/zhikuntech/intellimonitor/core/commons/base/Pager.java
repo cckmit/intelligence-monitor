@@ -50,6 +50,11 @@ public class Pager<T> implements Serializable {
         return new Pager<>(new ArrayList<>());
     }
 
+    public void replaceWithNewCol(List<T> list) {
+        this.getList().addAll(list);
+        this.totalCount = list.size();
+    }
+
     /**
      * @return the totalCount
      */
