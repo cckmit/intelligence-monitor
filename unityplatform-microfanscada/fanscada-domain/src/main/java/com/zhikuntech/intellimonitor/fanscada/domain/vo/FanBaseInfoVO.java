@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 public class FanBaseInfoVO {
 
     @ApiModelProperty("编号")
-    private String fanNumber;
+    private Integer fanNumber;
 
     @GoldenId(value = 22)
     @ApiModelProperty("风速")
