@@ -37,4 +37,6 @@ public interface BackendToGoldenService {
      * @return
      */
     List<Integer> getGoldenIdByNumberAndId(GoldenIdQuery goldenIdQuery);
+
+    Integer getGoldenIdByNumberAndId(Integer fanNumber, int value);
 }

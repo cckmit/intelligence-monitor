@@ -1,6 +1,9 @@
 package com.zhikuntech.intellimonitor.fanscada.domain.controller;
 
+import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
+import com.zhikuntech.intellimonitor.core.commons.base.ResultCode;
 import com.zhikuntech.intellimonitor.fanscada.domain.service.FanIndexService;
+import com.zhikuntech.intellimonitor.fanscada.domain.vo.LoopVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,12 +29,23 @@ public class FanIndexController {
 
     @ApiOperation("实时获取scada首页的风机列表")
     @GetMapping("/getList/{userName}")
-    public void getFanBaseInfoList(@PathVariable String userName){
+    public void getFanBaseInfoList(@PathVariable String userName) {
 
         try {
             fanIndexService.getFanBaseInfoList(userName);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @ApiOperation("获取scada首页的风机列表")
+    @GetMapping("/getList")
+    public BaseResponse<List<LoopVO>> getFanBaseInfoList() {
+        try {
+            List<LoopVO> fanBaseInfoList = fanIndexService.getFanBaseInfoList();
+            return BaseResponse.success(fanBaseInfoList);
+        } catch (Exception e) {
+            return BaseResponse.failure(ResultCode.DATD_NOT_EXCEPTION, "暂无数据");
         }
     }
 

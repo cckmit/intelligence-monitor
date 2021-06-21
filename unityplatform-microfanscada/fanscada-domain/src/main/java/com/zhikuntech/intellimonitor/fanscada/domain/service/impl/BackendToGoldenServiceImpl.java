@@ -1,7 +1,10 @@
 package com.zhikuntech.intellimonitor.fanscada.domain.service.impl;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zhikuntech.intellimonitor.fanscada.domain.mapper.BackendToGoldenMapper;
+import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGolden;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGoldenQuery;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGoldenQueryList;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.GoldenIdQuery;
@@ -38,6 +41,16 @@ public class BackendToGoldenServiceImpl implements BackendToGoldenService {
     public List<Integer> getGoldenIdByNumberAndId(GoldenIdQuery goldenIdQuery) {
         List<Integer> dataIds = goldenIdQuery.getDataIds();
         return backendToGoldenMapper.getGoldenIdByWindNumberAndId(dataIds);
+    }
+
+    @Override
+    public Integer getGoldenIdByNumberAndId(Integer fanNumber, int value) {
+
+        LambdaQueryWrapper<BackendToGolden> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(BackendToGolden::getNumber,fanNumber);
+        queryWrapper.eq(BackendToGolden::getBackendId,value);
+        BackendToGolden backendToGolden = backendToGoldenMapper.selectOne(queryWrapper);
+        return backendToGolden.getGoldenId();
     }
 
 }
