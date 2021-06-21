@@ -26,14 +26,16 @@ public class FanDetailOneServiceImpl implements FanDetailOneService {
 
     @Autowired
     private BackendToGoldenMapper backend;
+    @Autowired
+    private GoldenUtil goldenUtil;
 
     @Override
     public BaseResponse<FanModelDataVO> getData(String number) {
         try {
-            WindWheelVO windWheelVO = InjectPropertiesUtil.injectByAnnotationCustomize(new WindWheelVO(), number, backend);
-            WheelSpiderVO wheelSpiderVO = InjectPropertiesUtil.injectByAnnotationCustomize(new WheelSpiderVO(), number, backend);
-            GearCaseVO gear = InjectPropertiesUtil.injectByAnnotationCustomize(new GearCaseVO(), number, backend);
-            GeneratorVO generatorVO = InjectPropertiesUtil.injectByAnnotationCustomize(new GeneratorVO(), number, backend);
+            WindWheelVO windWheelVO = InjectPropertiesUtil.injectByAnnotationCustomize(new WindWheelVO(), number, backend, goldenUtil);
+            WheelSpiderVO wheelSpiderVO = InjectPropertiesUtil.injectByAnnotationCustomize(new WheelSpiderVO(), number, backend, goldenUtil);
+            GearCaseVO gear = InjectPropertiesUtil.injectByAnnotationCustomize(new GearCaseVO(), number, backend, goldenUtil);
+            GeneratorVO generatorVO = InjectPropertiesUtil.injectByAnnotationCustomize(new GeneratorVO(), number, backend, goldenUtil);
 
             FanModelDataVO modelDataVO = new FanModelDataVO();
             modelDataVO.setWindWheeldata(windWheelVO);

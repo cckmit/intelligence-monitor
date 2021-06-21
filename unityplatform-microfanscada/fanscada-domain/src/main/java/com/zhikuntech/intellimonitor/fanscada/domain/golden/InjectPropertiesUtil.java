@@ -201,9 +201,8 @@ public class InjectPropertiesUtil<T> {
      * @date: Creat in 2021/6/21 11:43
      * @describe: 获取庚顿数据
      */
-    public static <T> T injectByAnnotationCustomize(T t, String number, BackendToGoldenMapper mapper) {
+    public static <T> T injectByAnnotationCustomize(T t, String number, BackendToGoldenMapper mapper,GoldenUtil goldenUtil) {
         long start = System.currentTimeMillis();
-        GoldenUtil goldenUtil = new GoldenUtil();
         // 获取注解的backendList
         Field[] fields = t.getClass().getDeclaredFields();
         List<Integer> backendList = new ArrayList<>();

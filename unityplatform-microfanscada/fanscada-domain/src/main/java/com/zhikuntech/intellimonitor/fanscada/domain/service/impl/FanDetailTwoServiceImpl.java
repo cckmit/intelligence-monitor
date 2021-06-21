@@ -3,6 +3,7 @@ package com.zhikuntech.intellimonitor.fanscada.domain.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
 import com.zhikuntech.intellimonitor.core.commons.base.ResultCode;
+import com.zhikuntech.intellimonitor.fanscada.domain.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.fanscada.domain.golden.InjectPropertiesUtil;
 import com.zhikuntech.intellimonitor.fanscada.domain.mapper.BackendToGoldenMapper;
 import com.zhikuntech.intellimonitor.fanscada.domain.mapper.FsBasicParameterMapper;
@@ -25,15 +26,17 @@ public class FanDetailTwoServiceImpl implements FanDetailTwoService {
     private FsBasicParameterMapper fsBasicParameterMapper;
     @Autowired
     private BackendToGoldenMapper backend;
+    @Autowired
+    private GoldenUtil goldenUtil;
 
 
     @Override
     public BaseResponse<FanDetailDataVO> getData(String number) {
         try {
-            UpsTelemetryVO ups = InjectPropertiesUtil.injectByAnnotationCustomize(new UpsTelemetryVO(), number, backend);
-            DcScreenVO dc = InjectPropertiesUtil.injectByAnnotationCustomize(new DcScreenVO(), number, backend);
-            UpsTelemetryStatusVO upsStatus = InjectPropertiesUtil.injectByAnnotationCustomize(new UpsTelemetryStatusVO(), number, backend);
-            DcScreenStatusVO dcStatus = InjectPropertiesUtil.injectByAnnotationCustomize(new DcScreenStatusVO(), number, backend);
+            UpsTelemetryVO ups = InjectPropertiesUtil.injectByAnnotationCustomize(new UpsTelemetryVO(), number, backend, goldenUtil);
+            DcScreenVO dc = InjectPropertiesUtil.injectByAnnotationCustomize(new DcScreenVO(), number, backend, goldenUtil);
+            UpsTelemetryStatusVO upsStatus = InjectPropertiesUtil.injectByAnnotationCustomize(new UpsTelemetryStatusVO(), number, backend, goldenUtil);
+            DcScreenStatusVO dcStatus = InjectPropertiesUtil.injectByAnnotationCustomize(new DcScreenStatusVO(), number, backend, goldenUtil);
 
             FanDetailDataVO leftDataVO = new FanDetailDataVO();
             leftDataVO.setDcData(dc);
