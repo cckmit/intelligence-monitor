@@ -2,17 +2,17 @@ package com.zhikuntech.intellimonitor.fanscada.domain.service.impl;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhikuntech.intellimonitor.fanscada.domain.mapper.BackendToGoldenMapper;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGolden;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGoldenQuery;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGoldenQueryList;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.GoldenIdQuery;
 import com.zhikuntech.intellimonitor.fanscada.domain.service.BackendToGoldenService;
-import org.bouncycastle.asn1.x509.qualified.QCStatement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -22,7 +22,7 @@ import java.util.List;
  * @Version 1.0
  */
 @Service
-public class BackendToGoldenServiceImpl implements BackendToGoldenService {
+public class BackendToGoldenServiceImpl extends ServiceImpl<BackendToGoldenMapper,BackendToGolden> implements BackendToGoldenService {
 
     @Autowired
     private BackendToGoldenMapper backendToGoldenMapper;
@@ -38,9 +38,12 @@ public class BackendToGoldenServiceImpl implements BackendToGoldenService {
     }
 
     @Override
-    public List<Integer> getGoldenIdByNumberAndId(GoldenIdQuery goldenIdQuery) {
+    public int[] getGoldenIdByNumberAndId(GoldenIdQuery goldenIdQuery) {
         List<Integer> dataIds = goldenIdQuery.getDataIds();
-        return backendToGoldenMapper.getGoldenIdByWindNumberAndId(dataIds);
+
+        List<Integer> goldenIdByWindNumberAndId = backendToGoldenMapper.getGoldenIdByWindNumberAndId(dataIds);
+
+        return goldenIdByWindNumberAndId.stream().mapToInt(Integer::intValue).toArray();
     }
 
     @Override
