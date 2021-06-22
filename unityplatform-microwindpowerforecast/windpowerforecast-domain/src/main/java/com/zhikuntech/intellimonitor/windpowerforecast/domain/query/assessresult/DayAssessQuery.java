@@ -8,30 +8,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 月评估查询
- *
  * @author liukai
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Data
-@ApiModel("月评估查询-列表模式")
-public class MonthAssessQuery {
+@ApiModel("日考核-查询")
+public class DayAssessQuery {
 
-    /**
-     * 查询某一年
-     */
-    public static final String QUERY_ONE = "one";
-
-    @ApiModelProperty(value = "查询模式[查询某一年(one)/查询范围(range)]", required = true)
-    private String queryMod;
-
-    @ApiModelProperty(value = "查询年份[前]", required = true)
-    private String queryYearPre;
-
-    @ApiModelProperty(value = "查询年份[后], 模式为one时为空", required = true)
-    private String queryYearPost;
+    @ApiModelProperty(value = "查询日期,格式[yyyy-MM]", required = true)
+    private String date;
 
     @ApiModelProperty(value = "每页数据数量", required = true)
     private Integer pageSize;

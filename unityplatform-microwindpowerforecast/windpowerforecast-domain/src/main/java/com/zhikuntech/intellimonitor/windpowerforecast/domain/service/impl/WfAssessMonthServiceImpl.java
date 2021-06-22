@@ -3,10 +3,12 @@ package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.MonthAssessCurveDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.MonthAssessListDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfAssessMonth;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfAssessMonthMapper;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.assessresult.MonthAssessQuery;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.assessresult.MonthCurveQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfAssessMonthService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.DateProcessUtils;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -42,13 +45,6 @@ public class WfAssessMonthServiceImpl extends ServiceImpl<WfAssessMonthMapper, W
         String queryMod = query.getQueryMod();
         String queryYearPre = query.getQueryYearPre();
         String queryYearPost = query.getQueryYearPost();
-        Integer pageNumber = query.getPageNumber();
-        Integer pageSize = query.getPageSize();
-
-        Page<WfAssessMonth> page = new Page<>();
-        page.setCurrent(pageNumber);
-        page.setSize(pageSize);
-        // 构建Page
 
         // 构建query
         QueryWrapper<WfAssessMonth> criteria = new QueryWrapper<>();
@@ -76,39 +72,55 @@ public class WfAssessMonthServiceImpl extends ServiceImpl<WfAssessMonthMapper, W
             criteria.lt("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(postYear));
         }
 
+
+        Integer pageNumber = query.getPageNumber();
+        Integer pageSize = query.getPageSize();
+        // 构建Page
+        Page<WfAssessMonth> page = new Page<>();
+        page.setCurrent(pageNumber);
+        page.setSize(pageSize);
+
         // 查询
         Page<WfAssessMonth> fromDb = getBaseMapper().selectPage(page, criteria);
         Optional.ofNullable(fromDb.getRecords()).ifPresent(l -> {
             // 转换结果
-            List<MonthAssessListDTO> tmpCol = l.stream().filter(Objects::nonNull).map(item -> {
-                BigDecimal fnlContrastElectric = item.getFnlContrastElectric();
-                BigDecimal fnlContrastPay = item.getFnlContrastPay();
-                int fnlResult = 0;
-                if (Objects.nonNull(fnlContrastElectric) || Objects.nonNull(fnlContrastPay)) {
-                    fnlResult = 1;
-                }
-                MonthAssessListDTO tmp = MonthAssessListDTO.builder()
-                        .calcDate(item.getCalcDate())
-                        .autoElectric(item.getAutoElectric())
-                        .autoPay(item.getAutoPay())
-                        .fnlElectric(item.getFnlElectric())
-                        .fnlPay(item.getFnlPay())
-                        .scheduleElectric(item.getScheduleElectric())
-                        .schedulePay(item.getSchedulePay())
-                        .contrastElectric(item.getContrastElectric())
-                        .contrastPay(item.getContrastPay())
-                        .fnlContrastElectric(fnlContrastElectric)
-                        .fnlContrastPay(fnlContrastPay)
-                        .fnlResult(fnlResult)
-                        .build();
-                return tmp;
-            }).collect(Collectors.toList());
+            List<MonthAssessListDTO> tmpCol = l.stream().filter(Objects::nonNull).map(WfAssessMonthServiceImpl::switchMonthRes).collect(Collectors.toList());
             pagerRes.replaceWithNewCol(tmpCol);
         });
 
         return pagerRes;
     }
 
+    private static MonthAssessListDTO switchMonthRes(WfAssessMonth item) {
+        BigDecimal fnlContrastElectric = item.getFnlContrastElectric();
+        BigDecimal fnlContrastPay = item.getFnlContrastPay();
+        int fnlResult = 1;
+        if (Objects.nonNull(fnlContrastElectric) || Objects.nonNull(fnlContrastPay)) {
+            fnlResult = 0;
+        }
+        MonthAssessListDTO tmp = MonthAssessListDTO.builder()
+                .calcDate(item.getCalcDate())
+                .autoElectric(item.getAutoElectric())
+                .autoPay(item.getAutoPay())
+                .fnlElectric(item.getFnlElectric())
+                .fnlPay(item.getFnlPay())
+                .scheduleElectric(item.getScheduleElectric())
+                .schedulePay(item.getSchedulePay())
+                .contrastElectric(item.getContrastElectric())
+                .contrastPay(item.getContrastPay())
+                .fnlContrastElectric(fnlContrastElectric)
+                .fnlContrastPay(fnlContrastPay)
+                .fnlResult(fnlResult)
+                .build();
+        return tmp;
+    }
+
+    @Override
+    public List<MonthAssessCurveDTO> queryMonthCurve(MonthCurveQuery query) {
+        // TODO
+
+        return new ArrayList<>();
+    }
 
 
 }

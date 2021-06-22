@@ -1,4 +1,4 @@
-package com.zhikuntech.intellimonitor.config;
+package com.zhikuntech.intellimonitor.gateway.domain.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
