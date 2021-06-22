@@ -3,9 +3,11 @@ package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.ChangeResultDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.DayAssessListDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfAssessDay;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfAssessDayMapper;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.assessresult.AssessChangeQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.assessresult.DayAssessQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfAssessDayService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.DateProcessUtils;
@@ -69,6 +71,17 @@ public class WfAssessDayServiceImpl extends ServiceImpl<WfAssessDayMapper, WfAss
         }
 
         return pagerRes;
+    }
+
+    @Override
+    public ChangeResultDTO changeAssessData(AssessChangeQuery query) {
+        ChangeResultDTO changeResultDTO = ChangeResultDTO.builder()
+                .result(1)
+                .msg("暂未实现")
+                .build();
+        // TODO
+
+        return changeResultDTO;
     }
 
 }

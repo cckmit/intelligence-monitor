@@ -1,9 +1,11 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.service;
 
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.ChangeResultDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.DayAssessListDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfAssessDay;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.assessresult.AssessChangeQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.assessresult.DayAssessQuery;
 
 /**
@@ -24,5 +26,13 @@ public interface IWfAssessDayService extends IService<WfAssessDay> {
      * @return  分页结果
      */
     Pager<DayAssessListDTO> queryDayList(DayAssessQuery query);
+
+
+    /**
+     * 日考核结果-修改数据
+     * @param query 待修改的数据
+     * @return      修改结果
+     */
+    ChangeResultDTO changeAssessData(AssessChangeQuery query);
 
 }
