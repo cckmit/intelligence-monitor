@@ -27,7 +27,8 @@ public class RedissonConfig {
         Config config = new Config();
         //redis单机方式
         config.useSingleServer()
-                .setAddress("redis://192.168.3.179:6379");
+                .setAddress("redis://192.168.3.179:6379")
+                .setDatabase(7);
         return Redisson.create(config);
     }
 
