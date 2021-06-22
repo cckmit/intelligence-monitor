@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * 月考核结果-列表模式
+ * 月考核结果-曲线模式
  *
  * @author liukai
  */
@@ -20,8 +20,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Data
-@ApiModel("月考核结果-列表模式")
-public class MonthAssessListDTO {
+@ApiModel("月考核结果-曲线模式")
+public class MonthAssessCurveDTO {
 
     /**
      * 计算日期
@@ -77,23 +77,5 @@ public class MonthAssessListDTO {
      */
     @ApiModelProperty("考核费用对比结果（元）")
     private BigDecimal contrastPay;
-
-    /**
-     * 最终修改后-考核电量对比结果（MWh）
-     */
-    @ApiModelProperty("最终修改后-考核电量对比结果（MWh）")
-    private BigDecimal fnlContrastElectric;
-
-    /**
-     * 最终修改后-考核费用对比结果（元）
-     */
-    @ApiModelProperty("最终修改后-考核费用对比结果（元）")
-    private BigDecimal fnlContrastPay;
-
-    /**
-     * 是否有最终修改后的的考核[0有, 1没有]
-     */
-    @ApiModelProperty("是否有最终修改后的的考核[0有, 1没有]")
-    private Integer fnlResult;
 
 }

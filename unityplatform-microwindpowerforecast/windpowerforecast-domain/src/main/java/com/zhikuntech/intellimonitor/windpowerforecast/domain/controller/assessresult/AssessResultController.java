@@ -4,20 +4,21 @@ import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.ChangeResultDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.DayAssessListDTO;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.MonthAssessCurveDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.MonthAssessListDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.assessresult.AssessChangeQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.assessresult.DayAssessQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.assessresult.MonthAssessQuery;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.assessresult.MonthCurveQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfAssessDayService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfAssessMonthService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 考核结果
@@ -42,6 +43,12 @@ public class AssessResultController {
         return BaseResponse.success(pageResult);
     }
 
+    @ApiOperation("曲线模式（月）")
+    @PostMapping("/month-curve-pattern")
+    public BaseResponse<List<MonthAssessCurveDTO>> queryMonthCurve(@RequestBody MonthCurveQuery query) {
+        List<MonthAssessCurveDTO> results = monthService.queryMonthCurve(query);
+        return BaseResponse.success(results);
+    }
 
     @ApiOperation("日考核结果-列表模式")
     @PostMapping("/day-list-pattern")
@@ -49,11 +56,6 @@ public class AssessResultController {
         Pager<DayAssessListDTO> pageResult = dayService.queryDayList(query);
         return BaseResponse.success(pageResult);
     }
-
-
-    // TODO 曲线模式（日 + 月）
-
-
 
 
     @ApiOperation("日考核结果-修改数据")

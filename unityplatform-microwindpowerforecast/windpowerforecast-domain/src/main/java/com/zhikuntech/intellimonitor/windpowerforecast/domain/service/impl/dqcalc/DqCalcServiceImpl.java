@@ -61,7 +61,7 @@ public class DqCalcServiceImpl implements DqCalcService {
     private final IWfAnalyseDqService analyseDqService;
 
 
-    static Function<LocalDateTime, String> capacityFunction = item -> {
+    static Function<LocalDateTime, String> localDateTimeStringFunction = item -> {
         if (Objects.isNull(item)) {
             return "nil";
         }
@@ -134,7 +134,7 @@ public class DqCalcServiceImpl implements DqCalcService {
             return;
         }
 
-        // 短期功率数据
+        // 短期功率数据 - 每15分钟一条数据
         QueryWrapper<WfDataDq> dqQueryWrapper = new QueryWrapper<>();
         dqQueryWrapper.gt("event_date_time", bg);
         dqQueryWrapper.le("event_date_time", end);
@@ -145,6 +145,8 @@ public class DqCalcServiceImpl implements DqCalcService {
             return;
         }
         Map<String, List<WfDataDq>> dqGorup = dqList.stream().collect(Collectors.groupingBy(p -> timePostRangeProcess.apply(p.getEventDateTime())));
+
+        Map<String, WfDataDq> wfDataDqMap = dqList.stream().collect(Collectors.toMap(p -> localDateTimeStringFunction.apply(p.getEventDateTime()), p -> p, (p1, p2) -> p2));
 
 
         // 真实功率数据
@@ -170,7 +172,7 @@ public class DqCalcServiceImpl implements DqCalcService {
         }
 
         Map<String, WfDataCapacity> capacityMap = capacityList.stream()
-                .collect(Collectors.toMap(p -> capacityFunction.apply(p.getEventDateTime()), p -> p));
+                .collect(Collectors.toMap(p -> localDateTimeStringFunction.apply(p.getEventDateTime()), p -> p, (p1, p2) -> p2));
 
         /*
             按照指定时间分组数据
@@ -228,7 +230,7 @@ public class DqCalcServiceImpl implements DqCalcService {
         final BigDecimal emae = calcEMAE(aggrs);
         //# 算法-计算EMAE[平均绝对误差]
 
-        //# TODO 最大预测误差
+        //# TODO 最大预测误差 max(pmk - ppk)
 
         //# TODO 最大预测误差
 
@@ -236,29 +238,6 @@ public class DqCalcServiceImpl implements DqCalcService {
 
         //# TODO 相关系数R
 
-        //# 准确率r1
-        BigDecimal r1Ratio = new BigDecimal("0");
-        for (ErmseAggregateCalc aggr : aggrs) {
-            List<BigDecimal> dqProduces = aggr.getDqProduce();
-            List<BigDecimal> zrCapsProduces = aggr.getZrCapsProduce();
-
-            // ck
-            BigDecimal ck = aggr.getCap();
-            // ppk
-            BigDecimal ppk = new BigDecimal("0");
-            for (BigDecimal dqProduce : dqProduces) {
-                ppk = ppk.add(dqProduce);
-            }
-            ppk = ppk.divide(BigDecimal.valueOf(dqProduces.size()), 3, RoundingMode.HALF_UP);
-            // pmk
-            BigDecimal pmk = new BigDecimal("0");
-            for (BigDecimal zrCapsProduce : zrCapsProduces) {
-                pmk = pmk.add(zrCapsProduce);
-            }
-            pmk = pmk.divide(BigDecimal.valueOf(zrCapsProduces.size()), 3, RoundingMode.HALF_UP);
-
-
-        }
         //# 准确率r1
         BigDecimal r1 = new BigDecimal("0");
         // (1 - Ermse) * 100%

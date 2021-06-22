@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 月评估查询
+ * 月评估查询-曲线模式
  *
  * @author liukai
  */
@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-@ApiModel("月评估查询-列表模式")
-public class MonthAssessQuery {
+@ApiModel("月评估查询-曲线模式")
+public class MonthCurveQuery {
 
     /**
      * 查询某一年
@@ -33,10 +33,5 @@ public class MonthAssessQuery {
     @ApiModelProperty(value = "查询年份[后], 模式为one时为空", required = true)
     private String queryYearPost;
 
-    @ApiModelProperty(value = "每页数据数量", required = true)
-    private Integer pageSize;
-
-    @ApiModelProperty(value = "页码", required = true)
-    private Integer pageNumber;
 
 }
