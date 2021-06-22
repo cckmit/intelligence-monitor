@@ -29,4 +29,6 @@ public interface BackendToGoldenMapper extends BaseMapper<BackendToGolden> {
 
 
     List<Integer> getGoldenIdByWindNumberAndId(@Param("dataIds") List<Integer> dataIds);
+
+    List<BackendToGolden> getList(@Param("list") List<Integer> list);
 }

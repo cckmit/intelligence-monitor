@@ -4,6 +4,7 @@ package com.zhikuntech.intellimonitor.fanscada.domain.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.rtdb.api.model.ValueData;
 import com.zhikuntech.intellimonitor.core.commons.constant.FanConstant;
+import com.zhikuntech.intellimonitor.fanscada.domain.config.DataInitConf;
 import com.zhikuntech.intellimonitor.fanscada.domain.constant.FanLoopNumber;
 import com.zhikuntech.intellimonitor.fanscada.domain.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.fanscada.domain.golden.InjectPropertiesUtil;
@@ -43,46 +44,9 @@ public class FanIndexServiceImpl implements FanIndexService {
 
     @Autowired
     private RedisUtil redisUtil;
+    @Autowired
+    private DataInitConf dataInitConf;
 
-
-
-    public void getFanBaseInfoList(String username, List<Integer> windNumberList) throws Exception {
-
-        //GoldenUtil goldenUtil = new GoldenUtil();
-        //通过mapper获取庚顿数据的对应关系
-        for (Integer integer : windNumberList) {
-            //获取所有风场的number,封装其对应的数据字段ID
-            //风速,转速,有功功率,无功功率,状态,日发电总量=有功能量输出,
-
-        }
-        if (WebSocketServer.clients.containsKey(username)) {
-            int[] ids = {21, 22, 23, 24, 12, 101};//需要的风机数据(12:状态)101,总发电量  -当日0点的总发电量=日发电量
-
-            List<FanBaseInfoVO> list = new ArrayList<>(10);
-            for (int i = 1; i <= 10; i++) {
-                FanBaseInfoVO fanBaseInfoVO = new FanBaseInfoVO();
-                fanBaseInfoVO.setFanNumber(i);
-                list.add(fanBaseInfoVO);
-            }
-            goldenUtil.subscribeSnapshots(username, ids, (data) -> {
-                if (WebSocketServer.clients.containsKey(username)) {
-                    List<FanBaseInfoVO> dtos = InjectPropertiesUtil.injectByAnnotationForBigdecimal(list, data);
-                    if (null != dtos) {
-                        List<LoopVO> loopVOS = new ArrayList<>();
-                        for (int i = 0; i < 6; i++) {
-                            LoopVO loopVO1 = new LoopVO();
-                            loopVO1.setLoopNumber("0000000000000" + i);
-                            loopVO1.setFanBaseInfoVOS(dtos);
-                            loopVOS.add(loopVO1);
-                        }
-                        String jsonString = JSONObject.toJSONString(loopVOS);
-                        log.info(jsonString);
-                        webSocketServer.sendMessage(jsonString, username);
-                    }
-                }
-            });
-        }
-    }
 
     @Override
     public void getFanBaseInfoList(String username) throws Exception {
@@ -100,19 +64,13 @@ public class FanIndexServiceImpl implements FanIndexService {
 
         GoldenIdQuery query = new GoldenIdQuery();
         query.setDataIds(idList);
-        int[] ints= backendToGoldenService.getGoldenIdByNumberAndId(query);
+        int[] ints = backendToGoldenService.getGoldenIdByNumberAndId(query);
 
+        if (goldenUtil.getServer().containsKey(username)) {
+            return;
+        }
         if (WebSocketServer.clients.containsKey(username)) {
-            List<FanBaseInfoVO> list1 = new ArrayList<>();
-            List<FanBaseInfoVO> list2 = new ArrayList<>();
-            List<FanBaseInfoVO> list3 = new ArrayList<>();
-            List<FanBaseInfoVO> list4 = new ArrayList<>();
-            List<FanBaseInfoVO> list5 = new ArrayList<>();
-            List<FanBaseInfoVO> list6 = new ArrayList<>();
-            List<FanBaseInfoVO> list7 = new ArrayList<>();
-            List<FanBaseInfoVO> list8 = new ArrayList<>();
-            List<FanBaseInfoVO> list9 = new ArrayList<>();
-            List<FanBaseInfoVO> list10 = new ArrayList<>();
+
 
             List<FanBaseInfoVO> fanBaseInfoVOList = new ArrayList<>();//63台风机
             for (int i = 1; i < 64; i++) {
@@ -128,6 +86,16 @@ public class FanIndexServiceImpl implements FanIndexService {
                     if (result == null) {
                         return;
                     }
+                    List<FanBaseInfoVO> list1 = new ArrayList<>();
+                    List<FanBaseInfoVO> list2 = new ArrayList<>();
+                    List<FanBaseInfoVO> list3 = new ArrayList<>();
+                    List<FanBaseInfoVO> list4 = new ArrayList<>();
+                    List<FanBaseInfoVO> list5 = new ArrayList<>();
+                    List<FanBaseInfoVO> list6 = new ArrayList<>();
+                    List<FanBaseInfoVO> list7 = new ArrayList<>();
+                    List<FanBaseInfoVO> list8 = new ArrayList<>();
+                    List<FanBaseInfoVO> list9 = new ArrayList<>();
+                    List<FanBaseInfoVO> list10 = new ArrayList<>();
                     for (FanBaseInfoVO fanBaseInfoVO : result) {
                         if (FanLoopNumber.LOOP1.contains("" + fanBaseInfoVO.getFanNumber())) {
                             list1.add(fanBaseInfoVO);
@@ -188,8 +156,9 @@ public class FanIndexServiceImpl implements FanIndexService {
                                 energy = BigDecimal.valueOf(0.0);
                             }
                             //当日零点的总发电量
-                            String string = redisUtil.getString(FanConstant.DAILY_POWER);
-                            BigDecimal v = BigDecimal.valueOf(Double.parseDouble(string));
+                            Object o = redisUtil.get(FanConstant.DAILY_POWER);
+                            double d = null == o ? 0 : (double) o;
+                            BigDecimal v = BigDecimal.valueOf(d);
                             BigDecimal dayEnergy = energy.subtract(v);//日发电量
 
                             activePowerSum = activePowerSum.add(activePower);
@@ -210,6 +179,7 @@ public class FanIndexServiceImpl implements FanIndexService {
                     String jsonString = JSONObject.toJSONString(resultList);
                     log.info(jsonString);
                     webSocketServer.sendMessage(jsonString, username);
+
                     long l1 = System.currentTimeMillis();
                     System.out.println("############################" + (l1 - l) + "=========" + data[0].getDate().toString());
                 }
@@ -230,7 +200,7 @@ public class FanIndexServiceImpl implements FanIndexService {
 
         GoldenIdQuery query = new GoldenIdQuery();
         query.setDataIds(idList);
-        int[] ints =  backendToGoldenService.getGoldenIdByNumberAndId(query);
+        int[] ints = backendToGoldenService.getGoldenIdByNumberAndId(query);
 
         List<FanBaseInfoVO> list = new ArrayList<>();
         for (int i = 1; i < 64; i++) {
@@ -249,8 +219,8 @@ public class FanIndexServiceImpl implements FanIndexService {
         List<FanBaseInfoVO> list9 = new ArrayList<>();
         List<FanBaseInfoVO> list10 = new ArrayList<>();
         List<ValueData> snapshots = goldenUtil.getSnapshots(ints);
-        List<FanBaseInfoVO> fanBaseInfoVOS = InjectPropertiesUtil.injectByAnnotationForBigdecimal(list, snapshots,redisUtil,backendToGoldenService);
-        if (fanBaseInfoVOS==null){
+        List<FanBaseInfoVO> fanBaseInfoVOS = InjectPropertiesUtil.injectByAnnotationForBigdecimal(list, snapshots);
+        if (fanBaseInfoVOS == null) {
             return null;
         }
         for (FanBaseInfoVO fanBaseInfoVO : fanBaseInfoVOS) {
@@ -314,7 +284,7 @@ public class FanIndexServiceImpl implements FanIndexService {
                 }
                 //当日零点的总发电量
                 String string = redisUtil.getString(FanConstant.DAILY_POWER);
-                if (StringUtils.isBlank(string)){
+                if (StringUtils.isBlank(string)) {
                     string = "0";
                 }
                 BigDecimal v = BigDecimal.valueOf(Double.parseDouble(string));

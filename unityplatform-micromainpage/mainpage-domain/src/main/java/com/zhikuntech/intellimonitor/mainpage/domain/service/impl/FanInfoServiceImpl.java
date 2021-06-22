@@ -17,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.net.SocketException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +48,10 @@ public class FanInfoServiceImpl implements FanInfoService {
     public List<FanRuntimeDTO> getRuntimeInfos() throws Exception {
         List<FanRuntimeDTO> list = new ArrayList<>();
         int[] ids = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
-        List<ValueData> valueData = goldenUtil.getSnapshots(ids);
+        List<ValueData> valueData = getSnapShops(ids);
+        if (null == valueData) {
+            return null;
+        }
         for (int i = 1; i <= 63; i++) {
             FanRuntimeDTO fanRuntimeDto = new FanRuntimeDTO();
             fanRuntimeDto.setNumber(i);
@@ -80,9 +86,8 @@ public class FanInfoServiceImpl implements FanInfoService {
                         List<FanRuntimeDTO> dtos = InjectPropertiesUtil.injectByAnnotation(list, data);
                         if (null != dtos) {
                             for (FanRuntimeDTO dto : dtos) {
-                                double powerGeneration = 0;
+                                double powerGeneration;
                                 Object obj = redisUtil.get(FanConstant.MONTHLY_POWER + dto.getNumber());
-//                            powerGeneration = null == obj ? 0 : (double) obj;
                                 if (null == obj) {
                                     int id = (int) redisUtil.get(FanConstant.GOLDEN_ID_POWER + dto.getNumber());
                                     powerGeneration = fanInfoInit.dataResetFloat(FanConstant.MONTHLY_POWER + dto.getNumber(), id, 0);
@@ -109,7 +114,10 @@ public class FanInfoServiceImpl implements FanInfoService {
     public FanStatisticsDTO getStatistics() throws Exception {
         int[] ids = {1, 2, 13, 14};
         FanStatisticsDTO dto = new FanStatisticsDTO();
-        List<ValueData> valueData = goldenUtil.getSnapshots(ids);
+        List<ValueData> valueData = getSnapShops(ids);
+        if (null == valueData) {
+            return null;
+        }
         List<FanStatisticsDTO> list = new ArrayList<>();
         for (int i = 1; i <= 63; i++) {
             list.add(new FanStatisticsDTO());
@@ -157,16 +165,36 @@ public class FanInfoServiceImpl implements FanInfoService {
     public void export(HttpServletResponse response) throws Exception {
         int[] ids = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
         List<FanRuntimeDTO> list = new ArrayList<>();
-        List<ValueData> valueData = goldenUtil.getSnapshots(ids);
+        List<ValueData> valueData = getSnapShops(ids);
+        if (null == valueData) {
+            return;
+        }
         for (int i = 1; i <= 10; i++) {
             FanRuntimeDTO fanRuntimeDto = new FanRuntimeDTO();
             fanRuntimeDto.setNumber(i);
+            URL url = new File("unityplatform-micromainpage/mainpage-domain/src/main/resources/template/1.png").toURL();
+            fanRuntimeDto.setRunningStatusUrl(url);
             FanRuntimeDTO dto = InjectPropertiesUtil.injectByAnnotation(fanRuntimeDto, i, valueData);
             list.add(dto);
         }
         response.setHeader("Access-Control-Expose-Headers", "*");
         response.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode("风机列表", "UTF-8") + ".xlsx");
         EasyExcelUtil.export(response.getOutputStream(), "风机列表", list);
+    }
+
+    /**
+     * 处理golden socket连接异常后原有连接失效问题
+     */
+    private List<ValueData> getSnapShops(int[] ids) throws Exception {
+        List<ValueData> valueData;
+        try {
+            valueData = goldenUtil.getSnapshots(ids);
+        } catch (SocketException e) {
+            log.info("golden连接失败，重连后取消之前所有连接");
+            goldenUtil.cancelAll();
+            return null;
+        }
+        return valueData;
     }
 
     private FanStatisticsDTO injecctPorerties(List<FanStatisticsDTO> dtos) {

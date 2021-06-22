@@ -50,7 +50,11 @@ public class DateProcessUtils {
     }
 
     public static LocalDate parseToLocalDate(String dateStr) {
-        return dateToLocalDateTime(parseDateY4M2D2(dateStr)).toLocalDate();
+        LocalDateTime localDateTime = dateToLocalDateTime(parseDateY4M2D2(dateStr));
+        if (Objects.isNull(localDateTime)) {
+             throw new IllegalArgumentException();
+        }
+        return localDateTime.toLocalDate();
     }
 
     public static String fetchDayBegin(LocalDate localDate) {

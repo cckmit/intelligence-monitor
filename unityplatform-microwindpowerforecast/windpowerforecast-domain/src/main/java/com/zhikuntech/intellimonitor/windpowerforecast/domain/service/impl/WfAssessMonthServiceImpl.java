@@ -2,7 +2,6 @@ package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.sun.org.apache.bcel.internal.generic.LUSHR;
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.MonthAssessCurveDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.MonthAssessListDTO;
@@ -119,59 +118,8 @@ public class WfAssessMonthServiceImpl extends ServiceImpl<WfAssessMonthMapper, W
     @Override
     public List<MonthAssessCurveDTO> queryMonthCurve(MonthCurveQuery query) {
         // TODO
-        List<MonthAssessCurveDTO> result = new ArrayList<>();
-        if (Objects.isNull(query)) {
-            return result;
-        }
-        String listMod = query.getQueryMod();//查询模式[查询某一年(one)/查询范围(range)]
-        String listYearPre = query.getQueryYearPre();//前年
-        String listYearPost = query.getQueryYearPost();//后年 one时为空
-        // 构建query
-        QueryWrapper<WfAssessMonth> criteria = new QueryWrapper<>();
-        if (StringUtils.equalsIgnoreCase(listMod, MonthAssessQuery.QUERY_ONE)) {//如果查询模式one
-            // check
-            if (StringUtils.isBlank(listYearPre)) {//如果前年为空
-                return result;
-            }
-            String yearStr = listYearPre + "-01-01";//开始时间
-            LocalDate curYear = DateProcessUtils.parseToLocalDate(yearStr);//开始时间
-            LocalDate nextYear = curYear.plusYears(1);//结束时间 开始时间年份+1
-            criteria.ge("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(curYear));//大于等于开始时间
-            criteria.lt("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(nextYear));//小于结束时间
-        } else {//如果查询模式是 多年查询范围(range)
-            // check
-            if (StringUtils.isBlank(listYearPre) || StringUtils.isBlank(listYearPost)) {
-                return result;
-            }
-            String yearStrPre = listYearPre + "-01-01";
-            String yearStrPost = listYearPost + "-01-01";
-            LocalDate preYear = DateProcessUtils.parseToLocalDate(yearStrPre);//开始时间
-            LocalDate postYear = DateProcessUtils.parseToLocalDate(yearStrPost);//结束时间
-            postYear = postYear.plusDays(1);
-            criteria.ge("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(preYear));
-            criteria.lt("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(postYear));
-        }
-        int pageNumber = 2100000000;
-        int pageSize = 2100000000;
-        // 构建Page
-        Page<WfAssessMonth> page = new Page<>();
-        page.setCurrent(pageNumber);
-        page.setSize(pageSize);
 
-        ArrayList<WfAssessMonth> list=new ArrayList<>();
-     //   List<WfAssessMonth>
-
-        // 查询
-        Page<WfAssessMonth> fromDb = getBaseMapper().selectPage(page, criteria);
-        Optional.ofNullable(fromDb.getRecords()).ifPresent(l -> {
-            // 转换结果
-            List<MonthAssessListDTO> tmpCol = l.stream().filter(Objects::nonNull).map(WfAssessMonthServiceImpl::switchMonthRes).collect(Collectors.toList());
-     //       pagerRes.replaceWithNewCol(tmpCol);
-        });
-
-        //return pagerRes;
-
-        return result;
+        return new ArrayList<>();
     }
 
 

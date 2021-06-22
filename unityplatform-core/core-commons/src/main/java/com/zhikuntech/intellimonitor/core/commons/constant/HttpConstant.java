@@ -17,4 +17,7 @@ public interface HttpConstant {
 
     //upm 调用接口成功
     Integer UPM_HTTP_CODE_SUCCESS = 0;
+
+    //sftp异常
+    Integer SFTP_FAILURE = 90001;
 }

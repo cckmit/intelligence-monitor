@@ -28,7 +28,8 @@ public enum ResultCode {
     FILE_UPLOAD_FAILED(HttpConstant.RPC_RESULT_SUCCESS, "文件上传失败"),
     GOLDEN_GETSNAPSHOTS_FAILED(HttpConstant.HTTP_RES_CODE_500,"获取指定id当前最新快照信息失败"),
     GOLDEN_SUBSCRIBESNAPSHOTS_FAILED(HttpConstant.HTTP_RES_CODE_500,"订阅庚顿推送快照(实时)数据失败"),
-    USER_NOT_LOGIN_EXCEPTION(HttpConstant.HTTP_RES_CODE_500,"用户未登录");
+    USER_NOT_LOGIN_EXCEPTION(HttpConstant.HTTP_RES_CODE_500,"用户未登录"),
+    SFTP_FAILURE(HttpConstant.SFTP_FAILURE,"sftp操作异常");
 
     private final Integer code;
     private String msg;

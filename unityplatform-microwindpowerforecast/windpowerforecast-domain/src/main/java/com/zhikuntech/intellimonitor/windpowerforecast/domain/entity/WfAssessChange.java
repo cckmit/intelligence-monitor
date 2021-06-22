@@ -48,6 +48,16 @@ public class WfAssessChange implements Serializable {
     private BigDecimal dqRatio;
 
     /**
+     * 短期预测功率准确率考核电量（MWh）
+     */
+    private BigDecimal dqElectric;
+
+    /**
+     * 短期预测功率准确率考核费用（元）
+     */
+    private BigDecimal dqPay;
+
+    /**
      * 超短期预测功率漏报次数
      */
     private Integer cdqHiatus;
@@ -56,6 +66,16 @@ public class WfAssessChange implements Serializable {
      * 超短期预测功率准确率（%）
      */
     private BigDecimal cdqRatio;
+
+    /**
+     * 短期预测功率准确率考核电量（MWh）
+     */
+    private BigDecimal cdqElectric;
+
+    /**
+     * 超短期预测功率准确率考核费用（元）
+     */
+    private BigDecimal cdqPay;
 
     /**
      * 执行人
