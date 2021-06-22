@@ -196,30 +196,38 @@ public class InjectPropertiesUtil<T> {
         // 获取注解的backendList
         Field[] fields = t.getClass().getDeclaredFields();
         List<Integer> backendList = new ArrayList<>();
-        for (Field field : fields) {
-            if (field.getAnnotation(GoldenId.class) != null) {
-                int value = field.getAnnotation(GoldenId.class).value();
-                backendList.add(value);
-            }
-        }
-        if (CollectionUtils.isEmpty(backendList)) {
-            return null;
-        }
-        // 通过风机编号查询GoldenIdList
-        List<Integer> goldenIdList = mapper.getGoldenIdByWindNumberAndId(backendList);
-        int[] goldenIds = goldenIdList.stream().mapToInt(Integer::intValue).toArray();
-
-        QueryWrapper<BackendToGolden> query = new QueryWrapper<>();
-        query.eq("number", number);
-        query.in("backendId", backendList);
-        List<BackendToGolden> backendToGoldenList = mapper.selectList(query);
         try {
+            for (Field field : fields) {
+                GoldenId annotation = field.getAnnotation(GoldenId.class);
+                if (annotation != null) {
+                    int value = annotation.value();
+                    backendList.add(value);
+                    // 初始化赋值，避免null
+                    field.setAccessible(true);
+                    field.set(t, dataProcess(0.00, field.getType()));
+                }
+            }
+            if (CollectionUtils.isEmpty(backendList)) {
+                return t;
+            }
+            // 通过风机编号查询GoldenIdList
+            List<Integer> goldenIdList = mapper.getGoldenIdByWindNumberAndId(backendList);
+            int[] goldenIds = goldenIdList.stream().mapToInt(Integer::intValue).toArray();
+
+            QueryWrapper<BackendToGolden> query = new QueryWrapper<>();
+            query.eq("number", number);
+            query.in("backendId", backendList);
+            List<BackendToGolden> backendToGoldenList = mapper.selectList(query);
+            if (CollectionUtils.isEmpty(backendToGoldenList)) {
+                return t;
+            }
             List<ValueData> valueDataList = goldenUtil.getSnapshots(goldenIds);
             for (Field field : fields) {
-                if (field.getAnnotation(GoldenId.class) == null) {
+                GoldenId annotation = field.getAnnotation(GoldenId.class);
+                if (annotation == null) {
                     continue;
                 }
-                int fieldValue = field.getAnnotation(GoldenId.class).value();
+                int fieldValue = annotation.value();
                 BackendToGolden backend = null;
                 for (BackendToGolden backendToGolden : backendToGoldenList) {
                     if (backendToGolden.getBackendId() == fieldValue) {
@@ -231,20 +239,9 @@ public class InjectPropertiesUtil<T> {
                     continue;
                 }
                 for (ValueData valueData : valueDataList) {
-                     if (valueData.getId() == backend.getGoldenId()) {
+                    if (valueData.getId() == backend.getGoldenId()) {
                         field.setAccessible(true);
-                        Double dataValue = valueData.getValue();
-                        Class<?> fieldType = field.getType();
-                        if (BigDecimal.class.equals(fieldType)) {
-                            BigDecimal bigDecimal = BigDecimal.valueOf(dataValue).setScale(2, RoundingMode.HALF_UP);
-                            field.set(t, bigDecimal);
-                        } else if (Integer.class.equals(fieldType)) {
-                            field.set(t, dataValue.intValue());
-                        } else if (String.class.equals(fieldType)) {
-                            field.set(t, String.valueOf(dataValue));
-                        } else {
-                            field.set(t, null);
-                        }
+                        field.set(t, dataProcess(valueData.getValue(), field.getType()));
                     }
                 }
             }
@@ -253,6 +250,19 @@ public class InjectPropertiesUtil<T> {
             e.printStackTrace();
         }
         return t;
+    }
+
+    private static Object dataProcess(Double dataValue, Class<?> fieldType) {
+        Object obj = null;
+        if (BigDecimal.class.equals(fieldType)) {
+            obj = BigDecimal.valueOf(dataValue).setScale(2, RoundingMode.HALF_UP);
+        } else if (Integer.class.equals(fieldType)) {
+            obj = dataValue.intValue();
+        } else if (String.class.equals(fieldType)) {
+            String value = String.valueOf(dataValue);
+            obj = "0.00".equals(value) ? "0" : value;
+        }
+        return obj;
     }
 
 }
