@@ -23,11 +23,12 @@
         <result column="create_time" property="createTime" />
         <result column="newest" property="newest" />
         <result column="pre_id" property="preId" />
+        <result column="day_assess_electric" property="dayAssessElectric" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, org_id, day_ref_id, calc_date, dq_hiatus, dq_ratio, dq_electric, dq_pay, cdq_hiatus, cdq_ratio, cdq_electric, cdq_pay, exec_person, guardian, fix_reason, fix_time, create_time, newest, pre_id
+        id, org_id, day_ref_id, calc_date, dq_hiatus, dq_ratio, dq_electric, dq_pay, cdq_hiatus, cdq_ratio, cdq_electric, cdq_pay, exec_person, guardian, fix_reason, fix_time, create_time, newest, pre_id, day_assess_electric
     </sql>
 
 </mapper>
