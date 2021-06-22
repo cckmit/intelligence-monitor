@@ -49,9 +49,4 @@ public class FanIndexController {
         }
     }
 
-
-    //=======================================================以下移植到新controller
-
-    //@ApiOperation("")
-
 }
