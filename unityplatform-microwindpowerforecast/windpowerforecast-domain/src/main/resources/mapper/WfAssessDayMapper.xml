@@ -18,26 +18,26 @@
         <result column="cdq_pay" property="cdqPay" />
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
+        <result column="day_assess_electric" property="dayAssessElectric" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, org_id, version, calc_date, dq_hiatus, dq_ratio, dq_electric, dq_pay, cdq_hiatus, cdq_ratio, cdq_electric, cdq_pay, create_time, update_time
+        id, org_id, version, calc_date, dq_hiatus, dq_ratio, dq_electric, dq_pay, cdq_hiatus, cdq_ratio, cdq_electric, cdq_pay, create_time, update_time, day_assess_electric
     </sql>
 
     <select id="dayListPattern"
             resultType="com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.DayAssessListDTO">
         select wad.id, wad.calc_date calcDate, wad.dq_hiatus dqHiatus, wad.dq_ratio dqRatio, wad.dq_electric dqElectric, wad.dq_pay dqPay,
-        wad.cdq_hiatus cdqHiatus, wad.cdq_ratio cdqRatio, wad.cdq_electric cdqElectric, wad.cdq_pay cdqPay,
-        wac.dq_hiatus dqHiatusFnl, wac.dq_ratio dqRatioFnl, wac.dq_electric dqElectricFnl, wac.dq_pay dqPayFnl,
-        wac.cdq_hiatus cdqHiatusFnl, wac.cdq_ratio cdqRatioFnl, wac.cdq_electric cdqElectricFnl, wac.cdq_pay cdqPayFnl,
-        wac.exec_person execPerson, wac.guardian guardian, wac.fix_reason fixReason, wac.fix_time fixTime
+               wad.cdq_hiatus cdqHiatus, wad.cdq_ratio cdqRatio, wad.cdq_electric cdqElectric, wad.cdq_pay cdqPay,
+               wac.dq_hiatus dqHiatusFnl, wac.dq_ratio dqRatioFnl, wac.dq_electric dqElectricFnl, wac.dq_pay dqPayFnl,
+               wac.cdq_hiatus cdqHiatusFnl, wac.cdq_ratio cdqRatioFnl, wac.cdq_electric cdqElectricFnl, wac.cdq_pay cdqPayFnl,
+               wac.exec_person execPerson, wac.guardian guardian, wac.fix_reason fixReason, wac.fix_time fixTime
         from wf_assess_day wad left join wf_assess_change wac
-        on wad.id = wac.id
+                                         on wad.id = wac.id
         where wac.newest = 0
-        and wad.calc_date >= #{mPre}
-        and wad.calc_date &lt; #{mPost}
+          and wad.calc_date >= #{mPre}
+          and wad.calc_date &lt; #{mPost}
     </select>
-
 
 </mapper>

@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
  * </p>
  *
  * @author liukai
- * @since 2021-06-21
+ * @since 2021-06-22
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -74,6 +74,11 @@ public class WfAssessDay implements Serializable {
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;
+
+    /**
+     * 日考核电量
+     */
+    private BigDecimal dayAssessElectric;
 
 
 }
