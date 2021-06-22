@@ -10,8 +10,12 @@
         <result column="calc_date" property="calcDate" />
         <result column="dq_hiatus" property="dqHiatus" />
         <result column="dq_ratio" property="dqRatio" />
+        <result column="dq_electric" property="dqElectric" />
+        <result column="dq_pay" property="dqPay" />
         <result column="cdq_hiatus" property="cdqHiatus" />
         <result column="cdq_ratio" property="cdqRatio" />
+        <result column="cdq_electric" property="cdqElectric" />
+        <result column="cdq_pay" property="cdqPay" />
         <result column="exec_person" property="execPerson" />
         <result column="guardian" property="guardian" />
         <result column="fix_reason" property="fixReason" />
@@ -23,7 +27,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, org_id, day_ref_id, calc_date, dq_hiatus, dq_ratio, cdq_hiatus, cdq_ratio, exec_person, guardian, fix_reason, fix_time, create_time, newest, pre_id
+        id, org_id, day_ref_id, calc_date, dq_hiatus, dq_ratio, dq_electric, dq_pay, cdq_hiatus, cdq_ratio, cdq_electric, cdq_pay, exec_person, guardian, fix_reason, fix_time, create_time, newest, pre_id
     </sql>
 
 </mapper>

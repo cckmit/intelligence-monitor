@@ -83,9 +83,9 @@ public class WfAssessMonthServiceImpl extends ServiceImpl<WfAssessMonthMapper, W
             List<MonthAssessListDTO> tmpCol = l.stream().filter(Objects::nonNull).map(item -> {
                 BigDecimal fnlContrastElectric = item.getFnlContrastElectric();
                 BigDecimal fnlContrastPay = item.getFnlContrastPay();
-                int fnlResult = 0;
+                int fnlResult = 1;
                 if (Objects.nonNull(fnlContrastElectric) || Objects.nonNull(fnlContrastPay)) {
-                    fnlResult = 1;
+                    fnlResult = 0;
                 }
                 MonthAssessListDTO tmp = MonthAssessListDTO.builder()
                         .calcDate(item.getCalcDate())
