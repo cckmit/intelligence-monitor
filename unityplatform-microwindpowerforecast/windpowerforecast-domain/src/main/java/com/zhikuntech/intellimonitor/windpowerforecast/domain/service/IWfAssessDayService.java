@@ -1,7 +1,10 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.service;
 
+import com.zhikuntech.intellimonitor.core.commons.base.Pager;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.DayAssessListDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfAssessDay;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.assessresult.DayAssessQuery;
 
 /**
  * <p>
@@ -12,5 +15,14 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2021-06-21
  */
 public interface IWfAssessDayService extends IService<WfAssessDay> {
+
+
+    /**
+     * 日考核结果-列表模式
+     *
+     * @param query 根据月份查询
+     * @return  分页结果
+     */
+    Pager<DayAssessListDTO> queryDayList(DayAssessQuery query);
 
 }
