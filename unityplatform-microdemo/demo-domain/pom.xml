@@ -24,6 +24,10 @@
             <groupId>com.zhikuntech.intellimonitor</groupId>
             <artifactId>demo-prototype</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.zhikuntech.intellimonitor</groupId>
+            <artifactId>core-commons</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

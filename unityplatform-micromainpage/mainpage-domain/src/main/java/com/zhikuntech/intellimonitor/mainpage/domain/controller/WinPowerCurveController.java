@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @Author 杨锦程
@@ -56,29 +54,29 @@ public class WinPowerCurveController {
     @GetMapping("/getShortTermForecastPower")
     @ApiOperation("获取短期预测功率")
     public BaseResponse getShortTermForecastPower(){
-        List<TimePowerVO> shortTermForecastPowerList = winPowerCurveService.getShortTermForecastPower();
-        return BaseResponse.success(shortTermForecastPowerList);
+        List<TimePowerVO> shortTermForecastPower = winPowerCurveService.getShortTermForecastPower();
+        return BaseResponse.success(shortTermForecastPower);
     }
 
     @GetMapping("/getSupShortTermForecastPower")
     @ApiOperation("获取超短期预测功率")
     public BaseResponse getSupShortTermForecastPower(){
-        List<TimePowerVO> supShortTermForecastPowerList = winPowerCurveService.getSupShortTermForecastPower();
-        return BaseResponse.success(supShortTermForecastPowerList);
+        List<TimePowerVO> supShortTermForecastPower = winPowerCurveService.getSupShortTermForecastPower();
+        return BaseResponse.success(supShortTermForecastPower);
     }
 
     @GetMapping("/getActualPower")
     @ApiOperation("获取实际功率")
     public BaseResponse getActualPower(){
-        List<TimePowerVO> actualPowerList = winPowerCurveService.getActualPower();
-        return BaseResponse.success(actualPowerList);
+        List<TimePowerVO> actualPower = winPowerCurveService.getActualPower();
+        return BaseResponse.success(actualPower);
     }
 
     @GetMapping("/getWeatherForecastPower")
     @ApiOperation("获取天气预报风速")
     public BaseResponse getWeatherForecastPower(){
-        List<TimeWindSpeedVO> weatherForecastPowerList = winPowerCurveService.getWeatherForecastPower();
-        return BaseResponse.success(weatherForecastPowerList);
+        List<TimeWindSpeedVO> weatherForecastPower = winPowerCurveService.getWeatherForecastPower();
+        return BaseResponse.success(weatherForecastPower);
     }
 
     @GetMapping("/getMeasuredWindSpeed")

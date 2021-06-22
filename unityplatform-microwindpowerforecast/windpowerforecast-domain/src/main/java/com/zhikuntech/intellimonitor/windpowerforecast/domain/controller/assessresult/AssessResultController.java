@@ -2,8 +2,10 @@ package com.zhikuntech.intellimonitor.windpowerforecast.domain.controller.assess
 
 import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.ChangeResultDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.DayAssessListDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.MonthAssessListDTO;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.assessresult.AssessChangeQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.assessresult.DayAssessQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.assessresult.MonthAssessQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfAssessDayService;
@@ -54,8 +56,12 @@ public class AssessResultController {
 
 
 
-    // TODO 修改数据
-
+    @ApiOperation("日考核结果-修改数据")
+    @PostMapping("/change-assess-data")
+    public BaseResponse<ChangeResultDTO> changeAssessData(@RequestBody AssessChangeQuery query) {
+        ChangeResultDTO result = dayService.changeAssessData(query);
+        return BaseResponse.success(result);
+    }
 
 
 
