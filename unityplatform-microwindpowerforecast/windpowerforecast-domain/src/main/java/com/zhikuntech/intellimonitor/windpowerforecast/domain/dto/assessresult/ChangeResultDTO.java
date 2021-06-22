@@ -8,13 +8,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ *
+ *
  * @author liukai
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Data
-@ApiModel("修改结果")
+@ApiModel("日考核结果-修改结果")
 public class ChangeResultDTO {
 
     @ApiModelProperty("修改结果[0成功1失败]")
