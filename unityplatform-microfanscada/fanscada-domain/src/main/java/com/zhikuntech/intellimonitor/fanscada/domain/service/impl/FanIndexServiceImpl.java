@@ -66,6 +66,9 @@ public class FanIndexServiceImpl implements FanIndexService {
         query.setDataIds(idList);
         int[] ints = backendToGoldenService.getGoldenIdByNumberAndId(query);
 
+        if (goldenUtil.getServer().containsKey(username)) {
+            return;
+        }
         if (WebSocketServer.clients.containsKey(username)) {
 
 

@@ -38,8 +38,6 @@
             <groupId>com.golden</groupId>
             <artifactId>golden-java-sdk</artifactId>
             <version>${golden.version}</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/golden-java-sdk-3.0.34.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>
