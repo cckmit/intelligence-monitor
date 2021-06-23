@@ -5,6 +5,7 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.*;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.*;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.dqcalc.DqCalcService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.TimeProcessUtils;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.calc.CalcCommonUtils;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.calc.DqCalcUtils;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.calc.ErmseAggregateCalc;
 import lombok.RequiredArgsConstructor;
@@ -16,11 +17,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -62,51 +61,12 @@ public class DqCalcServiceImpl implements DqCalcService {
     private final IWfAnalyseDqService analyseDqService;
 
 
-    static Function<LocalDateTime, String> localDateTimeStringFunction = item -> {
-        if (Objects.isNull(item)) {
-            return "nil";
-        }
-        return TimeProcessUtils.formatLocalDateTimeWithSecondPattern(item);
-    };
-
-    /**
-     * 时间向后落点
-     * 如:
-     * 00:11 -> 00:15
-     * 00:12 -> 00:15
-     * 00:15 -> 00:15
-     */
-    static Function<LocalDateTime, String> timePostRangeProcess = item -> {
-        if (Objects.nonNull(item)) {
-            LocalDate date = item.toLocalDate();
-            LocalTime time = item.toLocalTime();
-
-            int minute = time.getMinute();
-            //# 具体算法
-            int tNum = minute / 15;
-            int div = minute % 15;
-
-            int willPlus = tNum * 15;
-            if (div != 0) {
-                willPlus = willPlus + 15;
-            }
-            if (minute == 0) {
-                willPlus = 0;
-            }
-            //# 具体算法
-            LocalDateTime calcDt = LocalDateTime.of(date, LocalTime.of(time.getHour(), 0, 0))
-                    .plusMinutes(willPlus);
-            return TimeProcessUtils.formatLocalDateTimeWithSecondPattern(calcDt);
-        }
-        return "nil";
-    };
-
     public static void main(String[] args) {
 
         LocalDateTime now = LocalDateTime.now();
         String s = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(now);
         System.out.println(s);
-        String apply = timePostRangeProcess.apply(now);
+        String apply = CalcCommonUtils.timePostRangeProcess.apply(now);
         System.out.println(apply);
         System.out.println();
     }
@@ -145,9 +105,9 @@ public class DqCalcServiceImpl implements DqCalcService {
             log.warn("时间区间[{}]-[{}],头部时间[{}]无短期功率数据.", bg, end, headerDate);
             return;
         }
-        Map<String, List<WfDataDq>> dqGorup = dqList.stream().collect(Collectors.groupingBy(p -> timePostRangeProcess.apply(p.getEventDateTime())));
+        Map<String, List<WfDataDq>> dqGorup = dqList.stream().collect(Collectors.groupingBy(p -> CalcCommonUtils.timePostRangeProcess.apply(p.getEventDateTime())));
 
-        Map<String, WfDataDq> dqMap = dqList.stream().collect(Collectors.toMap(p -> localDateTimeStringFunction.apply(p.getEventDateTime()), p -> p, (p1, p2) -> p2));
+        Map<String, WfDataDq> dqMap = dqList.stream().collect(Collectors.toMap(p -> CalcCommonUtils.localDateTimeStringFunction.apply(p.getEventDateTime()), p -> p, (p1, p2) -> p2));
 
 
         // 真实功率数据
@@ -159,7 +119,7 @@ public class DqCalcServiceImpl implements DqCalcService {
             log.warn("时间区间[{}]-[{}]无真实功率数据.", bg, end);
             return;
         }
-        Map<String, List<WfDataZr>> zrGroup = zrList.stream().collect(Collectors.groupingBy(p -> timePostRangeProcess.apply(p.getEventDateTime())));
+        Map<String, List<WfDataZr>> zrGroup = zrList.stream().collect(Collectors.groupingBy(p -> CalcCommonUtils.timePostRangeProcess.apply(p.getEventDateTime())));
 
 
         // 容量数据
@@ -173,7 +133,7 @@ public class DqCalcServiceImpl implements DqCalcService {
         }
 
         Map<String, WfDataCapacity> capacityMap = capacityList.stream()
-                .collect(Collectors.toMap(p -> localDateTimeStringFunction.apply(p.getEventDateTime()), p -> p, (p1, p2) -> p2));
+                .collect(Collectors.toMap(p -> CalcCommonUtils.localDateTimeStringFunction.apply(p.getEventDateTime()), p -> p, (p1, p2) -> p2));
 
         /*
             按照指定时间分组数据
@@ -191,6 +151,7 @@ public class DqCalcServiceImpl implements DqCalcService {
             // 容量
             Optional.ofNullable(capacityMap.get(timeK)).ifPresent(p -> {
                 tmp.setCap(p.getPowerCalcCapacity());
+                tmp.setCapForAssess(p.getCheckCalcCapacity());
             });
             // 短期功率数据
             Optional.of(dqGorup.get(timeK)).ifPresent(l -> {
@@ -199,7 +160,7 @@ public class DqCalcServiceImpl implements DqCalcService {
             });
             // 短期功率数据-单条
             Optional.ofNullable(dqMap.get(timeK)).ifPresent(p -> {
-                tmp.setDq(p.getForecastProduce());
+                tmp.setForeset(p.getForecastProduce());
             });
             // 真实功率数据
             Optional.of(zrGroup.get(timeK)).ifPresent(l -> {
