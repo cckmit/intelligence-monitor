@@ -150,9 +150,11 @@ public class FanIndexServiceImpl implements FanIndexService {
                                 energy = BigDecimal.valueOf(0.0);
                             }
                             //当日零点的总发电量
-                            Object o = redisUtil.get(FanConstant.DAILY_POWER);
-                            double d = null == o ? 0 : (double) o;
-                            BigDecimal v = BigDecimal.valueOf(d);
+                            Double powDaily = StartUpInitForPow.initMap.get(FanConstant.DAILY_POWER + fanBaseInfoVO.getFanNumber());
+                            if (powDaily == null) {
+                                powDaily = 0D;
+                            }
+                            BigDecimal v = BigDecimal.valueOf(powDaily);
                             BigDecimal dayEnergy = energy.subtract(v);//日发电量
 
                             activePowerSum = activePowerSum.add(activePower);
@@ -278,6 +280,9 @@ public class FanIndexServiceImpl implements FanIndexService {
                 }
                 //当日零点的总发电量
                 Double powDaily = StartUpInitForPow.initMap.get(FanConstant.DAILY_POWER + fanBaseInfoVO.getFanNumber());
+                if (powDaily == null) {
+                    powDaily = 0D;
+                }
                 BigDecimal v = BigDecimal.valueOf(powDaily);
                 BigDecimal dayEnergy = energy.subtract(v);//日发电量
 
