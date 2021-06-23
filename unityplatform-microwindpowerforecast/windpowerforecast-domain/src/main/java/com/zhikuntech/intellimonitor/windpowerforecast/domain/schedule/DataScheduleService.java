@@ -28,6 +28,26 @@ public class DataScheduleService {
 
     //# cron -> 定时任务, 1min/次
 
+    @Scheduled(cron = "30 0/15 * * * ?")
+    public void scheduleFetchCap() {
+        final RLock lock = redissonClient.getLock(ScheduleConstants.GEN_CAP_LOCK);
+        boolean enter = false;
+        try {
+            enter = lock.tryLock(0, 50, TimeUnit.SECONDS);
+            if (enter) {
+                log.info("schedule method: [{}]", "scheduleGenPower");
+                fetchDataService.scheduleFetchCapacity();
+                TimeUnit.SECONDS.sleep(10);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            if (enter) {
+                lock.unlock();
+            }
+        }
+    }
+
     @Scheduled(cron = "30 * * * * ?")
     public void scheduleGenPower() {
         final RLock lock = redissonClient.getLock(ScheduleConstants.GEN_POWER_LOCK);

@@ -7,6 +7,7 @@ package com.zhikuntech.intellimonitor.windpowerforecast.domain.schedule;
  */
 public class ScheduleConstants {
 
+    public final static String GEN_CAP_LOCK = "wf_gen_cap";
 
     public final static String GEN_POWER_LOCK = "wf_gen_power_lock";
 
