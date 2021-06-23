@@ -38,3 +38,7 @@ golden:
   password: golden
   poolSize: 25
   maxSize: 50
+
+template:
+  file:
+    path: unityplatform-micromainpage/mainpage-app/src/main/resources/template/
