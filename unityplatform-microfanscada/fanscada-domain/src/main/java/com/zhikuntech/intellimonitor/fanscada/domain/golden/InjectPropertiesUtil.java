@@ -5,28 +5,18 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rtdb.api.model.RtdbData;
 import com.rtdb.api.model.ValueData;
 import com.zhikuntech.intellimonitor.core.commons.constant.FanConstant;
-import com.zhikuntech.intellimonitor.fanscada.domain.config.DataInitConf;
+import com.zhikuntech.intellimonitor.fanscada.domain.config.StartUpInitForGoldenId;
 import com.zhikuntech.intellimonitor.fanscada.domain.golden.annotation.GoldenId;
 import com.zhikuntech.intellimonitor.fanscada.domain.mapper.BackendToGoldenMapper;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGolden;
-import com.zhikuntech.intellimonitor.fanscada.domain.service.BackendToGoldenService;
-import com.zhikuntech.intellimonitor.fanscada.domain.service.impl.BackendToGoldenServiceImpl;
-import com.zhikuntech.intellimonitor.fanscada.domain.utils.RedisUtil;
 import com.zhikuntech.intellimonitor.fanscada.domain.vo.FanBaseInfoVO;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.CollectionUtils;
-
-import javax.annotation.Resource;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author 代志豪
@@ -96,7 +86,7 @@ public class InjectPropertiesUtil<T> {
                     Integer fanNumber = ((FanBaseInfoVO) item).getFanNumber();
                     //获取该字段所映射的golden id
                     String key = FanConstant.GOLDEN_ID + value + "_" + fanNumber;
-                    Integer id = DataInitConf.initMap.get(key);
+                    Integer id = StartUpInitForGoldenId.initMap.get(key);
                     for (RtdbData rtdbData : data) {
                         if (id == rtdbData.getId()) {
                             try {
@@ -161,7 +151,7 @@ public class InjectPropertiesUtil<T> {
                     Integer fanNumber = ((FanBaseInfoVO) item).getFanNumber();
                     //获取该字段所映射的golden id
                     String key = FanConstant.GOLDEN_ID + value + "_" + fanNumber;
-                    Integer id = DataInitConf.initMap.get(key);
+                    Integer id = StartUpInitForGoldenId.initMap.get(key);
                     for (ValueData ValueData : data) {
                         if (id == ValueData.getId()) {
                             try {

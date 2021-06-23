@@ -82,7 +82,7 @@ public class DqCalcUtils {
             List<BigDecimal> zrCapsProduces = aggr.getZrCapsProduce();
 
             // ppk
-            BigDecimal ppk = aggr.getDq();
+            BigDecimal ppk = aggr.getForeset();
             // pmk
             BigDecimal pmk = new BigDecimal("0");
             for (BigDecimal zrCapsProduce : zrCapsProduces) {
@@ -102,7 +102,7 @@ public class DqCalcUtils {
         for (ErmseAggregateCalc aggr : aggrs) {
             List<BigDecimal> zrCapsProduces = aggr.getZrCapsProduce();
             // ppk
-            BigDecimal ppk = aggr.getDq();
+            BigDecimal ppk = aggr.getForeset();
 
             // pmk
             BigDecimal pmk = new BigDecimal("0");
@@ -124,7 +124,7 @@ public class DqCalcUtils {
             List<BigDecimal> zrCapsProduces = aggr.getZrCapsProduce();
 
             // ppk
-            BigDecimal ppk = aggr.getDq();
+            BigDecimal ppk = aggr.getForeset();
             // pmk
             BigDecimal pmk = new BigDecimal("0");
             for (BigDecimal zrCapsProduce : zrCapsProduces) {
@@ -156,7 +156,7 @@ public class DqCalcUtils {
             // ck
             BigDecimal ck = aggr.getCap();
             // ppk
-            BigDecimal ppk = aggr.getDq();
+            BigDecimal ppk = aggr.getForeset();
             // pmk
             BigDecimal pmk = new BigDecimal("0");
             for (BigDecimal zrCapsProduce : zrCapsProduces) {

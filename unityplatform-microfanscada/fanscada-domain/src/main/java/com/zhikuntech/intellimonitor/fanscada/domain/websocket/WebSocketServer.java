@@ -89,6 +89,7 @@ public class WebSocketServer {
             }
         } catch (Exception e) {
             log.error("服务端发送消息给客户端失败：", e);
+
         } finally {
             lock.unlock();
         }

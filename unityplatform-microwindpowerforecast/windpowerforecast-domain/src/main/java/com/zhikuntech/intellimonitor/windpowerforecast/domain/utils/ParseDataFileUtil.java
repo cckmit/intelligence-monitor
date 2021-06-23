@@ -69,8 +69,8 @@ public class ParseDataFileUtil {
 
 
         // 实测气象     cft     cft         浙江.红山风电_cft_201703221700.rb
-        inputStream = obtainInputStream("浙江.普陀风电场_cft_202103020100.rb");
-        strings = IOUtils.readLines(inputStream, Charset.forName("GBK"));
+//        inputStream = obtainInputStream("浙江.普陀风电场_cft_202103020100.rb");
+//        strings = IOUtils.readLines(inputStream, Charset.forName("GBK"));
 
         System.out.println();
     }

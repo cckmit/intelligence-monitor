@@ -29,13 +29,14 @@ public class FanIndexController {
 
     @ApiOperation("实时获取scada首页的风机列表")
     @GetMapping("/getList/{userName}")
-    public void getFanBaseInfoList(@PathVariable String userName) {
+    public /*BaseResponse<Object> */void getFanBaseInfoList(@PathVariable String userName) {
 
         try {
             fanIndexService.getFanBaseInfoList(userName);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        //return BaseResponse.success(null);
     }
 
     @ApiOperation("获取scada首页的风机列表")
@@ -48,10 +49,4 @@ public class FanIndexController {
             return BaseResponse.failure(ResultCode.DATD_NOT_EXCEPTION, "暂无数据");
         }
     }
-
-
-    //=======================================================以下移植到新controller
-
-    //@ApiOperation("")
-
 }

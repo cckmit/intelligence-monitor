@@ -46,15 +46,6 @@ public class BackendToGoldenServiceImpl extends ServiceImpl<BackendToGoldenMappe
         return goldenIdByWindNumberAndId.stream().mapToInt(Integer::intValue).toArray();
     }
 
-    @Override
-    public Integer getGoldenIdByNumberAndId(Integer fanNumber, int value) {
-
-        LambdaQueryWrapper<BackendToGolden> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(BackendToGolden::getNumber,fanNumber);
-        queryWrapper.eq(BackendToGolden::getBackendId,value);
-        BackendToGolden backendToGolden = backendToGoldenMapper.selectOne(queryWrapper);
-        return backendToGolden.getGoldenId();
-    }
 
     @Override
     public List<BackendToGolden> selectList(List<Integer> list) {
@@ -62,4 +53,11 @@ public class BackendToGoldenServiceImpl extends ServiceImpl<BackendToGoldenMappe
         return backendToGoldenMapper.getList(list);
     }
 
+    @Override
+    public List<BackendToGolden> getListByBackendId(Integer backendId) {
+        LambdaQueryWrapper<BackendToGolden> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(BackendToGolden::getBackendId,backendId);
+        lambdaQueryWrapper.orderByAsc(BackendToGolden::getNumber);
+        return backendToGoldenMapper.selectList(lambdaQueryWrapper);
+    }
 }

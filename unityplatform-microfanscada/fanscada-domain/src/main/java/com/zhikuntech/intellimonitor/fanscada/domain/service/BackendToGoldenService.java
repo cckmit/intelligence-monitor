@@ -20,25 +20,38 @@ import java.util.List;
 public interface BackendToGoldenService extends IService<BackendToGolden> {
     /**
      * 根据数据库表中编号或者风机编号查询golden数据库表中id（单条）
+     *
      * @return
      */
     List<Integer> getGoldenIdByBackendIdOrNumber(BackendToGoldenQuery backendToGoldenQuery);
 
     /**
      * 根据数据库表中编号或者风机编号查询golden数据库表中id（批量）
+     *
      * @param backendToGoldenQueryList
      * @return
      */
     List<Integer> listGoldenIdByBackendIdOrNumber(BackendToGoldenQueryList backendToGoldenQueryList);
 
     /**
-     *
      * @param goldenIdQuery
      * @return
      */
     int[] getGoldenIdByNumberAndId(GoldenIdQuery goldenIdQuery);
 
-    Integer getGoldenIdByNumberAndId(Integer fanNumber, int value);
-
+    /**
+     * BACKENDid 批量查询goldenid
+     *
+     * @param list
+     * @return
+     */
     List<BackendToGolden> selectList(List<Integer> list);
+
+    /**
+     * 查询全部风机的测点组合
+     *
+     * @param backendId
+     * @return
+     */
+    List<BackendToGolden> getListByBackendId(Integer backendId);
 }

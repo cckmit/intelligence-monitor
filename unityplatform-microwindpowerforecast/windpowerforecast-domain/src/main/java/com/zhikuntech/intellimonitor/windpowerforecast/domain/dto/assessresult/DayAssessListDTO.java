@@ -64,15 +64,15 @@ public class DayAssessListDTO {
     private Integer cdqHiatus;
 
     /**
-     * 短期预测功率准确率（%）
+     * 超短期预测功率准确率（%）
      */
-    @ApiModelProperty("短期预测功率准确率（%）")
+    @ApiModelProperty("超短期预测功率准确率（%）")
     private BigDecimal cdqRatio;
 
     /**
-     * 短期预测功率准确率考核电量（MWh）
+     * 超短期预测功率准确率考核电量（MWh）
      */
-    @ApiModelProperty("短期预测功率准确率考核电量（MWh）")
+    @ApiModelProperty("超短期预测功率准确率考核电量（MWh）")
     private BigDecimal cdqElectric;
 
     /**
@@ -118,15 +118,15 @@ public class DayAssessListDTO {
     private Integer cdqHiatusFnl;
 
     /**
-     * 最终修改-短期预测功率准确率（%）
+     * 最终修改-超短期预测功率准确率（%）
      */
-    @ApiModelProperty("最终修改-短期预测功率准确率（%）")
+    @ApiModelProperty("最终修改-超短期预测功率准确率（%）")
     private BigDecimal cdqRatioFnl;
 
     /**
-     * 最终修改-短期预测功率准确率考核电量（MWh）
+     * 最终修改-超短期预测功率准确率考核电量（MWh）
      */
-    @ApiModelProperty("最终修改-短期预测功率准确率考核电量（MWh）")
+    @ApiModelProperty("最终修改-超短期预测功率准确率考核电量（MWh）")
     private BigDecimal cdqElectricFnl;
 
     /**

@@ -1,12 +1,14 @@
 package com.zhikuntech.intellimonitor.fanscada.domain.config;
 
+import com.rtdb.api.model.ValueData;
 import com.zhikuntech.intellimonitor.core.commons.constant.FanConstant;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGolden;
-import com.zhikuntech.intellimonitor.fanscada.domain.pojo.GoldenIdQuery;
 import com.zhikuntech.intellimonitor.fanscada.domain.service.BackendToGoldenService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -18,7 +20,8 @@ import java.util.*;
  **/
 @Component
 @Slf4j
-public class DataInitConf implements CommandLineRunner {
+@Order(value = 1)
+public class StartUpInitForGoldenId implements CommandLineRunner {
 
     public static Map<String, Integer> initMap = new HashMap<>();
 
@@ -40,8 +43,14 @@ public class DataInitConf implements CommandLineRunner {
                 initMap.put(FanConstant.GOLDEN_ID + backendToGolden.getBackendId() + "_" + i, backendToGolden.getGoldenId());
             }
         }
-        log.info(initMap.toString());
-        log.info("初始化数据完成");
 
+        List<BackendToGolden> result2 = backendToGoldenService.getListByBackendId(192);
+        for (int i = 1; i < 64; i++) {
+            for (BackendToGolden backendToGolden : result2) {
+                initMap.put(FanConstant.DAILY_POWER_ALL + backendToGolden.getBackendId() + "_" + i, backendToGolden.getGoldenId());
+            }
+        }
+        log.info("初始化数据完成");
     }
+
 }

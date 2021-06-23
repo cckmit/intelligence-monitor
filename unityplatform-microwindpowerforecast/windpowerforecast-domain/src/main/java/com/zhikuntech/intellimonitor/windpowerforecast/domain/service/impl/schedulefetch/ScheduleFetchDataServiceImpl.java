@@ -2,8 +2,10 @@ package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl.sche
 
 import com.zhikuntech.intellimonitor.fanscada.facade.feign.ToWindPowerForecast;
 import com.zhikuntech.intellimonitor.mainpage.facade.MainPageFacade;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataCapacity;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataCf;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataZr;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataCapacityService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataCfService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataZrService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.schedulefetch.ScheduleFetchDataService;
@@ -12,7 +14,6 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.TimeProcessU
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -35,6 +36,34 @@ public class ScheduleFetchDataServiceImpl implements ScheduleFetchDataService {
 
     private final IWfDataCfService iWfDataCfService;
 
+    private final IWfDataCapacityService capacityService;
+
+
+    @Override
+    public void scheduleFetchCapacity() {
+        LocalDateTime now = LocalDateTime.now();
+
+        // fetch minute from now.
+        String strNow = TimeProcessUtils.formatLocalDateTimeWithMinutePattern(now);
+        LocalDateTime minutePattern = TimeProcessUtils.parseLocalDateTimeWithMinutePattern(strNow);
+
+        // 252
+
+        // 252 63 * 4
+        int avtive = ThreadLocalRandom.current().nextInt(1, 64);
+
+
+        WfDataCapacity dataCapacity = WfDataCapacity.builder()
+                .orgId(ConstantsOfWf.DEV_ORG_ID)
+                .createTime(now)
+                .eventDateTime(minutePattern)
+                .powerCalcCapacity(new BigDecimal(avtive * 4))
+                .checkCalcCapacity(new BigDecimal("252"))
+                .status("00")
+                .build();
+        capacityService.getBaseMapper().insert(dataCapacity);
+    }
+
     @Override
     public void scheduleFetchActPower() {
 //        ActWeatherDataDTO weatherData = mainPageFacade.getWeatherData();
@@ -50,7 +79,7 @@ public class ScheduleFetchDataServiceImpl implements ScheduleFetchDataService {
 
         int windPower = ThreadLocalRandom.current().nextInt(1, 360);
 
-        // TODO Mock数据
+        // Mock数据
         WfDataZr wfDataZr = WfDataZr.builder()
                 .orgId(ConstantsOfWf.DEV_ORG_ID)
                 .createTime(now)
@@ -60,7 +89,7 @@ public class ScheduleFetchDataServiceImpl implements ScheduleFetchDataService {
                 .fetchTime(now)
                 .build();
         log.info("generate power data:[{}]", wfDataZr);
-        // TODO 存储数据
+        // 存储数据
         iWfDataZrService.save(wfDataZr);
     }
 
@@ -74,18 +103,26 @@ public class ScheduleFetchDataServiceImpl implements ScheduleFetchDataService {
 
         String strNow = TimeProcessUtils.formatLocalDateTimeWithMinutePattern(now);
         LocalDateTime minutePattern = TimeProcessUtils.parseLocalDateTimeWithMinutePattern(strNow);
-        // TODO Mock数据
+        // Mock数据
         int windDirect = ThreadLocalRandom.current().nextInt(1, 360);
+
+        int windSpeed = ThreadLocalRandom.current().nextInt(1, 360);
+
+        int pressure = ThreadLocalRandom.current().nextInt(1, 360);
+
+        int temperature = ThreadLocalRandom.current().nextInt(1, 360);
+
+        int humidity = ThreadLocalRandom.current().nextInt(1, 360);
 
         WfDataCf wfDataCf = WfDataCf.builder()
                 .orgId(ConstantsOfWf.DEV_ORG_ID)
                 .createTime(now)
-                .windSpeed(new BigDecimal("45"))
+                .windSpeed(new BigDecimal(windSpeed))
                 .highLevel(new BigDecimal("70"))
                 .windDirection(new BigDecimal(windDirect))
-                .temperature(new BigDecimal("45"))
-                .humidity(new BigDecimal("45"))
-                .pressure(new BigDecimal("45"))
+                .temperature(new BigDecimal(temperature))
+                .humidity(new BigDecimal(humidity))
+                .pressure(new BigDecimal(pressure))
                 .turbineHigh(new BigDecimal("30"))
                 .calcPower(new BigDecimal(windDirect * 0.618))
                 .eventDateTime(minutePattern)
@@ -93,22 +130,11 @@ public class ScheduleFetchDataServiceImpl implements ScheduleFetchDataService {
                 .fetchTime(now)
                 .build();
         log.info("generate weather data:[{}]", wfDataCf);
-        // TODO 存储数据
+        // 存储数据
         iWfDataCfService.save(wfDataCf);
     }
 
-    //# cron -> 定时任务, 1min/次
 
-//    @Scheduled(cron = "30 * * * * ?")
-    public void scheduleGenPower() {
-        log.info("schedule method: [{}]", "scheduleGenPower");
-        scheduleFetchActPower();
-    }
 
-//    @Scheduled(cron = "30 * * * * ?")
-    public void scheduleGenWeather() {
-        log.info("schedule method: [{}]", "scheduleGenWeather");
-        scheduleFetchActWeather();
-    }
 
 }

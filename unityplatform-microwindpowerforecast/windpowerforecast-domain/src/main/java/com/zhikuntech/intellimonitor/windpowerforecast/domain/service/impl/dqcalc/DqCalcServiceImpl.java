@@ -5,6 +5,8 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.*;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.*;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.dqcalc.DqCalcService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.TimeProcessUtils;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.calc.AssessCalcUtils;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.calc.CalcCommonUtils;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.calc.DqCalcUtils;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.calc.ErmseAggregateCalc;
 import lombok.RequiredArgsConstructor;
@@ -16,11 +18,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -61,52 +61,18 @@ public class DqCalcServiceImpl implements DqCalcService {
      */
     private final IWfAnalyseDqService analyseDqService;
 
-
-    static Function<LocalDateTime, String> localDateTimeStringFunction = item -> {
-        if (Objects.isNull(item)) {
-            return "nil";
-        }
-        return TimeProcessUtils.formatLocalDateTimeWithSecondPattern(item);
-    };
-
     /**
-     * 时间向后落点
-     * 如:
-     * 00:11 -> 00:15
-     * 00:12 -> 00:15
-     * 00:15 -> 00:15
+     * 日考核结果
      */
-    static Function<LocalDateTime, String> timePostRangeProcess = item -> {
-        if (Objects.nonNull(item)) {
-            LocalDate date = item.toLocalDate();
-            LocalTime time = item.toLocalTime();
+    private final IWfAssessDayService assessDayService;
 
-            int minute = time.getMinute();
-            //# 具体算法
-            int tNum = minute / 15;
-            int div = minute % 15;
-
-            int willPlus = tNum * 15;
-            if (div != 0) {
-                willPlus = willPlus + 15;
-            }
-            if (minute == 0) {
-                willPlus = 0;
-            }
-            //# 具体算法
-            LocalDateTime calcDt = LocalDateTime.of(date, LocalTime.of(time.getHour(), 0, 0))
-                    .plusMinutes(willPlus);
-            return TimeProcessUtils.formatLocalDateTimeWithSecondPattern(calcDt);
-        }
-        return "nil";
-    };
 
     public static void main(String[] args) {
 
         LocalDateTime now = LocalDateTime.now();
         String s = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(now);
         System.out.println(s);
-        String apply = timePostRangeProcess.apply(now);
+        String apply = CalcCommonUtils.timePostRangeProcess.apply(now);
         System.out.println(apply);
         System.out.println();
     }
@@ -145,9 +111,9 @@ public class DqCalcServiceImpl implements DqCalcService {
             log.warn("时间区间[{}]-[{}],头部时间[{}]无短期功率数据.", bg, end, headerDate);
             return;
         }
-        Map<String, List<WfDataDq>> dqGorup = dqList.stream().collect(Collectors.groupingBy(p -> timePostRangeProcess.apply(p.getEventDateTime())));
+        Map<String, List<WfDataDq>> dqGorup = dqList.stream().collect(Collectors.groupingBy(p -> CalcCommonUtils.timePostRangeProcess.apply(p.getEventDateTime())));
 
-        Map<String, WfDataDq> dqMap = dqList.stream().collect(Collectors.toMap(p -> localDateTimeStringFunction.apply(p.getEventDateTime()), p -> p, (p1, p2) -> p2));
+        Map<String, WfDataDq> dqMap = dqList.stream().collect(Collectors.toMap(p -> CalcCommonUtils.localDateTimeStringFunction.apply(p.getEventDateTime()), p -> p, (p1, p2) -> p2));
 
 
         // 真实功率数据
@@ -159,7 +125,7 @@ public class DqCalcServiceImpl implements DqCalcService {
             log.warn("时间区间[{}]-[{}]无真实功率数据.", bg, end);
             return;
         }
-        Map<String, List<WfDataZr>> zrGroup = zrList.stream().collect(Collectors.groupingBy(p -> timePostRangeProcess.apply(p.getEventDateTime())));
+        Map<String, List<WfDataZr>> zrGroup = zrList.stream().collect(Collectors.groupingBy(p -> CalcCommonUtils.timePostRangeProcess.apply(p.getEventDateTime())));
 
 
         // 容量数据
@@ -173,7 +139,7 @@ public class DqCalcServiceImpl implements DqCalcService {
         }
 
         Map<String, WfDataCapacity> capacityMap = capacityList.stream()
-                .collect(Collectors.toMap(p -> localDateTimeStringFunction.apply(p.getEventDateTime()), p -> p, (p1, p2) -> p2));
+                .collect(Collectors.toMap(p -> CalcCommonUtils.localDateTimeStringFunction.apply(p.getEventDateTime()), p -> p, (p1, p2) -> p2));
 
         /*
             按照指定时间分组数据
@@ -191,6 +157,7 @@ public class DqCalcServiceImpl implements DqCalcService {
             // 容量
             Optional.ofNullable(capacityMap.get(timeK)).ifPresent(p -> {
                 tmp.setCap(p.getPowerCalcCapacity());
+                tmp.setCapForAssess(p.getCheckCalcCapacity());
             });
             // 短期功率数据
             Optional.of(dqGorup.get(timeK)).ifPresent(l -> {
@@ -199,7 +166,7 @@ public class DqCalcServiceImpl implements DqCalcService {
             });
             // 短期功率数据-单条
             Optional.ofNullable(dqMap.get(timeK)).ifPresent(p -> {
-                tmp.setDq(p.getForecastProduce());
+                tmp.setForeset(p.getForecastProduce());
             });
             // 真实功率数据
             Optional.of(zrGroup.get(timeK)).ifPresent(l -> {
@@ -253,14 +220,15 @@ public class DqCalcServiceImpl implements DqCalcService {
         final BigDecimal ratioR2 = DqCalcUtils.calcAboutR2(aggrs);
         //# 合格率r2
 
-        // 存储
+        // 获取今日日期
         LocalDateTime bgDate = TimeProcessUtils.parseLocalDateTimeWithSecondPattern(bg);
         LocalDateTime dayBegin = LocalDateTime.of(bgDate.toLocalDate(), LocalTime.MIN);
+
+        // 存储
         QueryWrapper<WfAnalyseDq> analyseDqQueryWrapper = new QueryWrapper<>();
-        analyseDqQueryWrapper.ge("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dayBegin));
+        analyseDqQueryWrapper.eq("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dayBegin));
         WfAnalyseDq analyseDq = analyseDqService.getBaseMapper().selectOne(analyseDqQueryWrapper);
         if (Objects.nonNull(analyseDq)) {
-            analyseDq.setCalcDate(dayBegin);
             analyseDq.setAvgRmse(fnRes);
             analyseDq.setAvgMae(emae);
             analyseDq.setBiggestDiff(maxe);
@@ -280,6 +248,56 @@ public class DqCalcServiceImpl implements DqCalcService {
                     .build();
             analyseDqService.getBaseMapper().insert(nst);
         }
+
+        /*   计算考核结果数据    */
+
+        //# TODO 漏报次数
+        int hiatus = 0;
+        //# TODO 漏报次数
+
+        //# 短期功率预测准确率
+        final BigDecimal cdqRatioR1 = AssessCalcUtils.calcAssessRatioR1(aggrs);
+        System.out.println("超短期功率预测准确率:" + cdqRatioR1);
+        //# 短期功率预测准确率
+
+        //# 短期功率预测准确率考核电量
+        // （85%-当日短期功率预测准确率）*装机容量（252MW）*风电场考核小时数（默认0.2）*技术管理系数（默认为1），单位MW
+        BigDecimal cdqElectricR1 = new BigDecimal("0.80").subtract(cdqRatioR1)
+                .multiply(new BigDecimal("252")).multiply(new BigDecimal("0.2"))
+                .multiply(new BigDecimal("1")).setScale(3, RoundingMode.HALF_EVEN);
+        //# 短期功率预测准确率考核电量
+
+
+        //# 短期功率预测准确率考核费用
+        // 【短期功率预测准确率考核电量】*1000*0.4153元/kWh（1000为统一单位），单位元
+        BigDecimal cdqPayR1 = cdqElectricR1.multiply(new BigDecimal("1000"))
+                .multiply(new BigDecimal("0.4153"))
+                .setScale(3, RoundingMode.HALF_EVEN);
+        //# 短期功率预测准确率考核费用
+
+        /*   计算考核结果数据    */
+
+        // 存储
+        QueryWrapper<WfAssessDay> assessDayQueryWrapper = new QueryWrapper<>();
+        assessDayQueryWrapper.eq("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dayBegin));
+        WfAssessDay wfAssessDay = assessDayService.getBaseMapper().selectOne(assessDayQueryWrapper);
+        if (Objects.nonNull(wfAssessDay)) {
+            wfAssessDay.setDqHiatus(hiatus);
+            wfAssessDay.setDqRatio(cdqRatioR1);
+            wfAssessDay.setDqElectric(cdqElectricR1);
+            wfAssessDay.setDqPay(cdqPayR1);
+            assessDayService.getBaseMapper().updateById(wfAssessDay);
+        } else {
+            WfAssessDay nst = WfAssessDay.builder()
+                    .calcDate(dayBegin)
+                    .dqHiatus(hiatus)
+                    .dqRatio(cdqRatioR1)
+                    .dqElectric(cdqElectricR1)
+                    .dqPay(cdqPayR1)
+                    .build();
+            assessDayService.getBaseMapper().insert(nst);
+        }
+
     }
 
 }
