@@ -63,7 +63,14 @@ public class CdqCalcServiceImpl implements CdqCalcService {
      */
     private final IWfDataCdqService cdqService;
 
+    /**
+     * 超短期功率分析
+     */
     private final IWfAnalyseCdqService analyseCdqService;
+
+
+    private final IWfAssessDayService assessDayService;
+
 
 
     public void calcData(String bg, String end, String headerDate) {
@@ -216,14 +223,15 @@ public class CdqCalcServiceImpl implements CdqCalcService {
         /*   计算短期analysis数据    */
 
 
-        // 存储
+        // 获取今日日期
         LocalDateTime bgDate = TimeProcessUtils.parseLocalDateTimeWithSecondPattern(bg);
         LocalDateTime dayBegin = LocalDateTime.of(bgDate.toLocalDate(), LocalTime.MIN);
+
+        // 存储
         QueryWrapper<WfAnalyseCdq> analyseCdqQueryWrapper = new QueryWrapper<>();
-        analyseCdqQueryWrapper.ge("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dayBegin));
+        analyseCdqQueryWrapper.eq("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dayBegin));
         WfAnalyseCdq wfAnalyseCdq = analyseCdqService.getBaseMapper().selectOne(analyseCdqQueryWrapper);
         if (Objects.nonNull(wfAnalyseCdq)) {
-            wfAnalyseCdq.setCalcDate(dayBegin);
             wfAnalyseCdq.setAvgRmse(fnRes);
             wfAnalyseCdq.setAvgMae(emae);
             wfAnalyseCdq.setBiggestDiff(maxe);
@@ -247,24 +255,54 @@ public class CdqCalcServiceImpl implements CdqCalcService {
 
         /*   计算考核结果数据    */
 
+        //# TODO 漏报次数
+        int hiatus = 0;
+        //# TODO 漏报次数
+
         //# 超短期功率预测准确率
-        final BigDecimal ratioR1 = AssessCalcUtils.calcAssessRatioR1(aggrs);
-        System.out.println("超短期功率预测准确率:" + ratioR1);
+        final BigDecimal cdqRatioR1 = AssessCalcUtils.calcAssessRatioR1(aggrs);
+        System.out.println("超短期功率预测准确率:" + cdqRatioR1);
         //# 超短期功率预测准确率
 
 
-        //# TODO 超短期功率预测准确率考核电量
-        BigDecimal electricR1 = new BigDecimal("0");
+        //# 超短期功率预测准确率考核电量
+        // （85%-当日超短期功率预测准确率）*装机容量（252MW）*风电场考核小时数（默认0.2）*技术管理系数（默认为1），单位MW
+        BigDecimal cdqElectricR1 = new BigDecimal("0.85").subtract(cdqRatioR1)
+                .multiply(new BigDecimal("252")).multiply(new BigDecimal("0.2"))
+                .multiply(new BigDecimal("1")).setScale(3, RoundingMode.HALF_EVEN);
+        //# 超短期功率预测准确率考核电量
 
-        //# TODO 超短期功率预测准确率考核电量
 
-
-        //# TODO 超短期功率预测准确率考核费用
-        BigDecimal payR1 = new BigDecimal("0");
-
-        //# TODO 超短期功率预测准确率考核费用
+        //# 超短期功率预测准确率考核费用
+        // 【超短期功率预测准确率考核电量】*1000*0.4153元/kWh（1000为统一单位），单位元
+        BigDecimal cdqPayR1 = cdqElectricR1.multiply(new BigDecimal("1000"))
+                .multiply(new BigDecimal("0.4153"))
+                .setScale(3, RoundingMode.HALF_EVEN);
+        //# 超短期功率预测准确率考核费用
 
         /*   计算考核结果数据    */
+
+
+        QueryWrapper<WfAssessDay> assessDayQueryWrapper = new QueryWrapper<>();
+        assessDayQueryWrapper.eq("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dayBegin));
+        WfAssessDay wfAssessDay = assessDayService.getBaseMapper().selectOne(assessDayQueryWrapper);
+        if (Objects.nonNull(wfAssessDay)) {
+            wfAssessDay.setCdqHiatus(hiatus);
+            wfAssessDay.setCdqRatio(cdqRatioR1);
+            wfAssessDay.setCdqElectric(cdqElectricR1);
+            wfAssessDay.setCdqPay(cdqPayR1);
+            assessDayService.getBaseMapper().updateById(wfAssessDay);
+        } else {
+            WfAssessDay nst = WfAssessDay.builder()
+                    .calcDate(dayBegin)
+                    .cdqHiatus(hiatus)
+                    .cdqRatio(cdqRatioR1)
+                    .cdqElectric(cdqElectricR1)
+                    .cdqPay(cdqPayR1)
+                    .build();
+            assessDayService.getBaseMapper().insert(nst);
+        }
+
 
 
     }

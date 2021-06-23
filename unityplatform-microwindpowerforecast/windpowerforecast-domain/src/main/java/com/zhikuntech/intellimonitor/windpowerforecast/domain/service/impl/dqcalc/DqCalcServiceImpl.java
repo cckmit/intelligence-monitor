@@ -221,7 +221,6 @@ public class DqCalcServiceImpl implements DqCalcService {
         analyseDqQueryWrapper.ge("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dayBegin));
         WfAnalyseDq analyseDq = analyseDqService.getBaseMapper().selectOne(analyseDqQueryWrapper);
         if (Objects.nonNull(analyseDq)) {
-            analyseDq.setCalcDate(dayBegin);
             analyseDq.setAvgRmse(fnRes);
             analyseDq.setAvgMae(emae);
             analyseDq.setBiggestDiff(maxe);
