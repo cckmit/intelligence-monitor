@@ -1,57 +1,47 @@
 package com.zhikuntech.intellimonitor.fanscada.domain.config;
 
 import com.rtdb.api.model.ValueData;
-import com.rtdb.service.impl.ServerImpl;
-import com.rtdb.service.impl.ServerImplPool;
 import com.zhikuntech.intellimonitor.core.commons.constant.FanConstant;
 import com.zhikuntech.intellimonitor.fanscada.domain.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGolden;
 import com.zhikuntech.intellimonitor.fanscada.domain.service.BackendToGoldenService;
-import com.zhikuntech.intellimonitor.fanscada.domain.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import javax.websocket.Session;
+import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
 
 /**
- * @author 代志豪
- * @date 2021-06-07
- */
+ * @author 滕楠
+ * @className DataInitConf
+ * @create 2021/6/21 15:40
+ **/
 @Component
 @Slf4j
-public class Monitor {
+@Order(value = 2)
+public class StartUpInitForPow implements CommandLineRunner {
 
-    @Autowired
-    private WebSocketServer webSocketServer;
+    public static Map<String, Double> initMap = new HashMap<>();
 
-    @Autowired
-    private GoldenUtil goldenUtil;
-
-    @Autowired
+    @Resource
     private BackendToGoldenService backendToGoldenService;
 
-    @Scheduled(cron = "*/30 * * * * ?")
-    public void monitor() {
-        ConcurrentHashMap<String, Session> clients = WebSocketServer.clients;
-        String clientKeys = String.join(",", clients.keySet());
-        log.info("当前连接的websocket数量是{}，名称为{}", clients.size(), clientKeys);
-
-        ServerImplPool pool = goldenUtil.getPool();
-        ConcurrentHashMap<String, ServerImpl> servers = goldenUtil.getServer();
-        String serverKeys = String.join(",", servers.keySet());
-        log.info("当前庚顿数据库连接池实际连接是{}，订阅庚顿数量是{}，名称为{}", pool.getRealSize(), servers.size(), serverKeys);
-    }
+    @Resource
+    private GoldenUtil goldenUtil;
 
     /**
-     * 每日0:00执行 获取当日零点发电量
+     * 获取项目启动时零点的发电量数据
+     * @param args
+     * @throws Exception
      */
-    @Scheduled(cron = "0 0 * * * ?")
-    public void init() throws Exception {
+    @Override
+    public void run(String... args) throws Exception {
         List<Integer> list = new ArrayList<>();
         list.add(192);
         List<BackendToGolden> backendToGoldens = backendToGoldenService.selectList(list);
@@ -65,7 +55,6 @@ public class Monitor {
                 }
             }
         }
-        log.info("每日发电量更新完成");
-
+        log.info("发电量初始化完成");
     }
 }
