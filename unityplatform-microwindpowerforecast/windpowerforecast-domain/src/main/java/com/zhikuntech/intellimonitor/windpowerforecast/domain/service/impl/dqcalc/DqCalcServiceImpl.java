@@ -5,6 +5,7 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.*;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.*;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.dqcalc.DqCalcService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.TimeProcessUtils;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.calc.AssessCalcUtils;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.calc.CalcCommonUtils;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.calc.DqCalcUtils;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.calc.ErmseAggregateCalc;
@@ -59,6 +60,11 @@ public class DqCalcServiceImpl implements DqCalcService {
      * 短期功率分析
      */
     private final IWfAnalyseDqService analyseDqService;
+
+    /**
+     * 日考核结果
+     */
+    private final IWfAssessDayService assessDayService;
 
 
     public static void main(String[] args) {
@@ -214,11 +220,13 @@ public class DqCalcServiceImpl implements DqCalcService {
         final BigDecimal ratioR2 = DqCalcUtils.calcAboutR2(aggrs);
         //# 合格率r2
 
-        // 存储
+        // 获取今日日期
         LocalDateTime bgDate = TimeProcessUtils.parseLocalDateTimeWithSecondPattern(bg);
         LocalDateTime dayBegin = LocalDateTime.of(bgDate.toLocalDate(), LocalTime.MIN);
+
+        // 存储
         QueryWrapper<WfAnalyseDq> analyseDqQueryWrapper = new QueryWrapper<>();
-        analyseDqQueryWrapper.ge("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dayBegin));
+        analyseDqQueryWrapper.eq("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dayBegin));
         WfAnalyseDq analyseDq = analyseDqService.getBaseMapper().selectOne(analyseDqQueryWrapper);
         if (Objects.nonNull(analyseDq)) {
             analyseDq.setAvgRmse(fnRes);
@@ -240,6 +248,56 @@ public class DqCalcServiceImpl implements DqCalcService {
                     .build();
             analyseDqService.getBaseMapper().insert(nst);
         }
+
+        /*   计算考核结果数据    */
+
+        //# TODO 漏报次数
+        int hiatus = 0;
+        //# TODO 漏报次数
+
+        //# 短期功率预测准确率
+        final BigDecimal cdqRatioR1 = AssessCalcUtils.calcAssessRatioR1(aggrs);
+        System.out.println("超短期功率预测准确率:" + cdqRatioR1);
+        //# 短期功率预测准确率
+
+        //# 短期功率预测准确率考核电量
+        // （85%-当日短期功率预测准确率）*装机容量（252MW）*风电场考核小时数（默认0.2）*技术管理系数（默认为1），单位MW
+        BigDecimal cdqElectricR1 = new BigDecimal("0.80").subtract(cdqRatioR1)
+                .multiply(new BigDecimal("252")).multiply(new BigDecimal("0.2"))
+                .multiply(new BigDecimal("1")).setScale(3, RoundingMode.HALF_EVEN);
+        //# 短期功率预测准确率考核电量
+
+
+        //# 短期功率预测准确率考核费用
+        // 【短期功率预测准确率考核电量】*1000*0.4153元/kWh（1000为统一单位），单位元
+        BigDecimal cdqPayR1 = cdqElectricR1.multiply(new BigDecimal("1000"))
+                .multiply(new BigDecimal("0.4153"))
+                .setScale(3, RoundingMode.HALF_EVEN);
+        //# 短期功率预测准确率考核费用
+
+        /*   计算考核结果数据    */
+
+        // 存储
+        QueryWrapper<WfAssessDay> assessDayQueryWrapper = new QueryWrapper<>();
+        assessDayQueryWrapper.eq("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dayBegin));
+        WfAssessDay wfAssessDay = assessDayService.getBaseMapper().selectOne(assessDayQueryWrapper);
+        if (Objects.nonNull(wfAssessDay)) {
+            wfAssessDay.setDqHiatus(hiatus);
+            wfAssessDay.setDqRatio(cdqRatioR1);
+            wfAssessDay.setDqElectric(cdqElectricR1);
+            wfAssessDay.setDqPay(cdqPayR1);
+            assessDayService.getBaseMapper().updateById(wfAssessDay);
+        } else {
+            WfAssessDay nst = WfAssessDay.builder()
+                    .calcDate(dayBegin)
+                    .dqHiatus(hiatus)
+                    .dqRatio(cdqRatioR1)
+                    .dqElectric(cdqElectricR1)
+                    .dqPay(cdqPayR1)
+                    .build();
+            assessDayService.getBaseMapper().insert(nst);
+        }
+
     }
 
 }

@@ -74,8 +74,24 @@ public class WfDataCfServiceImpl extends ServiceImpl<WfDataCfMapper, WfDataCf> i
         if (pre == null || post == null) {
             return new ArrayList<>();
         }
-        String preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(pre);
-        String postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(post.plusDays(1));
+
+        String preStr=null;
+        String postStr=null;
+        if (queryMode.equals("day")){
+            preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(pre);
+            postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(post.plusDays(1));
+        }else if(queryMode.equals("month")){
+            LocalDateTime first=pre.with(TemporalAdjusters.firstDayOfMonth());
+            LocalDateTime last=pre.with(TemporalAdjusters.lastDayOfMonth());
+            if (first == null || last == null) {
+                return new ArrayList<>();
+            }
+            preStr =TimeProcessUtils.formatLocalDateTimeWithSecondPattern(first);
+            postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(last);
+        }else {
+            return new ArrayList<>();
+        }
+
 
         queryWrapper.eq("high_level", high);
         queryWrapper.gt("event_date_time", preStr);

@@ -6,6 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
+ * 考核结果计算
+ *
+ * <p>
+ *     次日计算昨天电量及漏报次数
+ * </p>
+ *
  * @author liukai
  * @date 2021/06/22
  */
@@ -13,6 +19,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AssessCalcServiceImpl implements AssessCalcService {
+
 
 
 
