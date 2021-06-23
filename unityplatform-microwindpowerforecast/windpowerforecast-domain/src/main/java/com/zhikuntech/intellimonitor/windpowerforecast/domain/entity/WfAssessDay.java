@@ -5,8 +5,9 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+
+import com.baomidou.mybatisplus.annotation.Version;
+import lombok.*;
 
 /**
  * <p>
@@ -16,6 +17,9 @@ import lombok.EqualsAndHashCode;
  * @author liukai
  * @since 2021-06-22
  */
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class WfAssessDay implements Serializable {
@@ -27,6 +31,7 @@ public class WfAssessDay implements Serializable {
 
     private String orgId;
 
+    @Version
     private Integer version;
 
     private LocalDateTime calcDate;
