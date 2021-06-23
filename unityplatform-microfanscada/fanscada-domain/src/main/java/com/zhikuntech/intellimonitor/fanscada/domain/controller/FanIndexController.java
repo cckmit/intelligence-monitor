@@ -29,14 +29,14 @@ public class FanIndexController {
 
     @ApiOperation("实时获取scada首页的风机列表")
     @GetMapping("/getList/{userName}")
-    public BaseResponse<Object> getFanBaseInfoList(@PathVariable String userName) {
+    public /*BaseResponse<Object> */void getFanBaseInfoList(@PathVariable String userName) {
 
         try {
             fanIndexService.getFanBaseInfoList(userName);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return BaseResponse.success(null);
+        //return BaseResponse.success(null);
     }
 
     @ApiOperation("获取scada首页的风机列表")
