@@ -171,7 +171,7 @@ public class CdqCalcServiceImpl implements CdqCalcService {
             // 真实功率数据
             Optional.of(zrGroup.get(timeK)).ifPresent(l -> {
                 List<BigDecimal> tmpList = l.stream().filter(Objects::nonNull).map(WfDataZr::getActualProduce).collect(Collectors.toList());
-                tmp.setDqProduce(tmpList);
+                tmp.setZrCapsProduce(tmpList);
             });
         }
 
@@ -187,7 +187,7 @@ public class CdqCalcServiceImpl implements CdqCalcService {
                                 && CollectionUtils.isNotEmpty(item.getZrCapsProduce()))
                 .filter(item -> new BigDecimal("0").compareTo(item.getCap()) != 0)
                 .collect(Collectors.toList());
-        if (CollectionUtils.isNotEmpty(aggrs)) {
+        if (CollectionUtils.isEmpty(aggrs)) {
             log.warn("过滤数据后无计算数据可用");
             return;
         }
@@ -244,7 +244,7 @@ public class CdqCalcServiceImpl implements CdqCalcService {
         } else {
             WfAnalyseCdq nst = WfAnalyseCdq.builder()
                     .calcDate(dayBegin)
-                    .avgMae(fnRes)
+                    .avgRmse(fnRes)
                     .avgMae(emae)
                     .biggestDiff(maxe)
                     .r1Ratio(r1)
@@ -296,6 +296,7 @@ public class CdqCalcServiceImpl implements CdqCalcService {
             assessDayService.getBaseMapper().updateById(wfAssessDay);
         } else {
             WfAssessDay nst = WfAssessDay.builder()
+                    .version(0)
                     .calcDate(dayBegin)
                     .cdqHiatus(hiatus)
                     .cdqRatio(cdqRatioR1)
