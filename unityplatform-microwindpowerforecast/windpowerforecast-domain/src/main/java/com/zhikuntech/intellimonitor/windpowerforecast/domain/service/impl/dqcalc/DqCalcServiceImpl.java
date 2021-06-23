@@ -79,7 +79,7 @@ public class DqCalcServiceImpl implements DqCalcService {
 
     //# 1.计算均方根误差
 
-    @Override public void daDataCalc(String bg, String end, String headerDate) {
+    @Override public void dqDataCalc(String bg, String end, String headerDate) {
         /*
             bg  ->  yyyy-MM-dd HH:mm:ss
             end ->  yyyy-MM-dd HH:mm:ss

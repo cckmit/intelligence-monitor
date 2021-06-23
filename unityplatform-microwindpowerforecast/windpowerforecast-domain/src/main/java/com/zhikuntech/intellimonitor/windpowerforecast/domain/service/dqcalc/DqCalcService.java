@@ -13,6 +13,6 @@ public interface DqCalcService {
      * @param end           结束时间
      * @param headerDate    头部时间
      */
-    void daDataCalc(String bg, String end, String headerDate);
+    void dqDataCalc(String bg, String end, String headerDate);
 
 }
