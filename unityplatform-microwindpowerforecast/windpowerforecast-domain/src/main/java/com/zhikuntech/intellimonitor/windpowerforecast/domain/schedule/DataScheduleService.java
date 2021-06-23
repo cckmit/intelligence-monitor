@@ -37,6 +37,7 @@ public class DataScheduleService {
             if (enter) {
                 log.info("schedule method: [{}]", "scheduleGenPower");
                 fetchDataService.scheduleFetchActPower();
+                TimeUnit.SECONDS.sleep(10);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -56,6 +57,7 @@ public class DataScheduleService {
             if (enter) {
                 log.info("schedule method: [{}]", "scheduleGenWeather");
                 fetchDataService.scheduleFetchActWeather();
+                TimeUnit.SECONDS.sleep(10);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
