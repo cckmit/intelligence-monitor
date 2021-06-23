@@ -3,6 +3,7 @@ package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.DqDayElectricGenDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataDq;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataNwp;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfDataDqMapper;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.DqBodyParse;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.DqHeaderParse;
@@ -128,6 +129,11 @@ public class WfDataDqServiceImpl extends ServiceImpl<WfDataDqMapper, WfDataDq> i
 
             if (CollectionUtils.isNotEmpty(wfDataDqs)) {
                 saveBatch(wfDataDqs);
+
+                QueryWrapper<WfDataDq> deleteWrapper = new QueryWrapper<>();
+                deleteWrapper.lt("header_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(headerDate));
+                deleteWrapper.gt("body_time", 96);
+                getBaseMapper().delete(deleteWrapper);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
