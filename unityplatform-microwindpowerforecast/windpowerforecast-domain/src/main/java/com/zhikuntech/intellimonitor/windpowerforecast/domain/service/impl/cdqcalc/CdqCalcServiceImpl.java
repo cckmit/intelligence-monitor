@@ -68,7 +68,9 @@ public class CdqCalcServiceImpl implements CdqCalcService {
      */
     private final IWfAnalyseCdqService analyseCdqService;
 
-
+    /**
+     * 日考核结果
+     */
     private final IWfAssessDayService assessDayService;
 
 
@@ -282,7 +284,7 @@ public class CdqCalcServiceImpl implements CdqCalcService {
 
         /*   计算考核结果数据    */
 
-
+        // 存储
         QueryWrapper<WfAssessDay> assessDayQueryWrapper = new QueryWrapper<>();
         assessDayQueryWrapper.eq("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dayBegin));
         WfAssessDay wfAssessDay = assessDayService.getBaseMapper().selectOne(assessDayQueryWrapper);
