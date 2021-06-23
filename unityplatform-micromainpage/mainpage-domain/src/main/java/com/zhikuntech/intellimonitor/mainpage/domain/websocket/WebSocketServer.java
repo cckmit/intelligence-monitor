@@ -65,8 +65,9 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(String message) {
-//        log.info("服务端收到客户端[{}]的消息:{}", username, message);
-//        this.sendMessage("Hello, " + message, username);
+        if (message.equals("hello")) {
+            sendMessage(username, "wolrd");
+        }
     }
 
     @OnError
