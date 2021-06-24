@@ -124,7 +124,7 @@ public class WfAssessDayServiceImpl extends ServiceImpl<WfAssessDayMapper, WfAss
 
         //# 查询是否已经存在修改过后的数据
         QueryWrapper<WfAssessChange> changeQueryWrapper = new QueryWrapper<>();
-        changeQueryWrapper.eq("day_def_id", id);
+        changeQueryWrapper.eq("day_ref_id", id);
         changeQueryWrapper.eq("newest", 0);
         WfAssessChange historyChange = assessChangeService.getBaseMapper().selectOne(changeQueryWrapper);
         if (Objects.nonNull(historyChange)) {
@@ -137,6 +137,7 @@ public class WfAssessDayServiceImpl extends ServiceImpl<WfAssessDayMapper, WfAss
         BeanUtils.copyProperties(wfAssessDay, assessChange);
 
         assessChange.setId(null);
+        assessChange.setNewest(0);
         assessChange.setDayRefId(wfAssessDay.getId());
 
         LocalDateTime now = LocalDateTime.now();
@@ -154,8 +155,8 @@ public class WfAssessDayServiceImpl extends ServiceImpl<WfAssessDayMapper, WfAss
         assessChange.setDqElectric(AssessCalcUtils.calcDqElectricR1(query.getDqRatioChange()));
         assessChange.setDqPay(AssessCalcUtils.calcDqPayR1(query.getDqRatioChange()));
 
-        assessChange.setCdqHiatus(query.getDqHiatusChange());
-        assessChange.setCdqRatio(query.getDqRatioChange());
+        assessChange.setCdqHiatus(query.getCdqHiatusChange());
+        assessChange.setCdqRatio(query.getCdqRatioChange());
         assessChange.setCdqElectric(AssessCalcUtils.calcCdqElectricR1(query.getCdqRatioChange()));
         assessChange.setCdqPay(AssessCalcUtils.calcCdqPayR1(query.getCdqRatioChange()));
 
@@ -163,6 +164,8 @@ public class WfAssessDayServiceImpl extends ServiceImpl<WfAssessDayMapper, WfAss
 
         // TODO 触发日考核电量的计算/月考核电量的计算
 
+        changeResultDTO.setMsg("成功");
+        changeResultDTO.setResult(0);
         return changeResultDTO;
     }
 
