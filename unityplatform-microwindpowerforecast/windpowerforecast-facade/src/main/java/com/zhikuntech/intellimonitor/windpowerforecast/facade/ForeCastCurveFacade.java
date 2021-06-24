@@ -1,5 +1,6 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.facade;
 
+import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
 import com.zhikuntech.intellimonitor.windpowerforecast.prototype.dto.NwpListPatternDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.prototype.query.NwpCurvePatternQuery;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -20,5 +21,5 @@ public interface ForeCastCurveFacade {
      * @return  曲线模式数据
      */
     @PostMapping("/query-nwp-curve")
-    List<NwpListPatternDTO> nwpCurveQuery(@RequestBody NwpCurvePatternQuery query);
+    BaseResponse<List<NwpListPatternDTO>> nwpCurveQuery(@RequestBody NwpCurvePatternQuery query);
 }

@@ -20,6 +20,10 @@
             <groupId>com.zhikuntech.intellimonitor</groupId>
             <artifactId>windpowerforecast-prototype</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.zhikuntech.intellimonitor</groupId>
+            <artifactId>core-commons</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

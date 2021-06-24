@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -25,7 +26,7 @@ import java.time.LocalDateTime;
 @Builder
 @Data
 @ApiModel("曲线展示-列表模式")
-public class NwpListPatternDTO {
+public class NwpListPatternDTO implements Serializable {
 
 //    @JsonSerialize(using = LocalDateTimeSerializer.class)
 //    @JsonDeserialize(using = LocalDateDeserializer.class)
