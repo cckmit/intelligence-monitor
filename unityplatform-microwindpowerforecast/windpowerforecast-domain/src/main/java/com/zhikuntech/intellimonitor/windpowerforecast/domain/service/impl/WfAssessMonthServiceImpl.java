@@ -3,6 +3,7 @@ package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.ChangeResultDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.MonthAssessCurveDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.MonthAssessListDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.statisticsanalysis.DqPowerAnalysisDTO;
@@ -10,6 +11,7 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfAnalyseDq
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfAssessMonth;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfAssessMonthMapper;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.assessresult.MonthAssessQuery;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.assessresult.MonthAssessUpdateQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.assessresult.MonthCurveQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfAssessMonthService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -39,6 +41,15 @@ import java.util.stream.Collectors;
 @Service
 public class WfAssessMonthServiceImpl extends ServiceImpl<WfAssessMonthMapper, WfAssessMonth> implements IWfAssessMonthService {
 
+
+    @Override
+    public ChangeResultDTO monthAssessUpdate(MonthAssessUpdateQuery query) {
+        ChangeResultDTO changeResult = ChangeResultDTO.builder()
+                .result(1)
+                .msg("未实现")
+                .build();
+        return changeResult;
+    }
 
     @Override
     public Pager<MonthAssessListDTO> queryMonthList(MonthAssessQuery query) {
@@ -103,6 +114,7 @@ public class WfAssessMonthServiceImpl extends ServiceImpl<WfAssessMonthMapper, W
             fnlResult = 0;
         }
         MonthAssessListDTO tmp = MonthAssessListDTO.builder()
+                .id(item.getId())
                 .calcDate(item.getCalcDate())
                 .autoElectric(item.getAutoElectric())
                 .autoPay(item.getAutoPay())
