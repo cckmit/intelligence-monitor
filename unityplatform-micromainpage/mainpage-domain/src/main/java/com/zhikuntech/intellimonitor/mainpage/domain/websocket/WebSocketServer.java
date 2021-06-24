@@ -1,5 +1,8 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.websocket;
 
+import com.alibaba.fastjson.JSONObject;
+import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanRuntimeDTO;
+import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanStatisticsDTO;
 import com.zhikuntech.intellimonitor.mainpage.domain.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.service.FanInfoService;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +12,7 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -81,18 +85,31 @@ public class WebSocketServer {
     @OnMessage
     public void onMessage(String message) {
         if ("hello".equals(message)) {
+            log.info(message);
             sendMessage("world", username);
+            log.info("world");
         }
         if ("reset".equals(message)) {
             goldenUtil.cancelAll();
             sendAllMessage("重新订阅");
             log.info("手动触发所有取消操作");
         }
+        if ("reset1".equals(message)) {
+            GROUP_RUNTIME.remove(username);
+            log.info("取消订阅---风机详情");
+        }
+        if ("reset2".equals(message)) {
+            GROUP_STATISTICS.remove(username);
+            log.info("取消订阅---风场统计");
+        }
         Set<String> strings = Arrays.stream(message.split(",")).collect(Collectors.toSet());
         if (strings.contains("1")) {
             GROUP_RUNTIME.put(username, session);
-            log.info("用户{}，订阅风机详情",username);
+            log.info("用户{}，订阅风机详情", username);
             try {
+                List<FanRuntimeDTO> runtimeInfos = fanInfoService.getRuntimeInfos();
+                String jsonString = JSONObject.toJSONString(runtimeInfos);
+                sendMessage(jsonString,username);
                 fanInfoService.getRuntimeInfos("runtime");
                 log.info("触发订阅golden实时消息---风机详情");
             } catch (Exception e) {
@@ -104,8 +121,11 @@ public class WebSocketServer {
         }
         if (strings.contains("2")) {
             GROUP_STATISTICS.put(username, session);
-            log.info("用户{}，订阅风场统计",username);
+            log.info("用户{}，订阅风场统计", username);
             try {
+                FanStatisticsDTO statistics = fanInfoService.getStatistics();
+                String jsonString = JSONObject.toJSONString(statistics);
+                sendMessage(jsonString,username);
                 fanInfoService.getStatistics("statistics");
                 log.info("触发订阅golden实时消息---风场统计");
             } catch (Exception e) {
