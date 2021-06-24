@@ -41,22 +41,22 @@ public class FanInfoInit implements CommandLineRunner {
     /**
      * 每日0:00执行
      */
-    @Scheduled(cron = "0 0 * * * ?")
-    public void init() throws Exception {
-        int[] ids = {1, 2};
-        List<ValueData> power = goldenUtil.getSnapshots(ids);
-        for (int i = 1; i < power.size(); i++) {
-            redisUtil.set(FanConstant.DAILY_POWER + i, power.get(i).getValue());
-        }
-        double powerSum = power.stream().parallel().mapToDouble(ValueData::getValue).sum();
-        redisUtil.set(FanConstant.DAILY_POWER_ALL, powerSum);
-        List<ValueData> online = goldenUtil.getSnapshots(ids);
-        for (int i = 1; i < online.size(); i++) {
-            redisUtil.set(FanConstant.DAILY_ONLINE + i, online.get(i).getValue());
-        }
-        double onlineSum = online.stream().parallel().mapToDouble(ValueData::getValue).sum();
-        redisUtil.set(FanConstant.DAILY_POWER_ALL, onlineSum);
-    }
+//    @Scheduled(cron = "0 0 0 * * ?")
+//    public void init() throws Exception {
+//        int[] ids = {1, 2};
+//        List<ValueData> power = goldenUtil.getSnapshots(ids);
+//        for (int i = 1; i < power.size(); i++) {
+//            redisUtil.set(FanConstant.DAILY_POWER + i, power.get(i).getValue());
+//        }
+//        double powerSum = power.stream().parallel().mapToDouble(ValueData::getValue).sum();
+//        redisUtil.set(FanConstant.DAILY_POWER_ALL, powerSum);
+//        List<ValueData> online = goldenUtil.getSnapshots(ids);
+//        for (int i = 1; i < online.size(); i++) {
+//            redisUtil.set(FanConstant.DAILY_ONLINE + i, online.get(i).getValue());
+//        }
+//        double onlineSum = online.stream().parallel().mapToDouble(ValueData::getValue).sum();
+//        redisUtil.set(FanConstant.DAILY_POWER_ALL, onlineSum);
+//    }
 
     public double dataResetFloat(String key, Integer id, Integer type) {
         try {
