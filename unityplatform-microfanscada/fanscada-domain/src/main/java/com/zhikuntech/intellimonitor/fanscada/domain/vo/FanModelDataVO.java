@@ -1,7 +1,9 @@
 package com.zhikuntech.intellimonitor.fanscada.domain.vo;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @ClassName: intelligence-monitor
@@ -11,6 +13,8 @@ import lombok.Data;
  * @Version:
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class FanModelDataVO {
     /**
      * 风轮与实时状态
@@ -22,7 +26,7 @@ public class FanModelDataVO {
      * 齿轮箱
      */
     @ApiModelProperty("齿轮箱")
-    private GearCaseVO geardata ;
+    private GearCaseVO geardata;
 
     /**
      * 发电机与变频箱
@@ -32,7 +36,6 @@ public class FanModelDataVO {
 
     /**
      * 轮毂与偏航状态
-     *
      */
     @ApiModelProperty("轮毂")
     private WheelSpiderVO wheelSpiderdata;

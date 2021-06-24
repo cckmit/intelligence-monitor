@@ -20,15 +20,15 @@ public class FsBasicParameterVO {
 
     private Integer id;
     /**
-     * 风机编号
+     * 风机厂家编号
      */
-    @ApiModelProperty("风机编号")
+    @ApiModelProperty("风机厂家编号")
     private String number;
 
     /**
-     * 风机厂家
+     * 风机厂家名称
      */
-    @ApiModelProperty("风机厂家")
+    @ApiModelProperty("风机厂家名称")
     private String manufacturer;
 
     /**

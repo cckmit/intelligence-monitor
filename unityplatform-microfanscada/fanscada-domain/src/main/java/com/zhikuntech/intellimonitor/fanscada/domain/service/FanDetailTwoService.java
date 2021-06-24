@@ -22,7 +22,7 @@ public interface FanDetailTwoService {
     /**
      * 查询风机数据
      *
-     * @param number 风机编号
+     * @param number 风机厂家编号
      * @return 结果
      */
     BaseResponse<FsBasicParameterVO> getFanParameterByNumber(String number);

@@ -1,7 +1,9 @@
 package com.zhikuntech.intellimonitor.fanscada.domain.vo;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author: DAI
@@ -9,6 +11,8 @@ import lombok.Data;
  * @description：
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class FanDetailDataVO {
 
     /**
