@@ -29,7 +29,16 @@ public enum ResultCode {
     GOLDEN_GETSNAPSHOTS_FAILED(HttpConstant.HTTP_RES_CODE_500,"获取指定id当前最新快照信息失败"),
     GOLDEN_SUBSCRIBESNAPSHOTS_FAILED(HttpConstant.HTTP_RES_CODE_500,"订阅庚顿推送快照(实时)数据失败"),
     USER_NOT_LOGIN_EXCEPTION(HttpConstant.HTTP_RES_CODE_500,"用户未登录"),
-    SFTP_FAILURE(HttpConstant.SFTP_FAILURE,"sftp操作异常");
+    SFTP_FAILURE(HttpConstant.SFTP_FAILURE,"sftp操作异常"),
+    CREATE_AUTH_FAILED(HttpConstant.UPM_HTTP_CREATE_AUTH,"新增权限失败"),
+    DELETE_AUTH_FAILED(HttpConstant.UPM_HTTP_DELETE_AUTH,"删除权限失败"),
+    SELECT_AUTH_FAILED(HttpConstant.UPM_HTTP_SELECT_AUTH,"查询权限失败"),
+    UPDATE_AUTH_FAILED(HttpConstant.UPM_HTTP_UPDATE_AUTH,"更新权限失败"),
+    ROLLBACK_AUTH_FAILED(HttpConstant.UPM_HTTP_ROLLBACK_AUTH,"回滚权限失败"),
+    AUTH_USER_NOT_LOGIN(HttpConstant.UPM_USER_NOT_LOGIN,"用户未登录"),
+    USER_LOGIN_FAIL(HttpConstant.USER_LOGIN_FAIL,"用户登录失败"),
+    USER_LOGOUT_FAIL(HttpConstant.USER_LOGOUT_FAIL,"用户登出失败"),
+    REST_REQ_SEND_FAILED(HttpConstant.REST_REQ_SEND_FAILED,"restTemplate请求发送失败");
 
     private final Integer code;
     private String msg;

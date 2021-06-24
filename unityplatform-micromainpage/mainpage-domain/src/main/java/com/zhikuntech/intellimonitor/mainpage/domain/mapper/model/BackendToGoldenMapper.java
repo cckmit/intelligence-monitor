@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhikuntech.intellimonitor.mainpage.domain.model.BackendToGolden;
 import com.zhikuntech.intellimonitor.mainpage.domain.model.BackendToGoldenQuery;
 import com.zhikuntech.intellimonitor.mainpage.domain.model.BackendToGoldenQueryList;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.mapstruct.Mapper;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-<WindEnergyPlan::Zhejiang	date='2021-06-24 00:15:00'	sampleid=''	samplecap='0.00'	cap='252.00'>
+<WindEnergyPlan::Zhejiang	date='2021-03-03 00:15:00'	sampleid=''	samplecap='0.00'	cap='252.00'>
 @顺序	统一编码	时间	上报出力值	停机检修容量
 #1	浙江.普陀风电场	1	62.08	0.00
 #2	浙江.普陀风电场	2	60.72	0.00

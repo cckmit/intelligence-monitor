@@ -70,6 +70,7 @@ public class GoldenUtil {
     public int[] getIds(String tableName) throws Exception {
         check();
         ServerImpl server = pool.getServerImpl();
+        server.setTimeOut(5);
         BaseImpl base = new BaseImpl(server);
         //获取当前表容量
         int count = base.getTableSizeByName(tableName);
@@ -175,6 +176,7 @@ public class GoldenUtil {
     public double getFloat(int id, String dateTime) throws Exception {
         check();
         ServerImpl server = pool.getServerImpl();
+        server.setTimeOut(5);
         Historian historian = new HistorianImpl(server);
         Date date = DateUtil.stringToDate(dateTime);
         double value = historian.getFloatSingleValue(id, date, RtdbHisMode.RTDB_PREVIOUS).getValue();
@@ -185,6 +187,7 @@ public class GoldenUtil {
     public int getInteger(int id, String dateTime) throws Exception {
         check();
         ServerImpl server = pool.getServerImpl();
+        server.setTimeOut(5);
         Historian historian = new HistorianImpl(server);
         Date date = DateUtil.stringToDate(dateTime);
         double value = historian.getIntSingleValue(id, date, RtdbHisMode.RTDB_PREVIOUS).getValue();
@@ -201,6 +204,7 @@ public class GoldenUtil {
     public List<ValueData> getSnapshots(int[] ids) throws Exception {
         check();
         ServerImpl server = pool.getServerImpl();
+        server.setTimeOut(5);
         Snapshot snap = new SnapshotImpl(server);
         List<ValueData> snapshots = snap.getSnapshots(ids);
         snap.close();

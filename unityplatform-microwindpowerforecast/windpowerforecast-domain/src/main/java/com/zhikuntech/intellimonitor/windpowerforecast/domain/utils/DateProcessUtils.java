@@ -34,6 +34,7 @@ public class DateProcessUtils {
         } catch (Exception ex) {
             ex.printStackTrace();
             log.error("parse date[{}] occur error:[{}]", dateStr, ex.getMessage());
+            throw new IllegalArgumentException(ex);
         }
         return parse;
     }

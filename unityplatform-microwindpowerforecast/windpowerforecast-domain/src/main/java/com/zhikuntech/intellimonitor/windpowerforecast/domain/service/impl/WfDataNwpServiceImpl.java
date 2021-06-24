@@ -72,6 +72,12 @@ public class WfDataNwpServiceImpl extends ServiceImpl<WfDataNwpMapper, WfDataNwp
         }
         String preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(pre);
         String postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(post.plusDays(1));
+
+        String nwpHighStr = query.getNwpHigh();
+        String cfHighStr = query.getCfHigh();
+        Integer nwpHigh = Integer.valueOf(nwpHighStr);
+        Integer cfHigh = Integer.valueOf(cfHighStr);
+
         // criteria
 //        QueryWrapper<WfTimeBase> timeBaseQueryWrapper = new QueryWrapper<>();
 //        timeBaseQueryWrapper.gt("date_time", preStr);
@@ -87,7 +93,7 @@ public class WfDataNwpServiceImpl extends ServiceImpl<WfDataNwpMapper, WfDataNwp
         Integer pageSize = query.getPageSize();
         Page<NwpListPatternDTO> page = new Page<>(pageNumber, pageSize);
 
-        List<NwpListPatternDTO> nwpListPatternDTOS = timeBaseMapper.nwpListPattern(page, preStr, postStr, 15);
+        List<NwpListPatternDTO> nwpListPatternDTOS = timeBaseMapper.nwpListPattern(page, preStr, postStr, 15, nwpHigh, cfHigh);
         if (CollectionUtils.isEmpty(nwpListPatternDTOS)) {
             return resultPage;
         }
@@ -106,6 +112,12 @@ public class WfDataNwpServiceImpl extends ServiceImpl<WfDataNwpMapper, WfDataNwp
         String queryMode = query.getQueryMode();
         String dateStrPre = query.getDateStrPre();
         String dateStrPost = query.getDateStrPost();
+
+        String nwpHighStr = query.getNwpHigh();
+        String cfHighStr = query.getCfHigh();
+        Integer nwpHigh = Integer.valueOf(nwpHighStr);
+        Integer cfHigh = Integer.valueOf(cfHighStr);
+
         LocalDateTime pre = DateProcessUtils.parseToLocalDateTime(dateStrPre);
         LocalDateTime post = DateProcessUtils.parseToLocalDateTime(dateStrPost);
         if (pre == null || post == null) {
@@ -114,7 +126,7 @@ public class WfDataNwpServiceImpl extends ServiceImpl<WfDataNwpMapper, WfDataNwp
         String preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(pre);
         String postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(post.plusDays(1));
 
-        List<NwpListPatternDTO> nwpListPatternDTOS = timeBaseMapper.nwpCurvePattern(preStr, postStr, 15);
+        List<NwpListPatternDTO> nwpListPatternDTOS = timeBaseMapper.nwpCurvePattern(preStr, postStr, 15, nwpHigh, cfHigh);
 
         return nwpListPatternDTOS;
     }
@@ -196,6 +208,11 @@ public class WfDataNwpServiceImpl extends ServiceImpl<WfDataNwpMapper, WfDataNwp
 
             if (CollectionUtils.isNotEmpty(wfDataNwps)) {
                 saveBatch(wfDataNwps);
+
+                QueryWrapper<WfDataNwp> deleteWrapper = new QueryWrapper<>();
+                deleteWrapper.lt("header_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(headerDate));
+                deleteWrapper.gt("body_time", 96);
+                getBaseMapper().delete(deleteWrapper);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

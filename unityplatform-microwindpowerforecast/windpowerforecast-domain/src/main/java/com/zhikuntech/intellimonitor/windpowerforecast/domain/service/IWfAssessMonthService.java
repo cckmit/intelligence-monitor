@@ -1,12 +1,15 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.service;
 
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.ChangeResultDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.MonthAssessCurveDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.MonthAssessListDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfAssessMonth;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.assessresult.MonthAssessQuery;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.assessresult.MonthAssessUpdateQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.assessresult.MonthCurveQuery;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -20,6 +23,13 @@ import java.util.List;
  */
 public interface IWfAssessMonthService extends IService<WfAssessMonth> {
 
+
+    /**
+     * 更新月考核数据
+     * @param query 待更新数据
+     * @return  更新结果
+     */
+    ChangeResultDTO monthAssessUpdate(MonthAssessUpdateQuery query);
 
     /**
      * 月考核结果-列表模式

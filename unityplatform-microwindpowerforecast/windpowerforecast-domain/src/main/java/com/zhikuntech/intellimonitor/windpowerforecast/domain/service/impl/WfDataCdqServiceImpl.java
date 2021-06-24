@@ -1,5 +1,6 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataCdq;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfDataCdqMapper;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.CdqBodyParse;
@@ -83,6 +84,12 @@ public class WfDataCdqServiceImpl extends ServiceImpl<WfDataCdqMapper, WfDataCdq
             if (CollectionUtils.isNotEmpty(dataCdqs)) {
                 // TODO 记录解析文件成功信息
                 saveBatch(dataCdqs);
+                // 删除无用数据
+
+                QueryWrapper<WfDataCdq> deleteWrapper = new QueryWrapper<>();
+                deleteWrapper.lt("header_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(headerDate));
+                deleteWrapper.gt("body_time", 1);
+                getBaseMapper().delete(deleteWrapper);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

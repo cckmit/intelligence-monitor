@@ -11,8 +11,6 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfAnalyse
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,17 +37,12 @@ public class StatisticsAnalysisController {
 
     private final IWfAnalyseCdqService cdqService;
 
-    @Autowired
-    private RedissonClient redissonClient;
     @ApiOperation("功率分析-短期功率")
     @PostMapping("/query-dq")
     public BaseResponse<DqListAggregateDTO> dqPowerAnalysis(@RequestBody PowerAnalysisQuery query) {
         DqListAggregateDTO result = dqService.dqPowerAnalysis(query);
         return BaseResponse.success(result);
     }
-
-
-
 
     @ApiOperation("功率分析-超短期功率")
     @PostMapping("/query-cdq")

@@ -23,6 +23,8 @@ import java.time.LocalDateTime;
 @ApiModel("月考核结果-列表模式")
 public class MonthAssessListDTO {
 
+    private Integer id;
+
     /**
      * 计算日期
      */

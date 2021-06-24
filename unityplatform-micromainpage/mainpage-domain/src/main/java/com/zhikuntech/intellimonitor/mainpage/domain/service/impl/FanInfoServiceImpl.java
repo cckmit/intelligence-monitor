@@ -14,6 +14,7 @@ import com.zhikuntech.intellimonitor.mainpage.domain.utils.RedisUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
@@ -23,6 +24,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author 代志豪
@@ -41,8 +43,8 @@ public class FanInfoServiceImpl implements FanInfoService {
     @Autowired
     private RedisUtil redisUtil;
 
-    @Autowired
-    private FanInfoInit fanInfoInit;
+    @Value("${template.file.path}")
+    private String filePath;
 
     @Override
     public List<FanRuntimeDTO> getRuntimeInfos() throws Exception {
@@ -59,8 +61,8 @@ public class FanInfoServiceImpl implements FanInfoService {
             list.add(dto);
         }
         for (FanRuntimeDTO dto : list) {
-            Object obj = redisUtil.get(FanConstant.MONTHLY_POWER + dto.getNumber());
-            double powerGeneration = null == obj ? 0 : (double) obj;
+            Double obj = FanInfoInit.POWER_MAP.get(FanConstant.MONTHLY_POWER + dto.getNumber());
+            double powerGeneration = null == obj ? 0 : obj;
             dto.setMonthlyPowerGeneration(dto.getMonthlyPowerGeneration() - powerGeneration);
         }
         return list;
@@ -74,39 +76,38 @@ public class FanInfoServiceImpl implements FanInfoService {
         if (WebSocketServer.clients.containsKey(user)) {
             int[] ids = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
             List<FanRuntimeDTO> list = new ArrayList<>(10);
-            for (int i = 1; i <= 10; i++) {
+            for (int i = 1; i <= 63; i++) {
                 FanRuntimeDTO fanRuntimeDto = new FanRuntimeDTO();
                 fanRuntimeDto.setNumber(i);
                 list.add(fanRuntimeDto);
             }
-            goldenUtil.subscribeSnapshots(user, ids, (data) -> {
-                try {
-                    if (WebSocketServer.clients.containsKey(user)) {
-                        long l0 = System.currentTimeMillis();
-                        List<FanRuntimeDTO> dtos = InjectPropertiesUtil.injectByAnnotation(list, data);
-                        if (null != dtos) {
-                            for (FanRuntimeDTO dto : dtos) {
-                                double powerGeneration;
-                                Object obj = redisUtil.get(FanConstant.MONTHLY_POWER + dto.getNumber());
-                                if (null == obj) {
-                                    int id = (int) redisUtil.get(FanConstant.GOLDEN_ID_POWER + dto.getNumber());
-                                    powerGeneration = fanInfoInit.dataResetFloat(FanConstant.MONTHLY_POWER + dto.getNumber(), id, 0);
-                                } else {
-                                    powerGeneration = (double) obj;
+            try {
+                goldenUtil.subscribeSnapshots(user, ids, (data) -> {
+                    try {
+                        if (WebSocketServer.clients.containsKey(user)) {
+                            long l0 = System.currentTimeMillis();
+                            List<FanRuntimeDTO> dtos = InjectPropertiesUtil.injectByAnnotation(list, data);
+                            if (null != dtos) {
+                                for (FanRuntimeDTO dto : dtos) {
+                                    Double obj = FanInfoInit.POWER_MAP.get(FanConstant.MONTHLY_POWER + dto.getNumber());
+                                    double powerGeneration = null == obj ? 0 : obj;
+                                    dto.setMonthlyPowerGeneration(dto.getMonthlyPowerGeneration() - powerGeneration);
                                 }
-                                dto.setMonthlyPowerGeneration(dto.getMonthlyPowerGeneration() - powerGeneration);
+                                String jsonString = JSONObject.toJSONString(dtos);
+                                webSocketServer.sendMessage(jsonString, user);
                             }
-                            String jsonString = JSONObject.toJSONString(dtos);
-                            webSocketServer.sendMessage(jsonString, user);
+                            long l1 = System.currentTimeMillis();
+                            log.info("实时数据，当前用户{}，处理时间{}，消息时间{}", user, l1 - l0, data[0].getDate());
                         }
-                        long l1 = System.currentTimeMillis();
-                        log.info("实时数据，当前用户{}，处理时间{}，消息时间{}", user, l1 - l0, data[0].getDate());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        goldenUtil.cancel(user);
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    goldenUtil.cancel(user);
-                }
-            });
+                });
+            } catch (SocketException e) {
+                log.info("golden连接失败，重连后取消之前所有连接");
+                goldenUtil.cancelAll();
+            }
         }
     }
 
@@ -140,24 +141,29 @@ public class FanInfoServiceImpl implements FanInfoService {
             for (int i = 1; i <= 63; i++) {
                 list.add(new FanStatisticsDTO());
             }
-            goldenUtil.subscribeSnapshots(user, ids, (data) -> {
-                try {
-                    if (WebSocketServer.clients.containsKey(user)) {
-                        long l0 = System.currentTimeMillis();
-                        List<FanStatisticsDTO> dtos = InjectPropertiesUtil.injectByAnnotation(list, data);
-                        if (null != dtos) {
-                            FanStatisticsDTO dto = injecctPorerties(dtos);
-                            String jsonString = JSONObject.toJSONString(dto);
-                            webSocketServer.sendMessage(jsonString, user);
+            try {
+                goldenUtil.subscribeSnapshots(user, ids, (data) -> {
+                    try {
+                        if (WebSocketServer.clients.containsKey(user)) {
+                            long l0 = System.currentTimeMillis();
+                            List<FanStatisticsDTO> dtos = InjectPropertiesUtil.injectByAnnotation(list, data);
+                            if (null != dtos) {
+                                FanStatisticsDTO dto = injecctPorerties(dtos);
+                                String jsonString = JSONObject.toJSONString(dto);
+                                webSocketServer.sendMessage(jsonString, user);
+                            }
+                            long l1 = System.currentTimeMillis();
+                            log.info("统计数据，当前用户{}，处理时间{}，消息时间{}", user, l1 - l0, data[0].getDate());
                         }
-                        long l1 = System.currentTimeMillis();
-                        log.info("统计数据，当前用户{}，处理时间{}，消息时间{}", user, l1 - l0, data[0].getDate());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        goldenUtil.cancel(user);
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    goldenUtil.cancel(user);
-                }
-            });
+                });
+            } catch (SocketException e) {
+                log.info("golden连接失败，重连后取消之前所有连接");
+                goldenUtil.cancelAll();
+            }
         }
     }
 
@@ -169,10 +175,10 @@ public class FanInfoServiceImpl implements FanInfoService {
         if (null == valueData) {
             return;
         }
-        for (int i = 1; i <= 10; i++) {
+        URL url = new File(filePath + "1.png").toURL();
+        for (int i = 1; i <= 63; i++) {
             FanRuntimeDTO fanRuntimeDto = new FanRuntimeDTO();
             fanRuntimeDto.setNumber(i);
-            URL url = new File("unityplatform-micromainpage/mainpage-domain/src/main/resources/template/1.png").toURL();
             fanRuntimeDto.setRunningStatusUrl(url);
             FanRuntimeDTO dto = InjectPropertiesUtil.injectByAnnotation(fanRuntimeDto, i, valueData);
             list.add(dto);
@@ -198,24 +204,25 @@ public class FanInfoServiceImpl implements FanInfoService {
     }
 
     private FanStatisticsDTO injecctPorerties(List<FanStatisticsDTO> dtos) {
-        Object obj1 = redisUtil.get(FanConstant.DAILY_POWER_ALL);
-        double dailyPowerGeneration = null == obj1 ? 0 : (double) obj1;
-        Object obj2 = redisUtil.get(FanConstant.MONTHLY_POWER_ALL);
-        double monthlyPowerGeneration = null == obj2 ? 0 : (double) obj2;
-        Object obj3 = redisUtil.get(FanConstant.ANNUAL_POWER_ALL);
-        double annualPowerGeneration = null == obj3 ? 0 : (double) obj3;
-        Object obj4 = redisUtil.get(FanConstant.DAILY_ONLINE_ALL);
-        double dailyOnlinePower = null == obj4 ? 0 : (double) obj4;
-        Object obj5 = redisUtil.get(FanConstant.MONTHLY_ONLINE_ALL);
-        double monthlyOnlinePower = null == obj5 ? 0 : (double) obj5;
-        Object obj6 = redisUtil.get(FanConstant.ANNUAL_ONLINE_ALL);
-        double annualOnlinePower = null == obj6 ? 0 : (double) obj6;
+        Double obj1 = FanInfoInit.POWER_MAP.get(FanConstant.DAILY_POWER_ALL);
+        double dailyPowerGeneration = null == obj1 ? 0 : obj1;
+        Double obj2 = FanInfoInit.POWER_MAP.get(FanConstant.MONTHLY_POWER_ALL);
+        double monthlyPowerGeneration = null == obj2 ? 0 : obj2;
+        Double obj3 = FanInfoInit.POWER_MAP.get(FanConstant.ANNUAL_POWER_ALL);
+        double annualPowerGeneration = null == obj3 ? 0 : obj3;
+        Double obj4 = FanInfoInit.POWER_MAP.get(FanConstant.DAILY_ONLINE_ALL);
+        double dailyOnlinePower = null == obj4 ? 0 : obj4;
+        Double obj5 = FanInfoInit.POWER_MAP.get(FanConstant.MONTHLY_ONLINE_ALL);
+        double monthlyOnlinePower = null == obj5 ? 0 : obj5;
+        Double obj6 = FanInfoInit.POWER_MAP.get(FanConstant.ANNUAL_ONLINE_ALL);
+        double annualOnlinePower = null == obj6 ? 0 : obj6;
 
         double activePower = dtos.stream().parallel().mapToDouble(FanStatisticsDTO::getActivePower).sum();
         double averageWindVelocity = dtos.stream().parallel().filter(e -> null != e.getAverageWindVelocity())
                 .mapToDouble(FanStatisticsDTO::getAverageWindVelocity).average().getAsDouble();
         double energyOutput = dtos.stream().parallel().mapToDouble(FanStatisticsDTO::getEnergyOutput).sum();
         double reverseActivePower = dtos.stream().parallel().mapToDouble(FanStatisticsDTO::getReverseActivePower).sum();
+
         FanStatisticsDTO dto = new FanStatisticsDTO();
         dto.setNum(63);
         dto.setCapacity(63 * 4d);

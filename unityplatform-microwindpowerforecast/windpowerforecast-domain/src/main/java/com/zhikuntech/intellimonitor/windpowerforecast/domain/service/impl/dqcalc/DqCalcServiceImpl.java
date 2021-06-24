@@ -79,7 +79,7 @@ public class DqCalcServiceImpl implements DqCalcService {
 
     //# 1.计算均方根误差
 
-    public void calcErmse(String bg, String end, String headerDate) {
+    @Override public void dqDataCalc(String bg, String end, String headerDate) {
         /*
             bg  ->  yyyy-MM-dd HH:mm:ss
             end ->  yyyy-MM-dd HH:mm:ss
@@ -171,7 +171,7 @@ public class DqCalcServiceImpl implements DqCalcService {
             // 真实功率数据
             Optional.of(zrGroup.get(timeK)).ifPresent(l -> {
                 List<BigDecimal> tmpList = l.stream().filter(Objects::nonNull).map(WfDataZr::getActualProduce).collect(Collectors.toList());
-                tmp.setDqProduce(tmpList);
+                tmp.setZrCapsProduce(tmpList);
             });
         }
 
@@ -187,7 +187,7 @@ public class DqCalcServiceImpl implements DqCalcService {
                         && CollectionUtils.isNotEmpty(item.getZrCapsProduce()))
                 .filter(item -> new BigDecimal("0").compareTo(item.getCap()) != 0)
                 .collect(Collectors.toList());
-        if (CollectionUtils.isNotEmpty(aggrs)) {
+        if (CollectionUtils.isEmpty(aggrs)) {
             log.warn("过滤数据后无计算数据可用");
             return;
         }
@@ -239,7 +239,7 @@ public class DqCalcServiceImpl implements DqCalcService {
         } else {
             WfAnalyseDq nst = WfAnalyseDq.builder()
                     .calcDate(dayBegin)
-                    .avgMae(fnRes)
+                    .avgRmse(fnRes)
                     .avgMae(emae)
                     .biggestDiff(maxe)
                     .r1Ratio(r1)
@@ -289,6 +289,7 @@ public class DqCalcServiceImpl implements DqCalcService {
             assessDayService.getBaseMapper().updateById(wfAssessDay);
         } else {
             WfAssessDay nst = WfAssessDay.builder()
+                    .version(0)
                     .calcDate(dayBegin)
                     .dqHiatus(hiatus)
                     .dqRatio(cdqRatioR1)

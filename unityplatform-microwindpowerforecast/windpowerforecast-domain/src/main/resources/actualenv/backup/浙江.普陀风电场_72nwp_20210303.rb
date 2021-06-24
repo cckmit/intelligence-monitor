@@ -1,4 +1,4 @@
-<WindEnergyNwp::Zhejiang	date='2021-06-24 00:15:00'	Coordinates='E23.234200,N10.232300'	TurbinH='70'>
+<WindEnergyNwp::Zhejiang	date='2021-03-03 00:15:00'	Coordinates='E23.234200,N10.232300'	TurbinH='70'>
 @顺序	统一编码	时间	风速	高层	风向	温度	湿度	气压
 #1	浙江.普陀风电场	1	6.51	10	38.00	8.0	68	102.9
 #2	浙江.普陀风电场	1	6.89	30	39.00	8.0	64	102.9
