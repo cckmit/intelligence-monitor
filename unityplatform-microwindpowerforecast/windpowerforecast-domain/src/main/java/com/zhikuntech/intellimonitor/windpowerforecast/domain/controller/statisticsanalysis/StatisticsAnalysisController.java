@@ -43,14 +43,6 @@ public class StatisticsAnalysisController {
     @PostMapping("/query-dq")
     public BaseResponse<DqListAggregateDTO> dqPowerAnalysis(@RequestBody PowerAnalysisQuery query) {
         DqListAggregateDTO result = dqService.dqPowerAnalysis(query);
-
-//        result.getAvgAna().setAvgRmseAvg(new BigDecimal("0"));
-//        result.getAvgAna().setAboutRAvg(new BigDecimal("0"));
-//        result.getAvgAna().setR1RatioAvg(new BigDecimal("0"));
-//        result.getAvgAna().setR2RatioAvg(new BigDecimal("0"));
-//        result.getAvgAna().setBiggestDiffAvg(new BigDecimal("0"));
-//        result.getAvgAna().setAvgMaeAvg(new BigDecimal("0"));
-
         return BaseResponse.success(result);
     }
 
