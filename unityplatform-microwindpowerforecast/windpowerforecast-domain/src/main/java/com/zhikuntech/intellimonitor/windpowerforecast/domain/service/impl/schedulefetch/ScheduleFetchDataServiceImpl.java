@@ -65,6 +65,13 @@ public class ScheduleFetchDataServiceImpl implements ScheduleFetchDataService {
     }
 
     @Override
+    public BigDecimal scheduleFetchMonthElectric() {
+        // TODO 获取当月全场发电量
+        int avtive = ThreadLocalRandom.current().nextInt(256, 300);
+        return new BigDecimal(avtive);
+    }
+
+    @Override
     public void scheduleFetchActPower() {
 //        ActWeatherDataDTO weatherData = mainPageFacade.getWeatherData();
 //        log.info("调用mainPage接口获取数据:[{}]", weatherData);

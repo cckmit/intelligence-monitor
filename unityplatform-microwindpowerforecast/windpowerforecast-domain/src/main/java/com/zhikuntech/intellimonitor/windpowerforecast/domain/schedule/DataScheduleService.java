@@ -25,6 +25,32 @@ public class DataScheduleService {
 
     private final ScheduleFetchDataService fetchDataService;
 
+    // 考核结果-用电量(日数据/月数据)
+
+    @Scheduled(cron = "0 0 2 1 * ?")
+    public void scheduleGenCheckMonth() {
+        // 每个月1号的凌晨2点钟触发
+        // TODO
+
+    }
+
+    @Scheduled(cron = "0 0 1 * * ?")
+    public void scheduleGenCheckDay() {
+        // 每天凌晨一点钟触发
+        // TODO
+
+    }
+
+
+    //# 统计分析-数据生成调度(短期/超短期)
+
+    @Scheduled(cron = "0 2/15 * * * ?")
+    public void scheduleGenAnalysis() {
+        // 每天
+        // TODO
+
+    }
+
 
     //# cron -> 定时任务, 1min/次
 
