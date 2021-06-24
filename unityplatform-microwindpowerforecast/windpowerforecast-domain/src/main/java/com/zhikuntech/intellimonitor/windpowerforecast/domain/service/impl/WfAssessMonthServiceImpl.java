@@ -6,8 +6,6 @@ import com.zhikuntech.intellimonitor.core.commons.base.Pager;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.ChangeResultDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.MonthAssessCurveDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.MonthAssessListDTO;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.statisticsanalysis.DqPowerAnalysisDTO;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfAnalyseDq;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfAssessMonth;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfAssessMonthMapper;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.assessresult.MonthAssessQuery;
@@ -23,6 +21,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,8 +45,61 @@ public class WfAssessMonthServiceImpl extends ServiceImpl<WfAssessMonthMapper, W
     public ChangeResultDTO monthAssessUpdate(MonthAssessUpdateQuery query) {
         ChangeResultDTO changeResult = ChangeResultDTO.builder()
                 .result(1)
-                .msg("未实现")
                 .build();
+        if (Objects.isNull(query)) {
+            changeResult.setMsg("参数为空.");
+            return changeResult;
+        }
+        if (Objects.isNull(query.getId())) {
+            changeResult.setMsg("id标识必须.");
+            return changeResult;
+        }
+        if (Objects.isNull(query.getScheduleElectric()) && Objects.isNull(query.getSchedulePay())) {
+            changeResult.setMsg("调度考核电量和调度考核费用必须有一个不为空");
+            return changeResult;
+        }
+        Integer id = query.getId();
+        QueryWrapper<WfAssessMonth> assessMonthQueryWrapper = new QueryWrapper<>();
+        WfAssessMonth wfAssessMonth = getBaseMapper().selectOne(assessMonthQueryWrapper);
+        if (Objects.isNull(wfAssessMonth)) {
+            changeResult.setMsg("标识为[" + id + "]的数据不存在.");
+            return changeResult;
+        }
+
+        //# 计算
+
+        BigDecimal scheduleElectric = query.getScheduleElectric();
+        BigDecimal schedulePay = query.getSchedulePay();
+        if (Objects.nonNull(scheduleElectric)) {
+            // 自动核算考核电量（MWh）- 调度考核电量（MWh）
+            BigDecimal autoElectric = wfAssessMonth.getAutoElectric();
+            Optional.ofNullable(autoElectric).ifPresent(item -> {
+                BigDecimal subtract = autoElectric.subtract(scheduleElectric).setScale(3, RoundingMode.HALF_EVEN);
+                wfAssessMonth.setContrastElectric(subtract);
+            });
+            wfAssessMonth.setScheduleElectric(scheduleElectric);
+        }
+        if (Objects.nonNull(schedulePay)) {
+            // 自动核算考核费用（元）- 调度考核费用（元）
+            BigDecimal autoPay = wfAssessMonth.getAutoPay();
+            Optional.ofNullable(autoPay).ifPresent(item -> {
+                BigDecimal subtract = autoPay.subtract(schedulePay).setScale(3, RoundingMode.HALF_EVEN);
+                wfAssessMonth.setContrastPay(subtract);
+            });
+            wfAssessMonth.setSchedulePay(schedulePay);
+        }
+
+        //# 计算
+
+        int i = getBaseMapper().updateById(wfAssessMonth);
+        if (i == 0) {
+            // 并发更新异常
+            changeResult.setMsg("数据版本可能已更新");
+            return changeResult;
+        }
+        changeResult.setResult(0);
+        changeResult.setMsg("成功.");
+
         return changeResult;
     }
 

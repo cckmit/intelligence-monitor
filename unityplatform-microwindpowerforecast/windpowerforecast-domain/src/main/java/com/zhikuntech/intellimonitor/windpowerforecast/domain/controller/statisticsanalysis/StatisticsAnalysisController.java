@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -38,16 +37,12 @@ public class StatisticsAnalysisController {
 
     private final IWfAnalyseCdqService cdqService;
 
-
     @ApiOperation("功率分析-短期功率")
     @PostMapping("/query-dq")
     public BaseResponse<DqListAggregateDTO> dqPowerAnalysis(@RequestBody PowerAnalysisQuery query) {
         DqListAggregateDTO result = dqService.dqPowerAnalysis(query);
         return BaseResponse.success(result);
     }
-
-
-
 
     @ApiOperation("功率分析-超短期功率")
     @PostMapping("/query-cdq")
