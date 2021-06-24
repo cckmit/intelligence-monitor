@@ -163,6 +163,7 @@ public class GoldenUtil {
      */
     public void cancelAll() {
         servers.keySet().forEach(this::cancel);
+        pool.closePool();
     }
 
     /**

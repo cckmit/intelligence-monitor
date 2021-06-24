@@ -73,7 +73,7 @@ public class FanInfoServiceImpl implements FanInfoService {
         if (goldenUtil.getServer().containsKey(user)) {
             return;
         }
-        if (WebSocketServer.clients.containsKey(user)) {
+        if (WebSocketServer.GROUP_RUNTIME.keySet().size() > 0) {
             int[] ids = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
             List<FanRuntimeDTO> list = new ArrayList<>(10);
             for (int i = 1; i <= 63; i++) {
@@ -84,7 +84,7 @@ public class FanInfoServiceImpl implements FanInfoService {
             try {
                 goldenUtil.subscribeSnapshots(user, ids, (data) -> {
                     try {
-                        if (WebSocketServer.clients.containsKey(user)) {
+                        if (WebSocketServer.GROUP_RUNTIME.keySet().size() > 0) {
                             long l0 = System.currentTimeMillis();
                             List<FanRuntimeDTO> dtos = InjectPropertiesUtil.injectByAnnotation(list, data);
                             if (null != dtos) {
@@ -94,19 +94,23 @@ public class FanInfoServiceImpl implements FanInfoService {
                                     dto.setMonthlyPowerGeneration(dto.getMonthlyPowerGeneration() - powerGeneration);
                                 }
                                 String jsonString = JSONObject.toJSONString(dtos);
-                                webSocketServer.sendMessage(jsonString, user);
+                                webSocketServer.sendGroupMessage(jsonString, 0);
                             }
                             long l1 = System.currentTimeMillis();
-                            log.info("实时数据，当前用户{}，处理时间{}，消息时间{}", user, l1 - l0, data[0].getDate());
+                            log.info("实时数据，处理时间{}，消息时间{}", l1 - l0, data[0].getDate());
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
                         goldenUtil.cancel(user);
+                        log.info("回调函数内部触发所有取消操作");
                     }
                 });
             } catch (SocketException e) {
                 log.info("golden连接失败，重连后取消之前所有连接");
                 goldenUtil.cancelAll();
+                e.printStackTrace();
+                webSocketServer.sendAllMessage("重新订阅");
+                log.info("faninfoservice触发所有取消操作");
             }
         }
     }
@@ -135,7 +139,7 @@ public class FanInfoServiceImpl implements FanInfoService {
         if (goldenUtil.getServer().containsKey(user)) {
             return;
         }
-        if (WebSocketServer.clients.containsKey(user)) {
+        if (WebSocketServer.GROUP_STATISTICS.keySet().size() > 0) {
             int[] ids = {1, 2, 13, 14};
             List<FanStatisticsDTO> list = new ArrayList<>();
             for (int i = 1; i <= 63; i++) {
@@ -144,13 +148,13 @@ public class FanInfoServiceImpl implements FanInfoService {
             try {
                 goldenUtil.subscribeSnapshots(user, ids, (data) -> {
                     try {
-                        if (WebSocketServer.clients.containsKey(user)) {
+                        if (WebSocketServer.GROUP_STATISTICS.keySet().size() > 0) {
                             long l0 = System.currentTimeMillis();
                             List<FanStatisticsDTO> dtos = InjectPropertiesUtil.injectByAnnotation(list, data);
                             if (null != dtos) {
                                 FanStatisticsDTO dto = injecctPorerties(dtos);
                                 String jsonString = JSONObject.toJSONString(dto);
-                                webSocketServer.sendMessage(jsonString, user);
+                                webSocketServer.sendGroupMessage(jsonString, 1);
                             }
                             long l1 = System.currentTimeMillis();
                             log.info("统计数据，当前用户{}，处理时间{}，消息时间{}", user, l1 - l0, data[0].getDate());
@@ -158,11 +162,14 @@ public class FanInfoServiceImpl implements FanInfoService {
                     } catch (Exception e) {
                         e.printStackTrace();
                         goldenUtil.cancel(user);
+                        log.info("回调函数内部触发所有取消操作");
                     }
                 });
             } catch (SocketException e) {
                 log.info("golden连接失败，重连后取消之前所有连接");
+                e.printStackTrace();
                 goldenUtil.cancelAll();
+                log.info("faninfoservice触发所有取消操作");
             }
         }
     }
