@@ -60,6 +60,7 @@ public class WfAssessMonthServiceImpl extends ServiceImpl<WfAssessMonthMapper, W
         }
         Integer id = query.getId();
         QueryWrapper<WfAssessMonth> assessMonthQueryWrapper = new QueryWrapper<>();
+        assessMonthQueryWrapper.eq("id", id);
         WfAssessMonth wfAssessMonth = getBaseMapper().selectOne(assessMonthQueryWrapper);
         if (Objects.isNull(wfAssessMonth)) {
             changeResult.setMsg("标识为[" + id + "]的数据不存在.");
