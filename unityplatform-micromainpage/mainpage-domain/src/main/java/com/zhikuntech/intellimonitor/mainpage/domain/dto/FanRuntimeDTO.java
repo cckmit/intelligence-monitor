@@ -58,7 +58,7 @@ public class FanRuntimeDTO {
      */
     @GoldenId(value = 4)
     @ApiModelProperty("月发电量")
-    @ExcelProperty(value = "月总发电量(万kW)", index = 4)
+    @ExcelProperty(value = "月总发电量(万kWh)", index = 4)
     private Double monthlyPowerGeneration;
 
     /**
@@ -66,7 +66,7 @@ public class FanRuntimeDTO {
      */
     @GoldenId(value = 5)
     @ApiModelProperty("环境温度")
-    @ExcelProperty(value = "环境温度", index = 5)
+    @ExcelProperty(value = "环境温度(℃)", index = 5)
     private Double ambientTemp;
 
     /**
@@ -74,7 +74,7 @@ public class FanRuntimeDTO {
      */
     @GoldenId(value = 6)
     @ApiModelProperty("前轴承温度")
-    @ExcelProperty(value = "前轴承温度", index = 6)
+    @ExcelProperty(value = "前轴承温度(℃)", index = 6)
     private Double frontBearingTemp;
 
     /**
@@ -82,7 +82,7 @@ public class FanRuntimeDTO {
      */
     @GoldenId(value = 7)
     @ApiModelProperty("后轴承温度")
-    @ExcelProperty(value = "后轴承温度", index = 7)
+    @ExcelProperty(value = "后轴承温度(℃)", index = 7)
     private Double rearBearingTemp;
 
     /**
@@ -90,7 +90,7 @@ public class FanRuntimeDTO {
      */
     @GoldenId(value = 8)
     @ApiModelProperty("齿轮主轴承温度")
-    @ExcelProperty(value = "齿轮轴承温度", index = 8)
+    @ExcelProperty(value = "齿轮轴承温度(℃)", index = 8)
     private Double gearBearingTemp;
 
     /**
@@ -98,7 +98,7 @@ public class FanRuntimeDTO {
      */
     @GoldenId(value = 9)
     @ApiModelProperty("机舱温度")
-    @ExcelProperty(value = "机舱温度", index = 9)
+    @ExcelProperty(value = "机舱温度(℃)", index = 9)
     private Double transformerTemp;
 
     /**
@@ -106,7 +106,7 @@ public class FanRuntimeDTO {
      */
     @GoldenId(value = 10)
     @ApiModelProperty("变压器油温")
-    @ExcelProperty(value = "变压器油温", index = 10)
+    @ExcelProperty(value = "变压器油温(℃)", index = 10)
     private Double transformerOilTemp;
 
     /**
