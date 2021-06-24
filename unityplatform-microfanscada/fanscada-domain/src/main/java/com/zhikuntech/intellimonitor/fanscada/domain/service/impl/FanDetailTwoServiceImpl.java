@@ -33,17 +33,12 @@ public class FanDetailTwoServiceImpl implements FanDetailTwoService {
     @Override
     public BaseResponse<FanDetailDataVO> getData(String number) {
         try {
-            UpsTelemetryVO ups = InjectPropertiesUtil.injectByAnnotationCustomize(new UpsTelemetryVO(), number, backend, goldenUtil);
-            DcScreenVO dc = InjectPropertiesUtil.injectByAnnotationCustomize(new DcScreenVO(), number, backend, goldenUtil);
-            UpsTelemetryStatusVO upsStatus = InjectPropertiesUtil.injectByAnnotationCustomize(new UpsTelemetryStatusVO(), number, backend, goldenUtil);
-            DcScreenStatusVO dcStatus = InjectPropertiesUtil.injectByAnnotationCustomize(new DcScreenStatusVO(), number, backend, goldenUtil);
 
-            FanDetailDataVO leftDataVO = new FanDetailDataVO();
-            leftDataVO.setDcData(dc);
-            leftDataVO.setUpsData(ups);
-            leftDataVO.setUpsStatus(upsStatus);
-            leftDataVO.setDcStatus(dcStatus);
-            return BaseResponse.success(leftDataVO);
+            FanDetailDataVO leftDataVO = new FanDetailDataVO(
+                    new UpsTelemetryVO(), new DcScreenVO(), new UpsTelemetryStatusVO(), new DcScreenStatusVO());
+            FanDetailDataVO detailData = InjectPropertiesUtil.injectByAnnotationCustomize(leftDataVO, number, backend, goldenUtil);
+
+            return BaseResponse.success(detailData);
         } catch (Exception e) {
             e.printStackTrace();
             return BaseResponse.failure(ResultCode.REQUEST_ERROR, "请求失败");

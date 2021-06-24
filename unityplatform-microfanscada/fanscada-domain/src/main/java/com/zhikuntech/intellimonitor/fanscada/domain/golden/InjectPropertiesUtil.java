@@ -25,6 +25,9 @@ import java.util.List;
 @Slf4j
 public class InjectPropertiesUtil<T> {
 
+    private static final String BASE_PACKAGE = "com.zhikuntech.intellimonitor.fanscada.domain.vo";
+
+
     public static <T> T injectByAnnotation(T t, RtdbData[] data) {
         Field[] fields = t.getClass().getDeclaredFields();
         for (Field field : fields) {
@@ -186,13 +189,22 @@ public class InjectPropertiesUtil<T> {
         try {
             for (Field field : fields) {
                 GoldenId annotation = field.getAnnotation(GoldenId.class);
+                field.setAccessible(true);
                 if (annotation != null) {
-                    int value = annotation.value();
-                    backendList.add(value);
+                    backendList.add(annotation.value());
                     // 初始化赋值，避免null
-                    field.setAccessible(true);
                     field.set(t, dataProcess(0.00, field.getType()));
+                } else {
+                    Class<?> clazz = field.getType();
+                    // 判断该类属于哪个包
+                    String pack = clazz.getPackage().getName();
+                    if (BASE_PACKAGE.equals(pack)) {
+                        // 回调获取某个字段的值
+                        Object obj = injectByAnnotationCustomize(clazz.newInstance(), number, mapper, goldenUtil);
+                        field.set(t, obj);
+                    }
                 }
+
             }
             if (CollectionUtils.isEmpty(backendList)) {
                 return t;

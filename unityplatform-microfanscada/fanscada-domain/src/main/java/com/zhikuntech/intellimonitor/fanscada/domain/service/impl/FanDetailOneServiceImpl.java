@@ -32,18 +32,12 @@ public class FanDetailOneServiceImpl implements FanDetailOneService {
     @Override
     public BaseResponse<FanModelDataVO> getData(String number) {
         try {
-            WindWheelVO windWheelVO = InjectPropertiesUtil.injectByAnnotationCustomize(new WindWheelVO(), number, backend, goldenUtil);
-            WheelSpiderVO wheelSpiderVO = InjectPropertiesUtil.injectByAnnotationCustomize(new WheelSpiderVO(), number, backend, goldenUtil);
-            GearCaseVO gear = InjectPropertiesUtil.injectByAnnotationCustomize(new GearCaseVO(), number, backend, goldenUtil);
-            GeneratorVO generatorVO = InjectPropertiesUtil.injectByAnnotationCustomize(new GeneratorVO(), number, backend, goldenUtil);
 
-            FanModelDataVO modelDataVO = new FanModelDataVO();
-            modelDataVO.setWindWheeldata(windWheelVO);
-            modelDataVO.setGeneratordata(generatorVO);
-            modelDataVO.setWheelSpiderdata(wheelSpiderVO);
-            modelDataVO.setGeardata(gear);
+            FanModelDataVO modelDataVO = new FanModelDataVO(
+                    new WindWheelVO(), new GearCaseVO(), new GeneratorVO(), new WheelSpiderVO());
+            FanModelDataVO modelData = InjectPropertiesUtil.injectByAnnotationCustomize(modelDataVO, number, backend, goldenUtil);
 
-            return BaseResponse.success(modelDataVO);
+            return BaseResponse.success(modelData);
         } catch (Exception e) {
             e.printStackTrace();
             return BaseResponse.failure(ResultCode.REQUEST_ERROR, "请求失败");
