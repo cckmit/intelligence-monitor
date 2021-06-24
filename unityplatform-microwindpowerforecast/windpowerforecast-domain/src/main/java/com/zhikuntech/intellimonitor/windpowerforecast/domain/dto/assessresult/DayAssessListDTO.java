@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 @ApiModel("日考核结果")
 public class DayAssessListDTO {
 
-
+    @ApiModelProperty("wf_assess_day#id")
     private Integer id;
 
     @ApiModelProperty("日期")
