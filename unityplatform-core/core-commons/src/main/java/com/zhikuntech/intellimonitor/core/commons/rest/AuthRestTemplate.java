@@ -21,13 +21,10 @@ import java.util.*;
  * @Description 远程请求upm的接口
  * @Version 1.0
  */
-@Component
 @Slf4j
 public class AuthRestTemplate {
-    @Resource
-    private RestTemplate restTemplate;
-    @Resource
-    private ObjectMapper objectMapper;
+    private static RestTemplate restTemplate = new RestTemplate();
+    private static ObjectMapper objectMapper = new ObjectMapper();
 
     private static final String IP = "192.168.3.179";
     private static final Integer PORT = 18088;
@@ -39,7 +36,7 @@ public class AuthRestTemplate {
      * @param authDTO 权限模型
      * @return
      */
-    public Map createAuth(String code, HeaderParamDTO headerParamDTO, AuthDTO authDTO) {
+    public static Map createAuth(String code, HeaderParamDTO headerParamDTO, AuthDTO authDTO) {
         log.info("新增权限 code->{},authDTO->{}", code, authDTO);
         String url = "http://" + IP + ":" + PORT + "/v2/auths/systems/" + code;
         String authDTOJsonStr = convertToJsonStr(authDTO);
@@ -52,7 +49,7 @@ public class AuthRestTemplate {
      * @param code
      * @return
      */
-    public Map deleteAuth(String code, HeaderParamDTO headerParamDTO) {
+    public static Map deleteAuth(String code, HeaderParamDTO headerParamDTO) {
         log.info("删除权限 code->{}", code);
         String url = "http://" + IP + ":" + PORT + "/v2/auths/systems/" + code;
         return sendRestRequest(url, null, HttpMethod.DELETE, headerParamDTO);
@@ -64,7 +61,7 @@ public class AuthRestTemplate {
      * @param code
      * @return
      */
-    public Map selectAuth(String code, HeaderParamDTO headerParamDTO) {
+    public static Map selectAuth(String code, HeaderParamDTO headerParamDTO) {
         log.info("查询权限 code->{}", code);
         String url = "http://" + IP + ":" + PORT + "/v2/auths/systems/" + code;
         return sendRestRequest(url, null, HttpMethod.GET, headerParamDTO);
@@ -76,7 +73,7 @@ public class AuthRestTemplate {
      * @param authDTO
      * @return
      */
-    public Map updateAuth(String code, HeaderParamDTO headerParamDTO, AuthDTO authDTO) {
+    public static Map updateAuth(String code, HeaderParamDTO headerParamDTO, AuthDTO authDTO) {
         log.info("修改权限 code->{} authDTO->{}", code, authDTO);
         String url = "http://" + IP + ":" + PORT + "/v2/auths/systems/" + code;
         String authDTOJsonStr = convertToJsonStr(authDTO);
@@ -89,7 +86,7 @@ public class AuthRestTemplate {
      * @param rollbackId 修改权限时成功时返回的回滚编号
      * @return
      */
-    public Map rollbacksAuth(String rollbackId, HeaderParamDTO headerParamDTO) {
+    public static Map rollbacksAuth(String rollbackId, HeaderParamDTO headerParamDTO) {
         log.info("回滚权限 rollbackId-{}", rollbackId);
         String url = "http://" + IP + ":" + PORT + "/v2/auths/systems/rollbacks/" + rollbackId;
         return sendRestRequest(url, null, HttpMethod.PUT, headerParamDTO);
@@ -104,7 +101,7 @@ public class AuthRestTemplate {
      * @param headerParamDTO 请求头参数
      * @return 返回响应内容body部分
      */
-    private Map sendRestRequest(String url, String data, HttpMethod method, HeaderParamDTO headerParamDTO) {
+    private static Map sendRestRequest(String url, String data, HttpMethod method, HeaderParamDTO headerParamDTO) {
         //设置请求头
         HttpHeaders headers = new HttpHeaders();
         MediaType type = MediaType.parseMediaType("application/json; charset=UTF-8");
@@ -132,7 +129,7 @@ public class AuthRestTemplate {
      * @param object
      * @return
      */
-    private String convertToJsonStr(Object object) {
+    private static String convertToJsonStr(Object object) {
         String jsonStr = "";
         try {
             jsonStr = objectMapper.writeValueAsString(object);

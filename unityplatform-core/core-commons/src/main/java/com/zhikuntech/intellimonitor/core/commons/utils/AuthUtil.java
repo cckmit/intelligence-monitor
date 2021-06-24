@@ -5,16 +5,11 @@ import com.zhikuntech.intellimonitor.core.commons.base.ResultCode;
 import com.zhikuntech.intellimonitor.core.commons.dto.AuthDTO;
 import com.zhikuntech.intellimonitor.core.commons.dto.HeaderParamDTO;
 import com.zhikuntech.intellimonitor.core.commons.dto.UpdateAuthDTO;
-import com.zhikuntech.intellimonitor.core.commons.entity.Auth;
-import com.zhikuntech.intellimonitor.core.commons.mapstruct.AuthMapper;
 import com.zhikuntech.intellimonitor.core.commons.rest.AuthRestTemplate;
-import com.zhikuntech.intellimonitor.core.commons.valid.Add;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
-import org.springframework.validation.annotation.Validated;
 
-import javax.annotation.Resource;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
@@ -28,9 +23,6 @@ import java.util.Map;
 @Component
 @Slf4j
 public class AuthUtil {
-    @Resource
-    private AuthRestTemplate authRestTemplate;
-
     /**
      * 新增权限
      * @param code
@@ -38,7 +30,7 @@ public class AuthUtil {
      * @return
      */
     public BaseResponse createAuth(String code, HeaderParamDTO headerParamDTO, AuthDTO authDTO){
-        Map body = authRestTemplate.createAuth(code,headerParamDTO, authDTO);
+        Map body = AuthRestTemplate.createAuth(code,headerParamDTO, authDTO);
         String upmStatus = body.get("code").toString();
         if(upmStatus.equals("0")){
             log.info("新增权限成功!");
@@ -55,7 +47,7 @@ public class AuthUtil {
      * @return
      */
     public BaseResponse deleteAuth(String code,HeaderParamDTO headerParamDTO){
-        Map body = authRestTemplate.deleteAuth(code,headerParamDTO);
+        Map body = AuthRestTemplate.deleteAuth(code,headerParamDTO);
         String upmStatus = body.get("code").toString();
         if(upmStatus.equals("0")){
             log.info("删除权限成功");
@@ -72,7 +64,7 @@ public class AuthUtil {
      * @return
      */
     public BaseResponse selectAuth(String code,HeaderParamDTO headerParamDTO){
-        Map body = authRestTemplate.selectAuth(code,headerParamDTO);
+        Map body = AuthRestTemplate.selectAuth(code,headerParamDTO);
         String upmStatus = body.get("code").toString();
         if(upmStatus.equals("0")){
             log.info("查询权限成功");
@@ -97,7 +89,7 @@ public class AuthUtil {
      */
     public BaseResponse updateAuth(String code,HeaderParamDTO headerParamDTO,AuthDTO authDTO){
 //        AuthDTO authDTO = AuthMapper.INSTANCES.toAuthDTO(auth);
-        Map body = authRestTemplate.updateAuth(code,headerParamDTO, authDTO);
+        Map body = AuthRestTemplate.updateAuth(code,headerParamDTO, authDTO);
         String upmStatus = body.get("code").toString();
         if(upmStatus.equals("0")){
             log.info("修改权限成功");
@@ -120,7 +112,7 @@ public class AuthUtil {
      * @return
      */
     public BaseResponse rollbacksAuth(String rollbackId,HeaderParamDTO headerParamDTO){
-        Map body = authRestTemplate.rollbacksAuth(rollbackId,headerParamDTO);
+        Map body = AuthRestTemplate.rollbacksAuth(rollbackId,headerParamDTO);
         String upmStatus = body.get("code").toString();
         if(upmStatus.equals("0")){
             log.info("回滚权限成功");
