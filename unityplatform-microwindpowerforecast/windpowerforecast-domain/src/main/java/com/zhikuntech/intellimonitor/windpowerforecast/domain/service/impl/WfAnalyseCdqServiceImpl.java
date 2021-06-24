@@ -109,7 +109,7 @@ public class WfAnalyseCdqServiceImpl extends ServiceImpl<WfAnalyseCdqMapper, WfA
                 return aggregateDTO;
             }
             String preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(first);
-            String postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(lastDay);
+            String postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(lastDay.plusDays(1));
             // criteria
             QueryWrapper<WfAnalyseCdq> queryWrapper = new QueryWrapper<>();
             queryWrapper.gt("calc_date", preStr);//大于
@@ -223,7 +223,7 @@ public class WfAnalyseCdqServiceImpl extends ServiceImpl<WfAnalyseCdqMapper, WfA
                 }
                 String preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(first);//开始时间转成字符串格式
 
-                String postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(lastDay);//结束时间
+                String postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(lastDay.plusDays(1));//结束时间
 
                 // criteria
                 QueryWrapper<WfAnalyseCdq> queryWrapper = new QueryWrapper<>();//查 超短期功率分析
