@@ -38,6 +38,7 @@
         <validation.version>2.0.1.Final</validation.version>
         <hibernate-validator.version>6.0.17.Final</hibernate-validator.version>
         <easyexcel.version>2.1.1</easyexcel.version>
+        <swagger-annotations.version>1.5.22</swagger-annotations.version>
     </properties>
 
     <!-- 管理所有外部依赖 -->
@@ -137,6 +138,12 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-websocket</artifactId>
                 <version>${websocket.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/io.swagger/swagger-annotations -->
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-annotations</artifactId>
+                <version>${swagger-annotations.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

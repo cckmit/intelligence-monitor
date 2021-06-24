@@ -1,7 +1,7 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.NwpListPatternDTO;
+import com.zhikuntech.intellimonitor.windpowerforecast.prototype.dto.NwpListPatternDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfTimeBase;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;

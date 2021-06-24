@@ -16,7 +16,7 @@
     </sql>
 
     <select id="nwpListPattern"
-            resultType="com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.NwpListPatternDTO">
+            resultType="com.zhikuntech.intellimonitor.windpowerforecast.prototype.dto.NwpListPatternDTO">
         select tb.date_time dateTime,
                tb.date_time date,
                tb.date_time time,
@@ -46,7 +46,7 @@
     </select>
 
     <select id="nwpCurvePattern"
-            resultType="com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.NwpListPatternDTO">
+            resultType="com.zhikuntech.intellimonitor.windpowerforecast.prototype.dto.NwpListPatternDTO">
         select tb.date_time dateTime,
                dq.forecast_produce dqPower,
                cdq.forecast_produce cdqPower,

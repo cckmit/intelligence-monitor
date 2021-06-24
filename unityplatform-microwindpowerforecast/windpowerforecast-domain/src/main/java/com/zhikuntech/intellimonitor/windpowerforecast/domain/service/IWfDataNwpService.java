@@ -1,11 +1,10 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.service;
 
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.DqDayElectricGenDTO;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.NwpListPatternDTO;
+import com.zhikuntech.intellimonitor.windpowerforecast.prototype.dto.NwpListPatternDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataNwp;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.NwpCurvePatternQuery;
+import com.zhikuntech.intellimonitor.windpowerforecast.prototype.query.NwpCurvePatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.NwpListPatternQuery;
 
 import java.math.BigDecimal;
