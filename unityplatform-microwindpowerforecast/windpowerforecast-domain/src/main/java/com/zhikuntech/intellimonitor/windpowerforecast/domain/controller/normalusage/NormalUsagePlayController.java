@@ -6,10 +6,10 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.WeatherHighDTO
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.CfCurveDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.CfListDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.DqDayElectricGenDTO;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.NwpListPatternDTO;
+import com.zhikuntech.intellimonitor.windpowerforecast.prototype.dto.NwpListPatternDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.CfCurvePatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.CfListPatternQuery;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.NwpCurvePatternQuery;
+import com.zhikuntech.intellimonitor.windpowerforecast.prototype.query.NwpCurvePatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.NwpListPatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataCfService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataDqService;

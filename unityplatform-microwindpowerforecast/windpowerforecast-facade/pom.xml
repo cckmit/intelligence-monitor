@@ -11,5 +11,15 @@
 
     <artifactId>windpowerforecast-facade</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.zhikuntech.intellimonitor</groupId>
+            <artifactId>windpowerforecast-prototype</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

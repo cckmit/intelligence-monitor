@@ -42,6 +42,12 @@ public class AssessCalcServiceImpl implements AssessCalcService {
     private final IWfDataDqService dqService;
 
 
+    public void calcYesterdayAssess(String bg) {
+        // 计算昨日漏报次数
+
+    }
+
+
     public void calcYesterdayAssessElectric(String bg) {
         // 计算昨日考核电量
         // yyyy-MM-dd   昨日日期

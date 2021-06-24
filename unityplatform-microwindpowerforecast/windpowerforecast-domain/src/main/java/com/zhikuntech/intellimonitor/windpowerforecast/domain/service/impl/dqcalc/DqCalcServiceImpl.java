@@ -256,23 +256,19 @@ public class DqCalcServiceImpl implements DqCalcService {
         //# TODO 漏报次数
 
         //# 短期功率预测准确率
-        final BigDecimal cdqRatioR1 = AssessCalcUtils.calcAssessRatioR1(aggrs);
-        System.out.println("超短期功率预测准确率:" + cdqRatioR1);
+        final BigDecimal dqRatioR1 = AssessCalcUtils.calcAssessRatioR1(aggrs);
+        System.out.println("超短期功率预测准确率:" + dqRatioR1);
         //# 短期功率预测准确率
 
         //# 短期功率预测准确率考核电量
         // （85%-当日短期功率预测准确率）*装机容量（252MW）*风电场考核小时数（默认0.2）*技术管理系数（默认为1），单位MW
-        BigDecimal cdqElectricR1 = new BigDecimal("0.80").subtract(cdqRatioR1)
-                .multiply(new BigDecimal("252")).multiply(new BigDecimal("0.2"))
-                .multiply(new BigDecimal("1")).setScale(3, RoundingMode.HALF_EVEN);
+        BigDecimal dqElectricR1 = AssessCalcUtils.calcDqElectricR1(dqRatioR1);
         //# 短期功率预测准确率考核电量
 
 
         //# 短期功率预测准确率考核费用
         // 【短期功率预测准确率考核电量】*1000*0.4153元/kWh（1000为统一单位），单位元
-        BigDecimal cdqPayR1 = cdqElectricR1.multiply(new BigDecimal("1000"))
-                .multiply(new BigDecimal("0.4153"))
-                .setScale(3, RoundingMode.HALF_EVEN);
+        BigDecimal dqPayR1 = AssessCalcUtils.calcDqPayR1(dqElectricR1);
         //# 短期功率预测准确率考核费用
 
         /*   计算考核结果数据    */
@@ -283,18 +279,18 @@ public class DqCalcServiceImpl implements DqCalcService {
         WfAssessDay wfAssessDay = assessDayService.getBaseMapper().selectOne(assessDayQueryWrapper);
         if (Objects.nonNull(wfAssessDay)) {
             wfAssessDay.setDqHiatus(hiatus);
-            wfAssessDay.setDqRatio(cdqRatioR1);
-            wfAssessDay.setDqElectric(cdqElectricR1);
-            wfAssessDay.setDqPay(cdqPayR1);
+            wfAssessDay.setDqRatio(dqRatioR1);
+            wfAssessDay.setDqElectric(dqElectricR1);
+            wfAssessDay.setDqPay(dqPayR1);
             assessDayService.getBaseMapper().updateById(wfAssessDay);
         } else {
             WfAssessDay nst = WfAssessDay.builder()
                     .version(0)
                     .calcDate(dayBegin)
                     .dqHiatus(hiatus)
-                    .dqRatio(cdqRatioR1)
-                    .dqElectric(cdqElectricR1)
-                    .dqPay(cdqPayR1)
+                    .dqRatio(dqRatioR1)
+                    .dqElectric(dqElectricR1)
+                    .dqPay(dqPayR1)
                     .build();
             assessDayService.getBaseMapper().insert(nst);
         }

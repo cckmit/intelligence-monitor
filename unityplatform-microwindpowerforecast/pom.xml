@@ -26,6 +26,11 @@
                 <artifactId>windpowerforecast-domain</artifactId>
                 <version>${intelli-monitor.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.zhikuntech.intellimonitor</groupId>
+                <artifactId>windpowerforecast-prototype</artifactId>
+                <version>${intelli-monitor.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

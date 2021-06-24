@@ -269,17 +269,13 @@ public class CdqCalcServiceImpl implements CdqCalcService {
 
         //# 超短期功率预测准确率考核电量
         // （85%-当日超短期功率预测准确率）*装机容量（252MW）*风电场考核小时数（默认0.2）*技术管理系数（默认为1），单位MW
-        BigDecimal cdqElectricR1 = new BigDecimal("0.85").subtract(cdqRatioR1)
-                .multiply(new BigDecimal("252")).multiply(new BigDecimal("0.2"))
-                .multiply(new BigDecimal("1")).setScale(3, RoundingMode.HALF_EVEN);
+        BigDecimal cdqElectricR1 = AssessCalcUtils.calcCdqElectricR1(cdqRatioR1);
         //# 超短期功率预测准确率考核电量
 
 
         //# 超短期功率预测准确率考核费用
         // 【超短期功率预测准确率考核电量】*1000*0.4153元/kWh（1000为统一单位），单位元
-        BigDecimal cdqPayR1 = cdqElectricR1.multiply(new BigDecimal("1000"))
-                .multiply(new BigDecimal("0.4153"))
-                .setScale(3, RoundingMode.HALF_EVEN);
+        BigDecimal cdqPayR1 = AssessCalcUtils.calcCdqPayR1(cdqElectricR1);
         //# 超短期功率预测准确率考核费用
 
         /*   计算考核结果数据    */

@@ -42,6 +42,10 @@
             <groupId>com.zhikuntech.intellimonitor</groupId>
             <artifactId>demo-facade</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.zhikuntech.intellimonitor</groupId>
+            <artifactId>windpowerforecast-prototype</artifactId>
+        </dependency>
 
         <!--   commons utils     -->
         <dependency>
