@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -70,6 +69,7 @@ public class GoldenUtil {
     public int[] getIds(String tableName) throws Exception {
         check();
         ServerImpl server = pool.getServerImpl();
+        server.setTimeOut(5);
         BaseImpl base = new BaseImpl(server);
         //获取当前表容量
         int count = base.getTableSizeByName(tableName);
@@ -90,6 +90,7 @@ public class GoldenUtil {
     public void subscribeSnapshots(String username, int[] ids, RSDataChange rsDataChange) throws Exception {
         check();
         ServerImpl server = pool.getServerImpl();
+        server.setTimeOut(5);
         Snapshot snap = new SnapshotImpl(server);
         servers.put(username, server);
         snaps.put(username, snap);
@@ -112,6 +113,7 @@ public class GoldenUtil {
     public void subscribeSnapshots(String username, String[] tagNames, RSDataChange rsDataChange) throws Exception {
         check();
         ServerImpl server = pool.getServerImpl();
+        server.setTimeOut(5);
         Snapshot snap = new SnapshotImpl(server);
         servers.put(username, server);
         snap.subscribeSnapshots(tagNames, rsDataChange);
@@ -149,6 +151,10 @@ public class GoldenUtil {
         log.info(pool.getRealSize() + "");
     }
 
+    public void cancelAll() {
+        servers.keySet().forEach(this::cancel);
+    }
+
     private void cancel() {
         servers.keySet().forEach(e -> {
             if (!WebSocketServer.clients.containsKey(e)) {
@@ -168,6 +174,7 @@ public class GoldenUtil {
     public double getFloat(int id, String dateTime) throws Exception {
         check();
         ServerImpl server = pool.getServerImpl();
+        server.setTimeOut(5);
         Historian historian = new HistorianImpl(server);
         Date date = DateUtil.stringToDate(dateTime);
         double value = historian.getFloatSingleValue(id, date, RtdbHisMode.RTDB_PREVIOUS).getValue();
@@ -178,6 +185,7 @@ public class GoldenUtil {
     public double getInteger(int id, String dateTime) throws Exception {
         check();
         ServerImpl server = pool.getServerImpl();
+        server.setTimeOut(5);
         Historian historian = new HistorianImpl(server);
         Date date = DateUtil.stringToDate(dateTime);
         double value = historian.getIntSingleValue(id, date, RtdbHisMode.RTDB_PREVIOUS).getValue();
@@ -194,6 +202,7 @@ public class GoldenUtil {
     public List<ValueData> getSnapshots(int[] ids) throws Exception {
         check();
         ServerImpl server = pool.getServerImpl();
+        server.setTimeOut(5);
         Snapshot snap = new SnapshotImpl(server);
         List<ValueData> snapshots = snap.getSnapshots(ids);
         snap.close();
@@ -210,11 +219,11 @@ public class GoldenUtil {
         }
     }
 
-    public ServerImplPool getPool(){
+    public ServerImplPool getPool() {
         return this.pool;
     }
 
-    public ConcurrentHashMap<String,ServerImpl> getServer(){
+    public ConcurrentHashMap<String, ServerImpl> getServer() {
         return servers;
     }
 }

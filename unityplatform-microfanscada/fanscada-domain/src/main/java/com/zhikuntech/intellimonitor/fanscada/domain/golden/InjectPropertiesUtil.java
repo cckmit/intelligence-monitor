@@ -76,7 +76,6 @@ public class InjectPropertiesUtil<T> {
 
 
     public static <T> List<T> injectByAnnotationForBigdecimal(List<T> t, RtdbData[] data) {
-        long l = System.currentTimeMillis();
         Field[] fields = t.get(0).getClass().getDeclaredFields();
         for (T item : t) {
             for (Field field : fields) {
@@ -106,8 +105,6 @@ public class InjectPropertiesUtil<T> {
                 }
             }
         }
-        long l1 = System.currentTimeMillis();
-        log.info("数据封装==================="+(l1-l));
         return t;
     }
 
