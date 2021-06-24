@@ -31,7 +31,9 @@ public interface WfTimeBaseMapper extends BaseMapper<WfTimeBase> {
     List<NwpListPatternDTO> nwpListPattern(Page<NwpListPatternDTO> page,
                                            @Param("datePre") String datePre,
                                            @Param("datePost") String datePost,
-                                           @Param("timeRatio") Integer timeRatio);
+                                           @Param("timeRatio") Integer timeRatio,
+                                           @Param("nwp_high") Integer nwpHigh,
+                                           @Param("cf_high") Integer cfHigh);
 
 
     /**
@@ -44,5 +46,7 @@ public interface WfTimeBaseMapper extends BaseMapper<WfTimeBase> {
      */
     List<NwpListPatternDTO> nwpCurvePattern(@Param("datePre") String datePre,
                                            @Param("datePost") String datePost,
-                                           @Param("timeRatio") Integer timeRatio);
+                                           @Param("timeRatio") Integer timeRatio,
+                                            @Param("nwp_high") Integer nwpHigh,
+                                            @Param("cf_high") Integer cfHigh);
 }

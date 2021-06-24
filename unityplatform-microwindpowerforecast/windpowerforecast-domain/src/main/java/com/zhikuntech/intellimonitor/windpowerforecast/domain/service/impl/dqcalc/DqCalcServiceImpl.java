@@ -5,7 +5,10 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.*;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.*;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.dqcalc.DqCalcService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.TimeProcessUtils;
-import lombok.Data;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.calc.AssessCalcUtils;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.calc.CalcCommonUtils;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.calc.DqCalcUtils;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.calc.ErmseAggregateCalc;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -15,11 +18,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -60,59 +61,25 @@ public class DqCalcServiceImpl implements DqCalcService {
      */
     private final IWfAnalyseDqService analyseDqService;
 
-
-    static Function<LocalDateTime, String> capacityFunction = item -> {
-        if (Objects.isNull(item)) {
-            return "nil";
-        }
-        return TimeProcessUtils.formatLocalDateTimeWithSecondPattern(item);
-    };
-
     /**
-     * 时间向后落点
-     * 如:
-     * 00:11 -> 00:15
-     * 00:12 -> 00:15
-     * 00:15 -> 00:15
+     * 日考核结果
      */
-    static Function<LocalDateTime, String> timePostRangeProcess = item -> {
-        if (Objects.nonNull(item)) {
-            LocalDate date = item.toLocalDate();
-            LocalTime time = item.toLocalTime();
+    private final IWfAssessDayService assessDayService;
 
-            int minute = time.getMinute();
-            //# 具体算法
-            int tNum = minute / 15;
-            int div = minute % 15;
-
-            int willPlus = tNum * 15;
-            if (div != 0) {
-                willPlus = willPlus + 15;
-            }
-            if (minute == 0) {
-                willPlus = 0;
-            }
-            //# 具体算法
-            LocalDateTime calcDt = LocalDateTime.of(date, LocalTime.of(time.getHour(), 0, 0))
-                    .plusMinutes(willPlus);
-            return TimeProcessUtils.formatLocalDateTimeWithSecondPattern(calcDt);
-        }
-        return "nil";
-    };
 
     public static void main(String[] args) {
 
         LocalDateTime now = LocalDateTime.now();
         String s = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(now);
         System.out.println(s);
-        String apply = timePostRangeProcess.apply(now);
+        String apply = CalcCommonUtils.timePostRangeProcess.apply(now);
         System.out.println(apply);
         System.out.println();
     }
 
     //# 1.计算均方根误差
 
-    public void calcErmse(String bg, String end, String headerDate) {
+    @Override public void dqDataCalc(String bg, String end, String headerDate) {
         /*
             bg  ->  yyyy-MM-dd HH:mm:ss
             end ->  yyyy-MM-dd HH:mm:ss
@@ -134,7 +101,7 @@ public class DqCalcServiceImpl implements DqCalcService {
             return;
         }
 
-        // 短期功率数据
+        // 短期功率数据 - 每15分钟一条数据
         QueryWrapper<WfDataDq> dqQueryWrapper = new QueryWrapper<>();
         dqQueryWrapper.gt("event_date_time", bg);
         dqQueryWrapper.le("event_date_time", end);
@@ -144,7 +111,9 @@ public class DqCalcServiceImpl implements DqCalcService {
             log.warn("时间区间[{}]-[{}],头部时间[{}]无短期功率数据.", bg, end, headerDate);
             return;
         }
-        Map<String, List<WfDataDq>> dqGorup = dqList.stream().collect(Collectors.groupingBy(p -> timePostRangeProcess.apply(p.getEventDateTime())));
+        Map<String, List<WfDataDq>> dqGorup = dqList.stream().collect(Collectors.groupingBy(p -> CalcCommonUtils.timePostRangeProcess.apply(p.getEventDateTime())));
+
+        Map<String, WfDataDq> dqMap = dqList.stream().collect(Collectors.toMap(p -> CalcCommonUtils.localDateTimeStringFunction.apply(p.getEventDateTime()), p -> p, (p1, p2) -> p2));
 
 
         // 真实功率数据
@@ -156,7 +125,7 @@ public class DqCalcServiceImpl implements DqCalcService {
             log.warn("时间区间[{}]-[{}]无真实功率数据.", bg, end);
             return;
         }
-        Map<String, List<WfDataZr>> zrGroup = zrList.stream().collect(Collectors.groupingBy(p -> timePostRangeProcess.apply(p.getEventDateTime())));
+        Map<String, List<WfDataZr>> zrGroup = zrList.stream().collect(Collectors.groupingBy(p -> CalcCommonUtils.timePostRangeProcess.apply(p.getEventDateTime())));
 
 
         // 容量数据
@@ -170,7 +139,7 @@ public class DqCalcServiceImpl implements DqCalcService {
         }
 
         Map<String, WfDataCapacity> capacityMap = capacityList.stream()
-                .collect(Collectors.toMap(p -> capacityFunction.apply(p.getEventDateTime()), p -> p));
+                .collect(Collectors.toMap(p -> CalcCommonUtils.localDateTimeStringFunction.apply(p.getEventDateTime()), p -> p, (p1, p2) -> p2));
 
         /*
             按照指定时间分组数据
@@ -188,16 +157,21 @@ public class DqCalcServiceImpl implements DqCalcService {
             // 容量
             Optional.ofNullable(capacityMap.get(timeK)).ifPresent(p -> {
                 tmp.setCap(p.getPowerCalcCapacity());
+                tmp.setCapForAssess(p.getCheckCalcCapacity());
             });
             // 短期功率数据
             Optional.of(dqGorup.get(timeK)).ifPresent(l -> {
                 List<BigDecimal> tmpList = l.stream().filter(Objects::nonNull).map(WfDataDq::getForecastProduce).collect(Collectors.toList());
                 tmp.setDqProduce(tmpList);
             });
+            // 短期功率数据-单条
+            Optional.ofNullable(dqMap.get(timeK)).ifPresent(p -> {
+                tmp.setForeset(p.getForecastProduce());
+            });
             // 真实功率数据
             Optional.of(zrGroup.get(timeK)).ifPresent(l -> {
                 List<BigDecimal> tmpList = l.stream().filter(Objects::nonNull).map(WfDataZr::getActualProduce).collect(Collectors.toList());
-                tmp.setDqProduce(tmpList);
+                tmp.setZrCapsProduce(tmpList);
             });
         }
 
@@ -213,184 +187,118 @@ public class DqCalcServiceImpl implements DqCalcService {
                         && CollectionUtils.isNotEmpty(item.getZrCapsProduce()))
                 .filter(item -> new BigDecimal("0").compareTo(item.getCap()) != 0)
                 .collect(Collectors.toList());
-        if (CollectionUtils.isNotEmpty(aggrs)) {
+        if (CollectionUtils.isEmpty(aggrs)) {
             log.warn("过滤数据后无计算数据可用");
             return;
         }
-
-
+        // 不可变List
+        aggrs = Collections.unmodifiableList(aggrs);
 
         //# 算法-计算Ermse[均方根误差]
-        final BigDecimal fnRes = calcErmse(aggrs);
+        final BigDecimal fnRes = DqCalcUtils.calcErmse(aggrs);
         //# 算法-计算Ermse[均方根误差]
 
         //# 算法-计算EMAE[平均绝对误差]
-        final BigDecimal emae = calcEMAE(aggrs);
+        final BigDecimal emae = DqCalcUtils.calcEMAE(aggrs);
         //# 算法-计算EMAE[平均绝对误差]
 
-        //# TODO 最大预测误差
+        //# 最大预测误差 max(pmk - ppk)
+        final BigDecimal maxe = DqCalcUtils.calcMaxe(aggrs);
+        //# 最大预测误差
 
-        //# TODO 最大预测误差
+        //# 相关系数R
+        final BigDecimal aboutR = DqCalcUtils.calcAboutR(aggrs);
+        //# 相关系数R
 
-        //# TODO 相关系数R
-
-        //# TODO 相关系数R
-
-        //# 准确率r1
-        BigDecimal r1Ratio = new BigDecimal("0");
-        for (ErmseAggregateCalc aggr : aggrs) {
-            List<BigDecimal> dqProduces = aggr.getDqProduce();
-            List<BigDecimal> zrCapsProduces = aggr.getZrCapsProduce();
-
-            // ck
-            BigDecimal ck = aggr.getCap();
-            // ppk
-            BigDecimal ppk = new BigDecimal("0");
-            for (BigDecimal dqProduce : dqProduces) {
-                ppk = ppk.add(dqProduce);
-            }
-            ppk = ppk.divide(BigDecimal.valueOf(dqProduces.size()), 3, RoundingMode.HALF_UP);
-            // pmk
-            BigDecimal pmk = new BigDecimal("0");
-            for (BigDecimal zrCapsProduce : zrCapsProduces) {
-                pmk = pmk.add(zrCapsProduce);
-            }
-            pmk = pmk.divide(BigDecimal.valueOf(zrCapsProduces.size()), 3, RoundingMode.HALF_UP);
-
-
-        }
         //# 准确率r1
         BigDecimal r1 = new BigDecimal("0");
         // (1 - Ermse) * 100%
         r1 = new BigDecimal("1").subtract(fnRes, new MathContext(3, RoundingMode.HALF_EVEN)).multiply(new BigDecimal("100"));
         //# 准确率r1
 
-        //# TODO 合格率r2
+        //# 合格率r2
+        final BigDecimal ratioR2 = DqCalcUtils.calcAboutR2(aggrs);
+        //# 合格率r2
 
-        //# TODO 合格率r2
-
-        // 存储
+        // 获取今日日期
         LocalDateTime bgDate = TimeProcessUtils.parseLocalDateTimeWithSecondPattern(bg);
         LocalDateTime dayBegin = LocalDateTime.of(bgDate.toLocalDate(), LocalTime.MIN);
+
+        // 存储
         QueryWrapper<WfAnalyseDq> analyseDqQueryWrapper = new QueryWrapper<>();
-        analyseDqQueryWrapper.ge("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dayBegin));
+        analyseDqQueryWrapper.eq("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dayBegin));
         WfAnalyseDq analyseDq = analyseDqService.getBaseMapper().selectOne(analyseDqQueryWrapper);
         if (Objects.nonNull(analyseDq)) {
             analyseDq.setAvgRmse(fnRes);
             analyseDq.setAvgMae(emae);
+            analyseDq.setBiggestDiff(maxe);
+            analyseDq.setR1Ratio(r1);
+            analyseDq.setR2Ratio(ratioR2);
+            analyseDq.setAboutR(aboutR);
             analyseDqService.getBaseMapper().updateById(analyseDq);
         } else {
-            // todo
             WfAnalyseDq nst = WfAnalyseDq.builder()
                     .calcDate(dayBegin)
-                    .avgMae(fnRes)
+                    .avgRmse(fnRes)
                     .avgMae(emae)
+                    .biggestDiff(maxe)
+                    .r1Ratio(r1)
+                    .r2Ratio(ratioR2)
+                    .aboutR(aboutR)
                     .build();
             analyseDqService.getBaseMapper().insert(nst);
         }
-    }
 
-    private static BigDecimal calcEMAE(List<ErmseAggregateCalc> aggrs) {
-        BigDecimal emae = new BigDecimal("0");
-        for (ErmseAggregateCalc aggr : aggrs) {
-            List<BigDecimal> dqProduces = aggr.getDqProduce();
-            List<BigDecimal> zrCapsProduces = aggr.getZrCapsProduce();
+        /*   计算考核结果数据    */
 
-            // ck
-            BigDecimal ck = aggr.getCap();
-            // ppk
-            BigDecimal ppk = new BigDecimal("0");
-            for (BigDecimal dqProduce : dqProduces) {
-                ppk = ppk.add(dqProduce);
-            }
-            ppk = ppk.divide(BigDecimal.valueOf(dqProduces.size()), 3, RoundingMode.HALF_UP);
-            // pmk
-            BigDecimal pmk = new BigDecimal("0");
-            for (BigDecimal zrCapsProduce : zrCapsProduces) {
-                pmk = pmk.add(zrCapsProduce);
-            }
-            pmk = pmk.divide(BigDecimal.valueOf(zrCapsProduces.size()), 3, RoundingMode.HALF_UP);
+        //# TODO 漏报次数
+        int hiatus = 0;
+        //# TODO 漏报次数
 
-            // |pmk - ppk| / ck
-            BigDecimal kkk = pmk.subtract(ppk).abs().divide(ck, 3, RoundingMode.HALF_EVEN);
-            emae = emae.add(kkk);
+        //# 短期功率预测准确率
+        final BigDecimal cdqRatioR1 = AssessCalcUtils.calcAssessRatioR1(aggrs);
+        System.out.println("超短期功率预测准确率:" + cdqRatioR1);
+        //# 短期功率预测准确率
+
+        //# 短期功率预测准确率考核电量
+        // （85%-当日短期功率预测准确率）*装机容量（252MW）*风电场考核小时数（默认0.2）*技术管理系数（默认为1），单位MW
+        BigDecimal cdqElectricR1 = new BigDecimal("0.80").subtract(cdqRatioR1)
+                .multiply(new BigDecimal("252")).multiply(new BigDecimal("0.2"))
+                .multiply(new BigDecimal("1")).setScale(3, RoundingMode.HALF_EVEN);
+        //# 短期功率预测准确率考核电量
+
+
+        //# 短期功率预测准确率考核费用
+        // 【短期功率预测准确率考核电量】*1000*0.4153元/kWh（1000为统一单位），单位元
+        BigDecimal cdqPayR1 = cdqElectricR1.multiply(new BigDecimal("1000"))
+                .multiply(new BigDecimal("0.4153"))
+                .setScale(3, RoundingMode.HALF_EVEN);
+        //# 短期功率预测准确率考核费用
+
+        /*   计算考核结果数据    */
+
+        // 存储
+        QueryWrapper<WfAssessDay> assessDayQueryWrapper = new QueryWrapper<>();
+        assessDayQueryWrapper.eq("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dayBegin));
+        WfAssessDay wfAssessDay = assessDayService.getBaseMapper().selectOne(assessDayQueryWrapper);
+        if (Objects.nonNull(wfAssessDay)) {
+            wfAssessDay.setDqHiatus(hiatus);
+            wfAssessDay.setDqRatio(cdqRatioR1);
+            wfAssessDay.setDqElectric(cdqElectricR1);
+            wfAssessDay.setDqPay(cdqPayR1);
+            assessDayService.getBaseMapper().updateById(wfAssessDay);
+        } else {
+            WfAssessDay nst = WfAssessDay.builder()
+                    .version(0)
+                    .calcDate(dayBegin)
+                    .dqHiatus(hiatus)
+                    .dqRatio(cdqRatioR1)
+                    .dqElectric(cdqElectricR1)
+                    .dqPay(cdqPayR1)
+                    .build();
+            assessDayService.getBaseMapper().insert(nst);
         }
-        // r / n
-        emae = emae.divide(new BigDecimal(aggrs.size()), 3, RoundingMode.HALF_EVEN);
-        return emae;
+
     }
-
-    private static BigDecimal calcErmse(List<ErmseAggregateCalc> aggrs) {
-        BigDecimal allAggre = new BigDecimal("0");
-        for (ErmseAggregateCalc aggr : aggrs) {
-            List<BigDecimal> dqProduces = aggr.getDqProduce();
-            List<BigDecimal> zrCapsProduces = aggr.getZrCapsProduce();
-
-            // ck
-            BigDecimal ck = aggr.getCap();
-            // ppk
-            BigDecimal ppk = new BigDecimal("0");
-            for (BigDecimal dqProduce : dqProduces) {
-                ppk = ppk.add(dqProduce);
-            }
-            ppk = ppk.divide(BigDecimal.valueOf(dqProduces.size()), 3, RoundingMode.HALF_UP);
-            // pmk
-            BigDecimal pmk = new BigDecimal("0");
-            for (BigDecimal zrCapsProduce : zrCapsProduces) {
-                pmk = pmk.add(zrCapsProduce);
-            }
-            pmk = pmk.divide(BigDecimal.valueOf(zrCapsProduces.size()), 3, RoundingMode.HALF_UP);
-
-            // [(pmk - ppk) / ck] ^ 2
-            BigDecimal kkk = pmk.subtract(ppk).divide(ck, 3, RoundingMode.HALF_EVEN)
-                    .pow(2);
-            allAggre = allAggre.add(kkk);
-        }
-        // sqrt(r/n)
-        double v = allAggre.divide(new BigDecimal(aggrs.size()), 3, RoundingMode.HALF_EVEN).doubleValue();
-        v = Math.sqrt(v);
-        return new BigDecimal(v, new MathContext(3, RoundingMode.HALF_EVEN));
-    }
-
-
-    @Data
-    static class ErmseAggregateCalc {
-
-        LocalDateTime eventTime;
-
-        List<BigDecimal> dqProduce;
-
-        List<BigDecimal> zrCapsProduce;
-
-        BigDecimal cap;
-
-        public ErmseAggregateCalc() {
-            // 初始化数组
-            this.dqProduce = new ArrayList<>();
-            this.zrCapsProduce = new ArrayList<>();
-        }
-    }
-
-
-    //# 2.计算平均绝对误差
-
-
-
-    //# 3.计算最大预测误差    -》 【预测功率】-【实际功率】
-
-
-
-    //# 4.计算相关系数
-
-
-
-    //# 5.计算准确率
-
-
-
-    //# 6.计算合格率
-
-
-
 
 }

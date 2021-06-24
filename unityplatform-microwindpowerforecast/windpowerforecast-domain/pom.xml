@@ -85,7 +85,19 @@
             <artifactId>fanscada-facade</artifactId>
         </dependency>
         <!--   远程调用     -->
+        <!--   redisson     -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
 
+
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+            <version>3.13.6</version>
+        </dependency>
+        <!--   redisson     -->
     </dependencies>
 
 

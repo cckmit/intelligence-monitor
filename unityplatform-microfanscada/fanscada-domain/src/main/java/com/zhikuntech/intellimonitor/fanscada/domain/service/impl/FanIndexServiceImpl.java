@@ -4,7 +4,7 @@ package com.zhikuntech.intellimonitor.fanscada.domain.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.rtdb.api.model.ValueData;
 import com.zhikuntech.intellimonitor.core.commons.constant.FanConstant;
-import com.zhikuntech.intellimonitor.fanscada.domain.config.DataInitConf;
+import com.zhikuntech.intellimonitor.fanscada.domain.config.StartUpInitForPow;
 import com.zhikuntech.intellimonitor.fanscada.domain.constant.FanLoopNumber;
 import com.zhikuntech.intellimonitor.fanscada.domain.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.fanscada.domain.golden.InjectPropertiesUtil;
@@ -16,7 +16,6 @@ import com.zhikuntech.intellimonitor.fanscada.domain.vo.FanBaseInfoVO;
 import com.zhikuntech.intellimonitor.fanscada.domain.vo.LoopVO;
 import com.zhikuntech.intellimonitor.fanscada.domain.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,9 +43,6 @@ public class FanIndexServiceImpl implements FanIndexService {
 
     @Autowired
     private RedisUtil redisUtil;
-    @Autowired
-    private DataInitConf dataInitConf;
-
 
     @Override
     public void getFanBaseInfoList(String username) throws Exception {
@@ -66,9 +62,11 @@ public class FanIndexServiceImpl implements FanIndexService {
         query.setDataIds(idList);
         int[] ints = backendToGoldenService.getGoldenIdByNumberAndId(query);
 
+        if (goldenUtil.getServer().containsKey(username)) {
+            return;
+        }
+
         if (WebSocketServer.clients.containsKey(username)) {
-
-
             List<FanBaseInfoVO> fanBaseInfoVOList = new ArrayList<>();//63台风机
             for (int i = 1; i < 64; i++) {
                 FanBaseInfoVO fanBaseInfoVO = new FanBaseInfoVO();
@@ -76,7 +74,6 @@ public class FanIndexServiceImpl implements FanIndexService {
                 fanBaseInfoVOList.add(fanBaseInfoVO);
             }
             goldenUtil.subscribeSnapshots(username, ints, (data) -> {
-
                 long l = System.currentTimeMillis();
                 if (WebSocketServer.clients.containsKey(username)) {
                     List<FanBaseInfoVO> result = InjectPropertiesUtil.injectByAnnotationForBigdecimal(fanBaseInfoVOList, data);
@@ -153,9 +150,11 @@ public class FanIndexServiceImpl implements FanIndexService {
                                 energy = BigDecimal.valueOf(0.0);
                             }
                             //当日零点的总发电量
-                            Object o = redisUtil.get(FanConstant.DAILY_POWER);
-                            double d = null == o ? 0 : (double) o;
-                            BigDecimal v = BigDecimal.valueOf(d);
+                            Double powDaily = StartUpInitForPow.initMap.get(FanConstant.DAILY_POWER + fanBaseInfoVO.getFanNumber());
+                            if (powDaily == null) {
+                                powDaily = 0D;
+                            }
+                            BigDecimal v = BigDecimal.valueOf(powDaily);
                             BigDecimal dayEnergy = energy.subtract(v);//日发电量
 
                             activePowerSum = activePowerSum.add(activePower);
@@ -217,7 +216,7 @@ public class FanIndexServiceImpl implements FanIndexService {
         List<FanBaseInfoVO> list10 = new ArrayList<>();
         List<ValueData> snapshots = goldenUtil.getSnapshots(ints);
         List<FanBaseInfoVO> fanBaseInfoVOS = InjectPropertiesUtil.injectByAnnotationForBigdecimal(list, snapshots);
-        if (fanBaseInfoVOS == null) {
+        if (null == fanBaseInfoVOS) {
             return null;
         }
         for (FanBaseInfoVO fanBaseInfoVO : fanBaseInfoVOS) {
@@ -280,11 +279,11 @@ public class FanIndexServiceImpl implements FanIndexService {
                     energy = BigDecimal.valueOf(0.0);
                 }
                 //当日零点的总发电量
-                String string = redisUtil.getString(FanConstant.DAILY_POWER);
-                if (StringUtils.isBlank(string)) {
-                    string = "0";
+                Double powDaily = StartUpInitForPow.initMap.get(FanConstant.DAILY_POWER + fanBaseInfoVO.getFanNumber());
+                if (powDaily == null) {
+                    powDaily = 0D;
                 }
-                BigDecimal v = BigDecimal.valueOf(Double.parseDouble(string));
+                BigDecimal v = BigDecimal.valueOf(powDaily);
                 BigDecimal dayEnergy = energy.subtract(v);//日发电量
 
                 activePowerSum = activePowerSum.add(activePower);

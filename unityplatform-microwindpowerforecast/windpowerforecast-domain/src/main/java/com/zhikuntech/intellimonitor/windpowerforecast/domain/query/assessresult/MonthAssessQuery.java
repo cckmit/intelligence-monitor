@@ -1,5 +1,6 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.query.assessresult;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
+@ApiModel("月评估查询-列表模式")
 public class MonthAssessQuery {
 
     /**

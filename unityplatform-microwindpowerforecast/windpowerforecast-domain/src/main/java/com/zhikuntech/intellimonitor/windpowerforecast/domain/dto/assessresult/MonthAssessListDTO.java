@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * 月考核结果
+ * 月考核结果-列表模式
  *
  * @author liukai
  */
@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Data
-@ApiModel("月考核结果")
+@ApiModel("月考核结果-列表模式")
 public class MonthAssessListDTO {
 
     /**

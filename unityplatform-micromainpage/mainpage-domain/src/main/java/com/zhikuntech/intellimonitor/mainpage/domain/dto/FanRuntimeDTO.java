@@ -1,12 +1,16 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.dto;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.converters.url.UrlImageConverter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zhikuntech.intellimonitor.mainpage.domain.golden.annotation.GoldenId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
+
+import java.net.URL;
 
 /**
  * @author 代志豪
@@ -118,6 +122,14 @@ public class FanRuntimeDTO {
      */
     @GoldenId(value = 12)
     @ApiModelProperty("运行状态")
-    @ExcelProperty(value = "运行状态", index = 12)
+    @ExcelIgnore
     private Long runningStatus;
+
+    /**
+     * 运行状态图片uri
+     */
+    @ExcelProperty(value = "运行状态", index = 12, converter = UrlImageConverter.class)
+    @JsonIgnore
+    private URL runningStatusUrl;
+
 }

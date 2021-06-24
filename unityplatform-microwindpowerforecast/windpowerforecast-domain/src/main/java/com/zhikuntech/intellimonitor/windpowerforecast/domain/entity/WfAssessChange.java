@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
  * </p>
  *
  * @author liukai
- * @since 2021-06-21
+ * @since 2021-06-22
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -111,6 +111,11 @@ public class WfAssessChange implements Serializable {
      * 之前修改的记录
      */
     private Integer preId;
+
+    /**
+     * 日考核电量
+     */
+    private BigDecimal dayAssessElectric;
 
 
 }

@@ -15,7 +15,11 @@ spring:
     username: develop
     password: Aman@2020
     driver-class-name: com.mysql.cj.jdbc.Driver
-
+  #redission分布式锁
+  redis:
+    database: 7
+    host: 192.168.3.179
+    port: 6379
 logging:
   level:
     com.zhikuntech.intellimonitor.windpowerforecast.domain.service: debug

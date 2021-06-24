@@ -20,4 +20,9 @@ public interface ScheduleFetchDataService {
      */
     void scheduleFetchActWeather();
 
+    /**
+     * 调度获取容量数据
+     */
+    void scheduleFetchCapacity();
+
 }

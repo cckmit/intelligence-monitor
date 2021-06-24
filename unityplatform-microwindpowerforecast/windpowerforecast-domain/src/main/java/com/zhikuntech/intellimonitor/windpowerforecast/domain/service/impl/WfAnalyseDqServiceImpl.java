@@ -18,6 +18,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -39,67 +40,200 @@ public class WfAnalyseDqServiceImpl extends ServiceImpl<WfAnalyseDqMapper, WfAna
         if (Objects.isNull(query)) {
             return aggregateDTO;
         }
-
-
-        String queryMode = query.getQueryMode();
-        String dateStrPre = query.getDateStrPre();
-        String dateStrPost = query.getDateStrPost();
-        LocalDateTime pre = DateProcessUtils.parseToLocalDateTime(dateStrPre);
-        LocalDateTime post = DateProcessUtils.parseToLocalDateTime(dateStrPost);
-        if (pre == null || post == null) {
-            return aggregateDTO;
-        }
-
-        String preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(pre);
-        String postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(post.plusDays(1));
-        // criteria
-        QueryWrapper<WfAnalyseDq> queryWrapper = new QueryWrapper<>();
-        queryWrapper.gt("calc_date", preStr);
-        queryWrapper.le("calc_date", postStr);
-
-        // 分页查询
-        Integer pageNumber = query.getPageNumber();
-        Integer pageSize = query.getPageSize();
-        Page<WfAnalyseDq> page = new Page<>(pageNumber, pageSize);
-        Page<WfAnalyseDq> wfAnalyseDqPage = getBaseMapper().selectPage(page, queryWrapper);
-        List<WfAnalyseDq> records = wfAnalyseDqPage.getRecords();
-
-        if (CollectionUtils.isNotEmpty(records)) {
-            List<DqPowerAnalysisDTO> tmp = new ArrayList<>();
-            for (WfAnalyseDq record : records) {
-                if (Objects.isNull(record)) {
-                    tmp.add(null);
+        switch (query.getQueryMode()) {
+            case "day": {
+                String dateStrPre = query.getDateStrPre();
+                String dateStrPost = query.getDateStrPost();
+                LocalDateTime pre = DateProcessUtils.parseToLocalDateTime(dateStrPre);
+                LocalDateTime post = DateProcessUtils.parseToLocalDateTime(dateStrPost);
+                if (pre == null || post == null) {
+                    return aggregateDTO;
                 }
-                if (Objects.nonNull(record)) {
-                    DqPowerAnalysisDTO dtoTmp = new DqPowerAnalysisDTO();
-                    BeanUtils.copyProperties(record, dtoTmp);
-                    tmp.add(dtoTmp);
+                String preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(pre);
+                String postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(post.plusDays(1));
+                // criteria
+                QueryWrapper<WfAnalyseDq> queryWrapper = new QueryWrapper<>();
+                queryWrapper.gt("calc_date", preStr);
+                queryWrapper.le("calc_date", postStr);
+                // 分页查询
+                Integer pageNumber = query.getPageNumber();
+                Integer pageSize = query.getPageSize();
+                Page<WfAnalyseDq> page = new Page<>(pageNumber, pageSize);
+                Page<WfAnalyseDq> wfAnalyseDqPage = getBaseMapper().selectPage(page, queryWrapper);
+                List<WfAnalyseDq> records = wfAnalyseDqPage.getRecords();
+
+                if (CollectionUtils.isNotEmpty(records)) {
+                    List<DqPowerAnalysisDTO> tmp = new ArrayList<>();
+                    for (WfAnalyseDq record : records) {
+                        if (Objects.isNull(record)) {
+                            tmp.add(null);
+                        }
+                        if (Objects.nonNull(record)) {
+                            DqPowerAnalysisDTO dtoTmp = new DqPowerAnalysisDTO();
+                            BeanUtils.copyProperties(record, dtoTmp);
+                            tmp.add(dtoTmp);
+                        }
+                    }
+
+                    Pager<DqPowerAnalysisDTO> resultPage = new Pager<>(0, tmp);
+                    aggregateDTO.setPager(resultPage);
+                    resultPage.setTotalCount((int) page.getTotal());
                 }
+                // 查询均值
+                QueryWrapper<WfAnalyseDq> avgQuery = new QueryWrapper<>();
+                avgQuery.gt("calc_date", preStr);
+                avgQuery.le("calc_date", postStr);
+                avgQuery.select("avg(avg_rmse) avg_rmse, avg(avg_mae) avg_mae, avg(biggest_diff) biggest_diff, avg(about_r) about_r, avg(r1_ratio) r1_ratio, avg(r2_ratio) r2_ratio");
+                WfAnalyseDq wfAnalyseDq = getBaseMapper().selectOne(avgQuery);
+                if (Objects.nonNull(wfAnalyseDq)) {
+                    AvgPowerAnalysisDTO avgPowerAnalysisDTO = AvgPowerAnalysisDTO.builder()
+                            .avgRmseAvg(wfAnalyseDq.getAvgRmse())
+                            .avgMaeAvg(wfAnalyseDq.getAvgMae())
+                            .biggestDiffAvg(wfAnalyseDq.getBiggestDiff())
+                            .aboutRAvg(wfAnalyseDq.getAboutR())
+                            .r1RatioAvg(wfAnalyseDq.getR1Ratio())
+                            .r2RatioAvg(wfAnalyseDq.getR2Ratio())
+                            .build();
+                    aggregateDTO.setAvgAna(avgPowerAnalysisDTO);
+                }
+                return aggregateDTO;
             }
+            case "month": {//查本月
+                String dateStrPre = query.getDateStrPre();//传参
+                String dateStrPreNew = dateStrPre + "-01";
+                LocalDateTime pre = DateProcessUtils.parseToLocalDateTime(dateStrPreNew);//开始时间转成时间格式
+                LocalDateTime lastDay = pre.with(TemporalAdjusters.lastDayOfMonth());//结束时间 查询日子的月份最后一天
+                LocalDateTime first = pre.with(TemporalAdjusters.firstDayOfMonth());//开始时间
+                if (lastDay == null) {
+                    return aggregateDTO;
+                }
+                String preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(first);
+                String postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(lastDay);
+                // criteria
+                QueryWrapper<WfAnalyseDq> queryWrapper = new QueryWrapper<>();
+                queryWrapper.gt("calc_date", preStr);
+                queryWrapper.le("calc_date", postStr);
 
-            Pager<DqPowerAnalysisDTO> resultPage = new Pager<>(0, tmp);
-            aggregateDTO.setPager(resultPage);
-            resultPage.setTotalCount((int) page.getTotal());
+                // 分页查询
+                Integer pageNumber = query.getPageNumber();
+                Integer pageSize = query.getPageSize();
+                Page<WfAnalyseDq> page = new Page<>(pageNumber, pageSize);
+                Page<WfAnalyseDq> wfAnalyseDqPage = getBaseMapper().selectPage(page, queryWrapper);
+                List<WfAnalyseDq> records = wfAnalyseDqPage.getRecords();
+
+                if (CollectionUtils.isNotEmpty(records)) {
+                    List<DqPowerAnalysisDTO> tmp = new ArrayList<>();
+                    for (WfAnalyseDq record : records) {
+                        if (Objects.isNull(record)) {
+                            tmp.add(null);
+                        }
+                        if (Objects.nonNull(record)) {
+                            DqPowerAnalysisDTO dtoTmp = new DqPowerAnalysisDTO();
+                            BeanUtils.copyProperties(record, dtoTmp);
+                            tmp.add(dtoTmp);
+                        }
+                    }
+
+                    Pager<DqPowerAnalysisDTO> resultPage = new Pager<>(0, tmp);
+                    aggregateDTO.setPager(resultPage);
+                    resultPage.setTotalCount((int) page.getTotal());
+                }
+
+                // 查询均值
+                QueryWrapper<WfAnalyseDq> avgQuery = new QueryWrapper<>();
+                avgQuery.gt("calc_date", preStr);
+                avgQuery.le("calc_date", postStr);
+                avgQuery.select("avg(avg_rmse) avg_rmse, avg(avg_mae) avg_mae, avg(biggest_diff) biggest_diff, avg(about_r) about_r, avg(r1_ratio) r1_ratio, avg(r2_ratio) r2_ratio");
+                WfAnalyseDq wfAnalyseDq = getBaseMapper().selectOne(avgQuery);
+                if (Objects.nonNull(wfAnalyseDq)) {
+                    AvgPowerAnalysisDTO avgPowerAnalysisDTO = AvgPowerAnalysisDTO.builder()
+                            .avgRmseAvg(wfAnalyseDq.getAvgRmse())
+                            .avgMaeAvg(wfAnalyseDq.getAvgMae())
+                            .biggestDiffAvg(wfAnalyseDq.getBiggestDiff())
+                            .aboutRAvg(wfAnalyseDq.getAboutR())
+                            .r1RatioAvg(wfAnalyseDq.getR1Ratio())
+                            .r2RatioAvg(wfAnalyseDq.getR2Ratio())
+                            .build();
+                    aggregateDTO.setAvgAna(avgPowerAnalysisDTO);
+                }
+                return aggregateDTO;
+            }
         }
+        return null;
 
-        // 查询均值
-        QueryWrapper<WfAnalyseDq> avgQuery = new QueryWrapper<>();
-        avgQuery.gt("calc_date", preStr);
-        avgQuery.le("calc_date", postStr);
-        avgQuery.select("avg(avg_rmse) avg_rmse, avg(avg_mae) avg_mae, avg(biggest_diff) biggest_diff, avg(about_r) about_r, avg(r1_ratio) r1_ratio, avg(r2_ratio) r2_ratio");
-        WfAnalyseDq wfAnalyseDq = getBaseMapper().selectOne(avgQuery);
-        if (Objects.nonNull(wfAnalyseDq)) {
-            AvgPowerAnalysisDTO avgPowerAnalysisDTO = AvgPowerAnalysisDTO.builder()
-                    .avgRmseAvg(wfAnalyseDq.getAvgRmse())
-                    .avgMaeAvg(wfAnalyseDq.getAvgMae())
-                    .biggestDiffAvg(wfAnalyseDq.getBiggestDiff())
-                    .aboutRAvg(wfAnalyseDq.getAboutR())
-                    .r1RatioAvg(wfAnalyseDq.getR1Ratio())
-                    .r2RatioAvg(wfAnalyseDq.getR2Ratio())
-                    .build();
-            aggregateDTO.setAvgAna(avgPowerAnalysisDTO);
+    }
+    //曲线模式
+    @Override
+    public List<DqPowerAnalysisDTO> DqPowerAnalysisCurve(PowerAnalysisQuery query) {
+        if (Objects.isNull(query)) {
+            return new ArrayList<>();
         }
+        List<DqPowerAnalysisDTO> results=new ArrayList<>();
+        switch (query.getQueryMode()){
+            case "day":
+                String dateStrPre = query.getDateStrPre();//查询条件--开始时间
+                String dateStrPost = query.getDateStrPost();//查询条件--结束时间
+                LocalDateTime pre = DateProcessUtils.parseToLocalDateTime(dateStrPre);//开始时间转成时间格式
+                LocalDateTime post = DateProcessUtils.parseToLocalDateTime(dateStrPost);//结束时间转成时间格式
+                if (pre == null || post == null) {//判断时间是不是空的
+                    return results;
+                }
+                String preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(pre);//开始时间转成字符串格式
+                String postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(post.plusDays(1));//结束时间填一天
+                // criteria
+                QueryWrapper<WfAnalyseDq> queryWrapper = new QueryWrapper<>();//查 短期功率分析
+                queryWrapper.gt("calc_date", preStr);//大于开始时间
+                queryWrapper.le("calc_date", postStr);//小于等于结束时间
 
-        return aggregateDTO;
+                List<WfAnalyseDq> wfAnalysedqs = getBaseMapper().selectList(queryWrapper);
+                if (CollectionUtils.isNotEmpty(wfAnalysedqs)) {//判断records不为空
+                    List<DqPowerAnalysisDTO> tmp = new ArrayList<>();//创建存dqPowerAnalysisDTO的list集合叫tmp
+                    for (WfAnalyseDq a : wfAnalysedqs) {//遍历wfAnalyseCdqs
+                        if (Objects.isNull(a)) {//判断wfAnalysedqs的这个位置不为null
+                            tmp.add(null);
+                        }
+                        if (Objects.nonNull(a)) {//如果不为null
+                            DqPowerAnalysisDTO dtoTmp = new DqPowerAnalysisDTO();//创建dqPowerAnalysisDTO对象dtoTmp
+                            BeanUtils.copyProperties(a, dtoTmp);//a转成dtoTmp类
+                            tmp.add(dtoTmp);//dtoTmp存进tmp
+                        }
+                    }
+                    results=tmp;
+                }
+                return results;
+            case "month":
+                String dateStrPre1 = query.getDateStrPre();//查询条件--开始时间
+                String dateStrPreNew = dateStrPre1 + "-01";
+                LocalDateTime pre1 = DateProcessUtils.parseToLocalDateTime(dateStrPreNew);//开始时间转成时间格式
+                LocalDateTime lastDay = pre1.with(TemporalAdjusters.lastDayOfMonth());//结束时间 查询日子的月份最后一天
+                LocalDateTime first = pre1.with(TemporalAdjusters.firstDayOfMonth());//开始时间
+                if (lastDay == null) {//判断时间是不是空的
+                    return results;
+                }
+                String preStr1 = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(first);//开始时间转成字符串格式
+                String postStr1 = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(lastDay);//结束时间填一天
+                // criteria
+                QueryWrapper<WfAnalyseDq> queryWrapper1 = new QueryWrapper<>();//查 短期功率分析
+                queryWrapper1.gt("calc_date", preStr1);//大于开始时间
+                queryWrapper1.le("calc_date", postStr1);//小于等于结束时间
+
+                List<WfAnalyseDq> wfAnalysedqs1 = getBaseMapper().selectList(queryWrapper1);
+                if (CollectionUtils.isNotEmpty(wfAnalysedqs1)) {//判断records不为空
+                    List<DqPowerAnalysisDTO> tmp = new ArrayList<>();//创建存dqPowerAnalysisDTO的list集合叫tmp
+                    for (WfAnalyseDq a : wfAnalysedqs1) {//遍历wfAnalyseCdqs
+                        if (Objects.isNull(a)) {//判断wfAnalysedqs的这个位置不为null
+                            tmp.add(null);
+                        }
+                        if (Objects.nonNull(a)) {//如果不为null
+                            DqPowerAnalysisDTO dtoTmp = new DqPowerAnalysisDTO();//创建dqPowerAnalysisDTO对象dtoTmp
+                            BeanUtils.copyProperties(a, dtoTmp);//a转成dtoTmp类
+                            tmp.add(dtoTmp);//dtoTmp存进tmp
+                        }
+                    }
+                    results=tmp;
+                }
+                return results;
+        }
+        return null;
     }
 }

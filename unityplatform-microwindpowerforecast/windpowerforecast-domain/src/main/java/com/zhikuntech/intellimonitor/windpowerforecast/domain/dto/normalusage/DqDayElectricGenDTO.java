@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 @ApiModel("日发电量预测")
 public class DqDayElectricGenDTO {
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "MM月dd日")
     @ApiModelProperty("日期")
     private LocalDateTime date;
 

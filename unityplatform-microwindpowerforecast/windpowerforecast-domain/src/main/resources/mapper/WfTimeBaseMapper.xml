@@ -37,8 +37,8 @@
                  left join wf_data_dq dq on tb.date_time = dq.event_date_time
                  left join wf_data_cdq cdq on tb.date_time = cdq.event_date_time
                  left join wf_data_zr zr on tb.date_time = zr.event_date_time
-                 left join wf_data_nwp nwp on tb.date_time = nwp.event_date_time
-                 left join wf_data_cf wdc on tb.date_time = wdc.event_date_time
+                 left join wf_data_nwp nwp on tb.date_time = nwp.event_date_time and nwp.high_level = #{nwp_high}
+                 left join wf_data_cf wdc on tb.date_time = wdc.event_date_time and wdc.high_level = #{cf_high}
         where tb.time_ratio = #{timeRatio}
           and tb.date_time > #{datePre}
           and tb.date_time &lt;= #{datePost}
@@ -64,8 +64,8 @@
                  left join wf_data_dq dq on tb.date_time = dq.event_date_time
                  left join wf_data_cdq cdq on tb.date_time = cdq.event_date_time
                  left join wf_data_zr zr on tb.date_time = zr.event_date_time
-                 left join wf_data_nwp nwp on tb.date_time = nwp.event_date_time
-                 left join wf_data_cf wdc on tb.date_time = wdc.event_date_time
+                 left join wf_data_nwp nwp on tb.date_time = nwp.event_date_time and nwp.high_level = #{nwp_high}
+                 left join wf_data_cf wdc on tb.date_time = wdc.event_date_time and wdc.high_level = #{cf_high}
         where tb.time_ratio = #{timeRatio}
           and tb.date_time > #{datePre}
           and tb.date_time &lt;= #{datePost}

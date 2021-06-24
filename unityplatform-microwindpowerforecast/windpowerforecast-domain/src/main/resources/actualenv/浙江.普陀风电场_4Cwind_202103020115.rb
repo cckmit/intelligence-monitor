@@ -1,4 +1,4 @@
-<WindEnergyPlan::Zhejiang	date='2021-03-02 01:15'	sampleid=''	samplecap='0.00'	cap='252.00'	runningcap='252.00'>
+<WindEnergyPlan::Zhejiang	date='2021-06-23 02:45'	sampleid=''	samplecap='0.00'	cap='252.00'	runningcap='252.00'>
 @顺序	统一编码	时间	上报出力值
 #1	浙江.普陀风电场	1	234.815
 #2	浙江.普陀风电场	2	235.354
