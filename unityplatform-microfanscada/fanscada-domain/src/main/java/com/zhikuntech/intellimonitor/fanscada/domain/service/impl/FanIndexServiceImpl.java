@@ -299,7 +299,11 @@ public class FanIndexServiceImpl implements FanIndexService {
                 windSpeedSum = windSpeedSum.add(windSpeed);
                 dayEnergySum = dayEnergySum.add(dayEnergy);
             }
-            loopVO.setLoopNumber("53" + n);
+            String s = "53";
+            if (n < 10) {
+                s = s + "0";
+            }
+            loopVO.setLoopNumber(s+ n);
             n++;
             loopVO.setFanBaseInfoVOS(fanBaseInfoVOList);
             loopVO.setActivePower(activePowerSum);
