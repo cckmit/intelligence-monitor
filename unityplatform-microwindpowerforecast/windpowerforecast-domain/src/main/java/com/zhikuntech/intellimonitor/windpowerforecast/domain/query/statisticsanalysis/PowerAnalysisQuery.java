@@ -27,4 +27,10 @@ public class PowerAnalysisQuery {
     @ApiModelProperty(value = "页码", required = true)
     private Integer pageNumber;
 
+    @ApiModelProperty(value = "[列表模式生效]排序字段", required = false)
+    private String oderByField;
+
+    @ApiModelProperty(value = "[列表模式生效]生序(up)or降序(down)", required = false)
+    private String upOrDown;
+
 }
