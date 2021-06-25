@@ -75,7 +75,7 @@ public class CdqCalcServiceImpl implements CdqCalcService {
 
 
 
-    public void calcData(String bg, String end, String headerDate) {
+    @Override public void calcData(String bg, String end, String headerDate) {
         /*
             bg  ->  yyyy-MM-dd HH:mm:ss
             end ->  yyyy-MM-dd HH:mm:ss
