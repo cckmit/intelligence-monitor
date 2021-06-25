@@ -1,5 +1,9 @@
 package com.zhikuntech.intellimonitor.fanscada.domain.websocket;
 
+import com.alibaba.fastjson.JSONObject;
+import com.zhikuntech.intellimonitor.fanscada.domain.golden.GoldenUtil;
+import com.zhikuntech.intellimonitor.fanscada.domain.service.FanIndexService;
+import com.zhikuntech.intellimonitor.fanscada.domain.vo.LoopVO;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -7,6 +11,8 @@ import org.springframework.stereotype.Component;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
@@ -30,12 +36,16 @@ public class WebSocketServer {
      * 存放所有在线的客户端
      */
     public static ConcurrentHashMap<String, Session> clients = new ConcurrentHashMap<>();
+    public static ConcurrentHashMap<String, Session> group = new ConcurrentHashMap<>();
 
     private Session session;
 
     private String username;
 
     private ReentrantLock lock = new ReentrantLock();
+
+    public static GoldenUtil goldenUtil;
+    public static FanIndexService fanIndexService;
 
     /**
      * 连接建立成功调用的方法
@@ -46,6 +56,7 @@ public class WebSocketServer {
         this.session = session;
         this.username = username;
         clients.put(this.username, this.session);
+        group.put(this.username, this.session);
         log.info("有新连接加入：{}，当前在线人数为：{}", this.username, onlineCount.get());
     }
 
@@ -66,8 +77,13 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(String message) {
-//        log.info("服务端收到客户端[{}]的消息:{}", username, message);
-//        this.sendMessage("Hello, " + message, username);
+        log.info("接收到{}的消息,内容{}", username, message);
+
+        List<LoopVO> fanBaseInfoList = fanIndexService.getFanBaseInfoList();
+        String jsonString = JSONObject.toJSONString(fanBaseInfoList);
+        sendMessage(jsonString, username);
+
+        fanIndexService.getFanBaseInfoList(username);
     }
 
     @OnError
