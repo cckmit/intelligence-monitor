@@ -140,6 +140,15 @@ public class WfAssessMonthServiceImpl extends ServiceImpl<WfAssessMonthMapper, W
             criteria.lt("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(postYear));
         }
 
+        // calcDate -> calc_date
+        if ("calcDate".equalsIgnoreCase(query.getOderByField())) {
+            if ("up".equalsIgnoreCase(query.getUpOrDown())) {
+                criteria.orderByAsc("calc_date");
+            } else {
+                criteria.orderByDesc("calc_date");
+            }
+        }
+
 
         Integer pageNumber = query.getPageNumber();
         Integer pageSize = query.getPageSize();

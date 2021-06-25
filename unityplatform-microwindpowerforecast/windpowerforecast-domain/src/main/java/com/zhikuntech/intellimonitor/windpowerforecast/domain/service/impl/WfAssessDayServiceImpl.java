@@ -72,8 +72,20 @@ public class WfAssessDayServiceImpl extends ServiceImpl<WfAssessDayMapper, WfAss
         String strMonthPre = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(monthPre);
         String strMonthPost = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(monthPost);
 
+        // calcDate -> calc_date
+        String byFiled = "wad.calc_date";
+        String upOrDown = "asc";
+        if ("calcDate".equalsIgnoreCase(query.getOderByField())) {
+            if ("up".equalsIgnoreCase(query.getUpOrDown())) {
+                upOrDown = "asc";
+            } else {
+                upOrDown = "desc";
+            }
+        }
+
         // 查询
-        List<DayAssessListDTO> results = dayMapper.dayListPattern(pageCriteria, strMonthPre, strMonthPost);
+        List<DayAssessListDTO> results = dayMapper.dayListPattern(pageCriteria, strMonthPre, strMonthPost,
+                byFiled, upOrDown);
         if (CollectionUtils.isNotEmpty(results)) {
             pagerRes.replaceWithNewCol(results);
         }

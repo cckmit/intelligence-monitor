@@ -42,7 +42,6 @@
         where tb.time_ratio = #{timeRatio}
           and tb.date_time > #{datePre}
           and tb.date_time &lt;= #{datePost}
-        order by tb.date_time
     </select>
 
     <select id="nwpCurvePattern"

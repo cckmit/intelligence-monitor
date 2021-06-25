@@ -38,6 +38,7 @@
         where
           wad.calc_date >= #{mPre}
           and wad.calc_date &lt; #{mPost}
+        order by ${filed} ${upOrDown}
     </select>
 
 </mapper>

@@ -27,6 +27,10 @@ public interface WfAssessDayMapper extends BaseMapper<WfAssessDay> {
      * @param mPost 日期后
      * @return 分页后的结果
      */
-    List<DayAssessListDTO> dayListPattern(Page<DayAssessListDTO> pager, @Param("mPre") String mPre, @Param("mPost") String mPost);
+    List<DayAssessListDTO> dayListPattern(Page<DayAssessListDTO> pager,
+                                          @Param("mPre") String mPre,
+                                          @Param("mPost") String mPost,
+                                          @Param("filed") String filed,
+                                          @Param("upOrDown") String upOrDown);
 
 }
