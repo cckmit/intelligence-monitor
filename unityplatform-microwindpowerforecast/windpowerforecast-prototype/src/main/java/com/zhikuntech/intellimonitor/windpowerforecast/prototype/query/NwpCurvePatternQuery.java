@@ -20,13 +20,13 @@ import lombok.NoArgsConstructor;
 public class NwpCurvePatternQuery {
 
 
-    @ApiModelProperty(value = "查询模式:[日/月]->[day/month], 目前只支持日查询", required = true)
+    @ApiModelProperty(value = "查询模式:[日/月]->[day/month]", required = true)
     private String queryMode;
 
     @ApiModelProperty(value = "日期字符串:[yyyy-MM-dd]", required = true)
     private String dateStrPre;
 
-    @ApiModelProperty(value = "日期字符串:[yyyy-MM-dd]", required = true)
+    @ApiModelProperty(value = "日期字符串:[yyyy-MM-dd],月模式查询可以为空", required = true)
     private String dateStrPost;
 
     @ApiModelProperty(value = "预测高度", required = true)

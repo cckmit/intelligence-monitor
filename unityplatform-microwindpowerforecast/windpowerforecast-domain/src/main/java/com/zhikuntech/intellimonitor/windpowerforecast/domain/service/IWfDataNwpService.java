@@ -35,14 +35,6 @@ public interface IWfDataNwpService extends IService<WfDataNwp> {
     List<NwpListPatternDTO> nwpCurveQuery(NwpCurvePatternQuery query);
 
 
-
-    /**
-     * 测试:
-     * 批量查询数据
-     * @return 批量获取数据
-     */
-    List<WfDataNwp> queryBatch();
-
     /**
      * 查询气象预测高度
      * @return 气象预测高度结果

@@ -87,7 +87,7 @@ public class WfDataCfServiceImpl extends ServiceImpl<WfDataCfMapper, WfDataCf> i
                 return new ArrayList<>();
             }
             preStr =TimeProcessUtils.formatLocalDateTimeWithSecondPattern(first);
-            postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(last);
+            postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(last.plusDays(1));
         }else {
             return new ArrayList<>();
         }
@@ -214,7 +214,7 @@ public class WfDataCfServiceImpl extends ServiceImpl<WfDataCfMapper, WfDataCf> i
                     return pager;
                 }
                 String preStr1 = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(first);
-                String postStr1 = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(last);
+                String postStr1 = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(last.plusDays(1));
 
                 queryWrapper.eq("high_level", StringUtils.trim(high));
                 queryWrapper.gt("event_date_time", preStr1);
