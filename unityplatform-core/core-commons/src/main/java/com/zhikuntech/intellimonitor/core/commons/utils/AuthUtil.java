@@ -24,6 +24,11 @@ import java.util.Map;
 @Slf4j
 public class AuthUtil {
     /**
+     * 响应成功状态
+     */
+    String successStatus = "0";
+
+    /**
      * 新增权限
      * @param code
      * @param authDTO
@@ -32,7 +37,7 @@ public class AuthUtil {
     public BaseResponse createAuth(String code, HeaderParamDTO headerParamDTO, AuthDTO authDTO){
         Map body = AuthRestTemplate.createAuth(code,headerParamDTO, authDTO);
         String upmStatus = body.get("code").toString();
-        if(upmStatus.equals("0")){
+        if(successStatus.equals(upmStatus)){
             log.info("新增权限成功!");
             return BaseResponse.success(body.get("data"));
         }else {
@@ -49,7 +54,7 @@ public class AuthUtil {
     public BaseResponse deleteAuth(String code,HeaderParamDTO headerParamDTO){
         Map body = AuthRestTemplate.deleteAuth(code,headerParamDTO);
         String upmStatus = body.get("code").toString();
-        if(upmStatus.equals("0")){
+        if(successStatus.equals(upmStatus)){
             log.info("删除权限成功");
             return BaseResponse.success(body.get("data"));
         }else {
@@ -66,7 +71,7 @@ public class AuthUtil {
     public BaseResponse selectAuth(String code,HeaderParamDTO headerParamDTO){
         Map body = AuthRestTemplate.selectAuth(code,headerParamDTO);
         String upmStatus = body.get("code").toString();
-        if(upmStatus.equals("0")){
+        if(successStatus.equals(upmStatus)){
             log.info("查询权限成功");
             //解析响应结果到权限数据模型
             Object data = body.get("data");
@@ -88,10 +93,9 @@ public class AuthUtil {
      * @return
      */
     public BaseResponse updateAuth(String code,HeaderParamDTO headerParamDTO,AuthDTO authDTO){
-//        AuthDTO authDTO = AuthMapper.INSTANCES.toAuthDTO(auth);
         Map body = AuthRestTemplate.updateAuth(code,headerParamDTO, authDTO);
         String upmStatus = body.get("code").toString();
-        if(upmStatus.equals("0")){
+        if(successStatus.equals(upmStatus)){
             log.info("修改权限成功");
             Object data = body.get("data");
             if(!ObjectUtils.isEmpty(data)){
@@ -108,13 +112,13 @@ public class AuthUtil {
 
     /**
      * 回滚权限
-     * @param rollbackId
+     * @param rollbackId 回滚标识号
      * @return
      */
     public BaseResponse rollbacksAuth(String rollbackId,HeaderParamDTO headerParamDTO){
         Map body = AuthRestTemplate.rollbacksAuth(rollbackId,headerParamDTO);
         String upmStatus = body.get("code").toString();
-        if(upmStatus.equals("0")){
+        if(successStatus.equals(upmStatus)){
             log.info("回滚权限成功");
             return BaseResponse.success(body.get("data"));
         }else {
@@ -125,7 +129,7 @@ public class AuthUtil {
 
     /**
      * 解析响应结果到权限数据模型
-     * @param map
+     * @param map 请求响应的body部分
      * @return
      */
     private AuthDTO parseAuthDTO(Map map){
