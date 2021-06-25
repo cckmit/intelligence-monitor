@@ -1,9 +1,9 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.constants.QueryConstants;
 import com.zhikuntech.intellimonitor.windpowerforecast.prototype.dto.NwpListPatternDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataNwp;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfDataCfMapper;
@@ -19,13 +19,16 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -53,38 +56,67 @@ public class WfDataNwpServiceImpl extends ServiceImpl<WfDataNwpMapper, WfDataNwp
 
     @Override
     public Pager<NwpListPatternDTO> nwpListQuery(NwpListPatternQuery query) {
-        // TODO
         Pager<NwpListPatternDTO> resultPage = new Pager<>(0, new ArrayList<>());
         if (Objects.isNull(query)) {
-            return resultPage;
+            throw new IllegalArgumentException("参数不能为空");
         }
+        if (Objects.isNull(query.getQueryMode())) {
+            throw new IllegalArgumentException("查询模式不能为空");
+        }
+
+        String preStr = null;
+        String postStr = null;
+
         // 获取时间基准信息(15min step)
         String queryMode = query.getQueryMode();
-        String dateStrPre = query.getDateStrPre();
-        String dateStrPost = query.getDateStrPost();
-        LocalDateTime pre = DateProcessUtils.parseToLocalDateTime(dateStrPre);
-        LocalDateTime post = DateProcessUtils.parseToLocalDateTime(dateStrPost);
-        if (pre == null || post == null) {
-            return resultPage;
+        if (StringUtils.equalsIgnoreCase(QueryConstants.QUERY_MOD_MONTH, queryMode)) {
+            // 月模式查询
+            String dateStrPre = query.getDateStrPre();
+            LocalDateTime pre = DateProcessUtils.parseToLocalDateTime(dateStrPre);
+            preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(pre);
+            // 判断是否当月, 是当月则查询当月至今, 不是则
+            LocalDateTime now = LocalDateTime.now();
+            boolean isCurMonth = now.getMonth().equals(pre.getMonth());
+            if (isCurMonth) {
+                postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(
+                        LocalDateTime.of(LocalDate.now(), LocalTime.MIN).plusDays(1)
+                );
+            } else {
+                postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(
+                        pre.plusMonths(1)
+                );
+            }
+        } else {
+            // 日模式查询
+            String dateStrPre = query.getDateStrPre();
+            String dateStrPost = query.getDateStrPost();
+            LocalDateTime pre = DateProcessUtils.parseToLocalDateTime(dateStrPre);
+            LocalDateTime post = DateProcessUtils.parseToLocalDateTime(dateStrPost);
+            preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(pre);
+            postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(post.plusDays(1));
         }
-        String preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(pre);
-        String postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(post.plusDays(1));
+
+        if (StringUtils.isBlank(preStr) || StringUtils.isBlank(postStr)) {
+            throw new IllegalStateException("时间参数处理异常,pre:[" + preStr + "],postStr:[" + postStr + "]");
+        }
 
         String nwpHighStr = query.getNwpHigh();
         String cfHighStr = query.getCfHigh();
         Integer nwpHigh = Integer.valueOf(nwpHighStr);
         Integer cfHigh = Integer.valueOf(cfHighStr);
 
-        // criteria
-//        QueryWrapper<WfTimeBase> timeBaseQueryWrapper = new QueryWrapper<>();
-//        timeBaseQueryWrapper.gt("date_time", preStr);
-//        timeBaseQueryWrapper.le("date_time", postStr);
-//        timeBaseQueryWrapper.eq("time_ratio", 15);
-//        List<WfTimeBase> wfTimeBases = timeBaseMapper.selectList(timeBaseQueryWrapper);
-//        if (CollectionUtils.isEmpty(wfTimeBases)) {
-//            // TODO 判断基础时间信息是否没有生成
-//            return resultPage;
-//        }
+        /*
+            // criteria
+        QueryWrapper<WfTimeBase> timeBaseQueryWrapper = new QueryWrapper<>();
+        timeBaseQueryWrapper.gt("date_time", preStr);
+        timeBaseQueryWrapper.le("date_time", postStr);
+        timeBaseQueryWrapper.eq("time_ratio", 15);
+        List<WfTimeBase> wfTimeBases = timeBaseMapper.selectList(timeBaseQueryWrapper);
+        if (CollectionUtils.isEmpty(wfTimeBases)) {
+            // TODO 判断基础时间信息是否没有生成
+            return resultPage;
+        }
+         */
 
         Integer pageNumber = query.getPageNumber();
         Integer pageSize = query.getPageSize();
@@ -102,45 +134,59 @@ public class WfDataNwpServiceImpl extends ServiceImpl<WfDataNwpMapper, WfDataNwp
 
     @Override
     public List<NwpListPatternDTO> nwpCurveQuery(NwpCurvePatternQuery query) {
+
         if (Objects.isNull(query)) {
-            return new ArrayList<>();
+            throw new IllegalArgumentException("参数不能为空");
         }
+        if (Objects.isNull(query.getQueryMode())) {
+            throw new IllegalArgumentException("查询模式不能为空");
+        }
+
+        String preStr = null;
+        String postStr = null;
+
         // 获取时间基准信息(15min step)
         String queryMode = query.getQueryMode();
-        String dateStrPre = query.getDateStrPre();
-        String dateStrPost = query.getDateStrPost();
+        if (StringUtils.equalsIgnoreCase(QueryConstants.QUERY_MOD_MONTH, queryMode)) {
+            // 月模式查询
+            String dateStrPre = query.getDateStrPre();
+            LocalDateTime pre = DateProcessUtils.parseToLocalDateTime(dateStrPre);
+            preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(pre);
+            // 判断是否当月, 是当月则查询当月至今, 不是则
+            LocalDateTime now = LocalDateTime.now();
+            boolean isCurMonth = now.getMonth().equals(pre.getMonth());
+            if (isCurMonth) {
+                postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(
+                        LocalDateTime.of(LocalDate.now(), LocalTime.MIN).plusDays(1)
+                );
+            } else {
+                postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(
+                        pre.plusMonths(1)
+                );
+            }
+        } else {
+            // 日模式查询
+            String dateStrPre = query.getDateStrPre();
+            String dateStrPost = query.getDateStrPost();
+            LocalDateTime pre = DateProcessUtils.parseToLocalDateTime(dateStrPre);
+            LocalDateTime post = DateProcessUtils.parseToLocalDateTime(dateStrPost);
+            preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(pre);
+            postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(post.plusDays(1));
+        }
+
+        if (StringUtils.isBlank(preStr) || StringUtils.isBlank(postStr)) {
+            throw new IllegalStateException("时间参数处理异常,pre:[" + preStr + "],postStr:[" + postStr + "]");
+        }
+
 
         String nwpHighStr = query.getNwpHigh();
         String cfHighStr = query.getCfHigh();
         Integer nwpHigh = Integer.valueOf(nwpHighStr);
         Integer cfHigh = Integer.valueOf(cfHighStr);
 
-        LocalDateTime pre = DateProcessUtils.parseToLocalDateTime(dateStrPre);
-        LocalDateTime post = DateProcessUtils.parseToLocalDateTime(dateStrPost);
-        if (pre == null || post == null) {
-            return new ArrayList<>();
-        }
-        String preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(pre);
-        String postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(post.plusDays(1));
-
         List<NwpListPatternDTO> nwpListPatternDTOS = timeBaseMapper.nwpCurvePattern(preStr, postStr, 15, nwpHigh, cfHigh);
 
         return nwpListPatternDTOS;
-    }
-
-    @Override
-    public List<WfDataNwp> queryBatch() {
-//        getBaseMapper().selectPage();
-
-        QueryWrapper<WfDataNwp> queryWrapper = new QueryWrapper<>();
-        List<WfDataNwp> wfDataNwps = getBaseMapper().selectList(queryWrapper);
-        log.info("query result: [{}]", wfDataNwps);
-
-        IPage<WfDataNwp> page = new Page<>(2, 2);
-        IPage<WfDataNwp> records = getBaseMapper().selectPage(page, queryWrapper);
-
-
-        return wfDataNwps;
     }
 
     @Override
