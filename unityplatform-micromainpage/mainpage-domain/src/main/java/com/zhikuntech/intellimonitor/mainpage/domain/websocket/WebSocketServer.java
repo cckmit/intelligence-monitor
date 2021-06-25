@@ -221,6 +221,7 @@ public class WebSocketServer {
         try {
             FanStatisticsDTO statistics = fanInfoService.getStatistics();
             String jsonString = JSONObject.toJSONString(statistics);
+            jsonString = WebSocketConstant.MAIN_PAGE_STATISTICS + WebSocketConstant.PATTERN + jsonString;
             sendMessage(jsonString, username);
             fanInfoService.getStatistics("statistics");
             log.info("触发订阅golden实时消息---风场统计");
@@ -241,6 +242,7 @@ public class WebSocketServer {
         try {
             List<FanRuntimeDTO> runtimeInfos = fanInfoService.getRuntimeInfos();
             String jsonString = JSONObject.toJSONString(runtimeInfos);
+            jsonString = WebSocketConstant.MAIN_PAGE_RUNTIME + WebSocketConstant.PATTERN + jsonString;
             sendMessage(jsonString, username);
             fanInfoService.getRuntimeInfos("runtime");
             log.info("触发订阅golden实时消息---风机详情");

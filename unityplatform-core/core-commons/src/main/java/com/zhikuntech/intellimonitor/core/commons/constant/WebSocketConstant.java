@@ -22,4 +22,9 @@ public interface WebSocketConstant {
      * 订阅(取消)所有
      */
     String ALL = "all";
+
+    /**
+     * 后端推送返回通配符
+     */
+    String PATTERN = "->";
 }

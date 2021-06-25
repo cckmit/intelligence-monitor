@@ -94,7 +94,7 @@ public class FanInfoServiceImpl implements FanInfoService {
                                     dto.setMonthlyPowerGeneration(dto.getMonthlyPowerGeneration() - powerGeneration);
                                 }
                                 String jsonString = JSONObject.toJSONString(dtos);
-                                jsonString = WebSocketConstant.MAIN_PAGE_RUNTIME + "->" + jsonString;
+                                jsonString = WebSocketConstant.MAIN_PAGE_RUNTIME + WebSocketConstant.PATTERN + jsonString;
                                 try {
                                     webSocketServer.sendGroupMessage(jsonString, 0);
                                 } catch (Exception e) {
@@ -159,7 +159,7 @@ public class FanInfoServiceImpl implements FanInfoService {
                             if (null != dtos) {
                                 FanStatisticsDTO dto = injecctPorerties(dtos);
                                 String jsonString = JSONObject.toJSONString(dto);
-                                jsonString = WebSocketConstant.MAIN_PAGE_STATISTICS + "->" + jsonString;
+                                jsonString = WebSocketConstant.MAIN_PAGE_STATISTICS + WebSocketConstant.PATTERN + jsonString;
                                 try {
                                     webSocketServer.sendGroupMessage(jsonString, 1);
                                 } catch (Exception e) {
