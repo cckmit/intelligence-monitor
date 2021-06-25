@@ -18,9 +18,10 @@ public interface IWfDataDqService extends IService<WfDataDq> {
 
     /**
      * 日发电量预测计算
+     * @param date 日期格式[yyyy-MM-dd]
      * @return 日发电量数组
      */
-    List<DqDayElectricGenDTO> dayElectricGen();
+    List<DqDayElectricGenDTO> dayElectricGen(String date);
 
     void batchSave();
 }

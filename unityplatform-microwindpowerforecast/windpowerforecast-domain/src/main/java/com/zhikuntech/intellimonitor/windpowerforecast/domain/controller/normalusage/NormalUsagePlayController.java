@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -68,8 +69,8 @@ public class NormalUsagePlayController {
 
     @ApiOperation("日发电量计算")
     @GetMapping("/query-nwp-day-electric-gens")
-    public BaseResponse<List<DqDayElectricGenDTO>> dayElectricGen() {
-        List<DqDayElectricGenDTO> results = dqService.dayElectricGen();
+    public BaseResponse<List<DqDayElectricGenDTO>> dayElectricGen(@RequestParam(name = "date", required = false) String date) {
+        List<DqDayElectricGenDTO> results = dqService.dayElectricGen(date);
         return BaseResponse.success(results);
     }
 
