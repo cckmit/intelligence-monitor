@@ -1,7 +1,9 @@
 package com.zhikuntech.intellimonitor.fanscada.domain.websocket;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.zhikuntech.intellimonitor.fanscada.domain.golden.GoldenUtil;
+import com.zhikuntech.intellimonitor.fanscada.domain.pojo.SocketParam;
 import com.zhikuntech.intellimonitor.fanscada.domain.service.FanIndexService;
 import com.zhikuntech.intellimonitor.fanscada.domain.vo.LoopVO;
 import io.swagger.annotations.Api;
@@ -60,8 +62,8 @@ public class WebSocketServer {
         /**
          * 第一次有人连接时,开始获取实时数据
          */
-        if (clients.size()==1){
-            fanIndexService.getFanBaseInfoList(username);
+        if (clients.size() == 1) {
+            fanIndexService.getFanBaseInfoList(this.username);
         }
         log.info("有新连接加入：{}，当前在线人数为：{}", this.username, onlineCount.get());
     }
