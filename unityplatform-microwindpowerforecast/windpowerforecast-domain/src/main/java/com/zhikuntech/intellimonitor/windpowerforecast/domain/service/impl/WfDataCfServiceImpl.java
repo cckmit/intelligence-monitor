@@ -21,7 +21,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -53,31 +55,27 @@ public class WfDataCfServiceImpl extends ServiceImpl<WfDataCfMapper, WfDataCf> i
                 .filter(Objects::nonNull).map(WfDataCf::getHighLevel)
                 .filter(Objects::nonNull).collect(Collectors.toList());
     }
-
+    /**
+     * 曲线模式
+     */
     @Override
     public List<CfCurveDTO> cfCurveQuery(CfCurvePatternQuery query) {
         // TODO params check
         if (Objects.isNull(query)) {
             return new ArrayList<>();
         }
-
         // 查询
         QueryWrapper<WfDataCf> queryWrapper = new QueryWrapper<>();
         String queryMode = query.getQueryMode();
         String high = query.getHigh();
 
         String dateStrPre = query.getDateStrPre();
-        String dateStrPost = query.getDateStrPost();
-
         LocalDateTime pre = DateProcessUtils.parseToLocalDateTime(dateStrPre);
-        LocalDateTime post = DateProcessUtils.parseToLocalDateTime(dateStrPost);
-        if (pre == null || post == null) {
-            return new ArrayList<>();
-        }
-
         String preStr=null;
         String postStr=null;
         if (queryMode.equals("day")){
+            String dateStrPost = query.getDateStrPost();
+            LocalDateTime post = DateProcessUtils.parseToLocalDateTime(dateStrPost);
             preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(pre);
             postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(post.plusDays(1));
         }else if(queryMode.equals("month")){
@@ -86,12 +84,20 @@ public class WfDataCfServiceImpl extends ServiceImpl<WfDataCfMapper, WfDataCf> i
             if (first == null || last == null) {
                 return new ArrayList<>();
             }
+            LocalDate nowDay = LocalDate.now();
+            Month preMonth=pre.getMonth();
+            Month nowMonth=nowDay.getMonth();
             preStr =TimeProcessUtils.formatLocalDateTimeWithSecondPattern(first);
             postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(last.plusDays(1));
+            int i =preMonth.compareTo(nowMonth);
+            if (i<0){
+                postStr = postStr;
+            }else {
+                postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(nowDay.plusDays(1));
+            }
         }else {
             return new ArrayList<>();
         }
-
 
         queryWrapper.eq("high_level", high);
         queryWrapper.gt("event_date_time", preStr);
@@ -163,7 +169,9 @@ public class WfDataCfServiceImpl extends ServiceImpl<WfDataCfMapper, WfDataCf> i
 
         return results;
     }
-
+    /**
+     * 列表模式
+     */
     @Override
     public Pager<CfListDTO> cfListQuery(CfListPatternQuery query) {
         // TODO param check
@@ -177,14 +185,13 @@ public class WfDataCfServiceImpl extends ServiceImpl<WfDataCfMapper, WfDataCf> i
         // criteria
         String queryMode = query.getQueryMode();
         String high = query.getHigh();
-
         String dateStrPre = query.getDateStrPre();
-        String dateStrPost = query.getDateStrPost();
         LocalDateTime pre = DateProcessUtils.parseToLocalDateTime(dateStrPre);
-        LocalDateTime post = DateProcessUtils.parseToLocalDateTime(dateStrPost);
+
         switch (queryMode){
             case "day":
-
+                String dateStrPost = query.getDateStrPost();
+                LocalDateTime post = DateProcessUtils.parseToLocalDateTime(dateStrPost);
                 if (pre == null || post == null) {
                     return pager;
                 }
@@ -213,9 +220,17 @@ public class WfDataCfServiceImpl extends ServiceImpl<WfDataCfMapper, WfDataCf> i
                 if (first == null || last == null) {
                     return pager;
                 }
+                LocalDate nowDay = LocalDate.now();
+                Month preMonth=pre.getMonth();
+                Month nowMonth=nowDay.getMonth();
+                int i =preMonth.compareTo(nowMonth);
                 String preStr1 = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(first);
                 String postStr1 = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(last.plusDays(1));
-
+                if (i<0){
+                    postStr1 = postStr1;
+                }else {
+                    postStr1 = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(nowDay.plusDays(1));
+                }
                 queryWrapper.eq("high_level", StringUtils.trim(high));
                 queryWrapper.gt("event_date_time", preStr1);
                 queryWrapper.le("event_date_time", postStr1);
@@ -236,7 +251,9 @@ public class WfDataCfServiceImpl extends ServiceImpl<WfDataCfMapper, WfDataCf> i
         return null;
     }
 
-    //数据转换 list
+    /**
+     * 转换功能 List<WfDataCf>转List<CfListDTO>
+     */
     public List<CfListDTO> zhuanhuan(List<WfDataCf> list){
         if (CollectionUtils.isNotEmpty(list)) {
             List<CfListDTO> dtoList = list.stream().filter(Objects::nonNull).map(item -> {

@@ -1,5 +1,9 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.schedule;
 
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.constants.ScheduleConstants;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.assesscalc.AssessCalcService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.cdqcalc.CdqCalcService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.dqcalc.DqCalcService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.schedulefetch.ScheduleFetchDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -25,6 +31,16 @@ public class DataScheduleService {
 
     private final ScheduleFetchDataService fetchDataService;
 
+    /*计算服务*/
+
+    private final AssessCalcService assessCalcService;
+
+    private final DqCalcService dqCalcService;
+
+    private final CdqCalcService cdqCalcService;
+
+    /*计算服务*/
+
     // 考核结果-用电量(日数据/月数据)
 
     @Scheduled(cron = "0 0 2 1 * ?")
@@ -34,11 +50,13 @@ public class DataScheduleService {
 
     }
 
+    // 计算漏报次数
+
     @Scheduled(cron = "0 0 1 * * ?")
     public void scheduleGenCheckDay() {
         // 每天凌晨一点钟触发
-        // TODO
-
+        String yesterdayStr = LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        assessCalcService.calcYesterdayAssess(yesterdayStr);
     }
 
 
@@ -51,6 +69,7 @@ public class DataScheduleService {
 
     }
 
+    /*   ----------------------数据获取调度----------------------   */
 
     //# cron -> 定时任务, 1min/次
 

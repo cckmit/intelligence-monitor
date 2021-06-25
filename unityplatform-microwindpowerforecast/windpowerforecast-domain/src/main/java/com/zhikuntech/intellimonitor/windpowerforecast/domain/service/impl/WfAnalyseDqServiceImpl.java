@@ -17,7 +17,9 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +35,9 @@ import java.util.Objects;
  */
 @Service
 public class WfAnalyseDqServiceImpl extends ServiceImpl<WfAnalyseDqMapper, WfAnalyseDq> implements IWfAnalyseDqService {
-
+    /**
+     * 短期功率分析 列表模式
+     */
     @Override
     public DqListAggregateDTO dqPowerAnalysis(PowerAnalysisQuery query) {
         DqListAggregateDTO aggregateDTO = new DqListAggregateDTO();
@@ -107,8 +111,18 @@ public class WfAnalyseDqServiceImpl extends ServiceImpl<WfAnalyseDqMapper, WfAna
                 if (lastDay == null) {
                     return aggregateDTO;
                 }
-                String preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(first);
-                String postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(lastDay.plusDays(1));
+                LocalDate nowDay = LocalDate.now();//今天
+                Month preMonth=pre.getMonth();//输入的日期的月份
+                Month nowMonth=nowDay.getMonth();//本月
+                String preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(first);//开始时间转成字符串格式
+                String postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(lastDay.plusDays(1));//结束时间填一天
+                // criteria
+                int i =preMonth.compareTo(nowMonth);//比较输入的月份和本月
+                if (i<0){//如果查的月份比本月小
+                    //查询结束就是那个月的最后一天
+                }else {//如果查的是本月
+                    postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(nowDay.plusDays(1));//查询结束日期是今天
+                }
                 // criteria
                 QueryWrapper<WfAnalyseDq> queryWrapper = new QueryWrapper<>();
                 queryWrapper.gt("calc_date", preStr);
@@ -162,7 +176,9 @@ public class WfAnalyseDqServiceImpl extends ServiceImpl<WfAnalyseDqMapper, WfAna
         return null;
 
     }
-    //曲线模式
+    /**
+     * 短期功率分析 曲线模式
+     */
     @Override
     public List<DqPowerAnalysisDTO> DqPowerAnalysisCurve(PowerAnalysisQuery query) {
         if (Objects.isNull(query)) {
@@ -210,13 +226,21 @@ public class WfAnalyseDqServiceImpl extends ServiceImpl<WfAnalyseDqMapper, WfAna
                 if (lastDay == null) {//判断时间是不是空的
                     return results;
                 }
+                LocalDate nowDay = LocalDate.now();//今天
+                Month preMonth=pre1.getMonth();//输入的日期的月份
+                Month nowMonth=nowDay.getMonth();//本月
                 String preStr1 = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(first);//开始时间转成字符串格式
                 String postStr1 = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(lastDay.plusDays(1));//结束时间填一天
                 // criteria
+                int i =preMonth.compareTo(nowMonth);//比较输入的月份和本月
+                if (i<0){//如果查的月份比本月小
+                    //查询结束就是那个月的最后一天
+                }else {//如果查的是本月
+                    postStr1 = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(nowDay.plusDays(1));//查询结束日期是今天
+                }
                 QueryWrapper<WfAnalyseDq> queryWrapper1 = new QueryWrapper<>();//查 短期功率分析
                 queryWrapper1.gt("calc_date", preStr1);//大于开始时间
                 queryWrapper1.le("calc_date", postStr1);//小于等于结束时间
-
                 List<WfAnalyseDq> wfAnalysedqs1 = getBaseMapper().selectList(queryWrapper1);
                 if (CollectionUtils.isNotEmpty(wfAnalysedqs1)) {//判断records不为空
                     List<DqPowerAnalysisDTO> tmp = new ArrayList<>();//创建存dqPowerAnalysisDTO的list集合叫tmp

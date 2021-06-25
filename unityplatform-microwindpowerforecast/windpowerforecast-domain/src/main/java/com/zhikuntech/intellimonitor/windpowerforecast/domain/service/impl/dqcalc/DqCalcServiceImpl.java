@@ -251,9 +251,9 @@ public class DqCalcServiceImpl implements DqCalcService {
 
         /*   计算考核结果数据    */
 
-        //# TODO 漏报次数
+        //# x漏报次数 -- 此处无需处理(次日处理昨日漏报次数)
         int hiatus = 0;
-        //# TODO 漏报次数
+        //# 漏报次数 -- 此处无需处理(次日处理昨日漏报次数)
 
         //# 短期功率预测准确率
         final BigDecimal dqRatioR1 = AssessCalcUtils.calcAssessRatioR1(aggrs);

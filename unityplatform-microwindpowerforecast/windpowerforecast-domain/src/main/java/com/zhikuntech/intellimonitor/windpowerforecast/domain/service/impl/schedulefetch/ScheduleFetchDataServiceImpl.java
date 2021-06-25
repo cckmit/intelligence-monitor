@@ -59,6 +59,7 @@ public class ScheduleFetchDataServiceImpl implements ScheduleFetchDataService {
                 .eventDateTime(minutePattern)
                 .powerCalcCapacity(new BigDecimal(avtive * 4))
                 .checkCalcCapacity(new BigDecimal("252"))
+                .windPlatformGenElectric(new BigDecimal(avtive * 3))
                 .status("00")
                 .build();
         capacityService.getBaseMapper().insert(dataCapacity);

@@ -12,6 +12,7 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.DateProcessU
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.TimeProcessUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -42,9 +43,61 @@ public class AssessCalcServiceImpl implements AssessCalcService {
     private final IWfDataDqService dqService;
 
 
-    public void calcYesterdayAssess(String bg) {
+    /**
+     * 计算昨日漏报次数(短期/超短期)
+     * <p>
+     *     此处不需要关注预测电量的更改操作,
+     *     因为更改操作需要在数据的次日凌晨2点之后才可以进行修改.
+     *     比如 2021-05-01的日评估数据,
+     *     需要在 2021-05-02的凌晨2点才可以进行
+     * </p>
+     *
+     * @param bg 时间格式[yyyy-MM-dd]
+     */
+    @Override public void calcYesterdayAssess(String bg) {
         // 计算昨日漏报次数
+        LocalDateTime yesterday = DateProcessUtils.parseToLocalDateTime(bg);
+        String yesterdayQueryStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(yesterday);
+        QueryWrapper<WfAssessDay> assessDayWrapper = new QueryWrapper<>();
+        assessDayWrapper.eq("calc_date", yesterdayQueryStr);
+        WfAssessDay wfAssessDay = assessDayService.getBaseMapper().selectOne(assessDayWrapper);
+        if (Objects.isNull(wfAssessDay)) {
+            log.warn("[{}]没有查询到对应的日评估数据", bg);
+            return;
+        }
 
+        /*
+            【短期功率预测漏报次数】：当天已报记做0，当天未报记做1，对应考核比例值为0.05%
+         */
+        QueryWrapper<WfDataDq> dqQueryWrapper = new QueryWrapper<>();
+        dqQueryWrapper.eq("body_time", 1);
+        dqQueryWrapper.gt("event_date_time", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(yesterday));
+        dqQueryWrapper.le("event_date_time", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(yesterday.plusDays(1)));
+        dqQueryWrapper.gt("header_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(yesterday));
+        dqQueryWrapper.le("header_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(yesterday.plusDays(1)));
+        List<WfDataDq> wfDataDqs = dqService.getBaseMapper().selectList(dqQueryWrapper);
+        if (CollectionUtils.isEmpty(wfDataDqs)) {
+            // 当天已报记做0，当天未报记做1
+            wfAssessDay.setDqHiatus(1);
+        }
+
+        /*
+            【超短期功率预测漏报次数】：每天需上报96次，全部已报记做0，每漏报1次记做1，对应考核比例值为0.0005%
+         */
+        QueryWrapper<WfDataCdq> cdqQueryWrapper = new QueryWrapper<>();
+        cdqQueryWrapper.gt("event_date_time", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(yesterday));
+        cdqQueryWrapper.le("event_date_time", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(yesterday.plusDays(1)));
+        cdqQueryWrapper.gt("header_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(yesterday));
+        cdqQueryWrapper.le("header_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(yesterday.plusDays(1)));
+        List<WfDataCdq> dataCdqs = cdqService.getBaseMapper().selectList(cdqQueryWrapper);
+        if (CollectionUtils.isEmpty(dataCdqs)) {
+            wfAssessDay.setCdqHiatus(96);
+        } else if (dataCdqs.size() < 96) {
+            wfAssessDay.setCdqHiatus(96 - dataCdqs.size());
+        }
+
+        int i = assessDayService.getBaseMapper().updateById(wfAssessDay);
+        assert i == 1;
     }
 
 
