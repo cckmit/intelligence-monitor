@@ -246,6 +246,9 @@ public class AssessCalcServiceImpl implements AssessCalcService {
         }
         changeService.updateBatchById(changeList);
 
+
+        // TODO 计算月考核数据
+
     }
 
     /**
