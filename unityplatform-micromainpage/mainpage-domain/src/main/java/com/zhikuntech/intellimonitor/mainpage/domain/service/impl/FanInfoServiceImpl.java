@@ -3,6 +3,7 @@ package com.zhikuntech.intellimonitor.mainpage.domain.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.rtdb.api.model.ValueData;
 import com.zhikuntech.intellimonitor.core.commons.constant.FanConstant;
+import com.zhikuntech.intellimonitor.core.commons.constant.WebSocketConstant;
 import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanRuntimeDTO;
 import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanStatisticsDTO;
 import com.zhikuntech.intellimonitor.mainpage.domain.golden.GoldenUtil;
@@ -24,7 +25,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author 代志豪
@@ -94,7 +94,12 @@ public class FanInfoServiceImpl implements FanInfoService {
                                     dto.setMonthlyPowerGeneration(dto.getMonthlyPowerGeneration() - powerGeneration);
                                 }
                                 String jsonString = JSONObject.toJSONString(dtos);
-                                webSocketServer.sendGroupMessage(jsonString, 0);
+                                jsonString = WebSocketConstant.MAIN_PAGE_RUNTIME + "->" + jsonString;
+                                try {
+                                    webSocketServer.sendGroupMessage(jsonString, 0);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
                             long l1 = System.currentTimeMillis();
                             log.info("实时数据，处理时间{}，消息时间{}", l1 - l0, data[0].getDate());
@@ -154,10 +159,15 @@ public class FanInfoServiceImpl implements FanInfoService {
                             if (null != dtos) {
                                 FanStatisticsDTO dto = injecctPorerties(dtos);
                                 String jsonString = JSONObject.toJSONString(dto);
-                                webSocketServer.sendGroupMessage(jsonString, 1);
+                                jsonString = WebSocketConstant.MAIN_PAGE_STATISTICS + "->" + jsonString;
+                                try {
+                                    webSocketServer.sendGroupMessage(jsonString, 1);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
                             long l1 = System.currentTimeMillis();
-                            log.info("统计数据，当前用户{}，处理时间{}，消息时间{}", user, l1 - l0, data[0].getDate());
+                            log.info("统计数据，处理时间{}，消息时间{}", l1 - l0, data[0].getDate());
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -205,6 +215,7 @@ public class FanInfoServiceImpl implements FanInfoService {
         } catch (SocketException e) {
             log.info("golden连接失败，重连后取消之前所有连接");
             goldenUtil.cancelAll();
+            webSocketServer.sendAllMessage("请重新订阅");
             return null;
         }
         return valueData;
