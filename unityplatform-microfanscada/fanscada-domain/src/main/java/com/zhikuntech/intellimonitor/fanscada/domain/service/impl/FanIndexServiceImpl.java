@@ -163,7 +163,11 @@ public class FanIndexServiceImpl implements FanIndexService {
                                 windSpeedSum = windSpeedSum.add(windSpeed);
                                 dayEnergySum = dayEnergySum.add(dayEnergy);
                             }
-                            loopVO.setLoopNumber("53" + n);
+                            String s = "53";
+                            if (n < 10) {
+                                s = s + "0";
+                            }
+                            loopVO.setLoopNumber(s + n);
                             n++;
                             loopVO.setFanBaseInfoVOS(fanBaseInfoVOS);
                             loopVO.setActivePower(activePowerSum);
@@ -179,7 +183,7 @@ public class FanIndexServiceImpl implements FanIndexService {
                         long l1 = System.currentTimeMillis();
                         log.info("数据处理毫秒数: " + (l1 - l) + "    golden数据时间" + data[0].getDate().toString());
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                     goldenUtil.cancel(username);
                 }
