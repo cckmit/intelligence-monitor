@@ -9,5 +9,17 @@ package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.assesscal
 public interface AssessCalcService {
 
 
+    /**
+     * 计算昨日漏报次数(短期/超短期)
+     * <p>
+     *     此处不需要关注预测电量的更改操作,
+     *     因为更改操作需要在数据的次日凌晨2点之后才可以进行修改.
+     *     比如 2021-05-01的日评估数据,
+     *     需要在 2021-05-02的凌晨2点才可以进行
+     * </p>
+     *
+     * @param bg 时间格式[yyyy-MM-dd]
+     */
+    void calcYesterdayAssess(String bg);
 
 }

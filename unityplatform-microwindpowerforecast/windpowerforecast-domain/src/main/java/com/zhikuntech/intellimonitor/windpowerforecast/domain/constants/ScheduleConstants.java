@@ -1,4 +1,4 @@
-package com.zhikuntech.intellimonitor.windpowerforecast.domain.schedule;
+package com.zhikuntech.intellimonitor.windpowerforecast.domain.constants;
 
 /**
  * 调度使用属性
