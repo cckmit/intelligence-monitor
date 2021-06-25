@@ -42,10 +42,14 @@ public class WfAnalyseCdqServiceImpl extends ServiceImpl<WfAnalyseCdqMapper, WfA
     @Override
     public CdqListAggregateDTO cdqPowerAnalysis(PowerAnalysisQuery query) {
         CdqListAggregateDTO aggregateDTO = new CdqListAggregateDTO();
+        // 校验参数
         if (Objects.isNull(query)) {
-
-            return aggregateDTO;
+            throw new IllegalArgumentException("参数不能为空");
         }
+        if (Objects.isNull(query.getQueryMode())) {
+            throw new IllegalArgumentException("查询模式不能为空");
+        }
+
         String dateStrPre = query.getDateStrPre();
         String dateStrPost = query.getDateStrPost();
         LocalDateTime pre = DateProcessUtils.parseToLocalDateTime(dateStrPre);
@@ -83,6 +87,14 @@ public class WfAnalyseCdqServiceImpl extends ServiceImpl<WfAnalyseCdqMapper, WfA
         queryWrapper.gt("calc_date", preStr);//大于
         queryWrapper.le("calc_date", postStr);//小于等于
         queryWrapper.ge("newest", 0);
+        // calcDate -> calc_date
+        if ("calcDate".equalsIgnoreCase(query.getOderByField())) {
+            if ("up".equalsIgnoreCase(query.getUpOrDown())) {
+                queryWrapper.orderByAsc("calc_date");
+            } else {
+                queryWrapper.orderByDesc("calc_date");
+            }
+        }
         // 分页查询
         Integer pageNumber = query.getPageNumber();
         Integer pageSize = query.getPageSize();
