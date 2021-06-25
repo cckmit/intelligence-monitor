@@ -57,8 +57,12 @@ public class WebSocketServer {
         this.username = username;
         clients.put(this.username, this.session);
 
-        group.put(this.username, this.session);
-
+        /**
+         * 第一次有人连接时,开始获取实时数据
+         */
+        if (clients.size()==1){
+            fanIndexService.getFanBaseInfoList(username);
+        }
         log.info("有新连接加入：{}，当前在线人数为：{}", this.username, onlineCount.get());
     }
 
@@ -84,9 +88,8 @@ public class WebSocketServer {
         List<LoopVO> fanBaseInfoList = fanIndexService.getFanBaseInfoList();
         String jsonString = JSONObject.toJSONString(fanBaseInfoList);
         sendMessage(jsonString, username);
-
-        fanIndexService.getFanBaseInfoList(username);
-
+        //开启订阅,将用户分组
+        group.put(this.username, this.session);
 
     }
 
