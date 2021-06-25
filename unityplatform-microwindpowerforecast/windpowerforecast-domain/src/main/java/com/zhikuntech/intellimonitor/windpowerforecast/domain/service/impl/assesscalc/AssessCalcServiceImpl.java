@@ -114,7 +114,7 @@ public class AssessCalcServiceImpl implements AssessCalcService {
      * 上个月的日期
      * @param bg 上月日期
      */
-    public void calcdayAndMonthAssessElectric(final String bg) {
+    @Override public void calcDayAndMonthAssessElectric(final String bg) {
         // 计算昨日考核电量
         // yyyy-MM-01   上月一号日期
         LocalDateTime monthBg = DateProcessUtils.parseToLocalDateTime(bg);

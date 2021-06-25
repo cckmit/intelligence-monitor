@@ -13,4 +13,16 @@ public class ScheduleConstants {
 
     public final static String GEN_WEATHER_LOCK = "wf_gen_weather_lock";
 
+    // 数据分析调度
+
+    public final static String ANA_DATA_LOCK = "wf_ana_data_lock";
+
+    // 计算漏报次数
+
+    public final static String CALC_HIATUS = "wf_hiatus_data_lock";
+
+    // 评估结果
+
+    public final static String CALC_ASSESS_ELECTRIC = "wf_assess_electric_lock";
+
 }

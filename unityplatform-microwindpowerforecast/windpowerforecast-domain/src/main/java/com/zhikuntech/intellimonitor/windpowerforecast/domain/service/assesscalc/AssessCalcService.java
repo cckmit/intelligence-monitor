@@ -22,4 +22,15 @@ public interface AssessCalcService {
      */
     void calcYesterdayAssess(String bg);
 
+
+    /**
+     * <p>
+     *     修改日考核数据后, 如果是当月的数据则需要重新计算
+     * </p>
+     *
+     * 上个月的日期
+     * @param bg 上月日期
+     */
+    void calcDayAndMonthAssessElectric(String bg);
+
 }
