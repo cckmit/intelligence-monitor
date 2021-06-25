@@ -15,7 +15,7 @@ public class WebSocketTransferVo {
     private String username;
 
     /**
-     * 指令:订阅，取消订阅，重置
+     * 指令:0:订阅，1:取消订阅，2:重置
      */
     private Integer orderType;
 
