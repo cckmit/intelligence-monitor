@@ -32,8 +32,11 @@ public class CompareUtil<T> {
                 if (value == rtdbData.getId()) {
                     if (StringUtils.isNotEmpty(scope)) {
                         String[] split = scope.split(",");
-                        int compare = comparator.compare((double) rtdbData.getValue(), Double.parseDouble(split[1]));
-                        int compare1 = comparator.compare((double) rtdbData.getValue(), Double.parseDouble(split[0]));
+                        int compare = comparator.compare((double) rtdbData.getValue(), Double.parseDouble(split[1])) +
+                                comparator.compare((double) rtdbData.getValue(), Double.parseDouble(split[0]));
+                        if (compare != 0) {
+                            //不等于0，表示不正常
+                        }
                     }
                 }
             }
