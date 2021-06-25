@@ -45,7 +45,7 @@ public class FanIndexServiceImpl implements FanIndexService {
     private RedisUtil redisUtil;
 
     @Override
-    public void getFanBaseInfoList(String username)   {
+    public void getFanBaseInfoList(String username) {
         //通过mapper获取庚顿数据的对应关系
 
         //获取所有风场的number,封装其对应的数据字段ID
@@ -180,17 +180,17 @@ public class FanIndexServiceImpl implements FanIndexService {
                             }
                             String jsonString = JSONObject.toJSONString(resultList);
                             log.info(jsonString);
-                            webSocketServer.sendMessage(jsonString, username);
+                            webSocketServer.sendAllMessage(jsonString);
                             long l1 = System.currentTimeMillis();
                             log.info("数据处理毫秒数: " + (l1 - l) + "    golden数据时间" + data[0].getDate().toString());
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
-                        goldenUtil.cancel(username);
+                        log.info("庚顿数据异常{}", e.getMessage());
                     }
                 });
             } catch (Exception e) {
-                e.printStackTrace();
+                log.info("庚顿链接异常{},取消重连", e.getMessage());
+                goldenUtil.cancelAll();
             }
         }
     }
@@ -308,7 +308,11 @@ public class FanIndexServiceImpl implements FanIndexService {
                 windSpeedSum = windSpeedSum.add(windSpeed);
                 dayEnergySum = dayEnergySum.add(dayEnergy);
             }
-            loopVO.setLoopNumber("53" + n);
+            String s = "53";
+            if (n < 10) {
+                s = s + "0";
+            }
+            loopVO.setLoopNumber(s + n);
             n++;
             loopVO.setFanBaseInfoVOS(fanBaseInfoVOList);
             loopVO.setActivePower(activePowerSum);

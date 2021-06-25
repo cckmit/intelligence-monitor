@@ -56,7 +56,9 @@ public class WebSocketServer {
         this.session = session;
         this.username = username;
         clients.put(this.username, this.session);
+
         group.put(this.username, this.session);
+
         log.info("有新连接加入：{}，当前在线人数为：{}", this.username, onlineCount.get());
     }
 
@@ -66,7 +68,8 @@ public class WebSocketServer {
     @OnClose
     public void onClose() {
         onlineCount.decrementAndGet();
-        clients.remove(username);
+        //clients.remove(username);
+        group.remove(username);
         log.info("有一连接关闭：{}，当前在线人数为：{}", username, onlineCount.get());
     }
 
@@ -78,12 +81,13 @@ public class WebSocketServer {
     @OnMessage
     public void onMessage(String message) {
         log.info("接收到{}的消息,内容{}", username, message);
-
         List<LoopVO> fanBaseInfoList = fanIndexService.getFanBaseInfoList();
         String jsonString = JSONObject.toJSONString(fanBaseInfoList);
         sendMessage(jsonString, username);
 
         fanIndexService.getFanBaseInfoList(username);
+
+
     }
 
     @OnError
@@ -100,21 +104,26 @@ public class WebSocketServer {
         try {
             Session session = clients.get(username);
             if (null != session) {
-//                log.info("服务端给客户端[{}]发送消息{}", username, message);
                 session.getBasicRemote().sendText(message);
             }
         } catch (Exception e) {
             log.error("服务端发送消息给客户端失败：", e);
-
         } finally {
             lock.unlock();
         }
     }
 
     public void sendAllMessage(String message) {
-        for (Session session : clients.values()) {
-//            log.info("服务端给客户端[{}]发送消息{}", username, message);
-            session.getAsyncRemote().sendText(message);
+
+        for (Session session : group.values()) {
+            log.info("{}订阅fanscada数据", username);
+            lock.lock();
+            try {
+                session.getAsyncRemote().sendText(message);
+            } finally {
+                lock.unlock();
+            }
         }
     }
+
 }
