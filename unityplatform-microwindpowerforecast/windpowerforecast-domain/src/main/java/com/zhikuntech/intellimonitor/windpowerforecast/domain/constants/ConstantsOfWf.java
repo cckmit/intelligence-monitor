@@ -1,4 +1,4 @@
-package com.zhikuntech.intellimonitor.windpowerforecast.domain.utils;
+package com.zhikuntech.intellimonitor.windpowerforecast.domain.constants;
 
 /**
  * @author liukai

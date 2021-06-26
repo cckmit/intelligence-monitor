@@ -3,6 +3,7 @@ package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl.data
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.constants.ConstantsOfWf;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.constants.QueryConstants;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.datafetch.NwpAnd72nwpWeatherPatternUtils;
 import com.zhikuntech.intellimonitor.windpowerforecast.prototype.dto.NwpListPatternDTO;

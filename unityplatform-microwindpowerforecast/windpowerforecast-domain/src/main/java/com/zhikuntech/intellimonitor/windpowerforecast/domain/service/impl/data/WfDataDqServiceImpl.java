@@ -1,6 +1,7 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl.data;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.constants.ConstantsOfWf;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.DqDayElectricGenDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataDq;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfDataDqMapper;

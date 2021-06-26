@@ -9,7 +9,7 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDa
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDataCfService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDataZrService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.schedulefetch.ScheduleFetchDataService;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.ConstantsOfWf;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.constants.ConstantsOfWf;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.TimeProcessUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
