@@ -10,6 +10,7 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataDqS
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.*;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.calc.CalcUtils;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.datafetch.DqAnd72windForShortTimePatternUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;

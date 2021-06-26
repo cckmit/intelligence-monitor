@@ -1,4 +1,4 @@
-package com.zhikuntech.intellimonitor.windpowerforecast.domain.dto;
+package com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

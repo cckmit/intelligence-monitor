@@ -7,7 +7,7 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.cdq.Cdq
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.cdq.CdqHeaderParse;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataCdqService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.CdqAnd4CWindForSuperShortTimePatternUtils;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.datafetch.CdqAnd4CWindForSuperShortTimePatternUtils;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.ConstantsOfWf;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.NumberProcessUtils;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.TimeProcessUtils;

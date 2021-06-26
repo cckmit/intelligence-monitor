@@ -4,6 +4,8 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.cdq.Cdq
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.cdq.CdqHeaderParse;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.dq.DqBodyParse;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.dq.DqHeaderParse;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.datafetch.CdqAnd4CWindForSuperShortTimePatternUtils;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.datafetch.DqAnd72windForShortTimePatternUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 
@@ -80,11 +82,11 @@ public class ParseDataFileUtil {
     }
 
 
-    static Matcher fetchMatcher(Pattern p, String str) {
+    public static Matcher fetchMatcher(Pattern p, String str) {
         return p.matcher(str);
     }
 
-    static String fetchStr(Matcher m) {
+    public static String fetchStr(Matcher m) {
         if (Objects.isNull(m)) {
             return null;
         }

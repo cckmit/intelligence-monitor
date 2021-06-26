@@ -2,7 +2,7 @@ package com.zhikuntech.intellimonitor.windpowerforecast.domain.controller.normal
 
 import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.WeatherHighDTO;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.WeatherHighDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.CfCurveDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.CfListDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.DqDayElectricGenDTO;
@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**

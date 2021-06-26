@@ -1,7 +1,8 @@
-package com.zhikuntech.intellimonitor.windpowerforecast.domain.utils;
+package com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.datafetch;
 
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.ZrBodyParse;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.ZrHeaderParse;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.ParseDataFileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
