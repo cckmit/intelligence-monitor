@@ -3,6 +3,11 @@ package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl.dqca
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.*;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.*;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.analysis.IWfAnalyseDqService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.assess.IWfAssessDayService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDataCapacityService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDataDqService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDataZrService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.dqcalc.DqCalcService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.TimeProcessUtils;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.calc.AssessCalcUtils;

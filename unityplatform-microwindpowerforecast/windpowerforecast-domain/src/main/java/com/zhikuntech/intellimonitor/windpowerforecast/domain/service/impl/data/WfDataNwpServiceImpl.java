@@ -1,4 +1,4 @@
-package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl;
+package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl.data;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -14,7 +14,7 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.nwp.Nwp
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.nwp.NwpHeaderParse;
 import com.zhikuntech.intellimonitor.windpowerforecast.prototype.query.NwpCurvePatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.NwpListPatternQuery;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataNwpService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDataNwpService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.*;
 import lombok.extern.slf4j.Slf4j;

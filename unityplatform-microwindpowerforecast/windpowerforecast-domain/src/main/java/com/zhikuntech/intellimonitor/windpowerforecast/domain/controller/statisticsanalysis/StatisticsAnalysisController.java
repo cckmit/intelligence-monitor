@@ -6,8 +6,8 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.statisticsanal
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.statisticsanalysis.DqListAggregateDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.statisticsanalysis.DqPowerAnalysisDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.statisticsanalysis.PowerAnalysisQuery;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfAnalyseCdqService;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfAnalyseDqService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.analysis.IWfAnalyseCdqService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.analysis.IWfAnalyseDqService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;

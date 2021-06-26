@@ -1,9 +1,9 @@
-package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl;
+package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl.data;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataCapacity;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfDataCapacityMapper;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataCapacityService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDataCapacityService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;

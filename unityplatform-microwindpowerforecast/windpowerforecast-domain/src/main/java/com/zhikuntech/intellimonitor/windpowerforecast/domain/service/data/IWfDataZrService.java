@@ -1,4 +1,4 @@
-package com.zhikuntech.intellimonitor.windpowerforecast.domain.service;
+package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data;
 
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataZr;
 import com.baomidou.mybatisplus.extension.service.IService;

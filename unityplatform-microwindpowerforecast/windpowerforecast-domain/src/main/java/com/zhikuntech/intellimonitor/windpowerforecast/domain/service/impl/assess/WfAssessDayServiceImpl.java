@@ -1,4 +1,4 @@
-package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl;
+package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl.assess;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -11,8 +11,8 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfAssessDay
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfAssessDayMapper;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.assessresult.AssessChangeQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.assessresult.DayAssessQuery;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfAssessChangeService;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfAssessDayService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.assess.IWfAssessChangeService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.assess.IWfAssessDayService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.DateProcessUtils;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.TimeProcessUtils;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.calc.AssessCalcUtils;

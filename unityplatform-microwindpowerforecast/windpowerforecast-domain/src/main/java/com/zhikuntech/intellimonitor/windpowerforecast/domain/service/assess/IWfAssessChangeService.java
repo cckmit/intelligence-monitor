@@ -1,4 +1,4 @@
-package com.zhikuntech.intellimonitor.windpowerforecast.domain.service;
+package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.assess;
 
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfAssessChange;
 import com.baomidou.mybatisplus.extension.service.IService;

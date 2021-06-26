@@ -7,8 +7,8 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.D
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.MonthAssessCurveDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.assessresult.MonthAssessListDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.assessresult.*;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfAssessDayService;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfAssessMonthService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.assess.IWfAssessDayService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.assess.IWfAssessMonthService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;

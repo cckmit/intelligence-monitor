@@ -1,8 +1,8 @@
-package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl;
+package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl.data;
 
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataZr;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfDataZrMapper;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataZrService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDataZrService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 

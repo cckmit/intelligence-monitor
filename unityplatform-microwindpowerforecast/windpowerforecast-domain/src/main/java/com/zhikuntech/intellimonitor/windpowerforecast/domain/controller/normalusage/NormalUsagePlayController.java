@@ -11,9 +11,9 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.CfListPatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.prototype.query.NwpCurvePatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.NwpListPatternQuery;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataCfService;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataDqService;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataNwpService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDataCfService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDataDqService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDataNwpService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
