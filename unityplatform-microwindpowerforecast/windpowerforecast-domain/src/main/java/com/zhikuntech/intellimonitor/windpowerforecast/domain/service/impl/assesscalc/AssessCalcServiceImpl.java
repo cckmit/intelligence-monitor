@@ -1,10 +1,7 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl.assesscalc;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfAssessChange;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfAssessDay;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataCdq;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataDq;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.*;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.*;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.assesscalc.AssessCalcService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.DateProcessUtils;
@@ -47,6 +44,9 @@ public class AssessCalcServiceImpl implements AssessCalcService {
     private final IWfDataDqService dqService;
 
     private final IWfDataCapacityService capacityService;
+
+    private final IWfAssessMonthService monthService;
+
 
     /**
      * 计算昨日漏报次数(短期/超短期)
@@ -247,8 +247,23 @@ public class AssessCalcServiceImpl implements AssessCalcService {
         changeService.updateBatchById(changeList);
 
 
-        // TODO 计算月考核数据
+        /*
+            TODO 计算月考核数据
+         */
 
+        // 自动核算考核电量
+        BigDecimal autoCheckElectric = wfAssessDays.stream().map(WfAssessDay::getDayAssessElectric).reduce(new BigDecimal("0"), BigDecimal::add);
+
+
+
+        WfAssessMonth assessMonth = WfAssessMonth.builder()
+                .version(0)
+                .calcDate(monthBg)
+                .createTime(LocalDateTime.now())
+                .updateTime(LocalDateTime.now())
+                .build();
+
+        monthService.getBaseMapper().insert(assessMonth);
     }
 
     /**
