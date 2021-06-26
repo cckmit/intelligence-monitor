@@ -1,7 +1,7 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.utils;
 
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.NwpBodyParse;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.NwpHeaderParse;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.nwp.NwpBodyParse;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.nwp.NwpHeaderParse;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 

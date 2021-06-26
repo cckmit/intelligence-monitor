@@ -1,7 +1,7 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.utils;
 
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.CdqBodyParse;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.CdqHeaderParse;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.cdq.CdqBodyParse;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.cdq.CdqHeaderParse;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 

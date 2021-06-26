@@ -1,4 +1,4 @@
-package com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel;
+package com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.dq;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
