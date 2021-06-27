@@ -1,5 +1,11 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.assesscalc;
 
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfAssessChange;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfAssessDay;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
 /**
  * 考核结果
  *
@@ -32,5 +38,15 @@ public interface AssessCalcService {
      * @param bg 上月日期
      */
     void calcDayAndMonthAssessElectric(String bg);
+
+
+    /**
+     * 计算月考核数据
+     *
+     * @param monthBg       月开始第一天
+     * @param wfAssessDays  日考核数据
+     * @param changeList    修改后的日考核数据
+     */
+    void calcMonthCheckData(LocalDateTime monthBg, List<WfAssessDay> wfAssessDays, List<WfAssessChange> changeList);
 
 }

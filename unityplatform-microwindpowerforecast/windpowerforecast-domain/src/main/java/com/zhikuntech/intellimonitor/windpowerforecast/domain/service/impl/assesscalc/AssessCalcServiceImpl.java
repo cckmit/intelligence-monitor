@@ -21,6 +21,7 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -251,24 +252,84 @@ public class AssessCalcServiceImpl implements AssessCalcService {
         }
         changeService.updateBatchById(changeList);
 
+        //# 计算月考核结果
+        calcMonthCheckData(monthBg, wfAssessDays, changeList);
+    }
 
-        /*
-            TODO 计算月考核数据
-         */
+
+    /**
+     * 计算月考核数据
+     * TODO 修改了上月的日考核数据应该触发该计算
+     *
+     * @param monthBg       月开始第一天
+     * @param wfAssessDays  日考核数据
+     * @param changeList    修改后的日考核数据
+     */
+    @Override public void calcMonthCheckData(LocalDateTime monthBg, List<WfAssessDay> wfAssessDays, List<WfAssessChange> changeList) {
+    /*
+        计算月考核数据
+     */
+
+        List<WfAssessDay> calcMonthRawAssessDays = wfAssessDays.stream().filter(item -> !changeList.stream().map(WfAssessChange::getDayRefId).collect(Collectors.toSet()).contains(item.getId())).collect(Collectors.toList());
 
         // 自动核算考核电量
         BigDecimal autoCheckElectric = wfAssessDays.stream().map(WfAssessDay::getDayAssessElectric).reduce(new BigDecimal("0"), BigDecimal::add);
+        // 自动核算考核费用 -> [自动核算考核电量 *1000 * 0.4153元/kWh]
+        BigDecimal autoCheckPay = autoCheckElectric.multiply(new BigDecimal("1000"))
+                .multiply(new BigDecimal("0.4153")).setScale(3, RoundingMode.HALF_EVEN);
+        // 最终修改后考核电量
+        BigDecimal electricAfterChange = calcMonthRawAssessDays.stream().map(WfAssessDay::getDayAssessElectric).reduce(new BigDecimal("0"), BigDecimal::add);
+        electricAfterChange = changeList.stream().map(WfAssessChange::getDayAssessElectric).reduce(electricAfterChange, BigDecimal::add);
+        // 最终修改后考核费用
+        BigDecimal payAfterChange = electricAfterChange.multiply(new BigDecimal("1000"))
+                .multiply(new BigDecimal("0.4153")).setScale(3, RoundingMode.HALF_EVEN);
 
 
+        QueryWrapper<WfAssessMonth> assessMonthQueryWrapper = new QueryWrapper<>();
+        assessMonthQueryWrapper.eq("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(monthBg));
+        WfAssessMonth fetchMonth = monthService.getBaseMapper().selectOne(assessMonthQueryWrapper);
+        if (Objects.nonNull(fetchMonth)) {
+            fetchMonth.setAutoElectric(autoCheckElectric);
+            fetchMonth.setAutoPay(autoCheckPay);
+            fetchMonth.setFnlElectric(electricAfterChange);
+            fetchMonth.setFnlPay(payAfterChange);
 
-        WfAssessMonth assessMonth = WfAssessMonth.builder()
-                .version(0)
-                .calcDate(monthBg)
-                .createTime(LocalDateTime.now())
-                .updateTime(LocalDateTime.now())
-                .build();
+            //尝试计算对比结果
+            final BigDecimal scheduleElectric = fetchMonth.getScheduleElectric();
+            final BigDecimal schedulePay = fetchMonth.getSchedulePay();
+            if (Objects.nonNull(scheduleElectric)) {
+                Optional.ofNullable(fetchMonth.getAutoElectric()).ifPresent(item -> {
+                    fetchMonth.setContrastElectric(item.subtract(scheduleElectric));
+                });
+                Optional.of(fetchMonth.getFnlElectric()).ifPresent(item -> {
+                    fetchMonth.setFnlContrastElectric(item.subtract(scheduleElectric));
+                });
+            }
+            if (Objects.nonNull(schedulePay)) {
+                Optional.ofNullable(fetchMonth.getAutoPay()).ifPresent(item -> {
+                    fetchMonth.setContrastPay(item.subtract(schedulePay));
+                });
+                Optional.ofNullable(fetchMonth.getFnlPay()).ifPresent(item -> {
+                    fetchMonth.setFnlContrastPay(item.subtract(schedulePay));
+                });
+            }
 
-        monthService.getBaseMapper().insert(assessMonth);
+            fetchMonth.setUpdateTime(LocalDateTime.now());
+            monthService.getBaseMapper().updateById(fetchMonth);
+        } else {
+            // 不存在数据, 那么也不存在调度考核结果(必须有调度考核结果才能计算对比结果)
+            WfAssessMonth assessMonth = WfAssessMonth.builder()
+                    .version(0)
+                    .calcDate(monthBg)
+                    .autoElectric(autoCheckElectric)
+                    .autoPay(autoCheckPay)
+                    .fnlElectric(electricAfterChange)
+                    .fnlPay(payAfterChange)
+                    .createTime(LocalDateTime.now())
+                    .updateTime(LocalDateTime.now())
+                    .build();
+            monthService.getBaseMapper().insert(assessMonth);
+        }
     }
 
     /**
