@@ -45,4 +45,11 @@ public interface IWfDataNwpService extends IService<WfDataNwp> {
      * 批量保存数据
      */
     void batchSave();
+
+    /**
+     * 批量保存气象预测数据
+     * @param strings   数据行(待解析)
+     */
+    void batchProcessNwpData(List<String> strings);
+
 }

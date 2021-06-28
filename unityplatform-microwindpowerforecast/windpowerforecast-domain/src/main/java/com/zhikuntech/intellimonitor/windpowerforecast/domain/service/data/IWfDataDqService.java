@@ -23,5 +23,15 @@ public interface IWfDataDqService extends IService<WfDataDq> {
      */
     List<DqDayElectricGenDTO> dayElectricGen(String date);
 
+
+    /**
+     * 批量保存数据
+     */
     void batchSave();
+
+    /**
+     * 批量保存数据
+     * @param strings   数据行(待解析)
+     */
+    void batchProcessDqData(List<String> strings);
 }
