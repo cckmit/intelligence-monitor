@@ -86,6 +86,8 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(String message) {
+
+        //规定数据格式,解析以校验权限,分组,等.
         log.info("接收到{}的消息,内容{}", username, message);
         List<LoopVO> fanBaseInfoList = fanIndexService.getFanBaseInfoList();
         String jsonString = JSONObject.toJSONString(fanBaseInfoList);

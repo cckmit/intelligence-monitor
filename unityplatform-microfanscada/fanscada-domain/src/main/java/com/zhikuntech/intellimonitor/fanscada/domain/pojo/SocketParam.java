@@ -12,4 +12,5 @@ public class SocketParam {
     private String username;
     private String sessionId;
     private String group;
+    private String messageType;
 }
