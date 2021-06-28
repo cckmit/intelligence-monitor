@@ -53,4 +53,28 @@ public class CalcCommonUtils {
         }
         return "nil";
     };
+
+    public static Function<LocalDateTime, LocalDateTime> timePostRangeProcessRetDateTime = item -> {
+        if (Objects.nonNull(item)) {
+            LocalDate date = item.toLocalDate();
+            LocalTime time = item.toLocalTime();
+
+            int minute = time.getMinute();
+            //# 具体算法
+            int tNum = minute / 15;
+            int div = minute % 15;
+
+            int willPlus = tNum * 15;
+            if (div != 0) {
+                willPlus = willPlus + 15;
+            }
+            if (minute == 0) {
+                willPlus = 0;
+            }
+            //# 具体算法
+            return LocalDateTime.of(date, LocalTime.of(time.getHour(), 0, 0))
+                    .plusMinutes(willPlus);
+        }
+        return null;
+    };
 }
