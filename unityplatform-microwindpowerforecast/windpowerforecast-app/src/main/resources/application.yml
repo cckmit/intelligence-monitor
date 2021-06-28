@@ -1,7 +1,7 @@
 spring:
   profiles:
-#    active: local
-    active: dev
+    active: local
+#    active: dev
   application:
     name: wind-power-forecast-app
 
