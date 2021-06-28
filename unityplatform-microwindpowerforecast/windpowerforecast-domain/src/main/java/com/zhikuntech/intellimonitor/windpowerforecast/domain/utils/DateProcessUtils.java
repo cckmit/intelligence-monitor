@@ -20,6 +20,8 @@ public class DateProcessUtils {
 
     private static final DateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
+    private static final DateTimeFormatter NORMAL_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
     /**
      * {@code synchronized }
      * 关键字必须
@@ -64,6 +66,10 @@ public class DateProcessUtils {
 
     public static String fetchTomorrowBegin(LocalDate localDate) {
         return localDate.plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
+
+    public static String formatNormalDateY4M2D2(LocalDate localDate) {
+        return localDate.format(NORMAL_FORMAT);
     }
 
 }

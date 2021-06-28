@@ -261,6 +261,8 @@ public class WfDataCfServiceImpl extends ServiceImpl<WfDataCfMapper, WfDataCf> i
                 BigDecimal windSpeed = item.getWindSpeed();
                 BigDecimal calcPower = CalcUtils.calcPower(pressure, windSpeed);
                 CfListDTO cfListDTO = CfListDTO.builder()
+                        .date(item.getEventDateTime())
+                        .time(item.getEventDateTime())
                         .highLevel(item.getHighLevel())
                         .windDirection(item.getWindDirection())
                         .windSpeed(windSpeed)

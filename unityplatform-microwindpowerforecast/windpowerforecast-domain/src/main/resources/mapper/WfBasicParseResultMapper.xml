@@ -11,15 +11,15 @@
         <result column="file_type" property="fileType" />
         <result column="success_mark" property="successMark" />
         <result column="fail_reason" property="failReason" />
-        <result column="file_data" property="fileData" />
         <result column="file_suffix" property="fileSuffix" />
         <result column="file_prefix" property="filePrefix" />
         <result column="wind_farm_name" property="windFarmName" />
+        <result column="data_gen_date" property="dataGenDate" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, version, org_id, file_name, file_type, success_mark, fail_reason, file_data, file_suffix, file_prefix, wind_farm_name
+        id, version, org_id, file_name, file_type, success_mark, fail_reason, file_suffix, file_prefix, wind_farm_name, data_gen_date
     </sql>
 
 </mapper>

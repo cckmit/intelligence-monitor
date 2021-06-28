@@ -1,5 +1,6 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 /**
@@ -25,11 +27,13 @@ public class CfListDTO {
 
     private Integer id;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @ApiModelProperty("日期")
-    private LocalDate date;
+    private LocalDateTime date;
 
+    @JsonFormat(pattern = "HH:mm")
     @ApiModelProperty("时间")
-    private LocalTime time;
+    private LocalDateTime time;
 
     @ApiModelProperty("实测气象高度（m）")
     private BigDecimal highLevel;
