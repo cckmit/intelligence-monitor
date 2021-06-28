@@ -47,6 +47,24 @@ public class Monitor {
         log.info("当前庚顿数据库连接池实际连接是{}，订阅庚顿数量是{}，名称为{}", pool.getRealSize(), servers.size(), serverKeys);
     }
 
+    /* 检测是否有socket在订阅,没有的话取消golden连接
+    private static Integer size;
+
+    @Scheduled(cron = "5 * * * * ?")
+    public void goldenCheck() {
+        ConcurrentHashMap<String, Session> clients = WebSocketServer.clients;
+
+        ServerImplPool pool = goldenUtil.getPool();
+        ConcurrentHashMap<String, ServerImpl> servers = goldenUtil.getServer();
+
+
+        if (WebSocketServer.group.size()==0&&) {
+
+        }
+        int size = servers.size();
+    }
+*/
+
     /**
      * 每日0:00执行 获取当日零点发电量
      */
@@ -66,6 +84,5 @@ public class Monitor {
             }
         }
         log.info("每日发电量更新完成");
-
     }
 }

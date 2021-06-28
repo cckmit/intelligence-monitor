@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface FanIndexService {
 
-    void getFanBaseInfoList(String userName) throws Exception;
+    void getFanBaseInfoList(String userName) ;
 
-    List<LoopVO> getFanBaseInfoList() throws Exception;
+    List<LoopVO> getFanBaseInfoList() ;
 
 }

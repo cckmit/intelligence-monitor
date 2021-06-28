@@ -2,7 +2,7 @@ package com.zhikuntech.intellimonitor.windpowerforecast.domain.controller.normal
 
 import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.WeatherHighDTO;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.WeatherHighDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.CfCurveDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.CfListDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.DqDayElectricGenDTO;
@@ -11,16 +11,15 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.CfListPatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.prototype.query.NwpCurvePatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.NwpListPatternQuery;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataCfService;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataDqService;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataNwpService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDataCfService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDataDqService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDataNwpService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**

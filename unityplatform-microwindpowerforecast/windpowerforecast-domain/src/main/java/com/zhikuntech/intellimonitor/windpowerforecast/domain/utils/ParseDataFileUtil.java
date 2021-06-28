@@ -1,16 +1,18 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.utils;
 
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.*;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.cdq.CdqBodyParse;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.cdq.CdqHeaderParse;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.dq.DqBodyParse;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.parsemodel.dq.DqHeaderParse;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.datafetch.CdqAnd4CWindForSuperShortTimePatternUtils;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.datafetch.DqAnd72windForShortTimePatternUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -80,11 +82,11 @@ public class ParseDataFileUtil {
     }
 
 
-    static Matcher fetchMatcher(Pattern p, String str) {
+    public static Matcher fetchMatcher(Pattern p, String str) {
         return p.matcher(str);
     }
 
-    static String fetchStr(Matcher m) {
+    public static String fetchStr(Matcher m) {
         if (Objects.isNull(m)) {
             return null;
         }
