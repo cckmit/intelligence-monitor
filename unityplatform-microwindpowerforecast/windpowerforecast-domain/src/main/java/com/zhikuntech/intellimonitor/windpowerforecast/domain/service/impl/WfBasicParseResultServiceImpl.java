@@ -52,7 +52,7 @@ public class WfBasicParseResultServiceImpl extends ServiceImpl<WfBasicParseResul
         获取数据
      */
 
-    public void fetchDqWithPointDate(LocalDateTime dateTime, /*dq|cdq|nwp*/ String type) {
+    @Override public void fetchDqWithPointDate(LocalDateTime dateTime, /*dq|cdq|nwp*/ String type) {
         // 短期数据获取
         QueryWrapper<WfBasicParseResult> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("data_gen_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dateTime));
@@ -85,6 +85,8 @@ public class WfBasicParseResultServiceImpl extends ServiceImpl<WfBasicParseResul
                     default:
                         throw new IllegalArgumentException("无法处理的类别:" + type);
                 }
+                parseResult.setSuccessMark(0);
+                getBaseMapper().updateById(parseResult);
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new IllegalStateException(e);

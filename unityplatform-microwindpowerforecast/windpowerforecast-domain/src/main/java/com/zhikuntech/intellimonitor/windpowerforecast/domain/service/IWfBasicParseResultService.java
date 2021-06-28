@@ -4,6 +4,7 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfBasicPars
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -14,6 +15,14 @@ import java.time.LocalDate;
  * @since 2021-06-28
  */
 public interface IWfBasicParseResultService extends IService<WfBasicParseResult> {
+
+
+    /**
+     * 根据时间和文件类型获取sftp文件
+     * @param dateTime  时间
+     * @param type      文件类型(dq|cdq|nwp)
+     */
+    void fetchDqWithPointDate(LocalDateTime dateTime, /*dq|cdq|nwp*/ String type);
 
     /**
      * 生成短期数据
