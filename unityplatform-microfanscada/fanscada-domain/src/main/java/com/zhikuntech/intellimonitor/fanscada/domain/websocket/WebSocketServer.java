@@ -1,7 +1,9 @@
 package com.zhikuntech.intellimonitor.fanscada.domain.websocket;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONPathException;
 import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.zhikuntech.intellimonitor.fanscada.domain.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.SocketParam;
@@ -87,18 +89,23 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(String message) {
-        SocketParam socketParam = JSON.parseObject(message, SocketParam.class);
-        String messageType = socketParam.getMessageType();
-        String userMessage = socketParam.getMessage();
-        if (messageType.contains("01")){
-            //规定数据格式,解析以校验权限,分组,等.
-            log.info("接收到{}的消息,内容{}", username, userMessage);
-            List<LoopVO> fanBaseInfoList = fanIndexService.getFanBaseInfoList();
-            String jsonString = JSONObject.toJSONString(fanBaseInfoList);
-            sendMessage(jsonString, username);
+        try {
+            SocketParam socketParam = JSON.parseObject(message, SocketParam.class);
+            String messageType = socketParam.getMessageType();
+            String userMessage = socketParam.getMessage();
+            if (messageType.contains("01")){
+                //规定数据格式,解析以校验权限,分组,等.
+                log.info("接收到{}的消息,内容{}", username, userMessage);
+                List<LoopVO> fanBaseInfoList = fanIndexService.getFanBaseInfoList();
+                String jsonString = JSONObject.toJSONString(fanBaseInfoList);
+                sendMessage(jsonString, username);
+            }
+            //开启订阅,将用户分组
+            group.put(this.username, this.session);
+        }catch (JSONException e){
+            log.info(e.getMessage());
+            sendMessage("消息格式错误,请重新发送",this.username);
         }
-        //开启订阅,将用户分组
-        group.put(this.username, this.session);
     }
 
     @OnError
