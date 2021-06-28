@@ -43,3 +43,7 @@ golden:
 template:
   file:
     path: unityplatform-micromainpage/mainpage-app/src/main/resources/template/
+
+ribbon:
+  ConnectTimeout: 5000
+  ReadTimeout: 5000
