@@ -45,7 +45,7 @@ public class FanIndexServiceImpl implements FanIndexService {
     private RedisUtil redisUtil;
 
     @Override
-    public void getFanBaseInfoList(String username) throws Exception {
+    public void getFanBaseInfoList(String username) {
         //通过mapper获取庚顿数据的对应关系
 
         //获取所有风场的number,封装其对应的数据字段ID
