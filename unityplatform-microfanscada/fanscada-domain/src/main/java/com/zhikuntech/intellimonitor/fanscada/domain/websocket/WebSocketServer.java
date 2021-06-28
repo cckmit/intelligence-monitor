@@ -1,5 +1,6 @@
 package com.zhikuntech.intellimonitor.fanscada.domain.websocket;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.zhikuntech.intellimonitor.fanscada.domain.golden.GoldenUtil;
@@ -86,15 +87,18 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(String message) {
-
-        //规定数据格式,解析以校验权限,分组,等.
-        log.info("接收到{}的消息,内容{}", username, message);
-        List<LoopVO> fanBaseInfoList = fanIndexService.getFanBaseInfoList();
-        String jsonString = JSONObject.toJSONString(fanBaseInfoList);
-        sendMessage(jsonString, username);
+        SocketParam socketParam = JSON.parseObject(message, SocketParam.class);
+        String messageType = socketParam.getMessageType();
+        String userMessage = socketParam.getMessage();
+        if (messageType.contains("01")){
+            //规定数据格式,解析以校验权限,分组,等.
+            log.info("接收到{}的消息,内容{}", username, userMessage);
+            List<LoopVO> fanBaseInfoList = fanIndexService.getFanBaseInfoList();
+            String jsonString = JSONObject.toJSONString(fanBaseInfoList);
+            sendMessage(jsonString, username);
+        }
         //开启订阅,将用户分组
         group.put(this.username, this.session);
-
     }
 
     @OnError

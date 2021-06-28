@@ -1,5 +1,6 @@
 package com.zhikuntech.intellimonitor.fanscada.domain.pojo;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 /**
@@ -8,9 +9,14 @@ import lombok.Data;
  * @create 2021/6/25 16:08
  **/
 @Data
+@ApiModel
 public class SocketParam {
+
     private String username;
+
     private String sessionId;
-    private String group;
+
+    private String message;
+
     private String messageType;
 }
