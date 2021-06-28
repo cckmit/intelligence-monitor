@@ -1,16 +1,15 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.schedule;
 
-import com.rtdb.api.model.ValueData;
 import com.zhikuntech.intellimonitor.core.commons.constant.FanConstant;
 import com.zhikuntech.intellimonitor.mainpage.domain.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.model.BackendToGolden;
 import com.zhikuntech.intellimonitor.mainpage.domain.model.BackendToGoldenQuery;
 import com.zhikuntech.intellimonitor.mainpage.domain.service.BackendToGoldenService;
+import com.zhikuntech.intellimonitor.mainpage.domain.service.FanInfoService;
 import com.zhikuntech.intellimonitor.mainpage.domain.utils.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
@@ -37,6 +36,9 @@ public class FanInfoInit implements CommandLineRunner {
 
     @Autowired
     private BackendToGoldenService backendToGoldenService;
+
+    @Autowired
+    private FanInfoService fanInfoService;
 
     /**
      * 每日0:00执行
@@ -125,6 +127,12 @@ public class FanInfoInit implements CommandLineRunner {
         POWER_MAP.put(FanConstant.DAILY_ONLINE_ALL, 0.0);
         POWER_MAP.put(FanConstant.MONTHLY_ONLINE_ALL, 0.0);
         POWER_MAP.put(FanConstant.ANNUAL_ONLINE_ALL, 0.0);
+        try {
+            fanInfoService.getStatistics("statistics");
+            fanInfoService.getRuntimeInfos("runtime");
+        }catch (Exception e){
+            goldenUtil.cancelAll();
+        }
         log.info("初始化数据完成！");
     }
 }

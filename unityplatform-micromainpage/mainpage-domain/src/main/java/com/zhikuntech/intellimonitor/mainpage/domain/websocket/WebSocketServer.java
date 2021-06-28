@@ -90,6 +90,7 @@ public class WebSocketServer {
     public void onMessage(String message) {
         if ("hello".equals(message)) {
             log.info(message);
+//            goldenUtil.getSnapshotsTest(username);
             sendMessage("world", username);
             log.info("world");
         } else {
@@ -115,7 +116,7 @@ public class WebSocketServer {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("服务端发送消息给客户端失败：", e);
+            log.error("sendMessage服务端发送消息给客户端失败：", e);
         } finally {
             lock.unlock();
         }
@@ -141,7 +142,7 @@ public class WebSocketServer {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            log.error("服务端发送消息给客户端失败：", e);
+            log.error("sendGroupMessage服务端发送消息给客户端失败：", e);
         } finally {
             lock.unlock();
         }
@@ -153,8 +154,16 @@ public class WebSocketServer {
      * @param message 消息内容
      */
     public void sendAllMessage(String message) {
-        for (Session session : clients.values()) {
-            session.getAsyncRemote().sendText(message);
+        lock.lock();
+        try {
+            for (Session session : clients.values()) {
+                session.getBasicRemote().sendText(message);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error("sendAllMessage服务端发送消息给客户端失败：", e);
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -224,12 +233,12 @@ public class WebSocketServer {
             jsonString = WebSocketConstant.MAIN_PAGE_STATISTICS + WebSocketConstant.PATTERN + jsonString;
             sendMessage(jsonString, username);
             fanInfoService.getStatistics("statistics");
-            log.info("触发订阅golden实时消息---风场统计");
+            log.info("订阅golden实时消息---风场统计");
         } catch (Exception e) {
             goldenUtil.cancelAll();
             sendAllMessage("重新订阅");
             e.printStackTrace();
-            log.info("websocket触发所有取消操作");
+            log.info("subscribeStatistics,websocket触发所有取消操作");
         }
     }
 
@@ -245,12 +254,12 @@ public class WebSocketServer {
             jsonString = WebSocketConstant.MAIN_PAGE_RUNTIME + WebSocketConstant.PATTERN + jsonString;
             sendMessage(jsonString, username);
             fanInfoService.getRuntimeInfos("runtime");
-            log.info("触发订阅golden实时消息---风机详情");
+            log.info("订阅golden实时消息---风机详情");
         } catch (Exception e) {
             goldenUtil.cancelAll();
             sendAllMessage("重新订阅");
             e.printStackTrace();
-            log.info("websocket触发所有取消操作");
+            log.info("subscribeRuntime,websocket触发所有取消操作");
         }
     }
 

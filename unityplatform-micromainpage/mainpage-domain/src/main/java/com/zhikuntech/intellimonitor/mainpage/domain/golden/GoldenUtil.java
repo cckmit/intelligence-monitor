@@ -229,4 +229,12 @@ public class GoldenUtil {
     public ConcurrentHashMap<String, ServerImpl> getServer() {
         return servers;
     }
+
+    public List<ValueData> getSnapshotsTest(String username) throws Exception {
+        int[] ids = {1};
+        Snapshot snap = snaps.get(username);
+        List<ValueData> snapshots = snap.getSnapshots(ids);
+        log.info(snapshots.get(0).getValue()+"");
+        return snapshots;
+    }
 }
