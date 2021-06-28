@@ -215,7 +215,7 @@ public class FanInfoServiceImpl implements FanInfoService {
         } catch (SocketException e) {
             log.info("golden连接失败，重连后取消之前所有连接");
             goldenUtil.cancelAll();
-            webSocketServer.sendAllMessage("请重新订阅");
+            webSocketServer.sendAllMessage("重新订阅");
             return null;
         }
         return valueData;
