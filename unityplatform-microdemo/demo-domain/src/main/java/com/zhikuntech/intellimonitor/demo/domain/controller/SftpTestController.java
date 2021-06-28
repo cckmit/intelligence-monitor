@@ -21,8 +21,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/sftp")
 public class SftpTestController {
-    @Autowired
-    private SFTPUtil sftpUtil;
+
+    private SFTPUtil sftpUtil = new SFTPUtil();
 
     /**
      * 测试连接

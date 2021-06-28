@@ -1,7 +1,6 @@
 package com.zhikuntech.intellimonitor.core.commons.utils;
 
 import com.jcraft.jsch.*;
-import com.zhikuntech.intellimonitor.core.commons.conf.SFTPConfig;
 import com.zhikuntech.intellimonitor.core.commons.constant.sftp.Permissions;
 import com.zhikuntech.intellimonitor.core.commons.constant.sftp.ZKSftpATTRS;
 import com.zhikuntech.intellimonitor.core.commons.constant.sftp.ZKSftpATTRSFileType;
@@ -9,8 +8,6 @@ import com.zhikuntech.intellimonitor.core.commons.exception.CodeException;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.io.InputStream;
@@ -25,23 +22,39 @@ import static com.zhikuntech.intellimonitor.core.commons.base.ResultCode.SFTP_FA
  * @Description SFTP操作工具类
  * @Version 1.0
  */
-@Component
 public class SFTPUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(SFTPUtil.class);
-
-    @Autowired
-    private SFTPConfig sftpConfig;
-
-//    @Value("${sftp.ip}")
-    private String FTP_IP = "192.168.3.179";
-//    @Value("${sftp.port}")
-    private Integer FTP_PORT = 22;
-//    @Value("${sftp.username}")
-    private String FTP_USER = "mysftp";
-//    @Value("${sftp.password}")
-    private String FTP_PWD = "sftp1234";
-//    @Value("${sftp.dst}")
+    /**
+     * ip地址
+     */
+    private String ftpIP = "192.168.3.179";
+    /**
+     * 端口
+     */
+    private Integer ftpPort = 22;
+    /**
+     * 用户名
+     */
+    private String ftpUser = "mysftp";
+    /**
+     * 密码
+     */
+    private String ftpPwd = "sftp1234";
+    /**
+     * 文件存储位置
+     */
     private String resourceLocation = "/upload";
+
+    public SFTPUtil() {
+    }
+
+    public SFTPUtil(String ftpIP, Integer ftpPort, String ftpUser, String ftpPwd, String resourceLocation) {
+        this.ftpIP = ftpIP;
+        this.ftpPort = ftpPort;
+        this.ftpUser = ftpUser;
+        this.ftpPwd = ftpPwd;
+        this.resourceLocation = resourceLocation;
+    }
 
     private static Session session;
 
@@ -85,11 +98,11 @@ public class SFTPUtil {
                 session.disconnect();
             }
             JSch jSch = new JSch();
-            session = jSch.getSession(FTP_USER, FTP_IP, FTP_PORT);
+            session = jSch.getSession(ftpUser, ftpIP, ftpPort);
             //第一次登陆时候，是否需要提示信息，value可以填写 yes，no或者是ask
             session.setConfig("StrictHostKeyChecking", "no");
-            if (!StringUtils.isEmpty(FTP_PWD)) {
-                session.setPassword(FTP_PWD);
+            if (!StringUtils.isEmpty(ftpPwd)) {
+                session.setPassword(ftpPwd);
             }
             // 设置超时时间为无穷大
             session.setTimeout(0);
