@@ -3,7 +3,12 @@ package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl.cdqc
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.*;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.*;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.analysis.IWfAnalyseCdqService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.assess.IWfAssessDayService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.cdqcalc.CdqCalcService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDataCapacityService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDataCdqService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDataZrService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.TimeProcessUtils;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.calc.AssessCalcUtils;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.calc.CalcCommonUtils;
@@ -75,7 +80,7 @@ public class CdqCalcServiceImpl implements CdqCalcService {
 
 
 
-    public void calcData(String bg, String end, String headerDate) {
+    @Override public void calcData(String bg, String end, String headerDate) {
         /*
             bg  ->  yyyy-MM-dd HH:mm:ss
             end ->  yyyy-MM-dd HH:mm:ss
@@ -171,7 +176,7 @@ public class CdqCalcServiceImpl implements CdqCalcService {
             // 真实功率数据
             Optional.of(zrGroup.get(timeK)).ifPresent(l -> {
                 List<BigDecimal> tmpList = l.stream().filter(Objects::nonNull).map(WfDataZr::getActualProduce).collect(Collectors.toList());
-                tmp.setDqProduce(tmpList);
+                tmp.setZrCapsProduce(tmpList);
             });
         }
 
@@ -187,7 +192,7 @@ public class CdqCalcServiceImpl implements CdqCalcService {
                                 && CollectionUtils.isNotEmpty(item.getZrCapsProduce()))
                 .filter(item -> new BigDecimal("0").compareTo(item.getCap()) != 0)
                 .collect(Collectors.toList());
-        if (CollectionUtils.isNotEmpty(aggrs)) {
+        if (CollectionUtils.isEmpty(aggrs)) {
             log.warn("过滤数据后无计算数据可用");
             return;
         }
@@ -244,7 +249,7 @@ public class CdqCalcServiceImpl implements CdqCalcService {
         } else {
             WfAnalyseCdq nst = WfAnalyseCdq.builder()
                     .calcDate(dayBegin)
-                    .avgMae(fnRes)
+                    .avgRmse(fnRes)
                     .avgMae(emae)
                     .biggestDiff(maxe)
                     .r1Ratio(r1)
@@ -257,9 +262,9 @@ public class CdqCalcServiceImpl implements CdqCalcService {
 
         /*   计算考核结果数据    */
 
-        //# TODO 漏报次数
+        //# 漏报次数 -- 此处无需处理(次日处理昨日漏报次数)
         int hiatus = 0;
-        //# TODO 漏报次数
+        //# 漏报次数 -- 此处无需处理(次日处理昨日漏报次数)
 
         //# 超短期功率预测准确率
         final BigDecimal cdqRatioR1 = AssessCalcUtils.calcAssessRatioR1(aggrs);
@@ -269,17 +274,13 @@ public class CdqCalcServiceImpl implements CdqCalcService {
 
         //# 超短期功率预测准确率考核电量
         // （85%-当日超短期功率预测准确率）*装机容量（252MW）*风电场考核小时数（默认0.2）*技术管理系数（默认为1），单位MW
-        BigDecimal cdqElectricR1 = new BigDecimal("0.85").subtract(cdqRatioR1)
-                .multiply(new BigDecimal("252")).multiply(new BigDecimal("0.2"))
-                .multiply(new BigDecimal("1")).setScale(3, RoundingMode.HALF_EVEN);
+        BigDecimal cdqElectricR1 = AssessCalcUtils.calcCdqElectricR1(cdqRatioR1);
         //# 超短期功率预测准确率考核电量
 
 
         //# 超短期功率预测准确率考核费用
         // 【超短期功率预测准确率考核电量】*1000*0.4153元/kWh（1000为统一单位），单位元
-        BigDecimal cdqPayR1 = cdqElectricR1.multiply(new BigDecimal("1000"))
-                .multiply(new BigDecimal("0.4153"))
-                .setScale(3, RoundingMode.HALF_EVEN);
+        BigDecimal cdqPayR1 = AssessCalcUtils.calcCdqPayR1(cdqElectricR1);
         //# 超短期功率预测准确率考核费用
 
         /*   计算考核结果数据    */
@@ -296,6 +297,7 @@ public class CdqCalcServiceImpl implements CdqCalcService {
             assessDayService.getBaseMapper().updateById(wfAssessDay);
         } else {
             WfAssessDay nst = WfAssessDay.builder()
+                    .version(0)
                     .calcDate(dayBegin)
                     .cdqHiatus(hiatus)
                     .cdqRatio(cdqRatioR1)

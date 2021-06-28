@@ -2,6 +2,7 @@ package com.zhikuntech.intellimonitor.mainpage.domain.dto;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -36,4 +37,9 @@ public class WindPowerCurveDTO {
      * 实测风速
      */
     private List<TimeWindSpeedDTO> measuredWindSpeed;
+
+    /**
+     * 实测温度
+     */
+    private BigDecimal cfTemperature;
 }

@@ -112,7 +112,7 @@ public class DqCalcUtils {
             pmk = pmk.divide(BigDecimal.valueOf(zrCapsProduces.size()), 3, RoundingMode.HALF_UP);
 
             pm = pm.add(pmk);
-            pp = pp.add(pp);
+            pp = pp.add(ppk);
         }
         pm = pm.divide(new BigDecimal(aggrs.size()), 3, RoundingMode.HALF_EVEN);
         pp = pp.divide(new BigDecimal(aggrs.size()), 3, RoundingMode.HALF_EVEN);
@@ -145,6 +145,11 @@ public class DqCalcUtils {
         }
         // molecule / sqrt(demoninatorPre * demoninatorPost)
         double sqrt = Math.sqrt(demoninatorPre.multiply(demoninatorPost).doubleValue());
+
+        // 分母为0
+        if (new BigDecimal("0").compareTo(new BigDecimal(sqrt)) == 0) {
+            return new BigDecimal("0");
+        }
         return molecule.divide(new BigDecimal(sqrt), 3, RoundingMode.HALF_EVEN);
     }
 

@@ -34,10 +34,11 @@
                wac.cdq_hiatus cdqHiatusFnl, wac.cdq_ratio cdqRatioFnl, wac.cdq_electric cdqElectricFnl, wac.cdq_pay cdqPayFnl,
                wac.exec_person execPerson, wac.guardian guardian, wac.fix_reason fixReason, wac.fix_time fixTime
         from wf_assess_day wad left join wf_assess_change wac
-                                         on wad.id = wac.id
-        where wac.newest = 0
-          and wad.calc_date >= #{mPre}
+                                         on wad.id = wac.day_ref_id and wac.newest = 0
+        where
+          wad.calc_date >= #{mPre}
           and wad.calc_date &lt; #{mPost}
+        order by ${filed} ${upOrDown}
     </select>
 
 </mapper>

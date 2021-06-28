@@ -1,5 +1,7 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.schedulefetch;
 
+import java.math.BigDecimal;
+
 /**
  * <p>
  *     1.实际功率数据(5min)
@@ -24,5 +26,10 @@ public interface ScheduleFetchDataService {
      * 调度获取容量数据
      */
     void scheduleFetchCapacity();
+
+    /**
+     * 获取当月全场发电量
+     */
+    BigDecimal scheduleFetchMonthElectric();
 
 }

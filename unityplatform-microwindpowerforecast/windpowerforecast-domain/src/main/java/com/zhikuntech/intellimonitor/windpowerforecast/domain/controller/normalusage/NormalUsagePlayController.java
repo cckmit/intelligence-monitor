@@ -2,18 +2,18 @@ package com.zhikuntech.intellimonitor.windpowerforecast.domain.controller.normal
 
 import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.WeatherHighDTO;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.WeatherHighDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.CfCurveDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.CfListDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.DqDayElectricGenDTO;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.NwpListPatternDTO;
+import com.zhikuntech.intellimonitor.windpowerforecast.prototype.dto.NwpListPatternDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.CfCurvePatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.CfListPatternQuery;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.NwpCurvePatternQuery;
+import com.zhikuntech.intellimonitor.windpowerforecast.prototype.query.NwpCurvePatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.NwpListPatternQuery;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataCfService;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataDqService;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataNwpService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDataCfService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDataDqService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDataNwpService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -68,8 +68,8 @@ public class NormalUsagePlayController {
 
     @ApiOperation("日发电量计算")
     @GetMapping("/query-nwp-day-electric-gens")
-    public BaseResponse<List<DqDayElectricGenDTO>> dayElectricGen() {
-        List<DqDayElectricGenDTO> results = dqService.dayElectricGen();
+    public BaseResponse<List<DqDayElectricGenDTO>> dayElectricGen(@RequestParam(name = "date", required = false) String date) {
+        List<DqDayElectricGenDTO> results = dqService.dayElectricGen(date);
         return BaseResponse.success(results);
     }
 

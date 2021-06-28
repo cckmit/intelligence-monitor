@@ -94,6 +94,10 @@
             <groupId>com.zhikuntech.intellimonitor</groupId>
             <artifactId>core-commons</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.zhikuntech.intellimonitor</groupId>
+            <artifactId>windpowerforecast-facade</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

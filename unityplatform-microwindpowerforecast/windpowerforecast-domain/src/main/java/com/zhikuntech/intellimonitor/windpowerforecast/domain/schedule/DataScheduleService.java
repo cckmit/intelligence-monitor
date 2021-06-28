@@ -1,5 +1,6 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.schedule;
 
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.constants.ScheduleConstants;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.schedulefetch.ScheduleFetchDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,9 @@ public class DataScheduleService {
 
     private final ScheduleFetchDataService fetchDataService;
 
+    /*计算服务*/
+
+    /*   ----------------------数据获取调度----------------------   */
 
     //# cron -> 定时任务, 1min/次
 

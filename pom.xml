@@ -44,6 +44,11 @@
             </dependency>
             <dependency>
                 <groupId>com.zhikuntech.intellimonitor</groupId>
+                <artifactId>windpowerforecast-facade</artifactId>
+                <version>${intelli-monitor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zhikuntech.intellimonitor</groupId>
                 <artifactId>fanscada-facade</artifactId>
                 <version>${intelli-monitor.version}</version>
             </dependency>

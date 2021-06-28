@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfBasicParseResultMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfBasicParseResult">
+        <id column="id" property="id" />
+        <result column="version" property="version" />
+        <result column="org_id" property="orgId" />
+        <result column="file_name" property="fileName" />
+        <result column="file_type" property="fileType" />
+        <result column="success_mark" property="successMark" />
+        <result column="fail_reason" property="failReason" />
+        <result column="file_data" property="fileData" />
+        <result column="file_suffix" property="fileSuffix" />
+        <result column="file_prefix" property="filePrefix" />
+        <result column="wind_farm_name" property="windFarmName" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, version, org_id, file_name, file_type, success_mark, fail_reason, file_data, file_suffix, file_prefix, wind_farm_name
+    </sql>
+
+</mapper>

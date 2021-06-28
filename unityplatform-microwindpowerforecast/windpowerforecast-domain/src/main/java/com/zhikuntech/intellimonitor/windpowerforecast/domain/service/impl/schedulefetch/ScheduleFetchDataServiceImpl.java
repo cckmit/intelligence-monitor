@@ -5,11 +5,11 @@ import com.zhikuntech.intellimonitor.mainpage.facade.MainPageFacade;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataCapacity;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataCf;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataZr;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataCapacityService;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataCfService;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfDataZrService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDataCapacityService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDataCfService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDataZrService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.schedulefetch.ScheduleFetchDataService;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.ConstantsOfWf;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.constants.ConstantsOfWf;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.TimeProcessUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,9 +59,17 @@ public class ScheduleFetchDataServiceImpl implements ScheduleFetchDataService {
                 .eventDateTime(minutePattern)
                 .powerCalcCapacity(new BigDecimal(avtive * 4))
                 .checkCalcCapacity(new BigDecimal("252"))
+                .windPlatformGenElectric(new BigDecimal(avtive * 3))
                 .status("00")
                 .build();
         capacityService.getBaseMapper().insert(dataCapacity);
+    }
+
+    @Override
+    public BigDecimal scheduleFetchMonthElectric() {
+        // TODO 获取当月全场发电量
+        int avtive = ThreadLocalRandom.current().nextInt(256, 300);
+        return new BigDecimal(avtive);
     }
 
     @Override

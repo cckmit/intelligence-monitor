@@ -10,11 +10,11 @@ import lombok.*;
 
 /**
  * <p>
- * 容量
+ * 容量/风电场发电量
  * </p>
  *
  * @author liukai
- * @since 2021-06-18
+ * @since 2021-06-25
  */
 @AllArgsConstructor
 @NoArgsConstructor
@@ -44,6 +44,11 @@ public class WfDataCapacity implements Serializable {
      * 考核结果计算时使用的容量
      */
     private BigDecimal checkCalcCapacity;
+
+    /**
+     * 风电场发电量
+     */
+    private BigDecimal windPlatformGenElectric;
 
     /**
      * 创建时间

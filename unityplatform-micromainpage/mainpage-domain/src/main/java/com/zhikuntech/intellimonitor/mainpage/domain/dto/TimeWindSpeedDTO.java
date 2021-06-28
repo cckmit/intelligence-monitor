@@ -3,6 +3,8 @@ package com.zhikuntech.intellimonitor.mainpage.domain.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -17,10 +19,10 @@ public class TimeWindSpeedDTO {
      * 时间
      */
     @JsonFormat(pattern = "HH:mm",timezone = "GMT+8")
-    private Date date;
+    private LocalDateTime date;
 
     /**
      * 风速
      */
-    private Double speedTime;
+    private BigDecimal speedTime;
 }

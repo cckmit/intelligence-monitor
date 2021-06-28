@@ -1,7 +1,7 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.NwpListPatternDTO;
+import com.zhikuntech.intellimonitor.windpowerforecast.prototype.dto.NwpListPatternDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfTimeBase;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
@@ -31,7 +31,9 @@ public interface WfTimeBaseMapper extends BaseMapper<WfTimeBase> {
     List<NwpListPatternDTO> nwpListPattern(Page<NwpListPatternDTO> page,
                                            @Param("datePre") String datePre,
                                            @Param("datePost") String datePost,
-                                           @Param("timeRatio") Integer timeRatio);
+                                           @Param("timeRatio") Integer timeRatio,
+                                           @Param("nwp_high") Integer nwpHigh,
+                                           @Param("cf_high") Integer cfHigh);
 
 
     /**
@@ -44,5 +46,7 @@ public interface WfTimeBaseMapper extends BaseMapper<WfTimeBase> {
      */
     List<NwpListPatternDTO> nwpCurvePattern(@Param("datePre") String datePre,
                                            @Param("datePost") String datePost,
-                                           @Param("timeRatio") Integer timeRatio);
+                                           @Param("timeRatio") Integer timeRatio,
+                                            @Param("nwp_high") Integer nwpHigh,
+                                            @Param("cf_high") Integer cfHigh);
 }

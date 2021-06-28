@@ -9,13 +9,14 @@
         <result column="event_date_time" property="eventDateTime" />
         <result column="power_calc_capacity" property="powerCalcCapacity" />
         <result column="check_calc_capacity" property="checkCalcCapacity" />
+        <result column="wind_platform_gen_electric" property="windPlatformGenElectric" />
         <result column="create_time" property="createTime" />
         <result column="status" property="status" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, org_id, event_date_time, power_calc_capacity, check_calc_capacity, create_time, status
+        id, org_id, event_date_time, power_calc_capacity, check_calc_capacity, wind_platform_gen_electric, create_time, status
     </sql>
 
 </mapper>

@@ -26,4 +26,9 @@ public class DayAssessQuery {
     @ApiModelProperty(value = "页码", required = true)
     private Integer pageNumber;
 
+    @ApiModelProperty(value = "排序字段", required = true)
+    private String oderByField;
+
+    @ApiModelProperty(value = "生序(up)or降序(down)", required = true)
+    private String upOrDown;
 }
