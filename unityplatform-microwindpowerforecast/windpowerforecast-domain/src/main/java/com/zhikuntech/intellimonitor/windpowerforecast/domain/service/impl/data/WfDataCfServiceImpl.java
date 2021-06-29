@@ -190,12 +190,7 @@ public class WfDataCfServiceImpl extends ServiceImpl<WfDataCfMapper, WfDataCf> i
         String high = query.getHigh();
         String dateStrPre = query.getDateStrPre();
         String dateStrPost = query.getDateStrPost();
-
         LocalDateTime pre = DateProcessUtils.parseToLocalDateTime(dateStrPre);
-        LocalDateTime post = DateProcessUtils.parseToLocalDateTime(dateStrPost);
-        if (pre == null || post == null) {
-            return pager;
-        }
         String preStr;
         String postStr;
         if("month".equalsIgnoreCase(queryMode)){
@@ -215,6 +210,8 @@ public class WfDataCfServiceImpl extends ServiceImpl<WfDataCfMapper, WfDataCf> i
                 postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(nowDay.plusDays(1));
             }
         }else {
+
+            LocalDateTime post = DateProcessUtils.parseToLocalDateTime(dateStrPost);
             preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(pre);
             postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(post.plusDays(1));
         }

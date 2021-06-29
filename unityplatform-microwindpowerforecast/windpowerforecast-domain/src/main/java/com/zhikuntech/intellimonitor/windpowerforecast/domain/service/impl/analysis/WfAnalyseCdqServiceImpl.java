@@ -51,23 +51,25 @@ public class WfAnalyseCdqServiceImpl extends ServiceImpl<WfAnalyseCdqMapper, WfA
             throw new IllegalArgumentException("查询模式不能为空");
         }
         String dateStrPre = query.getDateStrPre();
-        LocalDateTime pre = DateProcessUtils.parseToLocalDateTime(dateStrPre);
         String preStr;
         String postStr ;
         String queryMode=query.getQueryMode();
         if (queryMode.equals("day")){
+            LocalDateTime pre = DateProcessUtils.parseToLocalDateTime(dateStrPre);
             String dateStrPost = query.getDateStrPost();
             LocalDateTime post = DateProcessUtils.parseToLocalDateTime(dateStrPost);
             preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(pre);
             postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(post.plusDays(1));
         }else if (queryMode.equals("month")){
-            LocalDateTime first=pre.with(TemporalAdjusters.firstDayOfMonth());//月第一天
-            LocalDateTime last=pre.with(TemporalAdjusters.lastDayOfMonth());//月最后一天
+            String dateStrPreNew = dateStrPre + "-01";
+            LocalDateTime preNew = DateProcessUtils.parseToLocalDateTime(dateStrPreNew);
+            LocalDateTime first=preNew.with(TemporalAdjusters.firstDayOfMonth());//月第一天
+            LocalDateTime last=preNew.with(TemporalAdjusters.lastDayOfMonth());//月最后一天
             if (first == null || last == null) {
                 return aggregateDTO;
             }
             LocalDate nowDay = LocalDate.now();//今天
-            Month preMonth=pre.getMonth();//输入的日期的月份
+            Month preMonth=preNew.getMonth();//输入的日期的月份
             Month nowMonth=nowDay.getMonth();//本月
             preStr =TimeProcessUtils.formatLocalDateTimeWithSecondPattern(first);
             postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(last.plusDays(1));
