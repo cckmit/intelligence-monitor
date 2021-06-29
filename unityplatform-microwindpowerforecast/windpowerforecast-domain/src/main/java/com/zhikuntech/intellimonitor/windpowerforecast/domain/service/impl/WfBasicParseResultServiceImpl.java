@@ -46,10 +46,32 @@ public class WfBasicParseResultServiceImpl extends ServiceImpl<WfBasicParseResul
 
     private final IWfDataCdqService cdqService;
 
+
     /**
-     * 补发未处理数据
+     * 补发今日之前数据
      */
-    @Override public void reLaunchPreLoss() {
+    @Override public void relaunchDayBefore() {
+        LocalDateTime dateTime = LocalDateTime.now().minusDays(1);
+        String dtStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dateTime);
+        QueryWrapper<WfBasicParseResult> basicParseResultQueryWrapper = new QueryWrapper<>();
+        basicParseResultQueryWrapper.eq("success_mark", 2);
+        basicParseResultQueryWrapper.lt("data_gen_date", dtStr);
+        List<WfBasicParseResult> resultList = getBaseMapper().selectList(basicParseResultQueryWrapper);
+        if (CollectionUtils.isNotEmpty(resultList)) {
+            for (WfBasicParseResult parseResult : resultList) {
+                try {
+                    fetchDqWithPointDate(parseResult.getDataGenDate(), parseResult.getFileType());
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * 补发今日未处理数据
+     */
+    @Override public void reLaunchCurDayPreLoss() {
 
         LocalDateTime dayStart = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
 

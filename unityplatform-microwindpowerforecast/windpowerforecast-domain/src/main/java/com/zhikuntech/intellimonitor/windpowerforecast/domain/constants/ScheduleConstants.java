@@ -7,6 +7,13 @@ package com.zhikuntech.intellimonitor.windpowerforecast.domain.constants;
  */
 public class ScheduleConstants {
 
+    //# 补发数据获取
+
+    public final static String FOREST_FETCH_RE_DAY_LOCK = "wf_re_fetch_forest_cur_day";
+
+    public final static String FOREST_FETCH_RE_BEFORE_DAY_LOCK = "wf_re_fetch_forest_before_day";
+
+
 
     //# 获取预测数据锁
 

@@ -35,6 +35,52 @@ public class DataScheduleService {
 
     private final IWfBasicParseResultService parseResultService;
 
+    /*   ----------------------预测数据数据(补发)调度----------------------   */
+
+    @Scheduled(cron = "0 30 0 * * ?")
+    public void relaunchDayBefore() {
+        // 补发今日之前的数据
+        RLock lock = redissonClient.getLock(ScheduleConstants.FOREST_FETCH_RE_BEFORE_DAY_LOCK);
+        boolean enter = false;
+        try {
+            enter = lock.tryLock(0, 50, TimeUnit.SECONDS);
+            if (enter) {
+                log.info("schedule method: [{}]", "relaunchDayBefore");
+                parseResultService.relaunchDayBefore();
+                TimeUnit.SECONDS.sleep(10);
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (enter) {
+                lock.unlock();
+            }
+        }
+
+    }
+
+    @Scheduled(cron = "0 0 1,10,15,20,23 * * ?")
+    public void reLaunchPreLoss() {
+        // 补发昨日数据
+        // 指定时间[1,10,15,20,23]补发预测数据获取调度
+        RLock lock = redissonClient.getLock(ScheduleConstants.FOREST_FETCH_RE_DAY_LOCK);
+        boolean enter = false;
+        try {
+            enter = lock.tryLock(0, 50, TimeUnit.SECONDS);
+            if (enter) {
+                log.info("schedule method: [{}]", "reLaunchPreLoss");
+                parseResultService.reLaunchCurDayPreLoss();
+                TimeUnit.SECONDS.sleep(10);
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (enter) {
+                lock.unlock();
+            }
+        }
+    }
+
     /*   ----------------------预测数据数据获取调度----------------------   */
 
     @Scheduled(cron = "0 0 2 * * ?")

@@ -16,11 +16,15 @@ import java.time.LocalDateTime;
  */
 public interface IWfBasicParseResultService extends IService<WfBasicParseResult> {
 
+    /**
+     * 补发今日之前数据
+     */
+    void relaunchDayBefore();
 
     /**
-     * 补发未处理数据
+     * 补发今日未处理数据
      */
-    void reLaunchPreLoss();
+    void reLaunchCurDayPreLoss();
 
     /**
      * 根据时间和文件类型获取sftp文件
