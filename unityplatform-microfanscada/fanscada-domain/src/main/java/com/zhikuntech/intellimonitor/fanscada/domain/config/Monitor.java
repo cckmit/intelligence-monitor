@@ -7,9 +7,12 @@ import com.zhikuntech.intellimonitor.core.commons.constant.FanConstant;
 import com.zhikuntech.intellimonitor.fanscada.domain.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGolden;
 import com.zhikuntech.intellimonitor.fanscada.domain.service.BackendToGoldenService;
+import com.zhikuntech.intellimonitor.fanscada.domain.service.FanIndexService;
+import com.zhikuntech.intellimonitor.fanscada.domain.service.impl.FanIndexServiceImpl;
 import com.zhikuntech.intellimonitor.fanscada.domain.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -47,23 +50,22 @@ public class Monitor {
         log.info("当前庚顿数据库连接池实际连接是{}，订阅庚顿数量是{}，名称为{}", pool.getRealSize(), servers.size(), serverKeys);
     }
 
-    /* 检测是否有socket在订阅,没有的话取消golden连接
-    private static Integer size;
+    // 检测是否有socket在订阅,没有的话取消golden连接
+    //private static Integer size;
 
-    @Scheduled(cron = "5 * * * * ?")
-    public void goldenCheck() {
-        ConcurrentHashMap<String, Session> clients = WebSocketServer.clients;
+    //@Scheduled(cron = "*/5 * * * * ?")
+    //public void goldenCheck() {
+    //    ApplicationContext applicationContext = ApplicationContextUtil.getApplicationContext();
+    //    ConcurrentHashMap<String, ServerImpl> servers = goldenUtil.getServer();
+    //    //golden订阅连接==0的时候重新建立连接
+    //    if (servers.size() == 0) {
+    //        GoldenUtil bean = applicationContext.getBean(GoldenUtil.class);
+    //        bean.cancelAll();
+    //        FanIndexService fanIndexService = applicationContext.getBean(FanIndexService.class);
+    //        fanIndexService.getFanBaseInfoList("root");
+    //    }
+    //}
 
-        ServerImplPool pool = goldenUtil.getPool();
-        ConcurrentHashMap<String, ServerImpl> servers = goldenUtil.getServer();
-
-
-        if (WebSocketServer.group.size()==0&&) {
-
-        }
-        int size = servers.size();
-    }
-*/
 
     /**
      * 每日0:00执行 获取当日零点发电量

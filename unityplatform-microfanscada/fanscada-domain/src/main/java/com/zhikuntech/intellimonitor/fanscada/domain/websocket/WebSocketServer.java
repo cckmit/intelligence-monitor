@@ -3,21 +3,18 @@ package com.zhikuntech.intellimonitor.fanscada.domain.websocket;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONPathException;
-import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.zhikuntech.intellimonitor.fanscada.domain.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.SocketParam;
 import com.zhikuntech.intellimonitor.fanscada.domain.service.FanIndexService;
 import com.zhikuntech.intellimonitor.fanscada.domain.vo.LoopVO;
-import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import sun.tools.jar.resources.jar;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
@@ -41,7 +38,7 @@ public class WebSocketServer {
      * 存放所有在线的客户端
      */
     public static ConcurrentHashMap<String, Session> clients = new ConcurrentHashMap<>();
-    public static ConcurrentHashMap<String, Session> group = new ConcurrentHashMap<>();
+    public static ConcurrentHashMap<String, Session> groupRuntime = new ConcurrentHashMap<>();
 
     private Session session;
 
@@ -59,6 +56,7 @@ public class WebSocketServer {
     public void onOpen(Session session, @PathParam("username") String username) {
         onlineCount.incrementAndGet();
         this.session = session;
+
         this.username = username;
         clients.put(this.username, this.session);
 
@@ -66,7 +64,9 @@ public class WebSocketServer {
          * 第一次有人连接时,开始获取实时数据
          */
         if (clients.size() == 1) {
-            fanIndexService.getFanBaseInfoList(this.username);
+            log.info("第一个socket,触发庚顿连接");
+            fanIndexService.getFanBaseInfoList(username);
+            groupRuntime.clear();
         }
         log.info("有新连接加入：{}，当前在线人数为：{}", this.username, onlineCount.get());
     }
@@ -77,8 +77,8 @@ public class WebSocketServer {
     @OnClose
     public void onClose() {
         onlineCount.decrementAndGet();
-        //clients.remove(username);
-        group.remove(username);
+        clients.remove(username);
+        groupRuntime.remove(username);
         log.info("有一连接关闭：{}，当前在线人数为：{}", username, onlineCount.get());
     }
 
@@ -92,19 +92,23 @@ public class WebSocketServer {
         try {
             SocketParam socketParam = JSON.parseObject(message, SocketParam.class);
             String messageType = socketParam.getMessageType();
-            String userMessage = socketParam.getMessage();
-            if (messageType.contains("01")){
+            if (messageType.contains("01")) {
                 //规定数据格式,解析以校验权限,分组,等.
-                log.info("接收到{}的消息,内容{}", username, userMessage);
+                groupRuntime.put(this.username, this.session);
+                log.info("接收到{}的消息,内容{}", username, messageType);
                 List<LoopVO> fanBaseInfoList = fanIndexService.getFanBaseInfoList();
                 String jsonString = JSONObject.toJSONString(fanBaseInfoList);
                 sendMessage(jsonString, username);
+                //开启订阅,将用户分组
+            } else if (messageType.contains("02")) {
+                log.info("重新订阅");
+                groupRuntime.put(this.username, this.session);
+                fanIndexService.getFanBaseInfoList(username);
+
             }
-            //开启订阅,将用户分组
-            group.put(this.username, this.session);
-        }catch (JSONException e){
+        } catch (JSONException e) {
             log.info(e.getMessage());
-            sendMessage("消息格式错误,请重新发送",this.username);
+            sendMessage("消息格式错误,请重新发送", this.username);
         }
     }
 
@@ -131,10 +135,10 @@ public class WebSocketServer {
         }
     }
 
-    public void sendAllMessage(String message) {
 
-        for (Session session : group.values()) {
-            log.info("{}订阅fanscada数据", username);
+    public void sendAllMessage(String message) {
+        for (Session session : groupRuntime.values()) {
+            log.info("{}订阅fanscada数据", session.getId());
             lock.lock();
             try {
                 session.getAsyncRemote().sendText(message);

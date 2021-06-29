@@ -39,6 +39,6 @@ golden:
   poolSize: 25
   maxSize: 50
 
-template:
-  file:
-    path: /home/intelligence-monitor/backend/mainpage/template/
+ribbon:
+  ConnectTimeout: 5000
+  ReadTimeout: 5000

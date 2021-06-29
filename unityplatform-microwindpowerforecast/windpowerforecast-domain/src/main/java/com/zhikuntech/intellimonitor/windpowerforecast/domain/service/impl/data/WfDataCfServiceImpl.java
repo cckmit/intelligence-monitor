@@ -183,72 +183,54 @@ public class WfDataCfServiceImpl extends ServiceImpl<WfDataCfMapper, WfDataCf> i
         QueryWrapper<WfDataCf> queryWrapper = new QueryWrapper<>();
 
         // criteria
+        if(query.getQueryMode().isEmpty()){
+            return pager;
+        }
         String queryMode = query.getQueryMode();
         String high = query.getHigh();
         String dateStrPre = query.getDateStrPre();
+        String dateStrPost = query.getDateStrPost();
         LocalDateTime pre = DateProcessUtils.parseToLocalDateTime(dateStrPre);
-
-        switch (queryMode){
-            case "day":
-                String dateStrPost = query.getDateStrPost();
-                LocalDateTime post = DateProcessUtils.parseToLocalDateTime(dateStrPost);
-                if (pre == null || post == null) {
-                    return pager;
-                }
-                String preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(pre);
-                String postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(post.plusDays(1));
-
-                queryWrapper.eq("high_level", StringUtils.trim(high));
-                queryWrapper.gt("event_date_time", preStr);
-                queryWrapper.le("event_date_time", postStr);
-
-                // page
-                Page<WfDataCf> queryPage = new Page<>();
-                queryPage.setCurrent(query.getPageNumber());
-                queryPage.setSize(query.getPageSize());
-                // fetch
-                Page<WfDataCf> results = getBaseMapper().selectPage(queryPage, queryWrapper);
-                // 数据转换
-                List<WfDataCf> records = results.getRecords();
-                List<CfListDTO> dtoList=zhuanhuan(records);
-                pager.setList(dtoList);
-                pager.setTotalCount((int) results.getTotal());
+        String preStr;
+        String postStr;
+        if("month".equalsIgnoreCase(queryMode)){
+            LocalDateTime first=pre.with(TemporalAdjusters.firstDayOfMonth());//月第一天
+            LocalDateTime last=pre.with(TemporalAdjusters.lastDayOfMonth());//月最后一天
+            if (first == null || last == null) {
                 return pager;
-            case "month" :
-                LocalDateTime first=pre.with(TemporalAdjusters.firstDayOfMonth());
-                LocalDateTime last=pre.with(TemporalAdjusters.lastDayOfMonth());
-                if (first == null || last == null) {
-                    return pager;
-                }
-                LocalDate nowDay = LocalDate.now();
-                Month preMonth=pre.getMonth();
-                Month nowMonth=nowDay.getMonth();
-                int i =preMonth.compareTo(nowMonth);
-                String preStr1 = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(first);
-                String postStr1 = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(last.plusDays(1));
-                if (i<0){
-                    postStr1 = postStr1;
-                }else {
-                    postStr1 = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(nowDay.plusDays(1));
-                }
-                queryWrapper.eq("high_level", StringUtils.trim(high));
-                queryWrapper.gt("event_date_time", preStr1);
-                queryWrapper.le("event_date_time", postStr1);
+            }
+            LocalDate nowDay = LocalDate.now();
+            Month preMonth=pre.getMonth();
+            Month nowMonth=nowDay.getMonth();
+            int i =preMonth.compareTo(nowMonth);
+            preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(first);
+            postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(last.plusDays(1));
+            if (i<0){
+            }else {
+                postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(nowDay.plusDays(1));
+            }
+        }else {
 
-                // page
-                Page<WfDataCf> queryPage1 = new Page<>();
-                queryPage1.setCurrent(query.getPageNumber());
-                queryPage1.setSize(query.getPageSize());
-                // fetch
-                Page<WfDataCf> results1 = getBaseMapper().selectPage(queryPage1, queryWrapper);
-                // 数据转换
-                List<WfDataCf> records1 = results1.getRecords();
-                List<CfListDTO> dtoList1=zhuanhuan(records1);
-                pager.setList(dtoList1);
-                pager.setTotalCount((int) results1.getTotal());
-                return pager;
+            LocalDateTime post = DateProcessUtils.parseToLocalDateTime(dateStrPost);
+            preStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(pre);
+            postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(post.plusDays(1));
         }
-        return null;
+        queryWrapper.eq("high_level", StringUtils.trim(high));
+        queryWrapper.gt("event_date_time", preStr);
+        queryWrapper.le("event_date_time", postStr);
+
+        // page
+        Page<WfDataCf> queryPage = new Page<>();
+        queryPage.setCurrent(query.getPageNumber());
+        queryPage.setSize(query.getPageSize());
+        // fetch
+        Page<WfDataCf> results = getBaseMapper().selectPage(queryPage, queryWrapper);
+        // 数据转换
+        List<WfDataCf> records = results.getRecords();
+        List<CfListDTO> dtoList=zhuanhuan(records);
+        pager.setList(dtoList);
+        pager.setTotalCount((int) results.getTotal());
+        return pager;
     }
 
     /**
@@ -261,6 +243,8 @@ public class WfDataCfServiceImpl extends ServiceImpl<WfDataCfMapper, WfDataCf> i
                 BigDecimal windSpeed = item.getWindSpeed();
                 BigDecimal calcPower = CalcUtils.calcPower(pressure, windSpeed);
                 CfListDTO cfListDTO = CfListDTO.builder()
+                        .date(item.getEventDateTime())
+                        .time(item.getEventDateTime())
                         .highLevel(item.getHighLevel())
                         .windDirection(item.getWindDirection())
                         .windSpeed(windSpeed)

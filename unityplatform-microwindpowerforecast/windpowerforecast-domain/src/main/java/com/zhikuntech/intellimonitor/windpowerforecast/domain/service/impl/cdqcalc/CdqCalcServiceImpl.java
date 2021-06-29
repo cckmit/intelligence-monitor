@@ -165,7 +165,7 @@ public class CdqCalcServiceImpl implements CdqCalcService {
                 tmp.setCapForAssess(p.getCheckCalcCapacity());
             });
             // 短期功率数据
-            Optional.of(cdqGorup.get(timeK)).ifPresent(l -> {
+            Optional.ofNullable(cdqGorup.get(timeK)).ifPresent(l -> {
                 List<BigDecimal> tmpList = l.stream().filter(Objects::nonNull).map(WfDataCdq::getForecastProduce).collect(Collectors.toList());
                 tmp.setDqProduce(tmpList);
             });
@@ -174,7 +174,7 @@ public class CdqCalcServiceImpl implements CdqCalcService {
                 tmp.setForeset(p.getForecastProduce());
             });
             // 真实功率数据
-            Optional.of(zrGroup.get(timeK)).ifPresent(l -> {
+            Optional.ofNullable(zrGroup.get(timeK)).ifPresent(l -> {
                 List<BigDecimal> tmpList = l.stream().filter(Objects::nonNull).map(WfDataZr::getActualProduce).collect(Collectors.toList());
                 tmp.setZrCapsProduce(tmpList);
             });
@@ -248,6 +248,7 @@ public class CdqCalcServiceImpl implements CdqCalcService {
             analyseCdqService.getBaseMapper().updateById(wfAnalyseCdq);
         } else {
             WfAnalyseCdq nst = WfAnalyseCdq.builder()
+                    .newest(0)
                     .calcDate(dayBegin)
                     .avgRmse(fnRes)
                     .avgMae(emae)

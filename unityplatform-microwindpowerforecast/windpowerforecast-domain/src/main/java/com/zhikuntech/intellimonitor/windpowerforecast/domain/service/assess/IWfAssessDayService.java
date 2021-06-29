@@ -29,6 +29,11 @@ public interface IWfAssessDayService extends IService<WfAssessDay> {
 
 
     /**
+     * <p>
+     *     1.当日不可修改
+     *     2.当日之前[90天(可配置)]不可修改
+     * </p>
+     *
      * 日考核结果-修改数据
      * @param query 待修改的数据
      * @return      修改结果

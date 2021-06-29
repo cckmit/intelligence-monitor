@@ -15,13 +15,10 @@ import com.zhikuntech.intellimonitor.mainpage.domain.utils.EasyExcelUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.net.SocketException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,9 +37,6 @@ public class FanInfoServiceImpl implements FanInfoService {
 
     @Autowired
     private WebSocketServer webSocketServer;
-
-    @Value("${template.file.path}")
-    private String filePath;
 
     @Override
     public List<FanRuntimeDTO> getRuntimeInfos() throws Exception {
@@ -192,11 +186,10 @@ public class FanInfoServiceImpl implements FanInfoService {
         if (null == valueData) {
             return;
         }
-        URL url = new File(filePath + "1.png").toURL();
         for (int i = 1; i <= 63; i++) {
             FanRuntimeDTO fanRuntimeDto = new FanRuntimeDTO();
             fanRuntimeDto.setNumber(i);
-            fanRuntimeDto.setRunningStatusUrl(url);
+            fanRuntimeDto.setRunningStatusString("正常运行");
             FanRuntimeDTO dto = InjectPropertiesUtil.injectByAnnotation(fanRuntimeDto, i, valueData);
             list.add(dto);
         }

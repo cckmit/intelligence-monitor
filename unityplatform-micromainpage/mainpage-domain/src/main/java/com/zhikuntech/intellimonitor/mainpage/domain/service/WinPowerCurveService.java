@@ -17,10 +17,4 @@ public interface WinPowerCurveService {
      * @return
      */
     WindPowerCurveDTO getWindPowerCurveOfAllTime(NwpCurvePatternQuery nwpCurvePatternQuery);
-
-    /**
-     * 获取所有时间内的【风功率曲线】数据(模拟数据)
-     * @return
-     */
-    WindPowerCurveVO getWindPowerCurveOfAllTimeOld();
 }

@@ -2,10 +2,10 @@ package com.zhikuntech.intellimonitor.windpowerforecast.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.sql.Blob;
+import java.time.LocalDateTime;
 import java.io.Serializable;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+
+import lombok.*;
 
 /**
  * <p>
@@ -15,6 +15,9 @@ import lombok.EqualsAndHashCode;
  * @author liukai
  * @since 2021-06-28
  */
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class WfBasicParseResult implements Serializable {
@@ -44,17 +47,15 @@ public class WfBasicParseResult implements Serializable {
      */
     private String fileType;
 
+    /**
+     * 0成功1失败2未解析
+     */
     private Integer successMark;
 
     /**
      * 解析失败原因
      */
     private String failReason;
-
-    /**
-     * 文件二进制数据
-     */
-    private Blob fileData;
 
     /**
      * 文件后缀
@@ -70,6 +71,8 @@ public class WfBasicParseResult implements Serializable {
      * 风场名称
      */
     private String windFarmName;
+
+    private LocalDateTime dataGenDate;
 
 
 }

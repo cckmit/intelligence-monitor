@@ -2,7 +2,6 @@ package com.zhikuntech.intellimonitor.mainpage.domain.controller;
 
 import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
 import com.zhikuntech.intellimonitor.mainpage.domain.service.WinPowerCurveService;
-import com.zhikuntech.intellimonitor.windpowerforecast.facade.ForeCastCurveFacade;
 import com.zhikuntech.intellimonitor.windpowerforecast.prototype.query.NwpCurvePatternQuery;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -12,8 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * @Author 杨锦程
@@ -27,9 +24,6 @@ import java.util.List;
 @Slf4j
 public class WinPowerCurveController {
     @Autowired
-    private ForeCastCurveFacade foreCastCurveFacade;
-
-    @Autowired
     WinPowerCurveService winPowerCurveService;
 
     @PostMapping("/getAll")
@@ -39,9 +33,5 @@ public class WinPowerCurveController {
         log.info("入参 nwpCurvePatternQuery->{}", nwpCurvePatternQuery);
         return BaseResponse.success(winPowerCurveService.getWindPowerCurveOfAllTime(nwpCurvePatternQuery));
     }
-
-
-
-
 
 }

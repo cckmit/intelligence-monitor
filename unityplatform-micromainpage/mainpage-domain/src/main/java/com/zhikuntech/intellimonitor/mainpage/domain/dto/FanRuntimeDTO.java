@@ -128,8 +128,8 @@ public class FanRuntimeDTO {
     /**
      * 运行状态图片uri
      */
-    @ExcelProperty(value = "运行状态", index = 12, converter = UrlImageConverter.class)
+    @ExcelProperty(value = "运行状态", index = 12)
     @JsonIgnore
-    private URL runningStatusUrl;
+    private String runningStatusString;
 
 }

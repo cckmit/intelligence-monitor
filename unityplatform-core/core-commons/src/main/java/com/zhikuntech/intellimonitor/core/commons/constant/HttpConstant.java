@@ -1,8 +1,6 @@
 package com.zhikuntech.intellimonitor.core.commons.constant;
 
 
-import org.omg.CORBA.INTERNAL;
-
 public interface HttpConstant {
     // 响应请求成功code
     Integer HTTP_RES_CODE_200 = 200;

@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -131,6 +132,30 @@ public class WfAssessDayServiceImpl extends ServiceImpl<WfAssessDayMapper, WfAss
         WfAssessDay wfAssessDay = getBaseMapper().selectOne(dayQueryWrapper);
         if (Objects.isNull(wfAssessDay)) {
             changeResultDTO.setMsg("未找到数据标识对应数据.");
+            return changeResultDTO;
+        }
+        // 校验时间范围
+        LocalDateTime calcDate = wfAssessDay.getCalcDate();
+        if (Objects.nonNull(calcDate)) {
+            // 当前时间必须在计算时间之前的90天内及次日的凌晨2点之后才可以修改
+            LocalDateTime judgeWithNow = LocalDateTime.now();
+
+            long acrossDays = judgeWithNow.toLocalDate().toEpochDay() - calcDate.toLocalDate().toEpochDay();
+
+            // 次日凌晨2点
+            LocalDateTime secondClockTwo = LocalDateTime.of(calcDate.toLocalDate().plusDays(1), LocalTime.of(2, 0));
+
+            int maxBeforeDays = 90;
+            if (acrossDays > maxBeforeDays) {
+                changeResultDTO.setMsg("只能修改最近[" + maxBeforeDays + "]天的数据.");
+                return changeResultDTO;
+            }
+            if (judgeWithNow.compareTo(secondClockTwo) < 0) {
+                changeResultDTO.setMsg(TimeProcessUtils.formatLocalDateTimeWithSecondPattern(secondClockTwo) + "之后可修改该数据");
+                return changeResultDTO;
+            }
+        } else {
+            changeResultDTO.setMsg("异常状态,id[" + id + "]对应的时间为空");
             return changeResultDTO;
         }
 
