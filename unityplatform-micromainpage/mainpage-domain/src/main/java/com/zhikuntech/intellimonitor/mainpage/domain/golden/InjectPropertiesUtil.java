@@ -1,12 +1,10 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.golden;
 
-import com.alibaba.druid.util.StringUtils;
 import com.rtdb.api.model.RtdbData;
 import com.rtdb.api.model.ValueData;
 import com.zhikuntech.intellimonitor.core.commons.constant.FanConstant;
 import com.zhikuntech.intellimonitor.mainpage.domain.golden.annotation.GoldenId;
 import com.zhikuntech.intellimonitor.mainpage.domain.schedule.FanInfoInit;
-import com.zhikuntech.intellimonitor.mainpage.domain.utils.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;

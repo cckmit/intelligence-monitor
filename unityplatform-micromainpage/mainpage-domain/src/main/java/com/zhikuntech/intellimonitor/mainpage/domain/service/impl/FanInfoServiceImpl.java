@@ -9,9 +9,9 @@ import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanStatisticsDTO;
 import com.zhikuntech.intellimonitor.mainpage.domain.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.golden.InjectPropertiesUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.schedule.FanInfoInit;
+import com.zhikuntech.intellimonitor.mainpage.domain.schedule.TimerUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.service.FanInfoService;
 import com.zhikuntech.intellimonitor.mainpage.domain.utils.EasyExcelUtil;
-import com.zhikuntech.intellimonitor.mainpage.domain.utils.RedisUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +25,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimerTask;
 
 /**
  * @author 代志豪
@@ -39,9 +40,6 @@ public class FanInfoServiceImpl implements FanInfoService {
 
     @Autowired
     private WebSocketServer webSocketServer;
-
-    @Autowired
-    private RedisUtil redisUtil;
 
     @Value("${template.file.path}")
     private String filePath;
@@ -80,11 +78,13 @@ public class FanInfoServiceImpl implements FanInfoService {
             fanRuntimeDto.setNumber(i);
             list.add(fanRuntimeDto);
         }
+        startTimer(user);
         try {
             goldenUtil.subscribeSnapshots(user, ids, (data) -> {
                 try {
                     if (WebSocketServer.GROUP_RUNTIME.keySet().size() > 0) {
                         long l0 = System.currentTimeMillis();
+                        TimerUtil.stop(user);
                         List<FanRuntimeDTO> dtos = InjectPropertiesUtil.injectByAnnotation(list, data);
                         if (null != dtos) {
                             for (FanRuntimeDTO dto : dtos) {
@@ -100,6 +100,7 @@ public class FanInfoServiceImpl implements FanInfoService {
                                 e.printStackTrace();
                             }
                         }
+                        startTimer(user);
                         long l1 = System.currentTimeMillis();
                         log.info("实时数据，处理时间{}，消息时间{}", l1 - l0, data[0].getDate());
                     }
@@ -147,11 +148,13 @@ public class FanInfoServiceImpl implements FanInfoService {
         for (int i = 1; i <= 63; i++) {
             list.add(new FanStatisticsDTO());
         }
+        startTimer(user);
         try {
             goldenUtil.subscribeSnapshots(user, ids, (data) -> {
                 try {
                     if (WebSocketServer.GROUP_STATISTICS.keySet().size() > 0) {
                         long l0 = System.currentTimeMillis();
+                        TimerUtil.stop(user);
                         List<FanStatisticsDTO> dtos = InjectPropertiesUtil.injectByAnnotation(list, data);
                         if (null != dtos) {
                             FanStatisticsDTO dto = injecctPorerties(dtos);
@@ -163,6 +166,7 @@ public class FanInfoServiceImpl implements FanInfoService {
                                 e.printStackTrace();
                             }
                         }
+                        startTimer(user);
                         long l1 = System.currentTimeMillis();
                         log.info("统计数据，处理时间{}，消息时间{}", l1 - l0, data[0].getDate());
                     }
@@ -249,5 +253,18 @@ public class FanInfoServiceImpl implements FanInfoService {
         dto.setMonthlyPowerGeneration(energyOutput - monthlyPowerGeneration);
         dto.setAnnualPowerGeneration(energyOutput - annualPowerGeneration);
         return dto;
+    }
+
+    /**
+     * 开启定时任务
+     */
+    private void startTimer(String user) {
+        TimerUtil.start(new TimerTask() {
+            @Override
+            public void run() {
+                goldenUtil.cancel(user);
+                log.info("定时任务取消golden连接");
+            }
+        }, user);
     }
 }
