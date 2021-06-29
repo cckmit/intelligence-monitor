@@ -1,5 +1,6 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl.schedulefetch;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zhikuntech.intellimonitor.fanscada.facade.feign.ToWindPowerForecast;
 import com.zhikuntech.intellimonitor.mainpage.facade.MainPageFacade;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfDataCapacity;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -74,8 +76,6 @@ public class ScheduleFetchDataServiceImpl implements ScheduleFetchDataService {
 
     @Override
     public void scheduleFetchActPower() {
-//        ActWeatherDataDTO weatherData = mainPageFacade.getWeatherData();
-//        log.info("调用mainPage接口获取数据:[{}]", weatherData);
 
         // 1min一条
 
@@ -84,6 +84,17 @@ public class ScheduleFetchDataServiceImpl implements ScheduleFetchDataService {
         // fetch minute from now.
         String strNow = TimeProcessUtils.formatLocalDateTimeWithMinutePattern(now);
         LocalDateTime minutePattern = TimeProcessUtils.parseLocalDateTimeWithMinutePattern(strNow);
+
+
+        // 判断是否已存在数据
+        QueryWrapper<WfDataZr> zrQueryWrapper = new QueryWrapper<>();
+        String minutePatternStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(minutePattern);
+        zrQueryWrapper.eq("event_date_time", minutePatternStr);
+        WfDataZr existJudge = iWfDataZrService.getBaseMapper().selectOne(zrQueryWrapper);
+        if (Objects.nonNull(existJudge)) {
+            log.warn("实测数据在时间点:[{}]已存在数据.", minutePatternStr);
+        }
+
 
         int windPower = ThreadLocalRandom.current().nextInt(1, 360);
 

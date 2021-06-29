@@ -12,6 +12,7 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.SftpFetchDat
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.TimeProcessUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,7 +46,38 @@ public class WfBasicParseResultServiceImpl extends ServiceImpl<WfBasicParseResul
 
     private final IWfDataCdqService cdqService;
 
-    //# TODO 补发之前日期 (success_mark = 2)
+    /**
+     * 补发未处理数据
+     */
+    @Override public void reLaunchPreLoss() {
+
+        LocalDateTime dayStart = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
+
+        // 补发当前时刻之前15分钟的数据
+        LocalDateTime now = LocalDateTime.now().minusMinutes(15);
+        if (dayStart.compareTo(now) >= 0) {
+            return;
+        }
+        String strDayStart = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dayStart);
+        String strNow = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(now);
+
+
+        QueryWrapper<WfBasicParseResult> basicParseResultQueryWrapper = new QueryWrapper<>();
+        basicParseResultQueryWrapper.eq("success_mark", 2);
+        basicParseResultQueryWrapper.ge("data_gen_date", strDayStart);
+        basicParseResultQueryWrapper.lt("data_gen_date", strNow);
+        List<WfBasicParseResult> resultList = getBaseMapper().selectList(basicParseResultQueryWrapper);
+        if (CollectionUtils.isNotEmpty(resultList)) {
+            for (WfBasicParseResult parseResult : resultList) {
+                try {
+                    fetchDqWithPointDate(parseResult.getDataGenDate(), parseResult.getFileType());
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+
+    }
 
 
     /*
@@ -53,10 +85,15 @@ public class WfBasicParseResultServiceImpl extends ServiceImpl<WfBasicParseResul
      */
 
     @Override public void fetchDqWithPointDate(LocalDateTime dateTime, /*dq|cdq|nwp*/ String type) {
+        log.info("解析获取sftp方法开始调用, dateTime:[{}], type:[{}]",
+                TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dateTime),
+                type
+        );
+
         // 短期数据获取
         QueryWrapper<WfBasicParseResult> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("data_gen_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dateTime));
-        queryWrapper.eq("file_type", "dq");
+        queryWrapper.eq("file_type", type);
         queryWrapper.eq("success_mark", 2);
 
         WfBasicParseResult parseResult = getBaseMapper().selectOne(queryWrapper);

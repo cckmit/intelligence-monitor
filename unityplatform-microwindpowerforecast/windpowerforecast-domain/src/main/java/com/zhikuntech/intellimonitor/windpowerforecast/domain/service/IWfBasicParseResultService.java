@@ -18,6 +18,11 @@ public interface IWfBasicParseResultService extends IService<WfBasicParseResult>
 
 
     /**
+     * 补发未处理数据
+     */
+    void reLaunchPreLoss();
+
+    /**
      * 根据时间和文件类型获取sftp文件
      * @param dateTime  时间
      * @param type      文件类型(dq|cdq|nwp)
