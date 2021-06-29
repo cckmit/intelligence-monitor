@@ -248,6 +248,7 @@ public class CdqCalcServiceImpl implements CdqCalcService {
             analyseCdqService.getBaseMapper().updateById(wfAnalyseCdq);
         } else {
             WfAnalyseCdq nst = WfAnalyseCdq.builder()
+                    .newest(0)
                     .calcDate(dayBegin)
                     .avgRmse(fnRes)
                     .avgMae(emae)
