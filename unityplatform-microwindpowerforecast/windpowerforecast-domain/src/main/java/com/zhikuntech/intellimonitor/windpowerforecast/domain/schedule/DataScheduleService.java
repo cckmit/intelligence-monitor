@@ -43,7 +43,7 @@ public class DataScheduleService {
         RLock lock = redissonClient.getLock(ScheduleConstants.FOREST_FETCH_RE_BEFORE_DAY_LOCK);
         boolean enter = false;
         try {
-            enter = lock.tryLock(0, 50, TimeUnit.SECONDS);
+            enter = lock.tryLock(0, 60 * 60 * 3, TimeUnit.SECONDS);
             if (enter) {
                 log.info("schedule method: [{}]", "relaunchDayBefore");
                 parseResultService.relaunchDayBefore();
@@ -66,7 +66,7 @@ public class DataScheduleService {
         RLock lock = redissonClient.getLock(ScheduleConstants.FOREST_FETCH_RE_DAY_LOCK);
         boolean enter = false;
         try {
-            enter = lock.tryLock(0, 50, TimeUnit.SECONDS);
+            enter = lock.tryLock(0, 60 * 10, TimeUnit.SECONDS);
             if (enter) {
                 log.info("schedule method: [{}]", "reLaunchPreLoss");
                 parseResultService.reLaunchCurDayPreLoss();
