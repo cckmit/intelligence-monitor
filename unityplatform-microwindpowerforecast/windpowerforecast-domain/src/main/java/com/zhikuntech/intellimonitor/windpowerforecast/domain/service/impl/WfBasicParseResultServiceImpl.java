@@ -53,10 +53,15 @@ public class WfBasicParseResultServiceImpl extends ServiceImpl<WfBasicParseResul
      */
 
     @Override public void fetchDqWithPointDate(LocalDateTime dateTime, /*dq|cdq|nwp*/ String type) {
+        log.info("解析获取sftp方法开始调用, dateTime:[{}], type:[{}]",
+                TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dateTime),
+                type
+        );
+
         // 短期数据获取
         QueryWrapper<WfBasicParseResult> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("data_gen_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dateTime));
-        queryWrapper.eq("file_type", "dq");
+        queryWrapper.eq("file_type", type);
         queryWrapper.eq("success_mark", 2);
 
         WfBasicParseResult parseResult = getBaseMapper().selectOne(queryWrapper);

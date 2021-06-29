@@ -49,6 +49,7 @@ public class DataScheduleService {
                 log.info("schedule method: [{}]", "scheduleDqDataFetch");
                 LocalDateTime dateTime = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
                 parseResultService.fetchDqWithPointDate(dateTime, "dq");
+                TimeUnit.SECONDS.sleep(10);
             }
         } catch (InterruptedException ex) {
             ex.printStackTrace();
@@ -72,6 +73,7 @@ public class DataScheduleService {
                 // now 每隔15分钟处理一次, 时间落点问题
                 now = CalcCommonUtils.timePostRangeProcessRetDateTime.apply(now);
                 parseResultService.fetchDqWithPointDate(now, "cdq");
+                TimeUnit.SECONDS.sleep(10);
             }
         } catch (InterruptedException ex) {
             ex.printStackTrace();
@@ -93,6 +95,7 @@ public class DataScheduleService {
                 log.info("schedule method: [{}]", "scheduleNwpDataFetch");
                 LocalDateTime dateTime = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
                 parseResultService.fetchDqWithPointDate(dateTime, "nwp");
+                TimeUnit.SECONDS.sleep(10);
             }
         } catch (InterruptedException ex) {
             ex.printStackTrace();
