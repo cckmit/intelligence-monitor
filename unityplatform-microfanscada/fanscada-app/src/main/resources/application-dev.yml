@@ -12,9 +12,10 @@ spring:
     host: 192.168.3.179
     port: 6379
 
-mybatis:
-  mapper-locations: classpath:com.zhikuntech.intellimonitor.fanscada.domain.mapper/**/*.xml
-  type-aliases-package: com.zhikuntech.intellimonitor.mainpage.domain.model.*,com.zhikuntech.intellimonitor.mainpage.domain.po.*
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.zhikuntech.intellimonitor.fanscada.domain.pojo.*
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true
