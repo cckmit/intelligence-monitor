@@ -135,7 +135,8 @@ public class CdqCalcServiceImpl implements CdqCalcService {
         QueryWrapper<WfDataCdq> cdqQueryWrapper = new QueryWrapper<>();
         cdqQueryWrapper.gt("event_date_time", ltBgStr);
         cdqQueryWrapper.le("event_date_time", ltEndStr);
-        cdqQueryWrapper.eq("header_date", headerDate);
+        // 暂时禁用掉
+//        cdqQueryWrapper.eq("header_date", headerDate);
         List<WfDataCdq> cdqList = cdqService.getBaseMapper().selectList(cdqQueryWrapper);
         if (CollectionUtils.isEmpty(cdqList)) {
             log.warn("时间区间[{}]-[{}]无超短期预测数据.", bg, end);
