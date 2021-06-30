@@ -291,11 +291,15 @@ public class CdqCalcServiceImpl implements CdqCalcService {
         QueryWrapper<WfAssessDay> assessDayQueryWrapper = new QueryWrapper<>();
         assessDayQueryWrapper.eq("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dayBegin));
         WfAssessDay wfAssessDay = assessDayService.getBaseMapper().selectOne(assessDayQueryWrapper);
+
+        LocalDateTime curDateTime = LocalDateTime.now();
         if (Objects.nonNull(wfAssessDay)) {
             wfAssessDay.setCdqHiatus(hiatus);
             wfAssessDay.setCdqRatio(cdqRatioR1);
             wfAssessDay.setCdqElectric(cdqElectricR1);
             wfAssessDay.setCdqPay(cdqPayR1);
+            // 设置更新时间
+            wfAssessDay.setUpdateTime(curDateTime);
             assessDayService.getBaseMapper().updateById(wfAssessDay);
         } else {
             WfAssessDay nst = WfAssessDay.builder()
@@ -305,6 +309,8 @@ public class CdqCalcServiceImpl implements CdqCalcService {
                     .cdqRatio(cdqRatioR1)
                     .cdqElectric(cdqElectricR1)
                     .cdqPay(cdqPayR1)
+                    .createTime(curDateTime)
+                    .updateTime(curDateTime)
                     .build();
             assessDayService.getBaseMapper().insert(nst);
         }

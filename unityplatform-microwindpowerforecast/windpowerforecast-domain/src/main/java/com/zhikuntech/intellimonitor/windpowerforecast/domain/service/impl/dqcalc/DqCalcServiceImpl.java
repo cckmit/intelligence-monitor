@@ -282,11 +282,15 @@ public class DqCalcServiceImpl implements DqCalcService {
         QueryWrapper<WfAssessDay> assessDayQueryWrapper = new QueryWrapper<>();
         assessDayQueryWrapper.eq("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dayBegin));
         WfAssessDay wfAssessDay = assessDayService.getBaseMapper().selectOne(assessDayQueryWrapper);
+
+        LocalDateTime curDateTime = LocalDateTime.now();
         if (Objects.nonNull(wfAssessDay)) {
             wfAssessDay.setDqHiatus(hiatus);
             wfAssessDay.setDqRatio(dqRatioR1);
             wfAssessDay.setDqElectric(dqElectricR1);
             wfAssessDay.setDqPay(dqPayR1);
+            // 设置更新时间
+            wfAssessDay.setUpdateTime(curDateTime);
             assessDayService.getBaseMapper().updateById(wfAssessDay);
         } else {
             WfAssessDay nst = WfAssessDay.builder()
@@ -296,6 +300,8 @@ public class DqCalcServiceImpl implements DqCalcService {
                     .dqRatio(dqRatioR1)
                     .dqElectric(dqElectricR1)
                     .dqPay(dqPayR1)
+                    .createTime(curDateTime)
+                    .updateTime(curDateTime)
                     .build();
             assessDayService.getBaseMapper().insert(nst);
         }
