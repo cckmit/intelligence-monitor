@@ -1,6 +1,7 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.conf;
 
 import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
+import com.zhikuntech.intellimonitor.core.commons.exception.RemoteInterfaceCallException;
 import com.zhikuntech.intellimonitor.mainpage.domain.exception.GetSnapshotsException;
 import com.zhikuntech.intellimonitor.mainpage.domain.exception.SubscribeGoldenException;
 import com.zhikuntech.intellimonitor.mainpage.domain.exception.UserNotLoginException;
@@ -21,19 +22,25 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(GetSnapshotsException.class)
     public BaseResponse handleGetSnapshotsException(GetSnapshotsException getSnapshotsException){
-        LOGGER.error(getSnapshotsException.getCode().code().toString(),getSnapshotsException);
+        LOGGER.error(getSnapshotsException.getMessage());
         return BaseResponse.exception(getSnapshotsException);
     }
 
     @ExceptionHandler(SubscribeGoldenException.class)
     public BaseResponse handSubscribeGoldenException(SubscribeGoldenException ex){
-        LOGGER.error(ex.getCode().code().toString(),ex);
+        LOGGER.error(ex.getMessage());
         return BaseResponse.exception(ex);
     }
 
     @ExceptionHandler(UserNotLoginException.class)
     public BaseResponse handUserNotLoginException(UserNotLoginException ex){
-        LOGGER.error(ex.getCode().code().toString(),ex);
+        LOGGER.error(ex.getMessage());
+        return BaseResponse.exception(ex);
+    }
+
+    @ExceptionHandler(RemoteInterfaceCallException.class)
+    public BaseResponse handRemoteInterfaceCallException(RemoteInterfaceCallException ex){
+        LOGGER.error(ex.getMessage());
         return BaseResponse.exception(ex);
     }
 }

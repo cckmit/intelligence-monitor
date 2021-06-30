@@ -1,8 +1,8 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
+import com.zhikuntech.intellimonitor.core.commons.base.ResultCode;
+import com.zhikuntech.intellimonitor.core.commons.exception.RemoteInterfaceCallException;
 import com.zhikuntech.intellimonitor.mainpage.domain.dto.TimePowerDTO;
 import com.zhikuntech.intellimonitor.mainpage.domain.dto.TimeWindSpeedDTO;
 import com.zhikuntech.intellimonitor.mainpage.domain.dto.WindPowerCurveDTO;
@@ -31,23 +31,17 @@ public class WinPowerCurveServiceImpl implements WinPowerCurveService {
     @Autowired
     private ForeCastCurveFacade foreCastCurveFacade;
 
-    private JsonMapper jsonMapper = new JsonMapper();
-
     @Override
     public WindPowerCurveDTO getWindPowerCurveOfAllTime(NwpCurvePatternQuery nwpCurvePatternQuery) {
-        BaseResponse<List<NwpListPatternDTO>> listBaseResponse = foreCastCurveFacade.nwpCurveQuery(nwpCurvePatternQuery);
+        BaseResponse<List<NwpListPatternDTO>> listBaseResponse = null;
+        try {
+            listBaseResponse = foreCastCurveFacade.nwpCurveQuery(nwpCurvePatternQuery);
+        } catch (Exception e) {
+            throw new RemoteInterfaceCallException(ResultCode.REMOTE_INTERFACE_CALL_EXCEPTION);
+        }
         List<NwpListPatternDTO> listBaseResponseData = listBaseResponse.getData();
-        try {
-            log.info("接口响应数据->{}", jsonMapper.writeValueAsString(listBaseResponseData));
-        } catch (JsonProcessingException e) {
-            log.warn("接口响应数据转为json异常");
-        }
+        log.info("接口响应数据长度->{}", listBaseResponseData.size());
         WindPowerCurveDTO windPowerCurveDTO = parseResult(listBaseResponseData);
-        try {
-            log.info("解析结果: windPowerCurveDTO->{}", jsonMapper.writeValueAsString(windPowerCurveDTO));
-        } catch (JsonProcessingException e) {
-            log.warn("解析后数据转为json异常");
-        }
         return windPowerCurveDTO;
     }
 

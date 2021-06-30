@@ -38,5 +38,7 @@ public interface HttpConstant {
     Integer REST_REQ_SEND_FAILED = 4000;
 
     //sftp异常
-    Integer SFTP_FAILURE = 90001;
+    Integer SFTP_FAILURE = 4100;
+    //远程接口调用异常
+    Integer REMOTE_INTERFACE_CALL_EXCEPTION = 4200;
 }

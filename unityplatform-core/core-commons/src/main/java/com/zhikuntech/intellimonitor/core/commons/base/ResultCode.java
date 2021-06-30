@@ -38,7 +38,8 @@ public enum ResultCode {
     AUTH_USER_NOT_LOGIN(HttpConstant.UPM_USER_NOT_LOGIN,"用户未登录"),
     USER_LOGIN_FAIL(HttpConstant.USER_LOGIN_FAIL,"用户登录失败"),
     USER_LOGOUT_FAIL(HttpConstant.USER_LOGOUT_FAIL,"用户登出失败"),
-    REST_REQ_SEND_FAILED(HttpConstant.REST_REQ_SEND_FAILED,"restTemplate请求发送失败");
+    REST_REQ_SEND_FAILED(HttpConstant.REST_REQ_SEND_FAILED,"restTemplate请求发送失败"),
+    REMOTE_INTERFACE_CALL_EXCEPTION(HttpConstant.REMOTE_INTERFACE_CALL_EXCEPTION,"远程接口调用异常");
 
     private final Integer code;
     private String msg;
