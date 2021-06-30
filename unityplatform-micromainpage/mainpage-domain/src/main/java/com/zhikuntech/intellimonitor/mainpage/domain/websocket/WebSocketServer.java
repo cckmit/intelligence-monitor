@@ -90,7 +90,6 @@ public class WebSocketServer {
     public void onMessage(String message) {
         if ("hello".equals(message)) {
             log.info(message);
-//            goldenUtil.getSnapshotsTest(username);
             sendMessage("world", username);
             log.info("world");
         } else {
@@ -178,41 +177,34 @@ public class WebSocketServer {
             Integer type = vo.getOrderType();
             String description = vo.getDescription();
             Set<String> strings = Arrays.stream(description.split(",")).collect(Collectors.toSet());
-            switch (type) {
-                case 0:
-                    //订阅
-                    if (WebSocketConstant.ALL.equals(description)) {
+            if (type == 0) {
+                //订阅
+                if (WebSocketConstant.ALL.equals(description)) {
+                    subscribeRuntime();
+                    subscribeStatistics();
+                } else {
+                    if (strings.contains(WebSocketConstant.MAIN_PAGE_RUNTIME)) {
                         subscribeRuntime();
+                    }
+                    if (strings.contains(WebSocketConstant.MAIN_PAGE_STATISTICS)) {
                         subscribeStatistics();
-                    } else {
-                        if (strings.contains(WebSocketConstant.MAIN_PAGE_RUNTIME)) {
-                            subscribeRuntime();
-                        }
-                        if (strings.contains(WebSocketConstant.MAIN_PAGE_STATISTICS)) {
-                            subscribeStatistics();
-                        }
                     }
-                    break;
-                case 1:
-                    //取消订阅
-                    if (WebSocketConstant.ALL.equals(description)) {
+                }
+            } else if (type == 1) {
+                //取消订阅
+                if (WebSocketConstant.ALL.equals(description)) {
+                    GROUP_RUNTIME.remove(username);
+                    GROUP_STATISTICS.remove(username);
+                } else {
+                    if (strings.contains(WebSocketConstant.MAIN_PAGE_RUNTIME)) {
                         GROUP_RUNTIME.remove(username);
-                        GROUP_STATISTICS.remove(username);
-                    } else {
-                        if (strings.contains(WebSocketConstant.MAIN_PAGE_RUNTIME)) {
-                            GROUP_RUNTIME.remove(username);
-                            log.info("取消订阅---风机详情");
-                        }
-                        if (strings.contains(WebSocketConstant.MAIN_PAGE_STATISTICS)) {
-                            GROUP_STATISTICS.remove(username);
-                            log.info("取消订阅---风场统计");
-                        }
+                        log.info("取消订阅---风机详情");
                     }
-                    break;
-                case 2:
-                    //手动触发重置golden连接
-                    break;
-                default:
+                    if (strings.contains(WebSocketConstant.MAIN_PAGE_STATISTICS)) {
+                        GROUP_STATISTICS.remove(username);
+                        log.info("取消订阅---风场统计");
+                    }
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();

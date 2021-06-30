@@ -256,6 +256,11 @@ public class FanInfoServiceImpl implements FanInfoService {
             @Override
             public void run() {
                 goldenUtil.cancel(user);
+                if ("runtime".equals(user)) {
+                    webSocketServer.sendGroupMessage("重新订阅", 0);
+                } else {
+                    webSocketServer.sendGroupMessage("重新订阅", 1);
+                }
                 log.info("定时任务取消golden连接");
             }
         }, user);
