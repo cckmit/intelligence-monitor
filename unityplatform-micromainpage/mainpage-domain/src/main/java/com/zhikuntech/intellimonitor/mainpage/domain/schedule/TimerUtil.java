@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class TimerUtil {
 
-    private static ConcurrentHashMap<String, Timer> TIMER_MAP = new ConcurrentHashMap<>();
+    public static ConcurrentHashMap<String, Timer> TIMER_MAP = new ConcurrentHashMap<>();
 
     public static void start(TimerTask task, String username) {
         Timer timer = new Timer(username);

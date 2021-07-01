@@ -73,11 +73,13 @@ public class FanInfoServiceImpl implements FanInfoService {
             list.add(fanRuntimeDto);
         }
         startTimer(user);
+        log.info(TimerUtil.TIMER_MAP.get(user).toString() + "___________" + user);
         try {
             goldenUtil.subscribeSnapshots(user, ids, (data) -> {
                 try {
                     if (WebSocketServer.GROUP_RUNTIME.keySet().size() > 0) {
                         long l0 = System.currentTimeMillis();
+                        log.info(TimerUtil.TIMER_MAP.get(user).toString() + "___________" + user);
                         TimerUtil.stop(user);
                         List<FanRuntimeDTO> dtos = InjectPropertiesUtil.injectByAnnotation(list, data);
                         if (null != dtos) {
@@ -90,23 +92,26 @@ public class FanInfoServiceImpl implements FanInfoService {
                             jsonString = WebSocketConstant.MAIN_PAGE_RUNTIME + WebSocketConstant.PATTERN + jsonString;
                             try {
                                 webSocketServer.sendGroupMessage(jsonString, 0);
+
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
                         startTimer(user);
+                        log.info(TimerUtil.TIMER_MAP.get(user).toString() + "___________" + user);
                         long l1 = System.currentTimeMillis();
                         log.info("实时数据，处理时间{}，消息时间{}", l1 - l0, data[0].getDate());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                     goldenUtil.cancel(user);
+                    webSocketServer.sendGroupMessage("重新订阅", 0);
                     log.info("回调函数内部触发取消操作");
                 }
             });
         } catch (SocketException e) {
             log.info("golden连接失败，重连后取消之前所有连接");
-            goldenUtil.cancelAll();
+            goldenUtil.getServer().clear();
             e.printStackTrace();
             webSocketServer.sendAllMessage("重新订阅");
             log.info("faninfoservice触发所有取消操作");
@@ -143,11 +148,13 @@ public class FanInfoServiceImpl implements FanInfoService {
             list.add(new FanStatisticsDTO());
         }
         startTimer(user);
+        log.info(TimerUtil.TIMER_MAP.get(user).toString() + "___________" + user);
         try {
             goldenUtil.subscribeSnapshots(user, ids, (data) -> {
                 try {
                     if (WebSocketServer.GROUP_STATISTICS.keySet().size() > 0) {
                         long l0 = System.currentTimeMillis();
+                        log.info(TimerUtil.TIMER_MAP.get(user).toString() + "___________" + user);
                         TimerUtil.stop(user);
                         List<FanStatisticsDTO> dtos = InjectPropertiesUtil.injectByAnnotation(list, data);
                         if (null != dtos) {
@@ -161,19 +168,21 @@ public class FanInfoServiceImpl implements FanInfoService {
                             }
                         }
                         startTimer(user);
+                        log.info(TimerUtil.TIMER_MAP.get(user).toString() + "___________" + user);
                         long l1 = System.currentTimeMillis();
                         log.info("统计数据，处理时间{}，消息时间{}", l1 - l0, data[0].getDate());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    goldenUtil.cancel(user);
+                    goldenUtil.getServer().remove(user);
+                    webSocketServer.sendGroupMessage("重新订阅", 1);
                     log.info("回调函数内部触发取消操作");
                 }
             });
         } catch (SocketException e) {
             log.info("golden连接失败，重连后取消之前所有连接");
             e.printStackTrace();
-            goldenUtil.cancelAll();
+            goldenUtil.getServer().clear();
             log.info("faninfoservice触发所有取消操作");
         }
     }
@@ -207,7 +216,7 @@ public class FanInfoServiceImpl implements FanInfoService {
             valueData = goldenUtil.getSnapshots(ids);
         } catch (SocketException e) {
             log.info("golden连接失败，重连后取消之前所有连接");
-            goldenUtil.cancelAll();
+            goldenUtil.getServer().clear();
             webSocketServer.sendAllMessage("重新订阅");
             return null;
         }
@@ -255,13 +264,23 @@ public class FanInfoServiceImpl implements FanInfoService {
         TimerUtil.start(new TimerTask() {
             @Override
             public void run() {
-                goldenUtil.cancel(user);
+                goldenUtil.getServer().remove(user);
                 if ("runtime".equals(user)) {
-                    webSocketServer.sendGroupMessage("重新订阅", 0);
+                    try {
+                        getRuntimeInfos(user);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        webSocketServer.sendGroupMessage("重新订阅", 0);
+                    }
                 } else {
-                    webSocketServer.sendGroupMessage("重新订阅", 1);
+                    try {
+                        getStatistics(user);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        webSocketServer.sendGroupMessage("重新订阅", 1);
+                    }
                 }
-                log.info("定时任务取消golden连接");
+                log.info("定时任务取消golden连接,{}", user);
             }
         }, user);
     }

@@ -107,17 +107,9 @@ public class WebSocketServer {
      * 服务端发送消息给客户端
      */
     public void sendMessage(String message, String username) {
-        lock.lock();
-        try {
-            Session session = clients.get(username);
-            if (null != session) {
-                session.getBasicRemote().sendText(message);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.error("sendMessage服务端发送消息给客户端失败：", e);
-        } finally {
-            lock.unlock();
+        Session session = clients.get(username);
+        if (null != session) {
+            send(session, message);
         }
     }
 
@@ -128,22 +120,14 @@ public class WebSocketServer {
      * @param type    group分组 0：GROUP_RUNTIME，1：GROUP_STATISTICS
      */
     public void sendGroupMessage(String message, Integer type) {
-        lock.lock();
-        try {
-            if (type == 0) {
-                for (Session session : GROUP_RUNTIME.values()) {
-                    session.getBasicRemote().sendText(message);
-                }
-            } else if (type == 1) {
-                for (Session session : GROUP_STATISTICS.values()) {
-                    session.getBasicRemote().sendText(message);
-                }
+        if (type == 0) {
+            for (Session session : GROUP_RUNTIME.values()) {
+                send(session, message);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            log.error("sendGroupMessage服务端发送消息给客户端失败：", e);
-        } finally {
-            lock.unlock();
+        } else if (type == 1) {
+            for (Session session : GROUP_STATISTICS.values()) {
+                send(session, message);
+            }
         }
     }
 
@@ -153,17 +137,29 @@ public class WebSocketServer {
      * @param message 消息内容
      */
     public void sendAllMessage(String message) {
-        lock.lock();
-        try {
-            for (Session session : clients.values()) {
-                session.getBasicRemote().sendText(message);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            log.error("sendAllMessage服务端发送消息给客户端失败：", e);
-        } finally {
-            lock.unlock();
+        for (Session session : clients.values()) {
+            send(session, message);
         }
+    }
+
+    private synchronized void send(Session session,String message) {
+//        lock.lock();
+//        try {
+//            session.getBasicRemote().sendText(message);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            log.error("服务端发送消息给客户端失败：", e);
+//        } finally {
+//            lock.unlock();
+//        }
+            try {
+                session.getBasicRemote().sendText(message);
+            } catch (IOException e) {
+                log.error("中断");
+                log.error("服务端发送消息给客户端失败：", e);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
     }
 
     /**

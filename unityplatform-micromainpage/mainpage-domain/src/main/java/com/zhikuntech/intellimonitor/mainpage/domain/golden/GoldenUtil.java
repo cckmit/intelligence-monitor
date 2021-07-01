@@ -207,6 +207,9 @@ public class GoldenUtil {
      * 检查庚顿实际连接池
      */
     private void check() throws Exception {
+        if (servers.isEmpty()) {
+            pool.closePool();
+        }
         if (pool.getRealSize() == maxSize) {
             pool.closePool();
             throw new Exception("golden数据库连接池已满，连接失败！");
