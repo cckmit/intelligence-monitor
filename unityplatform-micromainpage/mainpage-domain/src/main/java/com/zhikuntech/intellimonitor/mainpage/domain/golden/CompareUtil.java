@@ -6,9 +6,11 @@ import com.zhikuntech.intellimonitor.core.commons.constant.FanConstant;
 import com.zhikuntech.intellimonitor.mainpage.domain.golden.annotation.GoldenId;
 import com.zhikuntech.intellimonitor.mainpage.domain.schedule.FanInfoInit;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -16,21 +18,25 @@ import java.util.List;
  * 2021/6/9 10:49
  */
 @Slf4j
-public class InjectPropertiesUtil<T> {
+public class CompareUtil<T> {
+
 
     public static <T> T injectByAnnotation(T t, Integer num, RtdbData[] data) {
         Field[] fields = t.getClass().getDeclaredFields();
+        Comparator<Double> comparator = Double::compareTo;
         for (Field field : fields) {
-            GoldenId goldenId = field.getDeclaredAnnotation(GoldenId.class);
-            int value = null == goldenId ? 0 : getGoldenId(goldenId.value(), num);
+            GoldenId golden = field.getDeclaredAnnotation(GoldenId.class);
+            int value = null == golden ? 0 : getGoldenId(golden.value(), num);
+            String scope = null == golden ? "" : golden.scope();
             for (RtdbData rtdbData : data) {
                 if (value == rtdbData.getId()) {
-                    try {
-                        field.setAccessible(true);
-                        field.set(t, rtdbData.getValue());
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                        return null;
+                    if (StringUtils.isNotEmpty(scope)) {
+                        String[] split = scope.split(",");
+                        int compare = comparator.compare((double) rtdbData.getValue(), Double.parseDouble(split[1])) +
+                                comparator.compare((double) rtdbData.getValue(), Double.parseDouble(split[0]));
+                        if (compare != 0) {
+                            //不等于0，表示不正常
+                        }
                     }
                 }
             }
