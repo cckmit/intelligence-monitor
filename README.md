@@ -50,4 +50,7 @@ db: monitor_sys
 TODO [代码提交规范]
 
 ## 外部依赖无法打包处理方法 （杨/代）
-
+##golden
+mvn install:install-file -Dfile=jar包本地路径 -DgroupId=com.golden -DartifactId=golden-java-sdk -Dversion=3.0.34 -Dpackaging=jar
+##xxl-sso-core 1.1.1
+mvn install:install-file -DgroupId=com.xuxueli -DartifactId=xxl-sso-core -Dversion=1.1.1 -Dfile=jar包位置 -Dpackaging=jar
