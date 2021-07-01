@@ -49,6 +49,11 @@ db: monitor_sys
 
 TODO [代码提交规范]
 
+## 编码规范
+阿里巴巴编码规范认证
+[https://edu.aliyun.com/certification/cldt02]
+
+
 ## 外部依赖无法打包处理方法 （杨/代）
 ##golden
 mvn install:install-file -Dfile=jar包本地路径 -DgroupId=com.golden -DartifactId=golden-java-sdk -Dversion=3.0.34 -Dpackaging=jar
