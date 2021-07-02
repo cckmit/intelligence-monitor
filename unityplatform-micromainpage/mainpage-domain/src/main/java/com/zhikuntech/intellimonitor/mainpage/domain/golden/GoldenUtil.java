@@ -9,13 +9,11 @@ import com.rtdb.model.SearchCondition;
 import com.rtdb.service.impl.*;
 import com.rtdb.service.inter.Historian;
 import com.rtdb.service.inter.Snapshot;
-import com.zhikuntech.intellimonitor.mainpage.domain.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.net.SocketException;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -145,17 +143,9 @@ public class GoldenUtil {
         }
         snaps.remove(username);
         servers.remove(username);
-    }
-
-    /**
-     * 取消未推送数据的连接
-     */
-    private void cancel() {
-        servers.keySet().forEach(e -> {
-            if (!WebSocketServer.clients.containsKey(e)) {
-                cancel(e);
-            }
-        });
+        if(servers.isEmpty()){
+            pool.closePool();
+        }
     }
 
     /**
@@ -163,6 +153,7 @@ public class GoldenUtil {
      */
     public void cancelAll() {
         servers.keySet().forEach(this::cancel);
+        pool.closePool();
     }
 
     /**
@@ -212,12 +203,16 @@ public class GoldenUtil {
         return snapshots;
     }
 
+    /**
+     * 检查庚顿实际连接池
+     */
     private void check() throws Exception {
-        if (pool.getRealSize() == maxSize) {
-            throw new Exception("golden数据库连接池已满，连接失败！");
+        if (servers.isEmpty()) {
+            pool.closePool();
         }
-        if (pool.getRealSize() > maxSize / 4) {
-            cancel();
+        if (pool.getRealSize() == maxSize) {
+            pool.closePool();
+            throw new Exception("golden数据库连接池已满，连接失败！");
         }
     }
 
@@ -228,4 +223,5 @@ public class GoldenUtil {
     public ConcurrentHashMap<String, ServerImpl> getServer() {
         return servers;
     }
+
 }

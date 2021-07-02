@@ -39,6 +39,9 @@
         <hibernate-validator.version>6.0.17.Final</hibernate-validator.version>
         <easyexcel.version>2.1.1</easyexcel.version>
         <swagger-annotations.version>1.5.22</swagger-annotations.version>
+        <!--   测试相关     -->
+        <junit.version>4.12</junit.version>
+        <!--   测试相关     -->
     </properties>
 
     <!-- 管理所有外部依赖 -->
@@ -145,6 +148,16 @@
                 <artifactId>swagger-annotations</artifactId>
                 <version>${swagger-annotations.version}</version>
             </dependency>
+
+            <!--   scope-test         -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <!--   scope-test         -->
+
         </dependencies>
     </dependencyManagement>
 
