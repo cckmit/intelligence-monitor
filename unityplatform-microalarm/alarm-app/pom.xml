@@ -11,5 +11,11 @@
 
     <artifactId>alarm-app</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.zhikuntech.intellimonitor</groupId>
+            <artifactId>alarm-domain</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

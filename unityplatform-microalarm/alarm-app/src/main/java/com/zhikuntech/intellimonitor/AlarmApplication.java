@@ -1,5 +1,7 @@
 package com.zhikuntech.intellimonitor;
 
+import org.springframework.boot.SpringApplication;
+
 /**
  * 告警服务
  *
@@ -10,5 +12,6 @@ public class AlarmApplication {
 
     public static void main(String[] args) {
 
+        SpringApplication.run(AlarmApplication.class, args);
     }
 }
