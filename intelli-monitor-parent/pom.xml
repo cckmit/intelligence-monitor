@@ -42,6 +42,10 @@
         <!--   测试相关     -->
         <junit.version>4.12</junit.version>
         <!--   测试相关     -->
+        <mybatis-plus-generator.version>3.4.1</mybatis-plus-generator.version>
+        <freemarker.version>2.3.31</freemarker.version>
+        <redisson.version>3.13.6</redisson.version>
+        <persistence-api.version>1.0</persistence-api.version>
     </properties>
 
     <!-- 管理所有外部依赖 -->
@@ -148,6 +152,32 @@
                 <artifactId>swagger-annotations</artifactId>
                 <version>${swagger-annotations.version}</version>
             </dependency>
+
+            <!--   mybatis-plus generator     -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-generator</artifactId>
+                <version>${mybatis-plus-generator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>${freemarker.version}</version>
+            </dependency>
+
+            <!--   redisson     -->
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>${redisson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.persistence</groupId>
+                <artifactId>persistence-api</artifactId>
+                <version>${persistence-api.version}</version>
+            </dependency>
+
 
             <!--   scope-test         -->
             <dependency>
