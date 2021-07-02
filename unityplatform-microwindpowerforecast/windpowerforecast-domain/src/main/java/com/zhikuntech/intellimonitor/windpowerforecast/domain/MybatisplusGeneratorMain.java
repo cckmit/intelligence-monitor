@@ -111,7 +111,8 @@ public class MybatisplusGeneratorMain {
 
                 if (fileType == FileType.SERVICE || fileType == FileType.SERVICE_IMPL || fileType == FileType.MAPPER) {
                     // 已经生成的service可以不重复生成
-                    return !new File(filePath).exists();
+                    return false;
+//                    return !new File(filePath).exists();
                 }
                 // 默认生成文件
                 return true;
@@ -134,7 +135,7 @@ public class MybatisplusGeneratorMain {
         strategy.setRestControllerStyle(true);
 
         //- 表名称
-        strategy.setInclude("wf_data_capacity");
+        strategy.setInclude("wf_basic_parse_result");
         strategy.setControllerMappingHyphenStyle(true);
 
         mpg.setStrategy(strategy);
