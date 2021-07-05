@@ -1,4 +1,4 @@
-package com.zhikuntech.intellimonitor.mainpage.domain.golden.annotation;
+package com.zhikuntech.intellimonitor.core.commons.golden.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

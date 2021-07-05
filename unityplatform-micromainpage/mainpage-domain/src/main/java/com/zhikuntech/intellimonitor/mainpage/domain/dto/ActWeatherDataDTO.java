@@ -1,6 +1,6 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.dto;
 
-import com.zhikuntech.intellimonitor.mainpage.domain.golden.annotation.GoldenId;
+import com.zhikuntech.intellimonitor.core.commons.golden.annotation.GoldenId;
 import lombok.Data;
 
 import java.math.BigDecimal;
