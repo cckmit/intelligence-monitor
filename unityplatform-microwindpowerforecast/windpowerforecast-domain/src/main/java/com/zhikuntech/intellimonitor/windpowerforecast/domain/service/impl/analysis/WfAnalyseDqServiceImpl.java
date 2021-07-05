@@ -164,8 +164,8 @@ public class WfAnalyseDqServiceImpl extends ServiceImpl<WfAnalyseDqMapper, WfAna
                 String postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(post.plusDays(1));//结束时间填一天
                 // criteria
                 QueryWrapper<WfAnalyseDq> queryWrapper = new QueryWrapper<>();//查 短期功率分析
-                queryWrapper.gt("calc_date", preStr);//大于开始时间
-                queryWrapper.le("calc_date", postStr);//小于等于结束时间
+                queryWrapper.ge("calc_date", preStr);//大于开始时间
+                queryWrapper.lt("calc_date", postStr);//小于等于结束时间
 
                 List<WfAnalyseDq> wfAnalysedqs = getBaseMapper().selectList(queryWrapper);
                 if (CollectionUtils.isNotEmpty(wfAnalysedqs)) {//判断records不为空
