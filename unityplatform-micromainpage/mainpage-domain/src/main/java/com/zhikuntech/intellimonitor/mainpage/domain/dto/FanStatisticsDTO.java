@@ -1,7 +1,7 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.zhikuntech.intellimonitor.mainpage.domain.golden.annotation.GoldenId;
+import com.zhikuntech.intellimonitor.core.commons.golden.annotation.GoldenId;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

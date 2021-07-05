@@ -87,8 +87,8 @@ public class WfAnalyseDqServiceImpl extends ServiceImpl<WfAnalyseDqMapper, WfAna
 
         // criteria
         QueryWrapper<WfAnalyseDq> queryWrapper = new QueryWrapper<>();
-        queryWrapper.gt("calc_date", preStr);
-        queryWrapper.le("calc_date", postStr);
+        queryWrapper.ge("calc_date", preStr);
+        queryWrapper.lt("calc_date", postStr);
         // calcDate -> calc_date
         if ("calcDate".equalsIgnoreCase(query.getOderByField())) {
             if ("up".equalsIgnoreCase(query.getUpOrDown())) {
@@ -124,8 +124,8 @@ public class WfAnalyseDqServiceImpl extends ServiceImpl<WfAnalyseDqMapper, WfAna
 
         // 查询均值
         QueryWrapper<WfAnalyseDq> avgQuery = new QueryWrapper<>();
-        avgQuery.gt("calc_date", preStr);
-        avgQuery.le("calc_date", postStr);
+        avgQuery.ge("calc_date", preStr);
+        avgQuery.lt("calc_date", postStr);
         avgQuery.select("avg(avg_rmse) avg_rmse, avg(avg_mae) avg_mae, avg(biggest_diff) biggest_diff, avg(about_r) about_r, avg(r1_ratio) r1_ratio, avg(r2_ratio) r2_ratio");
         WfAnalyseDq wfAnalyseDq = getBaseMapper().selectOne(avgQuery);
         if (Objects.nonNull(wfAnalyseDq)) {
@@ -164,8 +164,8 @@ public class WfAnalyseDqServiceImpl extends ServiceImpl<WfAnalyseDqMapper, WfAna
                 String postStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(post.plusDays(1));//结束时间填一天
                 // criteria
                 QueryWrapper<WfAnalyseDq> queryWrapper = new QueryWrapper<>();//查 短期功率分析
-                queryWrapper.gt("calc_date", preStr);//大于开始时间
-                queryWrapper.le("calc_date", postStr);//小于等于结束时间
+                queryWrapper.ge("calc_date", preStr);//大于开始时间
+                queryWrapper.lt("calc_date", postStr);//小于等于结束时间
 
                 List<WfAnalyseDq> wfAnalysedqs = getBaseMapper().selectList(queryWrapper);
                 if (CollectionUtils.isNotEmpty(wfAnalysedqs)) {//判断records不为空
@@ -205,8 +205,8 @@ public class WfAnalyseDqServiceImpl extends ServiceImpl<WfAnalyseDqMapper, WfAna
                     postStr1 = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(nowDay.plusDays(1));//查询结束日期是今天
                 }
                 QueryWrapper<WfAnalyseDq> queryWrapper1 = new QueryWrapper<>();//查 短期功率分析
-                queryWrapper1.gt("calc_date", preStr1);//大于开始时间
-                queryWrapper1.le("calc_date", postStr1);//小于等于结束时间
+                queryWrapper1.ge("calc_date", preStr1);//大于开始时间
+                queryWrapper1.lt("calc_date", postStr1);//小于等于结束时间
                 List<WfAnalyseDq> wfAnalysedqs1 = getBaseMapper().selectList(queryWrapper1);
                 if (CollectionUtils.isNotEmpty(wfAnalysedqs1)) {//判断records不为空
                     List<DqPowerAnalysisDTO> tmp = new ArrayList<>();//创建存dqPowerAnalysisDTO的list集合叫tmp

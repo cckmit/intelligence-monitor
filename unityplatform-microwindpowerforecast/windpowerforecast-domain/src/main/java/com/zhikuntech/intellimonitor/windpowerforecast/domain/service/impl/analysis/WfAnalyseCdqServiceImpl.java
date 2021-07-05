@@ -84,8 +84,8 @@ public class WfAnalyseCdqServiceImpl extends ServiceImpl<WfAnalyseCdqMapper, WfA
         }
         // criteria
         QueryWrapper<WfAnalyseCdq> queryWrapper = new QueryWrapper<>();
-        queryWrapper.gt("calc_date", preStr);//大于
-        queryWrapper.le("calc_date", postStr);//小于等于
+        queryWrapper.ge("calc_date", preStr);//大于等于
+        queryWrapper.lt("calc_date", postStr);//小于
         queryWrapper.ge("newest", 0);
         // calcDate -> calc_date
         if ("calcDate".equalsIgnoreCase(query.getOderByField())) {
@@ -118,8 +118,8 @@ public class WfAnalyseCdqServiceImpl extends ServiceImpl<WfAnalyseCdqMapper, WfA
             resultPage.setTotalCount((int) page.getTotal());
         }
         QueryWrapper<WfAnalyseCdq> avgQuery = new QueryWrapper<>();
-        avgQuery.gt("calc_date", preStr);
-        avgQuery.le("calc_date", postStr);
+        avgQuery.ge("calc_date", preStr);
+        avgQuery.lt("calc_date", postStr);
         avgQuery.ge("newest", 0);
         avgQuery.select("avg(avg_rmse) avg_rmse, avg(avg_mae) avg_mae, avg(biggest_diff) biggest_diff, avg(about_r) about_r, avg(r1_ratio) r1_ratio, avg(r2_ratio) r2_ratio");
         WfAnalyseCdq wfAnalyseDq = getBaseMapper().selectOne(avgQuery);
@@ -183,8 +183,8 @@ public class WfAnalyseCdqServiceImpl extends ServiceImpl<WfAnalyseCdqMapper, WfA
         }
                 // criteria
         QueryWrapper<WfAnalyseCdq> queryWrapper = new QueryWrapper<>();//查 短期功率分析
-        queryWrapper.gt("calc_date", preStr);//大于开始时间
-        queryWrapper.le("calc_date", postStr);//小于等于结束时间
+        queryWrapper.ge("calc_date", preStr);//大于开始时间
+        queryWrapper.lt("calc_date", postStr);//小于等于结束时间
         List<WfAnalyseCdq> wfAnalysedqs = getBaseMapper().selectList(queryWrapper);
         if (CollectionUtils.isNotEmpty(wfAnalysedqs)) {//判断records不为空
             List<CdqPowerAnalysisDTO> tmp = new ArrayList<>();//创建存dqPowerAnalysisDTO的list集合叫tmp

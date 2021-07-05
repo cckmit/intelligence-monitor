@@ -6,7 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.zhikuntech.intellimonitor.core.commons.constant.WebSocketConstant;
 import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanRuntimeDTO;
 import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanStatisticsDTO;
-import com.zhikuntech.intellimonitor.mainpage.domain.golden.GoldenUtil;
+import com.zhikuntech.intellimonitor.core.commons.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.service.FanInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -53,7 +53,7 @@ public class WebSocketServer {
 
     private ReentrantLock lock = new ReentrantLock();
 
-    public static GoldenUtil goldenUtil;
+    public static GoldenUtil GoldenUtil;
 
     public static FanInfoService fanInfoService;
 
@@ -223,7 +223,7 @@ public class WebSocketServer {
             fanInfoService.getStatistics("statistics");
             log.info("订阅golden实时消息---风场统计");
         } catch (Exception e) {
-            goldenUtil.cancelAll();
+            GoldenUtil.cancelAll();
             sendAllMessage("重新订阅");
             e.printStackTrace();
             log.info("subscribeStatistics,websocket触发所有取消操作");
@@ -244,7 +244,7 @@ public class WebSocketServer {
             fanInfoService.getRuntimeInfos("runtime");
             log.info("订阅golden实时消息---风机详情");
         } catch (Exception e) {
-            goldenUtil.cancelAll();
+            GoldenUtil.cancelAll();
             sendAllMessage("重新订阅");
             e.printStackTrace();
             log.info("subscribeRuntime,websocket触发所有取消操作");
@@ -253,7 +253,7 @@ public class WebSocketServer {
 
 //    private void aaa(String message) {
 //        if ("reset".equals(message)) {
-//            goldenUtil.cancelAll();
+//            GoldenUtil.cancelAll();
 //            sendAllMessage("重新订阅");
 //            log.info("手动触发所有取消操作");
 //        }

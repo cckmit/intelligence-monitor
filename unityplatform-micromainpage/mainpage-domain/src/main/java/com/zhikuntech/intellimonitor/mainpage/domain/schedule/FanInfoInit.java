@@ -1,20 +1,17 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.schedule;
 
 import com.zhikuntech.intellimonitor.core.commons.constant.FanConstant;
-import com.zhikuntech.intellimonitor.mainpage.domain.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.model.BackendToGolden;
 import com.zhikuntech.intellimonitor.mainpage.domain.model.BackendToGoldenQuery;
 import com.zhikuntech.intellimonitor.mainpage.domain.service.BackendToGoldenService;
-import com.zhikuntech.intellimonitor.mainpage.domain.service.FanInfoService;
-import com.zhikuntech.intellimonitor.mainpage.domain.utils.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author 代志豪
@@ -29,16 +26,7 @@ public class FanInfoInit implements CommandLineRunner {
     public static Map<String, Double> POWER_MAP = new HashMap<>();
 
     @Autowired
-    private RedisUtil redisUtil;
-
-    @Autowired
-    private GoldenUtil goldenUtil;
-
-    @Autowired
     private BackendToGoldenService backendToGoldenService;
-
-    @Autowired
-    private FanInfoService fanInfoService;
 
     @Override
     public void run(String... args){
@@ -59,12 +47,6 @@ public class FanInfoInit implements CommandLineRunner {
         POWER_MAP.put(FanConstant.DAILY_ONLINE_ALL, 0.0);
         POWER_MAP.put(FanConstant.MONTHLY_ONLINE_ALL, 0.0);
         POWER_MAP.put(FanConstant.ANNUAL_ONLINE_ALL, 0.0);
-        try {
-            fanInfoService.getStatistics("statistics");
-            fanInfoService.getRuntimeInfos("runtime");
-        }catch (Exception e){
-            goldenUtil.cancelAll();
-        }
         log.info("初始化数据完成！");
     }
 
@@ -74,13 +56,13 @@ public class FanInfoInit implements CommandLineRunner {
 //    @Scheduled(cron = "0 0 0 * * ?")
 //    public void init() throws Exception {
 //        int[] ids = {1, 2};
-//        List<ValueData> power = goldenUtil.getSnapshots(ids);
+//        List<ValueData> power = GoldenUtil.getSnapshots(ids);
 //        for (int i = 1; i < power.size(); i++) {
 //            redisUtil.set(FanConstant.DAILY_POWER + i, power.get(i).getValue());
 //        }
 //        double powerSum = power.stream().parallel().mapToDouble(ValueData::getValue).sum();
 //        redisUtil.set(FanConstant.DAILY_POWER_ALL, powerSum);
-//        List<ValueData> online = goldenUtil.getSnapshots(ids);
+//        List<ValueData> online = GoldenUtil.getSnapshots(ids);
 //        for (int i = 1; i < online.size(); i++) {
 //            redisUtil.set(FanConstant.DAILY_ONLINE + i, online.get(i).getValue());
 //        }
@@ -90,7 +72,7 @@ public class FanInfoInit implements CommandLineRunner {
 //
 //    public double dataResetFloat(String key, Integer id, Integer type) {
 //        try {
-//            double value = goldenUtil.getFloat(id, getTime(type));
+//            double value = GoldenUtil.getFloat(id, getTime(type));
 //            redisUtil.set(key, value);
 //            return value;
 //        } catch (Exception e) {
@@ -100,7 +82,7 @@ public class FanInfoInit implements CommandLineRunner {
 //
 //    public int dataResetInteger(String key, Integer id, Integer type) {
 //        try {
-//            int value = goldenUtil.getInteger(id, getTime(type));
+//            int value = GoldenUtil.getInteger(id, getTime(type));
 //            redisUtil.set(key, value);
 //            return value;
 //        } catch (Exception e) {

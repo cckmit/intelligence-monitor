@@ -14,7 +14,7 @@ import java.util.List;
  * @create 2021/6/15 17:36
  **/
 @Service
-public class AlarmHistoryserviceImpl implements AlarmHistoryService {
+public class AlarmHistoryServiceImpl implements AlarmHistoryService {
 
     @Autowired
     GoldenUtil goldenUtil;

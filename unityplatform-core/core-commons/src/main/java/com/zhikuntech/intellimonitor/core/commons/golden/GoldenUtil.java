@@ -1,6 +1,7 @@
-package com.zhikuntech.intellimonitor.mainpage.domain.golden;
+package com.zhikuntech.intellimonitor.core.commons.golden;
 
 import com.rtdb.api.callbackInter.RSDataChange;
+import com.rtdb.api.model.RtdbData;
 import com.rtdb.api.model.ValueData;
 import com.rtdb.api.util.DateUtil;
 import com.rtdb.enums.DataSort;
@@ -45,7 +46,7 @@ public class GoldenUtil {
     @Value("${golden.maxSize}")
     private Integer maxSize;
 
-    private ServerImplPool pool;
+    public static ServerImplPool pool;
 
     /**
      * 初始化庚顿数据库连接池
@@ -55,7 +56,7 @@ public class GoldenUtil {
         pool = new ServerImplPool(ip, port, user, password, poolSize, maxSize);
     }
 
-    private static ConcurrentHashMap<String, ServerImpl> servers = new ConcurrentHashMap<>();
+    public static ConcurrentHashMap<String, ServerImpl> servers = new ConcurrentHashMap<>();
 
     private static ConcurrentHashMap<String, Snapshot> snaps = new ConcurrentHashMap<>();
 
@@ -65,7 +66,7 @@ public class GoldenUtil {
      * @param tableName 表名
      * @return int[]
      */
-    public int[] getIds(String tableName) throws Exception {
+    public static int[] getIds(String tableName) throws Exception {
         check();
         ServerImpl server = pool.getServerImpl();
         server.setTimeOut(5);
@@ -86,7 +87,7 @@ public class GoldenUtil {
      * @param rsDataChange 庚顿数据更新时触发，进行相关处理
      * @throws Exception
      */
-    public void subscribeSnapshots(String username, int[] ids, RSDataChange rsDataChange) throws Exception {
+    public static void subscribeSnapshots(String username, int[] ids, RSDataChange rsDataChange) throws Exception {
         check();
         ServerImpl server = pool.getServerImpl();
         Snapshot snap = new SnapshotImpl(server);
@@ -107,7 +108,7 @@ public class GoldenUtil {
     /**
      * @param tagNames 更具标签的名称查询
      */
-    public void subscribeSnapshots(String username, String[] tagNames, RSDataChange rsDataChange) throws Exception {
+    public static void subscribeSnapshots(String username, String[] tagNames, RSDataChange rsDataChange) throws Exception {
         check();
         ServerImpl server = pool.getServerImpl();
         Snapshot snap = new SnapshotImpl(server);
@@ -128,7 +129,7 @@ public class GoldenUtil {
     /**
      * 取消订阅
      */
-    public void cancel(String username) {
+    public static void cancel(String username) {
         Snapshot snap = snaps.get(username);
         ServerImpl server = servers.get(username);
         try {
@@ -143,7 +144,7 @@ public class GoldenUtil {
         }
         snaps.remove(username);
         servers.remove(username);
-        if(servers.isEmpty()){
+        if (servers.isEmpty()) {
             pool.closePool();
         }
     }
@@ -151,8 +152,8 @@ public class GoldenUtil {
     /**
      * 取消所有连接
      */
-    public void cancelAll() {
-        servers.keySet().forEach(this::cancel);
+    public static void cancelAll() {
+        servers.keySet().forEach(GoldenUtil::cancel);
         pool.closePool();
     }
 
@@ -164,7 +165,7 @@ public class GoldenUtil {
      * RTDB_EXACT(2), 抛出异常
      * RTDB_INTER(3); 取指定时间的内插值数据
      */
-    public double getFloat(int id, String dateTime) throws Exception {
+    public static double getFloat(int id, String dateTime) throws Exception {
         check();
         ServerImpl server = pool.getServerImpl();
         server.setTimeOut(5);
@@ -175,7 +176,7 @@ public class GoldenUtil {
         return value;
     }
 
-    public int getInteger(int id, String dateTime) throws Exception {
+    public static int getInteger(int id, String dateTime) throws Exception {
         check();
         ServerImpl server = pool.getServerImpl();
         server.setTimeOut(5);
@@ -187,12 +188,39 @@ public class GoldenUtil {
     }
 
     /**
+     * 获取指定标签点一段时间内的历史存储值
+     * @param id          标签点id
+     * @param dateStart   开始时间
+     * @param dateEnd     结束时间
+     */
+    public static List<RtdbData> getArchivedValues(int id, Date dateStart, Date dateEnd) throws Exception {
+        ServerImpl serverImpl = pool.getServerImpl();
+        HistorianImpl his = new HistorianImpl(serverImpl);
+        id = 1;
+        dateStart = DateUtil.stringToDate("2021-07-02 15:40:00");
+        dateEnd = DateUtil.stringToDate("2021-07-02 15:50:00");
+
+        long s = System.currentTimeMillis();
+        //该标签点这段时间内的存储值数量
+        int count = his.archivedValuesCount(id, dateStart, dateEnd);
+        //该标签点这段时间内的真实存储值数量
+        int realCount = his.archivedValuesRealCount(id, dateStart, dateEnd);
+
+        List<RtdbData> archivedValues = his.getArchivedValues(id, realCount, dateStart, dateEnd);
+        long e = System.currentTimeMillis();
+        log.info(count + "_______" + realCount);
+        log.info(archivedValues.size() + "  条记录,用时 : " + (e - s) + "  ms");
+        return archivedValues;
+    }
+
+
+    /**
      * 获取指定id当前最新快照信息
      *
      * @param ids 指定id集合
      * @return 指定id集合最新快照信息
      */
-    public List<ValueData> getSnapshots(int[] ids) throws Exception {
+    public static List<ValueData> getSnapshots(int[] ids) throws Exception {
         check();
         ServerImpl server = pool.getServerImpl();
         server.setTimeOut(5);
@@ -206,22 +234,13 @@ public class GoldenUtil {
     /**
      * 检查庚顿实际连接池
      */
-    private void check() throws Exception {
+    private static void check() throws Exception {
         if (servers.isEmpty()) {
             pool.closePool();
         }
-        if (pool.getRealSize() == maxSize) {
+        if (pool.getRealSize() == pool.getMaxSize()) {
             pool.closePool();
             throw new Exception("golden数据库连接池已满，连接失败！");
         }
     }
-
-    public ServerImplPool getPool() {
-        return this.pool;
-    }
-
-    public ConcurrentHashMap<String, ServerImpl> getServer() {
-        return servers;
-    }
-
 }

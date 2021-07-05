@@ -1,6 +1,6 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.websocket;
 
-import com.zhikuntech.intellimonitor.mainpage.domain.golden.GoldenUtil;
+import com.zhikuntech.intellimonitor.core.commons.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.service.FanInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -23,8 +23,8 @@ public class WebSocketConfig {
     }
 
     @Autowired
-    public void setGoldenUtil(GoldenUtil goldenUtil) {
-        WebSocketServer.goldenUtil = goldenUtil;
+    public void setGoldenUtil(GoldenUtil GoldenUtil) {
+        WebSocketServer.GoldenUtil = GoldenUtil;
     }
 
     @Autowired

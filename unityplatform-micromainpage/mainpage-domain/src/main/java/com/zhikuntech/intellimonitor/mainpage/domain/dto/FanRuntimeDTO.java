@@ -2,15 +2,12 @@ package com.zhikuntech.intellimonitor.mainpage.domain.dto;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.converters.url.UrlImageConverter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.zhikuntech.intellimonitor.mainpage.domain.golden.annotation.GoldenId;
+import com.zhikuntech.intellimonitor.core.commons.golden.annotation.GoldenId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
-
-import java.net.URL;
 
 /**
  * @author 代志豪
