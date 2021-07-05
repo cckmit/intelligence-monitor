@@ -46,6 +46,7 @@
         <freemarker.version>2.3.31</freemarker.version>
         <redisson.version>3.13.6</redisson.version>
         <persistence-api.version>1.0</persistence-api.version>
+        <caffeine.version>2.8.8</caffeine.version>
     </properties>
 
     <!-- 管理所有外部依赖 -->
@@ -178,6 +179,12 @@
                 <version>${persistence-api.version}</version>
             </dependency>
 
+            <!--缓存Caffeine替换GuavaCache-->
+            <dependency>
+                <groupId>com.github.ben-manes.caffeine</groupId>
+                <artifactId>caffeine</artifactId>
+                <version>${caffeine.version}</version>
+            </dependency>
 
             <!--   scope-test         -->
             <dependency>
