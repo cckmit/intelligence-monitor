@@ -1,4 +1,4 @@
-package com.zhikuntech.intellimonitor.windpowerforecast.domain;
+package com.zhikuntech.intellimonitor.alarm.domain;
 
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.generator.config.rules.FileType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +39,11 @@ public class MybatisplusGeneratorMain {
         String projectPath = System.getProperty("user.dir");
         // mybatis-plus-generator
         // "/src/main/java"
-        gc.setOutputDir(projectPath + "/unityplatform-microwindpowerforecast/windpowerforecast-domain/src/main/java");
+        // /Users/liukai/business
+        // /unityplatform-microalarm/alarm-domain/src/main/java
+        // /com/zhikuntech/intellimonitor/alarm/domain
+
+        gc.setOutputDir(projectPath + "/unityplatform-microalarm/alarm-domain/src/main/java");
         gc.setAuthor("liukai");
         gc.setOpen(false);
         //xml
@@ -68,7 +73,7 @@ public class MybatisplusGeneratorMain {
         // 包配置
         final PackageConfig pc = new PackageConfig();
 //        pc.setModuleName("testuu");
-        pc.setParent("com.zhikuntech.intellimonitor.windpowerforecast.domain");
+        pc.setParent("com.zhikuntech.intellimonitor.alarm.domain");
         pc.setXml("mapper");
 //        pc.setXml("com/zhikuntech/intellimonitor/fanscada/domain/mapper");
         mpg.setPackageInfo(pc);
@@ -98,7 +103,7 @@ public class MybatisplusGeneratorMain {
                         ;
 
 //                outP = projectPath + "/unityplatform-microwindpowerforecast/windpowerforecast-domain/src/main/resources/com.zhikuntech.intellimonitor.fanscada.domain.mapper/"
-                outP = projectPath + "/unityplatform-microwindpowerforecast/windpowerforecast-domain/src/main/resources/mapper/"
+                outP = projectPath + "/unityplatform-microalarm/alarm-domain/src/main/resources/mapper/"
                         + pc.getModuleName()
                         + "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
                 return outP;
@@ -110,8 +115,8 @@ public class MybatisplusGeneratorMain {
 
                 if (fileType == FileType.SERVICE || fileType == FileType.SERVICE_IMPL || fileType == FileType.MAPPER) {
                     // 已经生成的service可以不重复生成
-                    return false;
-//                    return !new File(filePath).exists();
+//                    return false;
+                    return !new File(filePath).exists();
                 }
                 // 默认生成文件
                 return true;
@@ -134,7 +139,7 @@ public class MybatisplusGeneratorMain {
         strategy.setRestControllerStyle(true);
 
         //- 表名称
-        strategy.setInclude("wf_basic_parse_result");
+        strategy.setInclude("alarm_config_monitor");
         strategy.setControllerMappingHyphenStyle(true);
 
         mpg.setStrategy(strategy);

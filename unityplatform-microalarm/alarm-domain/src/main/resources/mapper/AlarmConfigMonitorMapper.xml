@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhikuntech.intellimonitor.alarm.domain.mapper.AlarmConfigMonitorMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zhikuntech.intellimonitor.alarm.domain.entity.AlarmConfigMonitor">
+        <id column="id" property="id" />
+        <result column="monitor_no" property="monitorNo" />
+        <result column="rule_no" property="ruleNo" />
+        <result column="monitor_type" property="monitorType" />
+        <result column="group_type" property="groupType" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, monitor_no, rule_no, monitor_type, group_type, create_time, update_time
+    </sql>
+
+</mapper>
