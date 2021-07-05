@@ -22,6 +22,12 @@
             <artifactId>core-commons</artifactId>
         </dependency>
 
+        <!-- MySql -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
         <!--   mybatis-plus generator     -->
         <dependency>
             <groupId>com.baomidou</groupId>
