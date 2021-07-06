@@ -186,6 +186,13 @@
                 <version>${caffeine.version}</version>
             </dependency>
 
+            <!--  kafka 2.6+  -->
+            <dependency>
+                <groupId>org.springframework.kafka</groupId>
+                <artifactId>spring-kafka</artifactId>
+                <version>2.6.8</version>
+            </dependency>
+
             <!--   scope-test         -->
             <dependency>
                 <groupId>junit</groupId>
