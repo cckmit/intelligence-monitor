@@ -26,6 +26,7 @@
         <module>unityplatform-microfanscada</module>
         <module>unityplatform-microalarm</module>
         <module>unityplatform-micromessagepush</module>
+        <module>unityplatform-microstructuremonitor</module>
     </modules>
 
     <properties>

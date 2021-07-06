@@ -87,6 +87,7 @@ public class FanIndexServiceImpl implements FanIndexService {
                     List<FanBaseInfoVO> list9 = new ArrayList<>();
                     List<FanBaseInfoVO> list10 = new ArrayList<>();
                     for (FanBaseInfoVO fanBaseInfoVO : result) {
+                        //回路匹配
                         if (FanLoopNumber.LOOP1.contains("" + fanBaseInfoVO.getFanNumber())) {
                             list1.add(fanBaseInfoVO);
                         } else if (FanLoopNumber.LOOP2.contains("" + fanBaseInfoVO.getFanNumber())) {
@@ -122,6 +123,7 @@ public class FanIndexServiceImpl implements FanIndexService {
                     lists.add(list10);
                     List<LoopVO> resultList = new ArrayList<>();
                     int n = 1;
+                    //数值计算
                     for (List<FanBaseInfoVO> fanBaseInfoVOS : lists) {
                         BigDecimal activePowerSum = BigDecimal.valueOf(0.0);
                         BigDecimal reactivePowerSum = BigDecimal.valueOf(0.0);
