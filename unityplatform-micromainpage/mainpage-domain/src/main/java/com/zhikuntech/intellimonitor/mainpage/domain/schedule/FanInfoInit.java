@@ -1,11 +1,13 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.schedule;
 
 import com.zhikuntech.intellimonitor.core.commons.constant.FanConstant;
+import com.zhikuntech.intellimonitor.core.commons.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.model.BackendToGolden;
 import com.zhikuntech.intellimonitor.mainpage.domain.model.BackendToGoldenQuery;
 import com.zhikuntech.intellimonitor.mainpage.domain.service.BackendToGoldenService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +23,24 @@ import java.util.Map;
 @Slf4j
 public class FanInfoInit implements CommandLineRunner {
 
+    @Value("${golden.ip}")
+    private String ip;
+
+    @Value("${golden.port}")
+    private Integer port;
+
+    @Value("${golden.user}")
+    private String user;
+
+    @Value("${golden.password}")
+    private String password;
+
+    @Value("${golden.poolSize}")
+    private Integer poolSize;
+
+    @Value("${golden.maxSize}")
+    private Integer maxSize;
+
     public static Map<String, Integer> GOLDEN_ID_MAP = new HashMap<>();
 
     public static Map<String, Double> POWER_MAP = new HashMap<>();
@@ -29,7 +49,7 @@ public class FanInfoInit implements CommandLineRunner {
     private BackendToGoldenService backendToGoldenService;
 
     @Override
-    public void run(String... args){
+    public void run(String... args) {
         BackendToGoldenQuery query = new BackendToGoldenQuery();
         query.setNumber(1);
         List<BackendToGolden> list = backendToGoldenService.getGoldenIdByBackendIdOrNumber(query);
@@ -47,6 +67,7 @@ public class FanInfoInit implements CommandLineRunner {
         POWER_MAP.put(FanConstant.DAILY_ONLINE_ALL, 0.0);
         POWER_MAP.put(FanConstant.MONTHLY_ONLINE_ALL, 0.0);
         POWER_MAP.put(FanConstant.ANNUAL_ONLINE_ALL, 0.0);
+        GoldenUtil.init(ip, port, user, password, poolSize, maxSize);
         log.info("初始化数据完成！");
     }
 
