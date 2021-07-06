@@ -128,7 +128,7 @@ public class MybatisplusGeneratorMain {
         // 配置模版
         TemplateConfig templateConfig = new TemplateConfig();
         templateConfig.setXml(null);
-        templateConfig.setController(null);
+//        templateConfig.setController(null);
         mpg.setTemplate(templateConfig);
 
         // 策略配置
@@ -139,7 +139,12 @@ public class MybatisplusGeneratorMain {
         strategy.setRestControllerStyle(true);
 
         //- 表名称
-        strategy.setInclude("alarm_config_monitor");
+        /*
+            alarm_config_level
+            alarm_config_rule
+            alarm_config_monitor
+         */
+        strategy.setInclude("alarm_config_level");
         strategy.setControllerMappingHyphenStyle(true);
 
         mpg.setStrategy(strategy);
