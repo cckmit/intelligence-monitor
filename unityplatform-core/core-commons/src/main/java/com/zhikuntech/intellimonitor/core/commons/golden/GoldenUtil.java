@@ -24,36 +24,16 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author 代志豪
  * 2021/6/7 10:50
  */
-@Component
 @Slf4j
 public class GoldenUtil {
-
-    @Value("${golden.ip}")
-    private String ip;
-
-    @Value("${golden.port}")
-    private Integer port;
-
-    @Value("${golden.user}")
-    private String user;
-
-    @Value("${golden.password}")
-    private String password;
-
-    @Value("${golden.poolSize}")
-    private Integer poolSize;
-
-    @Value("${golden.maxSize}")
-    private Integer maxSize;
 
     public static ServerImplPool pool;
 
     /**
      * 初始化庚顿数据库连接池
      */
-    @PostConstruct
-    private void init() {
-        pool = new ServerImplPool(ip, port, user, password, poolSize, maxSize);
+    public static void init(String ip, int port, String user, String passWord, int poolSize, int maxSize) {
+        pool = new ServerImplPool(ip, port, user, passWord, poolSize, maxSize);
     }
 
     public static ConcurrentHashMap<String, ServerImpl> servers = new ConcurrentHashMap<>();

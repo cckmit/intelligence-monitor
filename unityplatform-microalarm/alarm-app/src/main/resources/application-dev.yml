@@ -16,15 +16,15 @@ spring:
     username: develop
     password: Aman@2020
     driver-class-name: com.mysql.cj.jdbc.Driver
-  kafka:
-    consumer:
-      bootstrap-servers:
-        - 192.168.3.237:9092
-      group-id: test-alarm
-      enable-auto-commit: true
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      auto-offset-reset: earliest
+#  kafka:
+#    consumer:
+#      bootstrap-servers:
+#        - 192.168.3.237:9092
+#      group-id: test-alarm
+#      enable-auto-commit: true
+#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      auto-offset-reset: earliest
 
 
 logging:

@@ -4,9 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.zhikuntech.intellimonitor.core.commons.constant.WebSocketConstant;
+import com.zhikuntech.intellimonitor.core.commons.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanRuntimeDTO;
 import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanStatisticsDTO;
-import com.zhikuntech.intellimonitor.core.commons.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.service.FanInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -14,13 +14,11 @@ import org.springframework.stereotype.Component;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 /**
@@ -51,10 +49,6 @@ public class WebSocketServer {
 
     private String username;
 
-    private ReentrantLock lock = new ReentrantLock();
-
-    public static GoldenUtil GoldenUtil;
-
     public static FanInfoService fanInfoService;
 
     /**
@@ -73,7 +67,7 @@ public class WebSocketServer {
      * 连接关闭调用的方法
      */
     @OnClose
-    public void onClose() {
+    public void onClose(@PathParam("username") String username) {
         onlineCount.decrementAndGet();
         clients.remove(username);
         GROUP_STATISTICS.remove(username);
@@ -87,13 +81,13 @@ public class WebSocketServer {
      * @param message 客户端发送过来的消息
      */
     @OnMessage
-    public void onMessage(String message) {
+    public void onMessage(String message, @PathParam("username") String username) {
         if ("hello".equals(message)) {
             log.info(message);
             sendMessage("world", username);
             log.info("world");
         } else {
-            messageHandle(message);
+            messageHandle(message, username);
         }
     }
 
@@ -108,8 +102,17 @@ public class WebSocketServer {
      */
     public void sendMessage(String message, String username) {
         Session session = clients.get(username);
-        if (null != session) {
-            send(session, message);
+        if (session == null) {
+            log.error("No websocket session found for username: {}, message: {}.", username, message);
+            return;
+        }
+        synchronized (session) {
+            try {
+                session.getBasicRemote().sendText(message);
+            } catch (Exception e) {
+                log.error("服务端发送消息给客户端失败：", e);
+                e.printStackTrace();
+            }
         }
     }
 
@@ -121,12 +124,12 @@ public class WebSocketServer {
      */
     public void sendGroupMessage(String message, Integer type) {
         if (type == 0) {
-            for (Session session : GROUP_RUNTIME.values()) {
-                send(session, message);
+            for (String username : GROUP_RUNTIME.keySet()) {
+                sendMessage(message, username);
             }
         } else if (type == 1) {
-            for (Session session : GROUP_STATISTICS.values()) {
-                send(session, message);
+            for (String username : GROUP_STATISTICS.keySet()) {
+                sendMessage(message, username);
             }
         }
     }
@@ -137,29 +140,9 @@ public class WebSocketServer {
      * @param message 消息内容
      */
     public void sendAllMessage(String message) {
-        for (Session session : clients.values()) {
-            send(session, message);
+        for (String username : clients.keySet()) {
+            sendMessage(message, username);
         }
-    }
-
-    private synchronized void send(Session session,String message) {
-//        lock.lock();
-//        try {
-//            session.getBasicRemote().sendText(message);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            log.error("服务端发送消息给客户端失败：", e);
-//        } finally {
-//            lock.unlock();
-//        }
-            try {
-                session.getBasicRemote().sendText(message);
-            } catch (IOException e) {
-                log.error("中断");
-                log.error("服务端发送消息给客户端失败：", e);
-            }catch (Exception e){
-                e.printStackTrace();
-            }
     }
 
     /**
@@ -167,7 +150,7 @@ public class WebSocketServer {
      *
      * @param message 消息
      */
-    private void messageHandle(String message) {
+    private void messageHandle(String message, String username) {
         try {
             WebSocketTransferVo vo = JSON.parseObject(message, WebSocketTransferVo.class);
             Integer type = vo.getOrderType();
@@ -250,27 +233,4 @@ public class WebSocketServer {
             log.info("subscribeRuntime,websocket触发所有取消操作");
         }
     }
-
-//    private void aaa(String message) {
-//        if ("reset".equals(message)) {
-//            GoldenUtil.cancelAll();
-//            sendAllMessage("重新订阅");
-//            log.info("手动触发所有取消操作");
-//        }
-//        if ("reset1".equals(message)) {
-//            GROUP_RUNTIME.remove(username);
-//            log.info("取消订阅---风机详情");
-//        }
-//        if ("reset2".equals(message)) {
-//            GROUP_STATISTICS.remove(username);
-//            log.info("取消订阅---风场统计");
-//        }
-//        Set<String> strings = Arrays.stream(message.split(",")).collect(Collectors.toSet());
-//        if (strings.contains("1")) {
-//            subscribeRuntime();
-//        }
-//        if (strings.contains("2")) {
-//            subscribeStatistics();
-//        }
-//    }
 }

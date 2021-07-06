@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhikuntech.intellimonitor.alarm.domain.mapper.AlarmConfigLevelMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zhikuntech.intellimonitor.alarm.domain.entity.AlarmConfigLevel">
+        <id column="id" property="id" />
+        <result column="level_no" property="levelNo" />
+        <result column="alarm_level" property="alarmLevel" />
+        <result column="level_illustrate" property="levelIllustrate" />
+        <result column="alarm_way" property="alarmWay" />
+        <result column="mark" property="mark" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, level_no, alarm_level, level_illustrate, alarm_way, mark
+    </sql>
+
+</mapper>

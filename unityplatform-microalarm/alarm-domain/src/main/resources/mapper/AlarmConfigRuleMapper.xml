@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhikuntech.intellimonitor.alarm.domain.mapper.AlarmConfigRuleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zhikuntech.intellimonitor.alarm.domain.entity.AlarmConfigRule">
+        <id column="id" property="id" />
+        <result column="rule_no" property="ruleNo" />
+        <result column="alarm_type" property="alarmType" />
+        <result column="alarm_value" property="alarmValue" />
+        <result column="pre_alarm_one_value" property="preAlarmOneValue" />
+        <result column="pre_alarm_two_value" property="preAlarmTwoValue" />
+        <result column="level_no_alarm" property="levelNoAlarm" />
+        <result column="level_no_one" property="levelNoOne" />
+        <result column="level_no_two" property="levelNoTwo" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, rule_no, alarm_type, alarm_value, pre_alarm_one_value, pre_alarm_two_value, level_no_alarm, level_no_one, level_no_two, create_time, update_time
+    </sql>
+
+</mapper>

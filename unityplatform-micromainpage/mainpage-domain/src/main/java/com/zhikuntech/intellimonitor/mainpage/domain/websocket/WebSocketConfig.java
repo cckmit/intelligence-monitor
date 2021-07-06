@@ -23,11 +23,6 @@ public class WebSocketConfig {
     }
 
     @Autowired
-    public void setGoldenUtil(GoldenUtil GoldenUtil) {
-        WebSocketServer.GoldenUtil = GoldenUtil;
-    }
-
-    @Autowired
     public void setFanInfoService(FanInfoService fanInfoService) {
         WebSocketServer.fanInfoService = fanInfoService;
     }
