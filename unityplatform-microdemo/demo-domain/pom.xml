@@ -28,6 +28,28 @@
             <groupId>com.zhikuntech.intellimonitor</groupId>
             <artifactId>core-commons</artifactId>
         </dependency>
+
+<!--        -->
+        <dependency>
+            <groupId>com.golden</groupId>
+            <artifactId>golden-java-sdk</artifactId>
+            <version>${golden.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>${commons-logging.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>${commons-beanutils.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>${protobuf-java.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
