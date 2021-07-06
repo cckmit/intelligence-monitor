@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhikuntech.intellimonitor.alarm.domain.mapper.AlarmProduceInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zhikuntech.intellimonitor.alarm.domain.entity.AlarmProduceInfo">
+        <id column="id" property="id" />
+        <result column="version" property="version" />
+        <result column="info_no" property="infoNo" />
+        <result column="monitor_no" property="monitorNo" />
+        <result column="rule_no" property="ruleNo" />
+        <result column="event_time" property="eventTime" />
+        <result column="process_time" property="processTime" />
+        <result column="monitor_num" property="monitorNum" />
+        <result column="monitor_num_str" property="monitorNumStr" />
+        <result column="create_time" property="createTime" />
+        <result column="with_history" property="withHistory" />
+        <result column="pre_info_no" property="preInfoNo" />
+        <result column="has_confirm" property="hasConfirm" />
+        <result column="confirm_person" property="confirmPerson" />
+        <result column="confirm_time" property="confirmTime" />
+        <result column="has_restore" property="hasRestore" />
+        <result column="restore_time" property="restoreTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, version, info_no, monitor_no, rule_no, event_time, process_time, monitor_num, monitor_num_str, create_time, with_history, pre_info_no, has_confirm, confirm_person, confirm_time, has_restore, restore_time
+    </sql>
+
+</mapper>
