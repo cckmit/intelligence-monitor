@@ -25,7 +25,7 @@
         <module>unityplatform-micromainpage</module>
         <module>unityplatform-microfanscada</module>
         <module>unityplatform-microalarm</module>
-        <module>unityplatform-microwebsocket</module>
+        <module>unityplatform-micromessagepush</module>
     </modules>
 
     <properties>
