@@ -24,4 +24,9 @@ public class WebSocketTransferVo {
      */
     private String description;
 
+    /**
+     * 消息类别
+     */
+    private Integer messageType;
+
 }

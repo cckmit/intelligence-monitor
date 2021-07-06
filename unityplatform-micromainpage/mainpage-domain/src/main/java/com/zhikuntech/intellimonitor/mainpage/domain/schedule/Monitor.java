@@ -3,6 +3,7 @@ package com.zhikuntech.intellimonitor.mainpage.domain.schedule;
 import com.rtdb.service.impl.ServerImpl;
 import com.rtdb.service.impl.ServerImplPool;
 import com.zhikuntech.intellimonitor.core.commons.golden.GoldenUtil;
+import com.zhikuntech.intellimonitor.mainpage.domain.websocket.MyWebSocketHandler;
 import com.zhikuntech.intellimonitor.mainpage.domain.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,8 +21,8 @@ public class Monitor {
 
     @Scheduled(cron = "*/30 * * * * ?")
     public void monitor() {
-        String runtime = String.join(",", WebSocketServer.GROUP_RUNTIME.keySet());
-        String statistics = String.join(",", WebSocketServer.GROUP_STATISTICS.keySet());
+        String runtime = String.join(",", MyWebSocketHandler.GROUP_RUNTIME.keySet());
+        String statistics = String.join(",", MyWebSocketHandler.GROUP_STATISTICS.keySet());
         log.info("当前连接的websocket数量是{}，订阅风机数据的有{}，订阅统计数据的有{}",
                 WebSocketServer.clients.size(), runtime, statistics);
 
