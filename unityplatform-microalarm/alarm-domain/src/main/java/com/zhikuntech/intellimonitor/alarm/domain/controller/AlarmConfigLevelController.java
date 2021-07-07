@@ -10,11 +10,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
 /**
  * <p>
@@ -49,8 +47,6 @@ public class AlarmConfigLevelController {
   4）导入：支持按Excel模板导入告警等级；
      */
 
-    // 列表字段：包括序号、告警等级、告警方式、备注
-
 
     @ApiOperation("新增告警等级")
     @PostMapping("/add-new")
@@ -66,7 +62,19 @@ public class AlarmConfigLevelController {
         return BaseResponse.success(results);
     }
 
-    // todo 删除
+    @ApiOperation("删除数据-单条")
+    @PostMapping("/delete/{level_no}")
+    public BaseResponse<AlarmLevelDTO> deleteById(@PathVariable("level_no") String levelNo) {
+        AlarmLevelDTO result = levelService.deleteByLevelNo(levelNo);
+        return BaseResponse.success(result);
+    }
+
+    @ApiOperation("批量删除")
+    @PostMapping("/delete-batch")
+    public BaseResponse<List<AlarmLevelDTO>> batchDelete(@RequestBody List<String> levelNos) {
+        List<AlarmLevelDTO> results = levelService.batchDelete(levelNos);
+        return BaseResponse.success(results);
+    }
 
 
 }
