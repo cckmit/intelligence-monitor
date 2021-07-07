@@ -47,3 +47,18 @@ eureka:
 logging:
   level:
     org.springframework.cloud.gateway: debug
+
+### xxl-sso
+xxl:
+  sso:
+    # 首次登录是否需要重置密码
+    need-reset-pwd: true
+    # 验证排除的路径，支持Ant表达式
+    excluded-paths: "//.css,//.js,//.html,/favicon.ico,/swagger/,/v2/api-docs**"
+    # sso的redis连接
+    redis:
+      address: redis://sso:oman2020@192.168.3.171:6379/1
+#      address: redis://sso:@192.168.211.150:6379/1
+      # 默认登录过期时间
+      expire:
+        minute: 1440

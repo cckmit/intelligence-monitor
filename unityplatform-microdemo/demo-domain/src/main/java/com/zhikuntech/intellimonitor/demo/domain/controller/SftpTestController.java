@@ -95,11 +95,22 @@ public class SftpTestController {
         //json转换
         ObjectMapper mapper = new ObjectMapper();
         try {
-            String zkSftpATTRSListJson = mapper.writeValueAsString(zkSftpATTRSList);
-            System.out.println(zkSftpATTRSListJson);
+//            String zkSftpATTRSListJson = mapper.writeValueAsString(zkSftpATTRSList);
+//            System.out.println(zkSftpATTRSListJson);
+            //下载解析后的json文件
+            File file = new File("E:\\zhikun\\sftp\\list\\list.json");
+            OutputStream fileOutputStream = null;
+            try {
+                fileOutputStream = new FileOutputStream(file);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            mapper.writeValue(fileOutputStream, zkSftpATTRSList);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             System.out.println("json转换异常!");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
