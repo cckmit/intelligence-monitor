@@ -25,7 +25,8 @@
         <module>unityplatform-micromainpage</module>
         <module>unityplatform-microfanscada</module>
         <module>unityplatform-microalarm</module>
-        <module>unityplatform-microwebsocket</module>
+        <module>unityplatform-micromessagepush</module>
+        <module>unityplatform-microstructuremonitor</module>
     </modules>
 
     <properties>
@@ -57,6 +58,11 @@
             <dependency>
                 <groupId>com.zhikuntech.intellimonitor</groupId>
                 <artifactId>core-commons</artifactId>
+                <version>${intelli-monitor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zhikuntech.intellimonitor</groupId>
+                <artifactId>core-stream</artifactId>
                 <version>${intelli-monitor.version}</version>
             </dependency>
         </dependencies>

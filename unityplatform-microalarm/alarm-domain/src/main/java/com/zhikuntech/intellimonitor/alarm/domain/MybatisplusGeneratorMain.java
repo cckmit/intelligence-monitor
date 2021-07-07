@@ -143,8 +143,9 @@ public class MybatisplusGeneratorMain {
             alarm_config_level
             alarm_config_rule
             alarm_config_monitor
+            alarm_produce_info
          */
-        strategy.setInclude("alarm_config_level");
+        strategy.setInclude("alarm_produce_info");
         strategy.setControllerMappingHyphenStyle(true);
 
         mpg.setStrategy(strategy);

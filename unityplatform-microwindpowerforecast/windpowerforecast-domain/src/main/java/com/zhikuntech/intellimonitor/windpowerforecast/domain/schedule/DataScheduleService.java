@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -213,6 +216,33 @@ public class DataScheduleService {
             if (enter) {
                 lock.unlock();
             }
+        }
+    }
+
+    @Scheduled(cron = "0 0 2 3 * ? ")//每个月3号两点生成下个月的wf_basic_parse_result表的信息
+    public void month(){
+        LocalDateTime date=LocalDateTime.now();
+        int dateYear=date.getYear();
+        Month dateMonth=date.getMonth();
+        Calendar calendar=Calendar.getInstance();
+        int monthInt=calendar.get(Calendar.MONTH)+2;
+        if (dateMonth.equals(Month.DECEMBER)){
+            dateYear=dateYear+1;
+            monthInt=1;
+        }
+        String Str;
+        if (monthInt<=9){
+            Str=dateYear+"-0"+monthInt+"-01";
+        }else {
+            Str=dateYear+"-"+monthInt+"-01";
+        }
+        LocalDate parse = LocalDate.parse(Str, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        Month month = parse.getMonth();
+        for (;month.equals(parse.getMonth());) {
+            parseResultService.genDqDataNeedFetch(parse);
+            parseResultService.genCdqDataNeedFetch(parse);
+            parseResultService.genNwpDataNeedFetch(parse);
+            parse = parse.plusDays(1);
         }
     }
 
