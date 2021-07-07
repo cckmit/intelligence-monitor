@@ -24,12 +24,12 @@ public class AlarmQueryController {
 
     private final IAlarmProduceInfoService alarmProduceInfoService;
 
+
     @ApiOperation("查询所有模块告警数量")
     @GetMapping("/status-all-group")
     public BaseResponse<List<AlarmStatusGroupByModuleDTO>> fetchStatusAllGroup() {
         List<AlarmStatusGroupByModuleDTO> results = alarmProduceInfoService.fetchStatusAllGroup();
         return BaseResponse.success(results);
     }
-
 
 }

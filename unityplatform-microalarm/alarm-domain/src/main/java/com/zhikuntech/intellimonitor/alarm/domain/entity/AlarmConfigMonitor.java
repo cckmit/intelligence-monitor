@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
  * </p>
  *
  * @author liukai
- * @since 2021-07-05
+ * @since 2021-07-07
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -53,6 +53,11 @@ public class AlarmConfigMonitor implements Serializable {
      * 更新时间
      */
     private LocalDateTime updateTime;
+
+    /**
+     * 0number1bool
+     */
+    private Integer valueType;
 
 
 }

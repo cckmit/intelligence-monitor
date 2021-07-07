@@ -3,8 +3,8 @@ package com.zhikuntech.intellimonitor.alarm.domain.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+
+import lombok.*;
 
 /**
  * <p>
@@ -14,6 +14,9 @@ import lombok.EqualsAndHashCode;
  * @author liukai
  * @since 2021-07-06
  */
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class AlarmConfigLevel implements Serializable {
