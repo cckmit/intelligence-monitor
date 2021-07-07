@@ -14,7 +14,7 @@ public class TimerUtil {
 
     public static void start(TimerTask task, String username) {
         Timer timer = new Timer(username);
-        TIMER_MAP.put(username, timer);
+        put(username, timer);
         timer.schedule(task, 20 * 1000);
     }
 
@@ -22,6 +22,13 @@ public class TimerUtil {
         Timer timer = TIMER_MAP.get(username);
         timer.cancel();
         TIMER_MAP.remove(username);
+    }
+
+    private static void put(String username, Timer timer) {
+        if (TIMER_MAP.containsKey(username)) {
+           TIMER_MAP.get(username).cancel();
+        }
+        TIMER_MAP.put(username, timer);
     }
 
 }

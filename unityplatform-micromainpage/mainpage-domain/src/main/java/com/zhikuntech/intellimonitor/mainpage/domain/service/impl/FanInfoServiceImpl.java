@@ -23,7 +23,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author 代志豪
@@ -71,16 +70,11 @@ public class FanInfoServiceImpl implements FanInfoService {
                 fanRuntimeDto.setNumber(i);
                 list.add(fanRuntimeDto);
             }
-            AtomicBoolean bool = new AtomicBoolean(false);
             try {
                 GoldenUtil.subscribeSnapshots(user, ids, (data) -> {
                     try {
                         if (MyWebSocketHandler.GROUP_RUNTIME.keySet().size() > 0) {
                             long l0 = System.currentTimeMillis();
-                            if (bool.get() && null != TimerUtil.TIMER_MAP.get(user)) {
-                                log.info(TimerUtil.TIMER_MAP.get(user).toString() + "___________" + user);
-                                TimerUtil.stop(user);
-                            }
                             List<FanRuntimeDTO> dtos = InjectPropertiesUtil.injectByAnnotation(list, data, (key) -> FanInfoInit.GOLDEN_ID_MAP.get(key));
                             if (null != dtos) {
                                 for (FanRuntimeDTO dto : dtos) {
@@ -98,8 +92,6 @@ public class FanInfoServiceImpl implements FanInfoService {
                                 }
                             }
                             startTimer(user);
-                            log.info(TimerUtil.TIMER_MAP.get(user).toString() + "___________" + user);
-                            bool.set(true);
                             long l1 = System.currentTimeMillis();
                             log.info("实时数据，处理时间{}，消息时间{}", l1 - l0, data[0].getDate());
                         }
@@ -108,7 +100,6 @@ public class FanInfoServiceImpl implements FanInfoService {
                         if (null != TimerUtil.TIMER_MAP.get(user)) {
                             TimerUtil.stop(user);
                         }
-                        bool.set(false);
                         GoldenUtil.cancel(user);
                         webSocketServer.sendGroupMessage("重新订阅", MyWebSocketHandler.GROUP_RUNTIME.keySet());
                         log.info("回调函数内部触发取消操作");
@@ -154,16 +145,11 @@ public class FanInfoServiceImpl implements FanInfoService {
             for (int i = 1; i <= 63; i++) {
                 list.add(new FanStatisticsDTO());
             }
-            AtomicBoolean bool = new AtomicBoolean(false);
             try {
                 GoldenUtil.subscribeSnapshots(user, ids, (data) -> {
                     try {
                         if (MyWebSocketHandler.GROUP_STATISTICS.keySet().size() > 0) {
                             long l0 = System.currentTimeMillis();
-                            if (bool.get() && null != TimerUtil.TIMER_MAP.get(user)) {
-                                log.info(TimerUtil.TIMER_MAP.get(user).toString() + "___________" + user);
-                                TimerUtil.stop(user);
-                            }
                             List<FanStatisticsDTO> dtos = InjectPropertiesUtil.injectByAnnotation(list, data, (key) -> FanInfoInit.GOLDEN_ID_MAP.get(key));
                             if (null != dtos) {
                                 FanStatisticsDTO dto = injecctPorerties(dtos);
@@ -176,8 +162,6 @@ public class FanInfoServiceImpl implements FanInfoService {
                                 }
                             }
                             startTimer(user);
-                            log.info(TimerUtil.TIMER_MAP.get(user).toString() + "___________" + user);
-                            bool.set(true);
                             long l1 = System.currentTimeMillis();
                             log.info("统计数据，处理时间{}，消息时间{}", l1 - l0, data[0].getDate());
                         }
@@ -186,7 +170,6 @@ public class FanInfoServiceImpl implements FanInfoService {
                         if (null != TimerUtil.TIMER_MAP.get(user)) {
                             TimerUtil.stop(user);
                         }
-                        bool.set(false);
                         GoldenUtil.servers.remove(user);
                         webSocketServer.sendGroupMessage("重新订阅", MyWebSocketHandler.GROUP_STATISTICS.keySet());
                         log.info("回调函数内部触发取消操作");

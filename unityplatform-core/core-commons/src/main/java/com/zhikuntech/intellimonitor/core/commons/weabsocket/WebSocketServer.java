@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,11 +39,23 @@ public class WebSocketServer {
     @OnOpen
     public void onOpen(Session session, @PathParam("identityTag") String identityTag) {
         onlineCount.incrementAndGet();
-        clients.put(identityTag, session);
+        put(session, identityTag);
         for (BaseWebSocketHandler baseHandler : baseHandlers) {
             baseHandler.onOpen(identityTag);
         }
         log.info("有新连接加入：{}，当前在线人数为：{}", identityTag, onlineCount.get());
+    }
+
+    private void put(Session session, String identityTag) {
+        if(clients.containsKey(identityTag)){
+            try {
+                clients.get(identityTag).close();
+            } catch (IOException e) {
+                log.error("关闭session时出现异常{}",e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        clients.put(identityTag, session);
     }
 
     /**
