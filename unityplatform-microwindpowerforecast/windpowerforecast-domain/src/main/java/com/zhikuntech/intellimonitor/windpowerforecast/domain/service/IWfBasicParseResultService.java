@@ -34,6 +34,13 @@ public interface IWfBasicParseResultService extends IService<WfBasicParseResult>
     void fetchDqWithPointDate(LocalDateTime dateTime, /*dq|cdq|nwp*/ String type);
 
     /**
+     * 根据时间判断数据库有没有文件名表的数据
+     * @param dateTime  时间
+     * @return  int    结果1在 0不在
+     */
+    int judge(LocalDateTime dateTime);
+
+    /**
      * 生成短期数据
      * @param localDate 数据日期
      */
