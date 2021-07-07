@@ -3,7 +3,6 @@ package com.zhikuntech.intellimonitor.fanscada.domain.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.rtdb.api.model.ValueData;
-import com.rtdb.service.impl.ServerImplPool;
 import com.zhikuntech.intellimonitor.core.commons.constant.FanConstant;
 import com.zhikuntech.intellimonitor.fanscada.domain.config.StartUpInitForPow;
 import com.zhikuntech.intellimonitor.fanscada.domain.constant.FanLoopNumber;
@@ -15,7 +14,7 @@ import com.zhikuntech.intellimonitor.fanscada.domain.service.FanIndexService;
 import com.zhikuntech.intellimonitor.fanscada.domain.utils.RedisUtil;
 import com.zhikuntech.intellimonitor.fanscada.domain.vo.FanBaseInfoVO;
 import com.zhikuntech.intellimonitor.fanscada.domain.vo.LoopVO;
-import com.zhikuntech.intellimonitor.fanscada.domain.websocket.WebSocketServer;
+import com.zhikuntech.intellimonitor.fanscada.domain.websocket.MyWebSocketHandle;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +35,7 @@ public class FanIndexServiceImpl implements FanIndexService {
     private GoldenUtil goldenUtil;
 
     @Autowired
-    private WebSocketServer webSocketServer;
+    private MyWebSocketHandle myWebSocketHandle;
 
     @Autowired
     private BackendToGoldenService backendToGoldenService;
@@ -176,20 +175,20 @@ public class FanIndexServiceImpl implements FanIndexService {
                     }
                     String jsonString = JSONObject.toJSONString(resultList);
                     log.info(jsonString);
-                    webSocketServer.sendAllMessage(jsonString);
+                    myWebSocketHandle.sendGroupMessage(jsonString, MyWebSocketHandle.groupRuntime.keySet());
                     long l1 = System.currentTimeMillis();
                     log.info("数据处理毫秒数: " + (l1 - l) + "    golden数据时间" + data[0].getDate().toString());
 
                 } catch (Exception e) {
                     log.info("庚顿数据异常{}", e.getMessage());
                     goldenUtil.cancel(username);
-                    webSocketServer.sendAllMessage("重新订阅");
+                    myWebSocketHandle.sendGroupMessage("重新订阅", MyWebSocketHandle.groupRuntime.keySet());
                 }
             });
         } catch (Exception e) {
             log.info("庚顿链接异常{},取消重连", e.getMessage());
             goldenUtil.cancelAll();
-            webSocketServer.sendAllMessage("重新订阅");
+            myWebSocketHandle.sendGroupMessage("重新订阅", MyWebSocketHandle.groupRuntime.keySet());
         }
     }
 

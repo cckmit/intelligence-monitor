@@ -4,15 +4,12 @@ import com.rtdb.api.model.ValueData;
 import com.rtdb.service.impl.ServerImpl;
 import com.rtdb.service.impl.ServerImplPool;
 import com.zhikuntech.intellimonitor.core.commons.constant.FanConstant;
+import com.zhikuntech.intellimonitor.core.commons.weabsocket.WebSocketServer;
 import com.zhikuntech.intellimonitor.fanscada.domain.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGolden;
 import com.zhikuntech.intellimonitor.fanscada.domain.service.BackendToGoldenService;
-import com.zhikuntech.intellimonitor.fanscada.domain.service.FanIndexService;
-import com.zhikuntech.intellimonitor.fanscada.domain.service.impl.FanIndexServiceImpl;
-import com.zhikuntech.intellimonitor.fanscada.domain.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -28,9 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 @Slf4j
 public class Monitor {
-
-    @Autowired
-    private WebSocketServer webSocketServer;
 
     @Autowired
     private GoldenUtil goldenUtil;
