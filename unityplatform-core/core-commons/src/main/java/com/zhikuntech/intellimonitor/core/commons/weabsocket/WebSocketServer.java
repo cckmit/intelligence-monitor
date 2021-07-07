@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Slf4j
 @ServerEndpoint(value = "/websocket/{identityTag}")
-@Component
+//@Component
 public class WebSocketServer {
 
     /**

@@ -11,7 +11,7 @@ import java.util.List;
  * @author 代志豪
  * @date 2021-06-07
  */
-@Configuration
+//@Configuration
 public class WebSocketConfig {
 
     /**
