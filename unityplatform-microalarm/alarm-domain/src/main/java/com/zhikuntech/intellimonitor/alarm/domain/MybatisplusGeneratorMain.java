@@ -128,7 +128,7 @@ public class MybatisplusGeneratorMain {
         // 配置模版
         TemplateConfig templateConfig = new TemplateConfig();
         templateConfig.setXml(null);
-//        templateConfig.setController(null);
+        templateConfig.setController(null);
         mpg.setTemplate(templateConfig);
 
         // 策略配置
