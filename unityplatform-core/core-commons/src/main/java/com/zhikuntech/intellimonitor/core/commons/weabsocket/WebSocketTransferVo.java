@@ -1,4 +1,4 @@
-package com.zhikuntech.intellimonitor.mainpage.domain.websocket;
+package com.zhikuntech.intellimonitor.core.commons.weabsocket;
 
 import lombok.Data;
 

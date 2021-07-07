@@ -13,7 +13,6 @@ import com.zhikuntech.intellimonitor.mainpage.domain.schedule.TimerUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.service.FanInfoService;
 import com.zhikuntech.intellimonitor.mainpage.domain.utils.EasyExcelUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.websocket.MyWebSocketHandler;
-import com.zhikuntech.intellimonitor.mainpage.domain.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -78,7 +77,7 @@ public class FanInfoServiceImpl implements FanInfoService {
                     try {
                         if (MyWebSocketHandler.GROUP_RUNTIME.keySet().size() > 0) {
                             long l0 = System.currentTimeMillis();
-                            if (bool.get()) {
+                            if (bool.get() && null != TimerUtil.TIMER_MAP.get(user)) {
                                 log.info(TimerUtil.TIMER_MAP.get(user).toString() + "___________" + user);
                                 TimerUtil.stop(user);
                             }
@@ -161,7 +160,7 @@ public class FanInfoServiceImpl implements FanInfoService {
                     try {
                         if (MyWebSocketHandler.GROUP_STATISTICS.keySet().size() > 0) {
                             long l0 = System.currentTimeMillis();
-                            if (bool.get()) {
+                            if (bool.get() && null != TimerUtil.TIMER_MAP.get(user)) {
                                 log.info(TimerUtil.TIMER_MAP.get(user).toString() + "___________" + user);
                                 TimerUtil.stop(user);
                             }

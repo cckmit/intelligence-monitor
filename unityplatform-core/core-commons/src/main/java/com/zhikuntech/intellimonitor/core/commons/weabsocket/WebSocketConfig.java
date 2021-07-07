@@ -1,4 +1,4 @@
-package com.zhikuntech.intellimonitor.mainpage.domain.websocket;
+package com.zhikuntech.intellimonitor.core.commons.weabsocket;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

@@ -4,7 +4,7 @@ import com.rtdb.service.impl.ServerImpl;
 import com.rtdb.service.impl.ServerImplPool;
 import com.zhikuntech.intellimonitor.core.commons.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.websocket.MyWebSocketHandler;
-import com.zhikuntech.intellimonitor.mainpage.domain.websocket.WebSocketServer;
+import com.zhikuntech.intellimonitor.core.commons.weabsocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
