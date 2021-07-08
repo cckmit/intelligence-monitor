@@ -24,8 +24,8 @@ public class GoldenTest {
         try {
             ServerImpl serverImpl = serverImplPool.getServerImpl();
             Historian historian = new HistorianImpl(serverImpl);
-            Date startDate = new Date(121, Calendar.AUGUST, 6);
-            Date endDate = new Date(121, Calendar.AUGUST, 7);
+            Date startDate = new Date(121, Calendar.AUGUST, 7);
+            Date endDate = new Date(121, Calendar.AUGUST, 8);
 
             List<DoubleData> doubleArchivedValues = historian.getDoubleArchivedValues(1, 10, startDate, endDate);
             System.out.println(doubleArchivedValues.toString());
