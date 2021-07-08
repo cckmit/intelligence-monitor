@@ -75,6 +75,10 @@
         </dependency>
         <dependency>
             <groupId>com.zhikuntech.intellimonitor</groupId>
+            <artifactId>core-stream</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.zhikuntech.intellimonitor</groupId>
             <artifactId>windpowerforecast-facade</artifactId>
         </dependency>
     </dependencies>

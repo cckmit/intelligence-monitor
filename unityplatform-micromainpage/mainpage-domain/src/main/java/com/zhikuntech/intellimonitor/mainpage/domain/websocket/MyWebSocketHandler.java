@@ -50,6 +50,7 @@ public class MyWebSocketHandler implements BaseWebSocketHandler {
 
     @Override
     public void onMessage(String message, String username) {
+        log.info(message);
         messageHandle(message, username);
     }
 
