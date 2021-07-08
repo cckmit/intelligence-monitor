@@ -1,7 +1,10 @@
 package com.zhikuntech.intellimonitor.alarm.domain.service;
 
+import com.zhikuntech.intellimonitor.alarm.domain.dto.AlarmMonitorDTO;
 import com.zhikuntech.intellimonitor.alarm.domain.entity.AlarmConfigMonitor;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zhikuntech.intellimonitor.alarm.domain.query.alarmmonitor.AlarmMonitorSimpleQuery;
+import com.zhikuntech.intellimonitor.core.commons.base.Pager;
 
 /**
  * <p>
@@ -17,6 +20,14 @@ public interface IAlarmConfigMonitorService extends IService<AlarmConfigMonitor>
 
     // TODO 缓存所有测点
 
+
+    /**
+     * 查询所有分页后的结果
+     *
+     * @param query 查询条件
+     * @return      分页后的结果
+     */
+    Pager<AlarmMonitorDTO> queryByPage(AlarmMonitorSimpleQuery query);
 
 
 }

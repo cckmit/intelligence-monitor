@@ -11,11 +11,12 @@
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
         <result column="value_type" property="valueType" />
+        <result column="monitor_describe" property="monitorDescribe" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        monitor_no, rule_no, monitor_type, group_type, create_time, update_time, value_type
+        monitor_no, rule_no, monitor_type, group_type, create_time, update_time, value_type, monitor_describe
     </sql>
 
 </mapper>

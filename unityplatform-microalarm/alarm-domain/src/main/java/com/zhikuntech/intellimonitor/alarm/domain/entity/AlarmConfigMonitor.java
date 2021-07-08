@@ -58,5 +58,10 @@ public class AlarmConfigMonitor implements Serializable {
      */
     private Integer valueType;
 
+    /**
+     * 测点描述
+     */
+    private String monitorDescribe;
+
 
 }
