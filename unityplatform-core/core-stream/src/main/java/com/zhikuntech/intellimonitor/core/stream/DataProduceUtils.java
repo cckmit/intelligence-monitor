@@ -9,6 +9,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
@@ -36,7 +37,13 @@ public class DataProduceUtils {
         producer = new KafkaProducer<>(props);
     }
 
-    static void sendData(MonitorStructDTO structDTO) {
+    public static void sendData(List<MonitorStructDTO> structDTOList) {
+        for (MonitorStructDTO monitorStructDTO : structDTOList) {
+            sendData(monitorStructDTO);
+        }
+    }
+
+    public static void sendData(MonitorStructDTO structDTO) {
         // todo check
         try {
             final String dataForSend = serial.writeValueAsString(structDTO);
