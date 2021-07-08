@@ -2,11 +2,14 @@ package com.zhikuntech.intellimonitor.alarm.domain.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zhikuntech.intellimonitor.alarm.domain.dto.AlarmRuleDTO;
 import com.zhikuntech.intellimonitor.alarm.domain.entity.AlarmConfigRule;
 import com.zhikuntech.intellimonitor.alarm.domain.mapper.AlarmConfigRuleMapper;
 import com.zhikuntech.intellimonitor.alarm.domain.query.alarmrule.AddNewAlarmRuleQuery;
+import com.zhikuntech.intellimonitor.alarm.domain.query.alarmrule.AlarmRuleSimpleQuery;
 import com.zhikuntech.intellimonitor.alarm.domain.service.IAlarmConfigMonitorService;
 import com.zhikuntech.intellimonitor.alarm.domain.service.IAlarmConfigRuleService;
+import com.zhikuntech.intellimonitor.core.commons.base.Pager;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -91,6 +94,12 @@ public class AlarmConfigRuleServiceImpl extends ServiceImpl<AlarmConfigRuleMappe
         // 更新测点关联的规则值
         monitorService.updateRuleNoByIds(ruleNo, new HashSet<>(query.getMonitors()));
         return true;
+    }
+
+    @Override public Pager<AlarmRuleDTO> queryByPage(AlarmRuleSimpleQuery query) {
+        // todo
+
+        return new Pager<>(null);
     }
 
 }

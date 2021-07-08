@@ -1,4 +1,4 @@
-package com.zhikuntech.intellimonitor.alarm.domain.query.alarmmonitor;
+package com.zhikuntech.intellimonitor.alarm.domain.query.alarmrule;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -7,16 +7,17 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 
 /**
- * 测点信息查询
+ * 告警规则查询
  *
  * @author liukai
  */
 @Data
-@ApiModel("测点信息查询")
-public class AlarmMonitorSimpleQuery {
+@ApiModel("告警规则查询")
+public class AlarmRuleSimpleQuery {
 
-    @ApiModelProperty(value = "测点描述")
-    private String monitorDescribe;
+    @ApiModelProperty(value = "规则类型(0遥信数据/1遥测数据)", required = true)
+    @NotNull
+    private Integer ruleType;
 
     @ApiModelProperty(value = "页码", required = true)
     @NotNull
@@ -25,5 +26,4 @@ public class AlarmMonitorSimpleQuery {
     @ApiModelProperty(value = "每页数量", required = true)
     @NotNull
     private Integer pageSize;
-
 }

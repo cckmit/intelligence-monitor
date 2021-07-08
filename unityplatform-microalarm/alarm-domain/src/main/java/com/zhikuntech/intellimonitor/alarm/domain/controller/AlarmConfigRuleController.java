@@ -1,9 +1,12 @@
 package com.zhikuntech.intellimonitor.alarm.domain.controller;
 
 
+import com.zhikuntech.intellimonitor.alarm.domain.dto.AlarmRuleDTO;
 import com.zhikuntech.intellimonitor.alarm.domain.query.alarmrule.AddNewAlarmRuleQuery;
+import com.zhikuntech.intellimonitor.alarm.domain.query.alarmrule.AlarmRuleSimpleQuery;
 import com.zhikuntech.intellimonitor.alarm.domain.service.IAlarmConfigRuleService;
 import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
+import com.zhikuntech.intellimonitor.core.commons.base.Pager;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -38,9 +41,12 @@ public class AlarmConfigRuleController {
         return BaseResponse.success(result);
     }
 
-    // TODO 分页查询告警规则
-
-
+    @ApiOperation("分页查询告警规则")
+    @PostMapping("/query-by-page")
+    public BaseResponse<Pager<AlarmRuleDTO>> queryByPage(@RequestBody AlarmRuleSimpleQuery query) {
+        Pager<AlarmRuleDTO> results = ruleService.queryByPage(query);
+        return BaseResponse.success(results);
+    }
 
     /*
         TODO
