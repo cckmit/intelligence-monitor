@@ -2,6 +2,7 @@ package com.zhikuntech.intellimonitor.alarm.domain.service;
 
 import com.zhikuntech.intellimonitor.alarm.domain.entity.AlarmConfigRule;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zhikuntech.intellimonitor.alarm.domain.query.alarmrule.AddNewAlarmRuleQuery;
 
 /**
  * <p>
@@ -20,4 +21,13 @@ public interface IAlarmConfigRuleService extends IService<AlarmConfigRule> {
      * @return          数据数量
      */
     Integer queryCountByLevelNo(String levelNo);
+
+    /**
+     * 添加新的告警规则
+     *
+     * @param query 添加条件
+     * @return      true/false
+     */
+    boolean addNewAlarmRule(AddNewAlarmRuleQuery query);
+
 }

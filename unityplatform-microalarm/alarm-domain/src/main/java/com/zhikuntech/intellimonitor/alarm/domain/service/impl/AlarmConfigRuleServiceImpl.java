@@ -3,6 +3,7 @@ package com.zhikuntech.intellimonitor.alarm.domain.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zhikuntech.intellimonitor.alarm.domain.entity.AlarmConfigRule;
 import com.zhikuntech.intellimonitor.alarm.domain.mapper.AlarmConfigRuleMapper;
+import com.zhikuntech.intellimonitor.alarm.domain.query.alarmrule.AddNewAlarmRuleQuery;
 import com.zhikuntech.intellimonitor.alarm.domain.service.IAlarmConfigRuleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,13 @@ public class AlarmConfigRuleServiceImpl extends ServiceImpl<AlarmConfigRuleMappe
                 .eq("level_no_two", levelNo);
         ruleQueryWrapper.eq("delete_mark", 0);
         return getBaseMapper().selectCount(ruleQueryWrapper);
+    }
+
+    @Override
+    public boolean addNewAlarmRule(AddNewAlarmRuleQuery query) {
+        // todo
+
+        return false;
     }
 
 }
