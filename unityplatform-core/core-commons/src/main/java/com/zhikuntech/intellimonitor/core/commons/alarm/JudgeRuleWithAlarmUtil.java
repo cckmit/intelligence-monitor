@@ -1,11 +1,9 @@
-package com.zhikuntech.intellimonitor.core.commons.utils;
+package com.zhikuntech.intellimonitor.core.commons.alarm;
 
-import com.zhikuntech.intellimonitor.core.commons.alarm.AlarmResultDTO;
-import com.zhikuntech.intellimonitor.core.commons.alarm.AlarmRuleDTO;
-import com.zhikuntech.intellimonitor.core.commons.alarm.JudgeRuleWithAlarmUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.ObjectUtils;
 
@@ -17,11 +15,12 @@ import java.util.Set;
 
 /**
  * @Author 杨锦程
- * @Date 2021/7/7 17:11
- * @Description 警告判断
+ * @Date 2021/7/8 11:46
+ * @Description 警告判断工具类
  * @Version 1.0
  */
-public class JudgeRuleWithAlarmUtil extends JudgeRuleWithAlarmUtils {
+@Slf4j
+public class JudgeRuleWithAlarmUtil {
     private static final String LEFTCLOSEDINTERVAL = "[";
     private static final String RIGHTCLOSEDINTERVAL = "]";
     private static final String LEFTOPENINTERVAL = "(";
@@ -52,7 +51,7 @@ public class JudgeRuleWithAlarmUtil extends JudgeRuleWithAlarmUtils {
         String valueStr = "40";
         AlarmRuleDTO alarmRuleDTO = AlarmRuleDTO.builder().alarmRange("(-∞,30)∪(80,+∞)").preWarningRangeLevelOne("40,50").preWarningRangeLevelTwe("35,55").build();
         AlarmResultDTO resultDTO = process(valueStr, alarmRuleDTO);
-        System.out.println("resultDTO->"+resultDTO);
+        log.info("resultDTO->"+resultDTO);
     }
 
     /**
@@ -87,16 +86,16 @@ public class JudgeRuleWithAlarmUtil extends JudgeRuleWithAlarmUtils {
         //一级警告
         //(23,60]∪[70,100)
         oneLevelWarningInterval = LEFTOPENINTERVAL + new BigDecimal(preWarningRangeLevelTweSplit[0]) + "," +
-                                    new BigDecimal(preWarningRangeLevelOnSplit[0]) + RIGHTCLOSEDINTERVAL+
-                                    ANDSET +
-                                    LEFTCLOSEDINTERVAL + new BigDecimal(preWarningRangeLevelOnSplit[1]) + "," +
-                                    new BigDecimal(preWarningRangeLevelTweSplit[1]) + RIGHTOPENINTERVAL;
+                new BigDecimal(preWarningRangeLevelOnSplit[0]) + RIGHTCLOSEDINTERVAL+
+                ANDSET +
+                LEFTCLOSEDINTERVAL + new BigDecimal(preWarningRangeLevelOnSplit[1]) + "," +
+                new BigDecimal(preWarningRangeLevelTweSplit[1]) + RIGHTOPENINTERVAL;
         //二级警告
         twoLevelWarningInterval = LEFTCLOSEDINTERVAL + new BigDecimal(alarmRangeLeftSplit[1].substring(0,alarmRangeLeftSplit[1].length()-1))+","+
-                                    new BigDecimal(preWarningRangeLevelTweSplit[0]) + RIGHTCLOSEDINTERVAL+
-                                    ANDSET +
-                                    LEFTCLOSEDINTERVAL + new BigDecimal(preWarningRangeLevelTweSplit[1]) + ","+
-                                    new BigDecimal(alarmRangeRightSplit[0].substring(1)) + RIGHTCLOSEDINTERVAL;
+                new BigDecimal(preWarningRangeLevelTweSplit[0]) + RIGHTCLOSEDINTERVAL+
+                ANDSET +
+                LEFTCLOSEDINTERVAL + new BigDecimal(preWarningRangeLevelTweSplit[1]) + ","+
+                new BigDecimal(alarmRangeRightSplit[0].substring(1)) + RIGHTCLOSEDINTERVAL;
         //警告
         alarmInterval = alarmRange;
 
@@ -378,7 +377,7 @@ public class JudgeRuleWithAlarmUtil extends JudgeRuleWithAlarmUtils {
             }
         }
         else {
-            System.out.println("不符合逻辑的分支>>>>");
+            log.error("不符合逻辑的分支>>>>");
             return null;
         }
     }
@@ -388,9 +387,7 @@ public class JudgeRuleWithAlarmUtil extends JudgeRuleWithAlarmUtils {
      * 计算并集
      * 第一个参数传入已有的集合区间，第二个参数传入待计算的区间
      * 计算过程：
-     *          遍历firstMeasuringPointList，每个元素都和secondMeasuringPoint尝试进行合并计算交集，如果合并失败，直接加入进去，
-     *          如果合并成功，得到新的区间，新的区间替换掉之前集合中的区间
-     *          再以这个新的区间和firstMeasuringPointList剩余的其他元素分别尝试合并求交集，如上步骤，直到每个元素都计算过
+     *          遍历firstMeasuringPointList，每个元素都和secondMeasuringPoint尝试进行合并计算交集
      * @param firstMeasuringPointList
      * @param secondMeasuringPoint
      * @return
@@ -418,7 +415,7 @@ public class JudgeRuleWithAlarmUtil extends JudgeRuleWithAlarmUtils {
      * @param secondMeasuringPoint
      * @return
      */
-    private static List<MeasuringPoint[]> calculateAddSetSingle(MeasuringPoint[] firstMeasuringPoint,MeasuringPoint[] secondMeasuringPoint){
+    private static List<MeasuringPoint[]> calculateAddSetSingle(MeasuringPoint[] firstMeasuringPoint, MeasuringPoint[] secondMeasuringPoint){
         //最终结果
         List<MeasuringPoint[]> mergeMeasuringPointList = new ArrayList<>();
 
@@ -488,7 +485,7 @@ public class JudgeRuleWithAlarmUtil extends JudgeRuleWithAlarmUtils {
      * @param secondMeasuringPoint
      * @return
      */
-    private static MeasuringPoint[] calculateInterSetSingle(MeasuringPoint[] firstMeasuringPoint,MeasuringPoint[] secondMeasuringPoint){
+    private static MeasuringPoint[] calculateInterSetSingle(MeasuringPoint[] firstMeasuringPoint, MeasuringPoint[] secondMeasuringPoint){
         //最终结果
         MeasuringPoint[] mergeMeasuringPoint = null;
 
@@ -585,5 +582,4 @@ public class JudgeRuleWithAlarmUtil extends JudgeRuleWithAlarmUtils {
         private BigDecimal value;
         private boolean contain;
     }
-
 }
