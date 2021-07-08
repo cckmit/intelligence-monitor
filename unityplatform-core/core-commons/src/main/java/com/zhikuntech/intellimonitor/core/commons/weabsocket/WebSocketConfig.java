@@ -1,6 +1,7 @@
 package com.zhikuntech.intellimonitor.core.commons.weabsocket;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
@@ -11,7 +12,8 @@ import java.util.List;
  * @author 代志豪
  * @date 2021-06-07
  */
-//@Configuration
+@Configuration
+@ConditionalOnProperty(prefix = "websocket" , havingValue = "true" ,value = "config")
 public class WebSocketConfig {
 
     /**

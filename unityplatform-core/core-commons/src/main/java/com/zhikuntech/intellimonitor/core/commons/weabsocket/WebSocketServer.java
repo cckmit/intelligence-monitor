@@ -1,6 +1,7 @@
 package com.zhikuntech.intellimonitor.core.commons.weabsocket;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -18,7 +19,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Slf4j
 @ServerEndpoint(value = "/websocket/{identityTag}")
-//@Component
+@Component
+@ConditionalOnProperty(prefix = "websocket" , havingValue = "true" ,value = "config")
 public class WebSocketServer {
 
     /**
