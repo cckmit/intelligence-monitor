@@ -45,6 +45,11 @@ public class AddNewAlarmRuleQuery {
     @ApiModelProperty(value = "告警区间-关联告警等级", required = true)
     private String alarmRegionConnLevel;
 
+    /**
+     * 规则类型(0遥信数据/1遥测数据)
+     */
+    @ApiModelProperty(value = "规则类型(0遥信数据/1遥测数据)", required = true)
+    private Integer ruleType;
 
     // ------------------------------------------------ 以上必传
 
