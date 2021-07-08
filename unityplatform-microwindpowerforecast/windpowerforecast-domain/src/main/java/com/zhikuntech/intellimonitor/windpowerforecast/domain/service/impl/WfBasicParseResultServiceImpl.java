@@ -153,6 +153,17 @@ public class WfBasicParseResultServiceImpl extends ServiceImpl<WfBasicParseResul
         }
     }
 
+    @Override
+    public int judge(LocalDateTime dateTime) {
+        QueryWrapper<WfBasicParseResult> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("data_gen_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dateTime));
+        List<WfBasicParseResult> parseResult = getBaseMapper().selectList(queryWrapper);
+        if (parseResult.isEmpty()){
+            return 0;//没有数据
+        }
+        return 1;
+    }
+
     public void fetchNwpWithPointDate(LocalDate localDate) {
         // 气象数据获取
 
