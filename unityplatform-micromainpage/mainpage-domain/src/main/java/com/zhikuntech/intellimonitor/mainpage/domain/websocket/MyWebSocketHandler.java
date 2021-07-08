@@ -5,144 +5,58 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.zhikuntech.intellimonitor.core.commons.constant.WebSocketConstant;
 import com.zhikuntech.intellimonitor.core.commons.golden.GoldenUtil;
+import com.zhikuntech.intellimonitor.core.commons.weabsocket.BaseWebSocketHandler;
+import com.zhikuntech.intellimonitor.core.commons.weabsocket.WebSocketServer;
+import com.zhikuntech.intellimonitor.core.commons.weabsocket.WebSocketTransferVo;
 import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanRuntimeDTO;
 import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanStatisticsDTO;
 import com.zhikuntech.intellimonitor.mainpage.domain.service.FanInfoService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.websocket.*;
-import javax.websocket.server.PathParam;
-import javax.websocket.server.ServerEndpoint;
+import javax.websocket.Session;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
  * @author 代志豪
- * @date 2021-06-07
+ * 2021/7/6 14:32
  */
 @Slf4j
-@ServerEndpoint(value = "/websocket/{username}")
 @Component
-public class WebSocketServer {
+public class MyWebSocketHandler implements BaseWebSocketHandler {
 
-
-    /**
-     * 记录当前在线连接数
-     */
-    public static AtomicInteger onlineCount = new AtomicInteger(0);
-
-    /**
-     * 存放所有在线的客户端
-     */
-    public static ConcurrentHashMap<String, Session> clients = new ConcurrentHashMap<>();
+    @Autowired
+    private FanInfoService fanInfoService;
 
     public static ConcurrentHashMap<String, Session> GROUP_STATISTICS = new ConcurrentHashMap<>();
 
     public static ConcurrentHashMap<String, Session> GROUP_RUNTIME = new ConcurrentHashMap<>();
 
-    private Session session;
+    @Override
+    public void onOpen(String username) {
 
-    private String username;
-
-    public static FanInfoService fanInfoService;
-
-    /**
-     * 连接建立成功调用的方法
-     */
-    @OnOpen
-    public void onOpen(Session session, @PathParam("username") String username) {
-        onlineCount.incrementAndGet();
-        this.session = session;
-        this.username = username;
-        clients.put(username, session);
-        log.info("有新连接加入：{}，当前在线人数为：{}", this.username, onlineCount.get());
     }
 
-    /**
-     * 连接关闭调用的方法
-     */
-    @OnClose
-    public void onClose(@PathParam("username") String username) {
-        onlineCount.decrementAndGet();
-        clients.remove(username);
-        GROUP_STATISTICS.remove(username);
+    @Override
+    public void onClose(String username) {
         GROUP_RUNTIME.remove(username);
-        log.info("有一连接关闭：{}，当前在线人数为：{}", username, onlineCount.get());
+        GROUP_STATISTICS.remove(username);
     }
 
-    /**
-     * 收到客户端消息后调用的方法
-     *
-     * @param message 客户端发送过来的消息
-     */
-    @OnMessage
-    public void onMessage(String message, @PathParam("username") String username) {
-        if ("hello".equals(message)) {
-            log.info(message);
-            sendMessage("world", username);
-            log.info("world");
-        } else {
-            messageHandle(message, username);
-        }
+    @Override
+    public void onMessage(String message, String username) {
+        messageHandle(message, username);
     }
 
-    @OnError
-    public void onError(Throwable error) {
-        log.error("发生错误");
-        error.printStackTrace();
-    }
-
-    /**
-     * 服务端发送消息给客户端
-     */
-    public void sendMessage(String message, String username) {
-        Session session = clients.get(username);
-        if (session == null) {
-            log.error("No websocket session found for username: {}, message: {}.", username, message);
-            return;
-        }
-        synchronized (session) {
-            try {
-                session.getBasicRemote().sendText(message);
-            } catch (Exception e) {
-                log.error("服务端发送消息给客户端失败：", e);
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * 分组推送消息
-     *
-     * @param message 推送消息内容
-     * @param type    group分组 0：GROUP_RUNTIME，1：GROUP_STATISTICS
-     */
-    public void sendGroupMessage(String message, Integer type) {
-        if (type == 0) {
-            for (String username : GROUP_RUNTIME.keySet()) {
-                sendMessage(message, username);
-            }
-        } else if (type == 1) {
-            for (String username : GROUP_STATISTICS.keySet()) {
-                sendMessage(message, username);
-            }
-        }
-    }
-
-    /**
-     * 群发消息(所有人)
-     *
-     * @param message 消息内容
-     */
-    public void sendAllMessage(String message) {
-        for (String username : clients.keySet()) {
-            sendMessage(message, username);
-        }
+    @Override
+    public void onError(String username) {
+        GROUP_RUNTIME.remove(username);
+        GROUP_STATISTICS.remove(username);
     }
 
     /**
@@ -159,14 +73,14 @@ public class WebSocketServer {
             if (type == 0) {
                 //订阅
                 if (WebSocketConstant.ALL.equals(description)) {
-                    subscribeRuntime();
-                    subscribeStatistics();
+                    subscribeRuntime(username);
+                    subscribeStatistics(username);
                 } else {
                     if (strings.contains(WebSocketConstant.MAIN_PAGE_RUNTIME)) {
-                        subscribeRuntime();
+                        subscribeRuntime(username);
                     }
                     if (strings.contains(WebSocketConstant.MAIN_PAGE_STATISTICS)) {
-                        subscribeStatistics();
+                        subscribeStatistics(username);
                     }
                 }
             } else if (type == 1) {
@@ -195,13 +109,14 @@ public class WebSocketServer {
     /**
      * 订阅风场统计
      */
-    private void subscribeStatistics() {
-        GROUP_STATISTICS.put(username, session);
+    private void subscribeStatistics(String username) {
+        GROUP_STATISTICS.put(username, WebSocketServer.clients.get(username));
         log.info("用户{}，订阅风场统计", username);
         try {
             FanStatisticsDTO statistics = fanInfoService.getStatistics();
             String jsonString = JSONObject.toJSONString(statistics);
             jsonString = WebSocketConstant.MAIN_PAGE_STATISTICS + WebSocketConstant.PATTERN + jsonString;
+
             sendMessage(jsonString, username);
             fanInfoService.getStatistics("statistics");
             log.info("订阅golden实时消息---风场统计");
@@ -216,8 +131,8 @@ public class WebSocketServer {
     /**
      * 订阅风机详情
      */
-    private void subscribeRuntime() {
-        GROUP_RUNTIME.put(username, session);
+    private void subscribeRuntime(String username) {
+        GROUP_RUNTIME.put(username, WebSocketServer.clients.get(username));
         log.info("用户{}，订阅风机详情", username);
         try {
             List<FanRuntimeDTO> runtimeInfos = fanInfoService.getRuntimeInfos();

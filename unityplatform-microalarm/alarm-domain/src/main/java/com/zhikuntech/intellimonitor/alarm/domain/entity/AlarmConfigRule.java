@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+
+import lombok.*;
 
 /**
  * <p>
@@ -13,8 +13,11 @@ import lombok.EqualsAndHashCode;
  * </p>
  *
  * @author liukai
- * @since 2021-07-06
+ * @since 2021-07-08
  */
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class AlarmConfigRule implements Serializable {
@@ -73,6 +76,11 @@ public class AlarmConfigRule implements Serializable {
      * 更新时间
      */
     private LocalDateTime updateTime;
+
+    /**
+     * 0未删除1已删除
+     */
+    private Integer deleteMark;
 
 
 }

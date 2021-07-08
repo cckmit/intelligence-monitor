@@ -1,17 +1,19 @@
-package com.zhikuntech.intellimonitor.mainpage.domain.websocket;
+package com.zhikuntech.intellimonitor.core.commons.weabsocket;
 
-import com.zhikuntech.intellimonitor.core.commons.golden.GoldenUtil;
-import com.zhikuntech.intellimonitor.mainpage.domain.service.FanInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
+
+import java.util.List;
 
 /**
  * @author 代志豪
  * @date 2021-06-07
  */
 @Configuration
+@ConditionalOnProperty(prefix = "websocket" , havingValue = "true" ,value = "config")
 public class WebSocketConfig {
 
     /**
@@ -23,7 +25,7 @@ public class WebSocketConfig {
     }
 
     @Autowired
-    public void setFanInfoService(FanInfoService fanInfoService) {
-        WebSocketServer.fanInfoService = fanInfoService;
+    public void setHandler(List<BaseWebSocketHandler> baseHandler) {
+        WebSocketServer.baseHandlers = baseHandler;
     }
 }

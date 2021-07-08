@@ -1,33 +1,20 @@
-package com.zhikuntech.intellimonitor.fanscada.domain.websocket;
+package com.zhikuntech.intellimonitor.messagepush.domain.websocket;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONException;
-import com.alibaba.fastjson.JSONObject;
-import com.zhikuntech.intellimonitor.fanscada.domain.golden.GoldenUtil;
-import com.zhikuntech.intellimonitor.fanscada.domain.pojo.SocketParam;
-import com.zhikuntech.intellimonitor.fanscada.domain.service.FanIndexService;
-import com.zhikuntech.intellimonitor.fanscada.domain.vo.LoopVO;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-import sun.tools.jar.resources.jar;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
-import javax.websocket.server.ServerEndpoint;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * @author 代志豪
- * @date 2021-06-07
- */
+ * @author 滕楠
+ * @className WebSocketServer
+ * @create 2021/7/7 17:13
+ **/
 @Slf4j
-@ServerEndpoint(value = "/websocket/{username}")
-@Component
 public class WebSocketServer {
-
 
     /**
      * 记录当前在线连接数
@@ -46,8 +33,6 @@ public class WebSocketServer {
 
     private ReentrantLock lock = new ReentrantLock();
 
-    public static GoldenUtil goldenUtil;
-    public static FanIndexService fanIndexService;
 
     /**
      * 连接建立成功调用的方法
@@ -60,14 +45,6 @@ public class WebSocketServer {
         this.username = username;
         clients.put(this.username, this.session);
 
-        /**
-         * 第一次有人连接时,开始获取实时数据
-         */
-        if (clients.size() == 1) {
-            log.info("第一个socket,触发庚顿连接");
-            fanIndexService.getFanBaseInfoList(username);
-            groupRuntime.clear();
-        }
         log.info("有新连接加入：{}，当前在线人数为：{}", this.username, onlineCount.get());
     }
 
@@ -89,27 +66,7 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(String message) {
-        try {
-            SocketParam socketParam = JSON.parseObject(message, SocketParam.class);
-            String messageType = socketParam.getMessageType();
-            if (messageType.contains("01")) {
-                //规定数据格式,解析以校验权限,分组,等.
-                groupRuntime.put(this.username, this.session);
-                log.info("接收到{}的消息,内容{}", username, messageType);
-                List<LoopVO> fanBaseInfoList = fanIndexService.getFanBaseInfoList();
-                String jsonString = JSONObject.toJSONString(fanBaseInfoList);
-                sendMessage(jsonString, username);
-                //开启订阅,将用户分组
-            } else if (messageType.contains("02")) {
-                log.info("重新订阅");
-                groupRuntime.put(this.username, this.session);
-                fanIndexService.getFanBaseInfoList(username);
 
-            }
-        } catch (JSONException e) {
-            log.info(e.getMessage());
-            sendMessage("消息格式错误,请重新发送", this.username);
-        }
     }
 
     @OnError

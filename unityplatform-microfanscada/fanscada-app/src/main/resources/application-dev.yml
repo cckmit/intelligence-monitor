@@ -42,4 +42,4 @@ golden:
   poolSize: 25
   maxSize: 50
 
-
+websocket.config: true

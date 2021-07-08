@@ -1,4 +1,4 @@
-package com.zhikuntech.intellimonitor.mainpage.domain.websocket;
+package com.zhikuntech.intellimonitor.core.commons.weabsocket;
 
 import lombok.Data;
 
@@ -23,5 +23,10 @@ public class WebSocketTransferVo {
      * 指令详情
      */
     private String description;
+
+    /**
+     * 消息类别
+     */
+    private Integer messageType;
 
 }

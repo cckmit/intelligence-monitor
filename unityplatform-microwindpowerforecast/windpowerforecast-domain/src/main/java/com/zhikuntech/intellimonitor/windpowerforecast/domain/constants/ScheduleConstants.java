@@ -23,6 +23,8 @@ public class ScheduleConstants {
 
     public final static String FOREST_NWP_LOCK = "wf_forest_nwp";
 
+    //生成数据的锁
+    public final static String FOREST_PARSE_RESULT_LOCK = "wf_forest_parse_result";
 
     //# 获取预测数据锁
 

@@ -13,4 +13,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IAlarmConfigMonitorService extends IService<AlarmConfigMonitor> {
 
+    // TODO 查询所有测点
+
+    // TODO 缓存所有测点
+
+
+
 }

@@ -9,6 +9,14 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
+ * 0 -> 正常
+ * 1 -> 异常
+ *
+ * <p>
+ *  遥测数据(number)/遥信(bool)
+ *  单个测点保持时序.
+ * </p>
+ *
  * 测点数据传输结构
  *
  * @author liukai

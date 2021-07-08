@@ -3,6 +3,7 @@ package com.zhikuntech.intellimonitor.windpowerforecast.domain.schedule;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.constants.ScheduleConstants;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfBasicParseResultService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.schedulefetch.ScheduleFetchDataService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.DateProcessUtils;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.utils.calc.CalcCommonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -219,7 +220,8 @@ public class DataScheduleService {
         }
     }
 
-    @Scheduled(cron = "0 0 2 3 * ? ")//每个月3号两点生成下个月的wf_basic_parse_result表的信息
+    //每个月3号的2:07和3:07生成下个月的文件名称表
+    @Scheduled(cron = "0 7 2,3 3 * ? ")
     public void month(){
         LocalDateTime date=LocalDateTime.now();
         int dateYear=date.getYear();
@@ -237,12 +239,37 @@ public class DataScheduleService {
             Str=dateYear+"-"+monthInt+"-01";
         }
         LocalDate parse = LocalDate.parse(Str, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        Month month = parse.getMonth();
-        for (;month.equals(parse.getMonth());) {
-            parseResultService.genDqDataNeedFetch(parse);
-            parseResultService.genCdqDataNeedFetch(parse);
-            parseResultService.genNwpDataNeedFetch(parse);
-            parse = parse.plusDays(1);
+        //# 生成前判断数据是否已经存在
+        String time=Str+" 00:15";
+        LocalDateTime dateTime= DateProcessUtils.parseToLocalDateTime(time);
+        dateTime=dateTime.plusMinutes(15);
+        int result= parseResultService.judge(dateTime);
+        //# 生成前判断数据是否已经存在
+        if (result==0){
+            final RLock lock = redissonClient.getLock(ScheduleConstants.FOREST_PARSE_RESULT_LOCK);
+            boolean enter = false;
+            try {
+                enter = lock.tryLock(0, 50, TimeUnit.SECONDS);
+                if (enter) {
+                    log.info("schedule method: [{}]", "scheduleParseResult");
+                    Month month = parse.getMonth();
+                    for (;month.equals(parse.getMonth());) {
+                        parseResultService.genDqDataNeedFetch(parse);
+                        parseResultService.genCdqDataNeedFetch(parse);
+                        parseResultService.genNwpDataNeedFetch(parse);
+                        parse = parse.plusDays(1);
+                    }
+                    TimeUnit.SECONDS.sleep(10);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                if (enter) {
+                    lock.unlock();
+                }
+            }
+        }else {
+            log.info("数据已经存在");
         }
     }
 

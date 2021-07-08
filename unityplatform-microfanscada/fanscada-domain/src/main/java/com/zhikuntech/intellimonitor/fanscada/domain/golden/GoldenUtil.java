@@ -9,7 +9,7 @@ import com.rtdb.model.SearchCondition;
 import com.rtdb.service.impl.*;
 import com.rtdb.service.inter.Historian;
 import com.rtdb.service.inter.Snapshot;
-import com.zhikuntech.intellimonitor.fanscada.domain.websocket.WebSocketServer;
+import com.zhikuntech.intellimonitor.core.commons.weabsocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

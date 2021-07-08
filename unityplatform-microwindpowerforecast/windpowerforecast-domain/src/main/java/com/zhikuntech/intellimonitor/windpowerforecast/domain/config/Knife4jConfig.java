@@ -24,7 +24,7 @@ public class Knife4jConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(new ApiInfoBuilder()
                         //.title("swagger-bootstrap-ui-demo RESTful APIs")
-                        .description("#智能监测系统接口文档")
+                        .description("#智能监测系统接口文档-风功率预测模块")
 //                        .termsOfServiceUrl("http://192.168.40.14:8081")
                         .version("0.1.0.RELEASE")
                         .build())

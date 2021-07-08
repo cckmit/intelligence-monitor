@@ -88,6 +88,10 @@
             <version>${protobuf-java.version}</version>
         </dependency>
         <!--golden相关依赖-[end]-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.mapstruct</groupId>

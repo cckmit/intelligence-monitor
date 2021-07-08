@@ -16,6 +16,11 @@ spring:
     username: develop
     password: Aman@2020
     driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    host: 192.168.3.179
+    database: 8
+    port: 6379
+
 #  kafka:
 #    consumer:
 #      bootstrap-servers:
@@ -29,6 +34,6 @@ spring:
 
 logging:
   level:
-    com.zhikuntech.intellimonitor.windpowerforecast.domain.service: debug
-    com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper: debug
+    com.zhikuntech.intellimonitor.alarm.domain.service: debug
+    com.zhikuntech.intellimonitor.alarm.domain.mapper: debug
 

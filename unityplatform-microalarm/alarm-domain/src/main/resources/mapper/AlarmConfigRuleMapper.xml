@@ -15,11 +15,12 @@
         <result column="level_no_two" property="levelNoTwo" />
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
+        <result column="delete_mark" property="deleteMark" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, rule_no, alarm_type, alarm_value, pre_alarm_one_value, pre_alarm_two_value, level_no_alarm, level_no_one, level_no_two, create_time, update_time
+        id, rule_no, alarm_type, alarm_value, pre_alarm_one_value, pre_alarm_two_value, level_no_alarm, level_no_one, level_no_two, create_time, update_time, delete_mark
     </sql>
 
 </mapper>
