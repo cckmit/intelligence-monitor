@@ -24,6 +24,6 @@ spring:
 
 logging:
   level:
-    com.zhikuntech.intellimonitor.windpowerforecast.domain.service: debug
-    com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper: debug
+    com.zhikuntech.intellimonitor.alarm.domain.service: debug
+    com.zhikuntech.intellimonitor.alarm.domain.mapper: debug
 

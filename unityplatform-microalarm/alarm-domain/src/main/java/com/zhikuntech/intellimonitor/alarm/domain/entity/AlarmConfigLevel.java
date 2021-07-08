@@ -1,9 +1,9 @@
 package com.zhikuntech.intellimonitor.alarm.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.*;
 
 /**
@@ -12,7 +12,7 @@ import lombok.*;
  * </p>
  *
  * @author liukai
- * @since 2021-07-06
+ * @since 2021-07-08
  */
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,12 +23,10 @@ public class AlarmConfigLevel implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
-
     /**
      * 等级编码
      */
+    @TableId(value = "level_no", type = IdType.ASSIGN_ID)
     private String levelNo;
 
     /**

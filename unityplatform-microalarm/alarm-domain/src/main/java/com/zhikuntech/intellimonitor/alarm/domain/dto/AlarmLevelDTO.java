@@ -13,9 +13,6 @@ import lombok.Data;
 @ApiModel("告警等级信息")
 public class AlarmLevelDTO {
 
-    @ApiModelProperty("id标识")
-    private Integer id;
-
     /**
      * 等级编码
      */

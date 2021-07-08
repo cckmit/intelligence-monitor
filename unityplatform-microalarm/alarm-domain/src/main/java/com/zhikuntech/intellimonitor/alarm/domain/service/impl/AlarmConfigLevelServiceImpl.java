@@ -2,16 +2,15 @@ package com.zhikuntech.intellimonitor.alarm.domain.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhikuntech.intellimonitor.alarm.domain.convert.AlarmConfigLevelToDtoConvert;
 import com.zhikuntech.intellimonitor.alarm.domain.dto.AlarmLevelDTO;
 import com.zhikuntech.intellimonitor.alarm.domain.entity.AlarmConfigLevel;
-import com.zhikuntech.intellimonitor.alarm.domain.entity.AlarmConfigRule;
 import com.zhikuntech.intellimonitor.alarm.domain.mapper.AlarmConfigLevelMapper;
-import com.zhikuntech.intellimonitor.alarm.domain.mapper.AlarmConfigRuleMapper;
 import com.zhikuntech.intellimonitor.alarm.domain.query.alarmlevel.AddNewAlarmLevelQuery;
 import com.zhikuntech.intellimonitor.alarm.domain.query.alarmlevel.AlarmLevelSimpleQuery;
 import com.zhikuntech.intellimonitor.alarm.domain.service.IAlarmConfigLevelService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zhikuntech.intellimonitor.alarm.domain.service.IAlarmConfigRuleService;
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * <p>
@@ -38,16 +36,15 @@ import java.util.UUID;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AlarmConfigLevelServiceImpl extends ServiceImpl<AlarmConfigLevelMapper, AlarmConfigLevel> implements IAlarmConfigLevelService {
 
-    private final AlarmConfigRuleMapper ruleMapper;
+    private final IAlarmConfigRuleService ruleService;
 
     @Override public boolean addNewAlarmLevel(AddNewAlarmLevelQuery query) {
         if (Objects.isNull(query)) {
             return false;
         }
-        final String uuid = UUID.randomUUID().toString();
         // 转换
         AlarmConfigLevel configLevel = AlarmConfigLevel.builder()
-                .levelNo(uuid)
+                .alarmLevel(query.getAlarmLevel())
                 .levelIllustrate(query.getAlarmLevelName())
                 .alarmWay(query.getAlarmWay())
                 .mark(query.getMark())
@@ -72,13 +69,7 @@ public class AlarmConfigLevelServiceImpl extends ServiceImpl<AlarmConfigLevelMap
 
     @Override public AlarmLevelDTO deleteByLevelNo(String levelNo) {
         // 查询规则表, 看是否存在关联数据, 如果存在则无法删除
-        QueryWrapper<AlarmConfigRule> ruleQueryWrapper = new QueryWrapper<>();
-        ruleQueryWrapper.eq("level_no_alarm", levelNo)
-                .or()
-                .eq("level_no_one", levelNo)
-                .or()
-                .eq("level_no_two", levelNo);
-        Integer integer = ruleMapper.selectCount(ruleQueryWrapper);
+        Integer integer = ruleService.queryCountByLevelNo(levelNo);
         if (Objects.nonNull(integer) && integer > 0) {
             throw new IllegalStateException("规则数据中存在对此数据的关联, 无法删除.");
         }
@@ -90,7 +81,7 @@ public class AlarmConfigLevelServiceImpl extends ServiceImpl<AlarmConfigLevelMap
             throw new IllegalStateException("该条数据不存在, 非法状态.");
         }
         // 删除数据
-        getBaseMapper().deleteById(configLevel.getId());
+        getBaseMapper().deleteById(configLevel.getLevelNo());
         return AlarmConfigLevelToDtoConvert.INSTANCE.to(configLevel);
     }
 
@@ -105,6 +96,27 @@ public class AlarmConfigLevelServiceImpl extends ServiceImpl<AlarmConfigLevelMap
             results.add(alarmLevelDTO);
         }
         return results;
+    }
+
+    @Override public AlarmLevelDTO updateById(AlarmLevelDTO dto) {
+        if (Objects.isNull(dto)) {
+            throw new IllegalArgumentException("参数不能为空");
+        }
+        if (Objects.isNull(dto.getLevelNo())) {
+            throw new IllegalArgumentException("标识符编码不能为空");
+        }
+        // 判断规则中是否有等级关联
+        Integer integer = ruleService.queryCountByLevelNo(dto.getLevelNo());
+        if (Objects.nonNull(integer) && integer > 0) {
+            throw new IllegalStateException("规则数据中存在对此数据的关联, 无法更新.");
+        }
+        // TODO 判断告警信息中是否有等级关联
+
+        // 更新
+        AlarmConfigLevel level = AlarmConfigLevelToDtoConvert.INSTANCE.from(dto);
+        int i = getBaseMapper().updateById(level);
+        assert i == 1;
+        return dto;
     }
 
 

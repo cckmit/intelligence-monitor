@@ -51,4 +51,14 @@ public interface IAlarmConfigLevelService extends IService<AlarmConfigLevel> {
      */
     List<AlarmLevelDTO> batchDelete(List<String> levelNos);
 
+
+    /**
+     * 根据id修改内容
+     *
+     * @param dto   待修改的数据
+     * @return      修改后的值
+     */
+    AlarmLevelDTO updateById(AlarmLevelDTO dto);
+
+
 }
