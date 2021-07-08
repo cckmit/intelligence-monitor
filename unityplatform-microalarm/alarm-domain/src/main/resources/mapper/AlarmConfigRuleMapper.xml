@@ -4,8 +4,7 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.zhikuntech.intellimonitor.alarm.domain.entity.AlarmConfigRule">
-        <id column="id" property="id" />
-        <result column="rule_no" property="ruleNo" />
+        <id column="rule_no" property="ruleNo" />
         <result column="alarm_type" property="alarmType" />
         <result column="alarm_value" property="alarmValue" />
         <result column="pre_alarm_one_value" property="preAlarmOneValue" />
@@ -20,7 +19,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, rule_no, alarm_type, alarm_value, pre_alarm_one_value, pre_alarm_two_value, level_no_alarm, level_no_one, level_no_two, create_time, update_time, delete_mark
+        rule_no, alarm_type, alarm_value, pre_alarm_one_value, pre_alarm_two_value, level_no_alarm, level_no_one, level_no_two, create_time, update_time, delete_mark
     </sql>
 
 </mapper>

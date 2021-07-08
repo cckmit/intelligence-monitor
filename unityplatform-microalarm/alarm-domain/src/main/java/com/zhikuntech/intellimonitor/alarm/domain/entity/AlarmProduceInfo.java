@@ -1,10 +1,12 @@
 package com.zhikuntech.intellimonitor.alarm.domain.entity;
 
 import java.math.BigDecimal;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.Version;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -14,7 +16,7 @@ import lombok.EqualsAndHashCode;
  * </p>
  *
  * @author liukai
- * @since 2021-07-06
+ * @since 2021-07-08
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -22,14 +24,13 @@ public class AlarmProduceInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
-
+    @Version
     private Integer version;
 
     /**
      * 告警信息编码
      */
+    @TableId(value = "info_no", type = IdType.ASSIGN_ID)
     private String infoNo;
 
     /**

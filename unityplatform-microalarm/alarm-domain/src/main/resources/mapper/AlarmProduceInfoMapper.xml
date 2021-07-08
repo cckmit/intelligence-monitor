@@ -4,9 +4,8 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.zhikuntech.intellimonitor.alarm.domain.entity.AlarmProduceInfo">
-        <id column="id" property="id" />
+        <id column="info_no" property="infoNo" />
         <result column="version" property="version" />
-        <result column="info_no" property="infoNo" />
         <result column="monitor_no" property="monitorNo" />
         <result column="rule_no" property="ruleNo" />
         <result column="event_time" property="eventTime" />
@@ -25,7 +24,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, version, info_no, monitor_no, rule_no, event_time, process_time, monitor_num, monitor_num_str, create_time, with_history, pre_info_no, has_confirm, confirm_person, confirm_time, has_restore, restore_time
+        version, info_no, monitor_no, rule_no, event_time, process_time, monitor_num, monitor_num_str, create_time, with_history, pre_info_no, has_confirm, confirm_person, confirm_time, has_restore, restore_time
     </sql>
 
 </mapper>

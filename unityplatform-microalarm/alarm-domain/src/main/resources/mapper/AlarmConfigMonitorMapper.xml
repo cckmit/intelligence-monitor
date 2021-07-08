@@ -4,8 +4,7 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.zhikuntech.intellimonitor.alarm.domain.entity.AlarmConfigMonitor">
-        <id column="id" property="id" />
-        <result column="monitor_no" property="monitorNo" />
+        <id column="monitor_no" property="monitorNo" />
         <result column="rule_no" property="ruleNo" />
         <result column="monitor_type" property="monitorType" />
         <result column="group_type" property="groupType" />
@@ -16,7 +15,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, monitor_no, rule_no, monitor_type, group_type, create_time, update_time, value_type
+        monitor_no, rule_no, monitor_type, group_type, create_time, update_time, value_type
     </sql>
 
 </mapper>
