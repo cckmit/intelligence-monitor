@@ -7,6 +7,8 @@ import com.zhikuntech.intellimonitor.alarm.domain.query.alarmlevel.AddNewAlarmLe
 import com.zhikuntech.intellimonitor.alarm.domain.query.alarmlevel.AlarmLevelSimpleQuery;
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
 
+import java.util.List;
+
 /**
  * <p>
  * 告警等级表 服务类
@@ -30,5 +32,23 @@ public interface IAlarmConfigLevelService extends IService<AlarmConfigLevel> {
      * @return 分页后的数据
      */
     Pager<AlarmLevelDTO> queryAlarmLevel(AlarmLevelSimpleQuery query);
+
+    /**
+     * 删除数据,删除前判断
+     * <p>
+     *     在告警规则表是否存在对该id的引用
+     * </p>
+     *
+     * @param levelNo    标识id
+     * @return      AlarmLevelDTO
+     */
+    AlarmLevelDTO deleteByLevelNo(String levelNo);
+
+    /**
+     * 批量删除数据
+     * @param levelNos  需要删除的levelNos
+     * @return          删除的数据
+     */
+    List<AlarmLevelDTO> batchDelete(List<String> levelNos);
 
 }
