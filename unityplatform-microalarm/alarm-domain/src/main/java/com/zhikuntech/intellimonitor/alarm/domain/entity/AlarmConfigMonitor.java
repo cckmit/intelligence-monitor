@@ -1,9 +1,10 @@
 package com.zhikuntech.intellimonitor.alarm.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -13,7 +14,7 @@ import lombok.EqualsAndHashCode;
  * </p>
  *
  * @author liukai
- * @since 2021-07-07
+ * @since 2021-07-08
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -21,12 +22,10 @@ public class AlarmConfigMonitor implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
-
     /**
      * 测点编码
      */
+    @TableId(value = "monitor_no", type = IdType.ASSIGN_ID)
     private String monitorNo;
 
     /**
@@ -58,6 +57,11 @@ public class AlarmConfigMonitor implements Serializable {
      * 0number1bool
      */
     private Integer valueType;
+
+    /**
+     * 测点描述
+     */
+    private String monitorDescribe;
 
 
 }

@@ -6,6 +6,7 @@ import com.zhikuntech.intellimonitor.core.commons.constant.FanConstant;
 import com.zhikuntech.intellimonitor.core.commons.constant.WebSocketConstant;
 import com.zhikuntech.intellimonitor.core.commons.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.core.commons.golden.InjectPropertiesUtil;
+import com.zhikuntech.intellimonitor.core.stream.DataConvertUtils;
 import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanRuntimeDTO;
 import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanStatisticsDTO;
 import com.zhikuntech.intellimonitor.mainpage.domain.schedule.FanInfoInit;
@@ -33,7 +34,7 @@ import java.util.TimerTask;
 public class FanInfoServiceImpl implements FanInfoService {
 
     @Autowired
-    private MyWebSocketHandler webSocketServer;
+    private MyWebSocketHandler myWebSocketHandler;
 
     @Override
     public List<FanRuntimeDTO> getRuntimeInfos() throws Exception {
@@ -60,6 +61,7 @@ public class FanInfoServiceImpl implements FanInfoService {
     @Override
     public void getRuntimeInfos(String user) throws Exception {
         if (GoldenUtil.servers.containsKey(user)) {
+            startTimer(user);
             return;
         }
         if (MyWebSocketHandler.GROUP_RUNTIME.keySet().size() > 0) {
@@ -75,6 +77,9 @@ public class FanInfoServiceImpl implements FanInfoService {
                     try {
                         if (MyWebSocketHandler.GROUP_RUNTIME.keySet().size() > 0) {
                             long l0 = System.currentTimeMillis();
+//                            DataConvertUtils.convertAndSend(data);
+//                            long l01 = System.currentTimeMillis();
+//                            log.info("发送kafka耗时{}",l01-l0);
                             List<FanRuntimeDTO> dtos = InjectPropertiesUtil.injectByAnnotation(list, data, (key) -> FanInfoInit.GOLDEN_ID_MAP.get(key));
                             if (null != dtos) {
                                 for (FanRuntimeDTO dto : dtos) {
@@ -85,8 +90,7 @@ public class FanInfoServiceImpl implements FanInfoService {
                                 String jsonString = JSONObject.toJSONString(dtos);
                                 jsonString = WebSocketConstant.MAIN_PAGE_RUNTIME + WebSocketConstant.PATTERN + jsonString;
                                 try {
-                                    webSocketServer.sendGroupMessage(jsonString, MyWebSocketHandler.GROUP_RUNTIME.keySet());
-
+                                    myWebSocketHandler.sendGroupMessage(jsonString, MyWebSocketHandler.GROUP_RUNTIME.keySet());
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -101,7 +105,7 @@ public class FanInfoServiceImpl implements FanInfoService {
                             TimerUtil.stop(user);
                         }
                         GoldenUtil.cancel(user);
-                        webSocketServer.sendGroupMessage("重新订阅", MyWebSocketHandler.GROUP_RUNTIME.keySet());
+                        myWebSocketHandler.sendGroupMessage("重新订阅", MyWebSocketHandler.GROUP_RUNTIME.keySet());
                         log.info("回调函数内部触发取消操作");
                     }
                 });
@@ -109,7 +113,7 @@ public class FanInfoServiceImpl implements FanInfoService {
                 log.info("golden连接失败，重连后取消之前所有连接");
                 GoldenUtil.servers.clear();
                 e.printStackTrace();
-                webSocketServer.sendAllMessage("重新订阅");
+                myWebSocketHandler.sendAllMessage("重新订阅");
                 log.info("faninfoservice触发所有取消操作");
             }
         }
@@ -137,6 +141,7 @@ public class FanInfoServiceImpl implements FanInfoService {
     @Override
     public void getStatistics(String user) throws Exception {
         if (GoldenUtil.servers.containsKey(user)) {
+            startTimer(user);
             return;
         }
         if (MyWebSocketHandler.GROUP_STATISTICS.keySet().size() > 0) {
@@ -156,7 +161,7 @@ public class FanInfoServiceImpl implements FanInfoService {
                                 String jsonString = JSONObject.toJSONString(dto);
                                 jsonString = WebSocketConstant.MAIN_PAGE_STATISTICS + WebSocketConstant.PATTERN + jsonString;
                                 try {
-                                    webSocketServer.sendGroupMessage(jsonString, MyWebSocketHandler.GROUP_STATISTICS.keySet());
+                                    myWebSocketHandler.sendGroupMessage(jsonString, MyWebSocketHandler.GROUP_STATISTICS.keySet());
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -171,7 +176,7 @@ public class FanInfoServiceImpl implements FanInfoService {
                             TimerUtil.stop(user);
                         }
                         GoldenUtil.servers.remove(user);
-                        webSocketServer.sendGroupMessage("重新订阅", MyWebSocketHandler.GROUP_STATISTICS.keySet());
+                        myWebSocketHandler.sendGroupMessage("重新订阅", MyWebSocketHandler.GROUP_STATISTICS.keySet());
                         log.info("回调函数内部触发取消操作");
                     }
                 });
@@ -214,7 +219,7 @@ public class FanInfoServiceImpl implements FanInfoService {
         } catch (SocketException e) {
             log.info("golden连接失败，重连后取消之前所有连接");
             GoldenUtil.servers.clear();
-            webSocketServer.sendAllMessage("重新订阅");
+            myWebSocketHandler.sendAllMessage("重新订阅");
             return null;
         }
         return valueData;
@@ -267,14 +272,14 @@ public class FanInfoServiceImpl implements FanInfoService {
                         getRuntimeInfos(user);
                     } catch (Exception e) {
                         e.printStackTrace();
-                        webSocketServer.sendGroupMessage("重新订阅", MyWebSocketHandler.GROUP_STATISTICS.keySet());
+                        myWebSocketHandler.sendGroupMessage("重新订阅", MyWebSocketHandler.GROUP_STATISTICS.keySet());
                     }
                 } else {
                     try {
                         getStatistics(user);
                     } catch (Exception e) {
                         e.printStackTrace();
-                        webSocketServer.sendGroupMessage("重新订阅", MyWebSocketHandler.GROUP_STATISTICS.keySet());
+                        myWebSocketHandler.sendGroupMessage("重新订阅", MyWebSocketHandler.GROUP_STATISTICS.keySet());
                     }
                 }
                 log.info("定时任务取消golden连接,{}", user);

@@ -1,5 +1,8 @@
 package com.zhikuntech.intellimonitor.fanscada.domain.constant;
 
+/**
+ * @author tn
+ */
 public interface FanLoopNumber {
 
     String LOOP1 = "7,8,9,10,11,12";
