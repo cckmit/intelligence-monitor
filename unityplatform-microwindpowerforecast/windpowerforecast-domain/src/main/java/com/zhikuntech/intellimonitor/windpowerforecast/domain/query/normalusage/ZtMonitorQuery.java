@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 @Data
 @ApiModel("曲线展示-状态展示")
 public class ZtMonitorQuery {
-    @ApiModelProperty(value = "时间字符串:[yyyy-MM-dd zz:xx:cc]", required = true)
+    @ApiModelProperty(value = "时间字符串:[yyyy-MM-dd HH:mm:ss]", required = true)
     private String dateStr;
 }
