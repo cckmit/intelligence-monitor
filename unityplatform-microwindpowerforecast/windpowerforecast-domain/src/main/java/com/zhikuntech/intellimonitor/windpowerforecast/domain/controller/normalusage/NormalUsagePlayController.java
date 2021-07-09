@@ -6,6 +6,8 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.We
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.CfCurveDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.CfListDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.dto.normalusage.DqDayElectricGenDTO;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.ZtMonitorQuery;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfBasicParseResultService;
 import com.zhikuntech.intellimonitor.windpowerforecast.prototype.dto.NwpListPatternDTO;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.CfCurvePatternQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.CfListPatternQuery;
@@ -32,6 +34,7 @@ import java.util.List;
 @RequestMapping("/normal-usage-play")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class NormalUsagePlayController {
+    private final IWfBasicParseResultService parseResultService;
 
     private final IWfDataNwpService nwpService;
 
@@ -48,6 +51,14 @@ public class NormalUsagePlayController {
         return BaseResponse.success(weatherHighDTO);
     }
 
+    //# 状态监视 数据上报
+    @ApiOperation("曲线展示-状态监视")
+    @PostMapping("/zt")
+    public BaseResponse<List<Integer>> ZtJudge(@RequestBody ZtMonitorQuery query) {
+        List<Integer> results = parseResultService.ZtJudge(query);
+        return BaseResponse.success(results);
+    }
+    //# 状态监视 数据上报
 
     //# 预测气象数据
 

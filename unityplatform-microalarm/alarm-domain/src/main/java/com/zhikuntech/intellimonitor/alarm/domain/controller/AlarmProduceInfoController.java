@@ -22,6 +22,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AlarmProduceInfoController {
 
+    // TODO 告警信息分页查询
+
+    // TODO 告警确认（单个/批次/页面全部[groupType]）
+
+    // TODO 事故追忆
+
+
+
+    // ---------------------后台执行---------------------
+
+    // TODO 告警恢复（后台执行, 无需查询条件）
+
+    // TODO 告警生成
+
+    // ---------------------后台执行---------------------
+
+
 
 
 

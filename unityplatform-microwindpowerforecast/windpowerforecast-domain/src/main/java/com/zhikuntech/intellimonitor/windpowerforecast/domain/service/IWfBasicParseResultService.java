@@ -1,10 +1,12 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.service;
 
-import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfBasicParseResult;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfBasicParseResult;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.ZtMonitorQuery;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -32,6 +34,22 @@ public interface IWfBasicParseResultService extends IService<WfBasicParseResult>
      * @param type      文件类型(dq|cdq|nwp)
      */
     void fetchDqWithPointDate(LocalDateTime dateTime, /*dq|cdq|nwp*/ String type);
+
+    /**
+     * 根据时间查三种文件的状态 0-已读取入库|2-未读取
+     * @param  query  要查询的时间
+     * @return int[] 结果 三个数 超短期 短期 天气 1已读取 |0未读取
+     */
+    List<Integer> ZtJudge(ZtMonitorQuery query);
+
+    /**
+     * 根据类型和时间查三种文件的状态 0-已读取入库|2-未读取
+     * @param dateTime  时间
+     * @param type      类型 文件类型(dq|cdq|nwp)
+     * @return int结果  1已读取 |0未读取
+     */
+
+    int fileStatusQuery(LocalDateTime dateTime,String type);
 
     /**
      * 根据时间判断数据库有没有文件名表的数据

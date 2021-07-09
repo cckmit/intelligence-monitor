@@ -1,26 +1,30 @@
 package com.zhikuntech.intellimonitor.alarm.domain.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zhikuntech.intellimonitor.alarm.domain.convert.AlarmConfigRuleToDtoConvert;
+import com.zhikuntech.intellimonitor.alarm.domain.dto.AlarmLevelDTO;
+import com.zhikuntech.intellimonitor.alarm.domain.dto.AlarmMonitorDTO;
 import com.zhikuntech.intellimonitor.alarm.domain.dto.AlarmRuleDTO;
 import com.zhikuntech.intellimonitor.alarm.domain.entity.AlarmConfigRule;
 import com.zhikuntech.intellimonitor.alarm.domain.mapper.AlarmConfigRuleMapper;
 import com.zhikuntech.intellimonitor.alarm.domain.query.alarmrule.AddNewAlarmRuleQuery;
 import com.zhikuntech.intellimonitor.alarm.domain.query.alarmrule.AlarmRuleSimpleQuery;
+import com.zhikuntech.intellimonitor.alarm.domain.service.IAlarmConfigLevelService;
 import com.zhikuntech.intellimonitor.alarm.domain.service.IAlarmConfigMonitorService;
 import com.zhikuntech.intellimonitor.alarm.domain.service.IAlarmConfigRuleService;
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
-import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -31,10 +35,18 @@ import java.util.Objects;
  * @since 2021-07-06
  */
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AlarmConfigRuleServiceImpl extends ServiceImpl<AlarmConfigRuleMapper, AlarmConfigRule> implements IAlarmConfigRuleService {
 
     private final IAlarmConfigMonitorService monitorService;
+
+    private final IAlarmConfigLevelService levelService;
+
+    public AlarmConfigRuleServiceImpl(IAlarmConfigMonitorService monitorService,
+                                      // 解决循环依赖
+                                      @Lazy IAlarmConfigLevelService levelService) {
+        this.monitorService = monitorService;
+        this.levelService = levelService;
+    }
 
     @Override public Integer queryCountByLevelNo(String levelNo) {
         QueryWrapper<AlarmConfigRule> ruleQueryWrapper = new QueryWrapper<>();
@@ -97,9 +109,37 @@ public class AlarmConfigRuleServiceImpl extends ServiceImpl<AlarmConfigRuleMappe
     }
 
     @Override public Pager<AlarmRuleDTO> queryByPage(AlarmRuleSimpleQuery query) {
-        // todo
+        if (Objects.isNull(query)) {
+            throw new IllegalArgumentException("查询参数不能为空");
+        }
+        Page<AlarmConfigRule> pageCriteria = new Page<>(query.getPageNumber(), query.getPageSize());
+        QueryWrapper<AlarmConfigRule> queryCriteria = new QueryWrapper<>();
+        Page<AlarmConfigRule> pageResult = getBaseMapper().selectPage(pageCriteria, queryCriteria);
+        List<AlarmConfigRule> records = pageResult.getRecords();
+        if (CollectionUtils.isEmpty(records)) {
+            return new Pager<>((int) pageResult.getTotal(), Collections.emptyList());
+        }
+        List<AlarmRuleDTO> dtoList = AlarmConfigRuleToDtoConvert.INSTANCE.to(records);
+        // 查询测点信息
+        List<String> ruleNos = records.stream().filter(Objects::nonNull).map(AlarmConfigRule::getRuleNo).filter(StringUtils::isNotBlank).collect(Collectors.toList());
+        if (CollectionUtils.isNotEmpty(ruleNos)) {
+            final Map<String, List<AlarmMonitorDTO>> monitorGroup = monitorService.queryMonitorMapByRuleNos(ruleNos);
+            dtoList.forEach(item -> item.setWithMonitors(monitorGroup.get(item.getRuleNo())));
+        }
+        // 查询等级信息
+        final Map<String, AlarmLevelDTO> levelDTOMap = levelService.queryLevelMapAll();
+        dtoList.forEach(item -> {
+            item.setLevelNoAlarmInfo(levelDTOMap.get(item.getLevelNoAlarm()));
+            item.setLevelNoOneInfo(levelDTOMap.get(item.getLevelNoOne()));
+            item.setLevelNoTwoInfo(levelDTOMap.get(item.getLevelNoTwo()));
+        });
+        return new Pager<>((int) pageResult.getTotal(), dtoList);
+    }
 
-        return new Pager<>(null);
+    @Override
+    public AddNewAlarmRuleQuery changeRule(AddNewAlarmRuleQuery query) {
+        // todo
+        throw new UnsupportedOperationException();
     }
 
 }

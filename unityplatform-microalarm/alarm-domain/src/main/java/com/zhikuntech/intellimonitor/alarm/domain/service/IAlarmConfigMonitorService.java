@@ -6,6 +6,8 @@ import com.zhikuntech.intellimonitor.alarm.domain.entity.AlarmConfigMonitor;
 import com.zhikuntech.intellimonitor.alarm.domain.query.alarmmonitor.AlarmMonitorSimpleQuery;
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -40,5 +42,12 @@ public interface IAlarmConfigMonitorService extends IService<AlarmConfigMonitor>
      */
     Pager<AlarmMonitorDTO> queryByPage(AlarmMonitorSimpleQuery query);
 
+    /**
+     * 测点信息分组
+     *
+     * @param ruleNos   规则编码
+     * @return          分组后的测点信息
+     */
+    Map<String, List<AlarmMonitorDTO>> queryMonitorMapByRuleNos(List<String> ruleNos);
 
 }

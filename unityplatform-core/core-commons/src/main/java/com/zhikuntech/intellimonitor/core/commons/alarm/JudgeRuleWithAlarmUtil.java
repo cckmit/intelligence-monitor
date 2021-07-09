@@ -46,7 +46,7 @@ public class JudgeRuleWithAlarmUtil {
 
     /**
      * 一二级预警字符串形式: 40,60
-     * 告警字符串形式：(-∞,30)U(80,+∞)
+     * 告警字符串形式: (-∞,30)U(80,+∞)
      *
      * @param num
      * @param alarmRule
@@ -56,6 +56,18 @@ public class JudgeRuleWithAlarmUtil {
         String alarmRange = alarmRule.getAlarmRange();
         String preWarningRangeLevelOne = alarmRule.getPreWarningRangeLevelOne();
         String preWarningRangeLevelTwe = alarmRule.getPreWarningRangeLevelTwe();
+        //判断: 有二级预警一定有一级预警;有一级预警不一定有二级预警
+        if(StringUtils.isEmpty(alarmRange)){
+            log.error("警告值不能为空!");
+            return null;
+        }
+        if(StringUtils.isNotEmpty(preWarningRangeLevelTwe)){
+            if(StringUtils.isEmpty(preWarningRangeLevelOne)){
+                log.error("有二级预警值一定要有一级预警值!");
+                return null;
+            }
+        }
+
         String[] alarmRangeSetSplit = null;
         //如果交集连接
         if (alarmRange.indexOf(INTERSET) > -1) {
@@ -128,8 +140,9 @@ public class JudgeRuleWithAlarmUtil {
 
     /**
      * 具体判断
-     * @param set
-     * @param pvalue
+     * 经过解析后得到List<MeasuringPoint[]>形式的区间,判断传入的值是否在结果区间范围内
+     * @param set 区间
+     * @param pvalue 需要判断的值
      * @return
      */
     private static boolean judgeSingle(Set<MeasuringPoint[]> set, BigDecimal pvalue) {
@@ -191,9 +204,10 @@ public class JudgeRuleWithAlarmUtil {
      * 运算符由[ ] ( ) ∪ ∩ ∞ ，组成
      * (-∞,30)U(80,+∞)∩(50,100]
      * 解析过程:
-     * 1:从头到尾中找出'∪'或'∩'符号，再找出符号两侧的由开闭区间组成的区域，进行计算；计算完成后再当成一个新的区间和后面区间进行计算。
-     * 计算完整个字符串后转换成List<MeasuringPoint[]>对象，以供后面传过来的值进行判断。
-     *
+     *      (主要过程：单个区间解析成MeasuringPoint[]形式,数组有2个元素,分别表示区间的左右端点。)
+     *      初次解析时,先把前2个区间解析成MeasuringPoint[]形式,再根据中间的∪或者∩符号对两个区间进行计算,得到List<MeasuringPoint[]>形式的结果
+     *      后面的计算过程是拿到之前计算的List<MeasuringPoint[]>形式的结果和后面的MeasuringPoint[]数组进行计算,
+     *      一直递归计算下去,直到把整个字符串解析计算完成,返回最终结果。判断传入的值是否在结果区间范围内
      * @param operator               运算字符串
      * @param lastMeasuringPointList 上一次计算后的结果集
      */
