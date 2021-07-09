@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -85,7 +86,16 @@ public class AlarmConfigMonitorServiceImpl extends ServiceImpl<AlarmConfigMonito
         List<AlarmConfigMonitor> records = pageResults.getRecords();
         // 转换结果
         List<AlarmMonitorDTO> dtoList = AlarmConfigMonitorToDtoConvert.INSTANCE.to(records);
-        return new Pager<>(dtoList);
+        return new Pager<>((int)pageResults.getTotal(), dtoList);
+    }
+
+    @Override public Map<String, List<AlarmMonitorDTO>> queryMonitorMapByRuleNos(List<String> ruleNos) {
+        QueryWrapper<AlarmConfigMonitor> monitorQueryWrapper = new QueryWrapper<>();
+        monitorQueryWrapper.in("rule_no", ruleNos);
+        List<AlarmConfigMonitor> alarmConfigMonitors = getBaseMapper().selectList(monitorQueryWrapper);
+        List<AlarmMonitorDTO> monitorDTOList = AlarmConfigMonitorToDtoConvert.INSTANCE.to(alarmConfigMonitors);
+        return monitorDTOList.stream().filter(Objects::nonNull).filter(p -> StringUtils.isNotBlank(p.getRuleNo()))
+                .collect(Collectors.groupingBy(AlarmMonitorDTO::getRuleNo));
     }
 
 }
