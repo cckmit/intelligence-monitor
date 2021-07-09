@@ -15,13 +15,16 @@ import com.zhikuntech.intellimonitor.core.commons.base.Pager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -64,7 +67,7 @@ public class AlarmConfigLevelServiceImpl extends ServiceImpl<AlarmConfigLevelMap
         List<AlarmConfigLevel> records = pageResults.getRecords();
         // 转换结果
         List<AlarmLevelDTO> dtoList = AlarmConfigLevelToDtoConvert.INSTANCE.to(records);
-        return new Pager<>(dtoList);
+        return new Pager<>((int) pageResults.getTotal(), dtoList);
     }
 
     @Override public AlarmLevelDTO deleteByLevelNo(String levelNo) {
@@ -119,5 +122,11 @@ public class AlarmConfigLevelServiceImpl extends ServiceImpl<AlarmConfigLevelMap
         return dto;
     }
 
+    @Override public Map<String, AlarmLevelDTO> queryLevelMapAll() {
+        List<AlarmConfigLevel> alarmConfigLevels = getBaseMapper().selectList(new QueryWrapper<>());
+        List<AlarmLevelDTO> levelDTOList = AlarmConfigLevelToDtoConvert.INSTANCE.to(alarmConfigLevels);
+        return levelDTOList.stream().filter(Objects::nonNull).filter(p -> StringUtils.isNotBlank(p.getLevelNo()))
+                .collect(Collectors.toMap(AlarmLevelDTO::getLevelNo, p -> p, (p1, p2) -> p2));
+    }
 
 }

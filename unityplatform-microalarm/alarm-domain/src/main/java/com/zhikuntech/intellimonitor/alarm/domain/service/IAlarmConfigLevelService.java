@@ -8,6 +8,7 @@ import com.zhikuntech.intellimonitor.alarm.domain.query.alarmlevel.AlarmLevelSim
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -60,5 +61,10 @@ public interface IAlarmConfigLevelService extends IService<AlarmConfigLevel> {
      */
     AlarmLevelDTO updateById(AlarmLevelDTO dto);
 
-
+    /**
+     * map映射等级信息
+     *
+     * @return  map映射
+     */
+    Map<String, AlarmLevelDTO> queryLevelMapAll();
 }
