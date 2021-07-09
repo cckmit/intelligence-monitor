@@ -27,6 +27,7 @@
         <module>unityplatform-microalarm</module>
         <module>unityplatform-micromessagepush</module>
         <module>unityplatform-microstructuremonitor</module>
+        <module>unityplatform-microonlinemonitor</module>
     </modules>
 
     <properties>
