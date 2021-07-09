@@ -1,10 +1,11 @@
 package com.zhikuntech.intellimonitor.windpowerforecast.domain.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.entity.WfBasicParseResult;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.mapper.WfBasicParseResultMapper;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.normalusage.ZtMonitorQuery;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.IWfBasicParseResultService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDataCdqService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDataDqService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.data.IWfDataNwpService;
@@ -150,6 +151,50 @@ public class WfBasicParseResultServiceImpl extends ServiceImpl<WfBasicParseResul
                 e.printStackTrace();
                 throw new IllegalStateException(e);
             }
+        }
+    }
+
+    @Override
+    public List<Integer> ZtJudge(ZtMonitorQuery query) {
+        List<Integer> result= new ArrayList<>();
+        if (Objects.isNull(query)){
+            return result;
+        }
+        String dateTimeStr=query.getDateStr();
+        if (dateTimeStr.isEmpty()){
+            return result;
+        }
+        LocalDateTime dateTime=TimeProcessUtils.parseLocalDateTimeWithSecondPattern(dateTimeStr);
+        int dq=fileStatusQuery(dateTime,"dq");
+        int cdq=fileStatusQuery(dateTime,"cdq");
+        int nwp=fileStatusQuery(dateTime,"nwp");
+        result.add(dq);
+        result.add(cdq);
+        result.add(nwp);
+        return result;
+    }
+
+    @Override
+    public int fileStatusQuery(LocalDateTime dateTime, String type) {
+        log.info("查询文件状态方法开始调用, dateTime:[{}], type:[{}]",
+                TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dateTime),
+                type);
+        QueryWrapper<WfBasicParseResult> queryWrapper = new QueryWrapper<>();
+        String time=null;
+        if (type.equals("cdq")){
+            time=TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dateTime);
+        }else {
+            time=TimeProcessUtils.formatLocalDateTimeWithSecondPattern(dateTime);
+            time=time.substring(0,10);
+        }
+        queryWrapper.eq("data_gen_date", time);
+        queryWrapper.eq("file_type", type);
+        WfBasicParseResult parseResult = getBaseMapper().selectOne(queryWrapper);
+        int successMark=parseResult.getSuccessMark();
+        if (successMark==0){
+            return 1;
+        }else {
+            return 0;
         }
     }
 
