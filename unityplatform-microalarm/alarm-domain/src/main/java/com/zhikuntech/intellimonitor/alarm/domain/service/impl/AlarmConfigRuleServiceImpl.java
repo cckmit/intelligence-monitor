@@ -15,10 +15,9 @@ import com.zhikuntech.intellimonitor.alarm.domain.service.IAlarmConfigLevelServi
 import com.zhikuntech.intellimonitor.alarm.domain.service.IAlarmConfigMonitorService;
 import com.zhikuntech.intellimonitor.alarm.domain.service.IAlarmConfigRuleService;
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
-import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,12 +35,18 @@ import java.util.stream.Collectors;
  * @since 2021-07-06
  */
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AlarmConfigRuleServiceImpl extends ServiceImpl<AlarmConfigRuleMapper, AlarmConfigRule> implements IAlarmConfigRuleService {
 
     private final IAlarmConfigMonitorService monitorService;
 
     private final IAlarmConfigLevelService levelService;
+
+    public AlarmConfigRuleServiceImpl(IAlarmConfigMonitorService monitorService,
+                                      // 解决循环依赖
+                                      @Lazy IAlarmConfigLevelService levelService) {
+        this.monitorService = monitorService;
+        this.levelService = levelService;
+    }
 
     @Override public Integer queryCountByLevelNo(String levelNo) {
         QueryWrapper<AlarmConfigRule> ruleQueryWrapper = new QueryWrapper<>();
