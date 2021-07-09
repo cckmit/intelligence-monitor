@@ -75,7 +75,7 @@ public class AlarmConfigLevelServiceImpl extends ServiceImpl<AlarmConfigLevelMap
         }
         // 查询数据 - 校验数据是否存在
         AlarmConfigLevel configLevel = getBaseMapper().selectOne(
-                new QueryWrapper<AlarmConfigLevel>().eq("", "")
+                new QueryWrapper<AlarmConfigLevel>().eq("level_no", levelNo)
         );
         if (Objects.isNull(configLevel)) {
             throw new IllegalStateException("该条数据不存在, 非法状态.");

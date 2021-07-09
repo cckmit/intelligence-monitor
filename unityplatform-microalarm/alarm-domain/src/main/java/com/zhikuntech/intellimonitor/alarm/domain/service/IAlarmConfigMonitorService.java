@@ -1,10 +1,12 @@
 package com.zhikuntech.intellimonitor.alarm.domain.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhikuntech.intellimonitor.alarm.domain.dto.AlarmMonitorDTO;
 import com.zhikuntech.intellimonitor.alarm.domain.entity.AlarmConfigMonitor;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhikuntech.intellimonitor.alarm.domain.query.alarmmonitor.AlarmMonitorSimpleQuery;
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
+
+import java.util.Set;
 
 /**
  * <p>
@@ -19,6 +21,15 @@ public interface IAlarmConfigMonitorService extends IService<AlarmConfigMonitor>
     // TODO 查询所有测点
 
     // TODO 缓存所有测点
+
+
+    /**
+     * 更新规则编码
+     *
+     * @param ruleNo        规则编码
+     * @param monitorNos    监测点编码集合
+     */
+    void updateRuleNoByIds(String ruleNo, Set<String> monitorNos);
 
 
     /**
