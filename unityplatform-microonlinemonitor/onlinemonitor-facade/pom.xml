@@ -11,5 +11,15 @@
 
     <artifactId>onlinemonitor-facade</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.zhikuntech.intellimonitor</groupId>
+            <artifactId>onlinemonitor-prototype</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

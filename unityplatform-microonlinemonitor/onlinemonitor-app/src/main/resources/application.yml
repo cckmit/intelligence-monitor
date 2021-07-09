@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    active: local
+  application:
+    name: onlinemonitor-app
+
+server:
+  port: 18092
