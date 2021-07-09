@@ -136,4 +136,10 @@ public class AlarmConfigRuleServiceImpl extends ServiceImpl<AlarmConfigRuleMappe
         return new Pager<>((int) pageResult.getTotal(), dtoList);
     }
 
+    @Override
+    public AddNewAlarmRuleQuery changeRule(AddNewAlarmRuleQuery query) {
+        // todo
+        throw new UnsupportedOperationException();
+    }
+
 }

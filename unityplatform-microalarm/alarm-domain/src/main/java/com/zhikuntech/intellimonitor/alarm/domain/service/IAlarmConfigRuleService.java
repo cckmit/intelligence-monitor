@@ -1,8 +1,8 @@
 package com.zhikuntech.intellimonitor.alarm.domain.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhikuntech.intellimonitor.alarm.domain.dto.AlarmRuleDTO;
 import com.zhikuntech.intellimonitor.alarm.domain.entity.AlarmConfigRule;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhikuntech.intellimonitor.alarm.domain.query.alarmrule.AddNewAlarmRuleQuery;
 import com.zhikuntech.intellimonitor.alarm.domain.query.alarmrule.AlarmRuleSimpleQuery;
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
@@ -41,5 +41,12 @@ public interface IAlarmConfigRuleService extends IService<AlarmConfigRule> {
      */
     Pager<AlarmRuleDTO> queryByPage(AlarmRuleSimpleQuery query);
 
+
+    /**
+     * 修改告警规则
+     * @param query 待修改内容
+     * @return 原样返回
+     */
+    AddNewAlarmRuleQuery changeRule(AddNewAlarmRuleQuery query);
 
 }
