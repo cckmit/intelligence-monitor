@@ -37,7 +37,7 @@ public class Pager<T> implements Serializable {
      *
      * @param list       当前页的记录列表。
      */
-    public Pager(List<T> list) {
+    private Pager(List<T> list) {
         this.list = list;
         if (list == null) {
             this.totalCount = 0;
