@@ -5,7 +5,7 @@ spring:
     username: develop
     password: Aman@2020
     type: com.alibaba.druid.pool.DruidDataSource
-    driver-class-name: com
+    driver-class-name: com.mysql.cj.jdbc.Driver
   redis:
     database: 7
     host: 192.168.3.179

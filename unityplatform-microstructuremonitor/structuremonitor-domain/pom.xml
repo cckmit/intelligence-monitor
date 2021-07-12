@@ -43,6 +43,15 @@
             <groupId>com.zhikuntech.intellimonitor</groupId>
             <artifactId>core-commons</artifactId>
         </dependency>
+        <!--引入prototype模块-->
+        <dependency>
+            <groupId>com.zhikuntech.intellimonitor</groupId>
+            <artifactId>structuremonitor-prototype</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+        </dependency>
 
     </dependencies>
 
