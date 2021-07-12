@@ -98,6 +98,7 @@ public class AlarmConfigRuleServiceImpl extends ServiceImpl<AlarmConfigRuleMappe
                 .deleteMark(0)
                 .ruleType(query.getRuleType())
                 .build();
+        getBaseMapper().insert(alarmConfigRule);
         final String ruleNo = alarmConfigRule.getRuleNo();
         assert StringUtils.isNotBlank(ruleNo);
         // 更新测点关联的规则值
