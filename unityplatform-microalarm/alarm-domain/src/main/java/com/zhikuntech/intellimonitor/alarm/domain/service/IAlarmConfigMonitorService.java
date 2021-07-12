@@ -24,7 +24,6 @@ public interface IAlarmConfigMonitorService extends IService<AlarmConfigMonitor>
 
     // TODO 缓存所有测点
 
-
     /**
      * 更新规则编码
      *
@@ -32,7 +31,6 @@ public interface IAlarmConfigMonitorService extends IService<AlarmConfigMonitor>
      * @param monitorNos    监测点编码集合
      */
     void updateRuleNoByIds(String ruleNo, Set<String> monitorNos);
-
 
     /**
      * 查询所有分页后的结果
@@ -50,4 +48,10 @@ public interface IAlarmConfigMonitorService extends IService<AlarmConfigMonitor>
      */
     Map<String, List<AlarmMonitorDTO>> queryMonitorMapByRuleNos(List<String> ruleNos);
 
+    /**
+     * 断开测点关系
+     *
+     * @param ruleNo    需要断开测点关系的规则编码
+     */
+    void disconnectMonitorWithRule(String ruleNo);
 }

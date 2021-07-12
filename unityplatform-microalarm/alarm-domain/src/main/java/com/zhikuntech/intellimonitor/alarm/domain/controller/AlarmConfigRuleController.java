@@ -11,11 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -49,15 +45,22 @@ public class AlarmConfigRuleController {
     }
 
     /*
-        TODO
             告警策略(修改/删除)前提:
-                如果存在告警信息关联相关规则, 是否可以修改对应的告警规则
+                如果存在告警信息关联相关规则, 是否可以修改对应的告警规则(直接修改, 无需关注)
      */
 
     @ApiOperation("修改告警规则")
     @PostMapping("/change-rule")
-    public BaseResponse<AddNewAlarmRuleQuery> changeRule(@RequestBody AddNewAlarmRuleQuery query) {
-        AddNewAlarmRuleQuery result = ruleService.changeRule(query);
+    public BaseResponse<AlarmRuleDTO> changeRule(@RequestBody AlarmRuleDTO query) {
+        AlarmRuleDTO result = ruleService.changeRule(query);
+        return BaseResponse.success(result);
+    }
+
+
+    @ApiOperation("删除告警规则")
+    @PostMapping("/delete/{rule_no}")
+    public BaseResponse<Boolean> deleteRule(@PathVariable("rule_no") String ruleNo) {
+        boolean result = ruleService.deleteRule(ruleNo);
         return BaseResponse.success(result);
     }
 
