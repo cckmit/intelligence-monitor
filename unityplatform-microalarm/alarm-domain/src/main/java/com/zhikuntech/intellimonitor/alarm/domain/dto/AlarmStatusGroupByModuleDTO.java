@@ -17,7 +17,7 @@ public class AlarmStatusGroupByModuleDTO {
      * 组id(模块id)
      */
     @ApiModelProperty("组id(模块id)")
-    private Integer groupId;
+    private Integer groupType;
 
     /**
      * 组名称(模块名称)

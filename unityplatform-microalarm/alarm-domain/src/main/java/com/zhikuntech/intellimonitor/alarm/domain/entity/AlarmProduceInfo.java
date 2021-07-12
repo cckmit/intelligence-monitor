@@ -39,6 +39,11 @@ public class AlarmProduceInfo implements Serializable {
     private String monitorNo;
 
     /**
+     * 页面分组类型(同alarm_config_monitor#group_type)
+     */
+    private Integer groupType;
+
+    /**
      * 规则编码
      */
     private String ruleNo;
@@ -77,6 +82,11 @@ public class AlarmProduceInfo implements Serializable {
      * 上一个状态编码
      */
     private String preInfoNo;
+
+    /**
+     * 下一条状态编码
+     */
+    private String nextInfoNo;
 
     /**
      * 是否已确认(0未确认1已确认)

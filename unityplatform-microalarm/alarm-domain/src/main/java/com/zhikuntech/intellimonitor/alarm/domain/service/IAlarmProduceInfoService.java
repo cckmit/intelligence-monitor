@@ -1,8 +1,12 @@
 package com.zhikuntech.intellimonitor.alarm.domain.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.zhikuntech.intellimonitor.alarm.domain.dto.AlarmInfoDTO;
 import com.zhikuntech.intellimonitor.alarm.domain.dto.AlarmStatusGroupByModuleDTO;
 import com.zhikuntech.intellimonitor.alarm.domain.entity.AlarmProduceInfo;
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.zhikuntech.intellimonitor.alarm.domain.query.alarminfo.AlarmConfirmQuery;
+import com.zhikuntech.intellimonitor.alarm.domain.query.alarminfo.AlarmInfoSimpleQuery;
+import com.zhikuntech.intellimonitor.core.commons.base.Pager;
 
 import java.util.List;
 
@@ -22,5 +26,21 @@ public interface IAlarmProduceInfoService extends IService<AlarmProduceInfo> {
      * @return 各组告警数量
      */
     List<AlarmStatusGroupByModuleDTO> fetchStatusAllGroup();
+
+    /**
+     * 分页查询告警信息
+     *
+     * @param simpleQuery   查询条件
+     * @return  分页结果
+     */
+    Pager<AlarmInfoDTO> queryByPage(AlarmInfoSimpleQuery simpleQuery);
+
+    /**
+     * 告警信息确认
+     *
+     * @param query 查询条件
+     * @return 确认结果
+     */
+    boolean alarmConfirm(AlarmConfirmQuery query);
 
 }
