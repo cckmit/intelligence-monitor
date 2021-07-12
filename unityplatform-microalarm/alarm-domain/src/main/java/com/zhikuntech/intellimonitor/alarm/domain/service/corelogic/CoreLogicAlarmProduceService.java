@@ -13,7 +13,9 @@ package com.zhikuntech.intellimonitor.alarm.domain.service.corelogic;
  *
  * <p>
  *     告警恢复：
- *      告警恢复，是根据当前策略进行判断。【即不需要存储历史策略】
+ *      告警恢复
+ *          1.需要恢复当前告警及历史告警
+ *          2.是根据当前策略进行判断【即不需要存储历史策略】
  * </p>
  *
  * @author liukai

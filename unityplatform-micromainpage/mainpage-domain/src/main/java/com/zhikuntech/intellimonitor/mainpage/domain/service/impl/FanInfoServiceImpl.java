@@ -18,11 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.SocketException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
+import java.util.stream.Stream;
 
 /**
  * @author 代志豪
@@ -50,9 +53,9 @@ public class FanInfoServiceImpl implements FanInfoService {
             list.add(dto);
         }
         for (FanRuntimeDTO dto : list) {
-            Double obj = FanInfoInit.POWER_MAP.get(FanConstant.MONTHLY_POWER + dto.getNumber());
-            double powerGeneration = null == obj ? 0 : obj;
-            dto.setMonthlyPowerGeneration(dto.getMonthlyPowerGeneration() - powerGeneration);
+            BigDecimal obj = FanInfoInit.POWER_MAP.get(FanConstant.MONTHLY_POWER + dto.getNumber());
+            BigDecimal powerGeneration = null == obj ? new BigDecimal(0) : obj;
+            dto.setMonthlyPowerGeneration(dto.getMonthlyPowerGeneration().subtract(powerGeneration));
         }
         return list;
     }
@@ -82,9 +85,9 @@ public class FanInfoServiceImpl implements FanInfoService {
                             List<FanRuntimeDTO> dtos = InjectPropertiesUtil.injectByAnnotation(list, data, (key) -> FanInfoInit.GOLDEN_ID_MAP.get(key));
                             if (null != dtos) {
                                 for (FanRuntimeDTO dto : dtos) {
-                                    Double obj = FanInfoInit.POWER_MAP.get(FanConstant.MONTHLY_POWER + dto.getNumber());
-                                    double powerGeneration = null == obj ? 0 : obj;
-                                    dto.setMonthlyPowerGeneration(dto.getMonthlyPowerGeneration() - powerGeneration);
+                                    BigDecimal obj = FanInfoInit.POWER_MAP.get(FanConstant.MONTHLY_POWER + dto.getNumber());
+                                    BigDecimal powerGeneration = null == obj ? new BigDecimal(0) : obj;
+                                    dto.setMonthlyPowerGeneration(dto.getMonthlyPowerGeneration().subtract(powerGeneration));
                                 }
                                 String jsonString = JSONObject.toJSONString(dtos);
                                 jsonString = WebSocketConstant.MAIN_PAGE_RUNTIME + WebSocketConstant.PATTERN + jsonString;
@@ -225,36 +228,39 @@ public class FanInfoServiceImpl implements FanInfoService {
     }
 
     private FanStatisticsDTO injecctPorerties(List<FanStatisticsDTO> dtos) {
-        Double obj1 = FanInfoInit.POWER_MAP.get(FanConstant.DAILY_POWER_ALL);
-        double dailyPowerGeneration = null == obj1 ? 0 : obj1;
-        Double obj2 = FanInfoInit.POWER_MAP.get(FanConstant.MONTHLY_POWER_ALL);
-        double monthlyPowerGeneration = null == obj2 ? 0 : obj2;
-        Double obj3 = FanInfoInit.POWER_MAP.get(FanConstant.ANNUAL_POWER_ALL);
-        double annualPowerGeneration = null == obj3 ? 0 : obj3;
-        Double obj4 = FanInfoInit.POWER_MAP.get(FanConstant.DAILY_ONLINE_ALL);
-        double dailyOnlinePower = null == obj4 ? 0 : obj4;
-        Double obj5 = FanInfoInit.POWER_MAP.get(FanConstant.MONTHLY_ONLINE_ALL);
-        double monthlyOnlinePower = null == obj5 ? 0 : obj5;
-        Double obj6 = FanInfoInit.POWER_MAP.get(FanConstant.ANNUAL_ONLINE_ALL);
-        double annualOnlinePower = null == obj6 ? 0 : obj6;
+        BigDecimal init = BigDecimal.ZERO;
+        BigDecimal obj1 = FanInfoInit.POWER_MAP.get(FanConstant.DAILY_POWER_ALL);
+        BigDecimal dailyPowerGeneration = null == obj1 ? init : obj1;
+        BigDecimal obj2 = FanInfoInit.POWER_MAP.get(FanConstant.MONTHLY_POWER_ALL);
+        BigDecimal monthlyPowerGeneration = null == obj2 ? init : obj2;
+        BigDecimal obj3 = FanInfoInit.POWER_MAP.get(FanConstant.ANNUAL_POWER_ALL);
+        BigDecimal annualPowerGeneration = null == obj3 ? init : obj3;
+        BigDecimal obj4 = FanInfoInit.POWER_MAP.get(FanConstant.DAILY_ONLINE_ALL);
+        BigDecimal dailyOnlinePower = null == obj4 ? init : obj4;
+        BigDecimal obj5 = FanInfoInit.POWER_MAP.get(FanConstant.MONTHLY_ONLINE_ALL);
+        BigDecimal monthlyOnlinePower = null == obj5 ? init : obj5;
+        BigDecimal obj6 = FanInfoInit.POWER_MAP.get(FanConstant.ANNUAL_ONLINE_ALL);
+        BigDecimal annualOnlinePower = null == obj6 ? init : obj6;
 
-        double activePower = dtos.stream().parallel().mapToDouble(FanStatisticsDTO::getActivePower).sum();
-        double averageWindVelocity = dtos.stream().parallel().filter(e -> null != e.getAverageWindVelocity())
-                .mapToDouble(FanStatisticsDTO::getAverageWindVelocity).average().getAsDouble();
-        double energyOutput = dtos.stream().parallel().mapToDouble(FanStatisticsDTO::getEnergyOutput).sum();
-        double reverseActivePower = dtos.stream().parallel().mapToDouble(FanStatisticsDTO::getReverseActivePower).sum();
+        BigDecimal activePower = dtos.stream().map(FanStatisticsDTO::getActivePower).reduce(init, BigDecimal::add);
+        Stream<BigDecimal> bigDecimalStream = dtos.stream().filter(e -> null != e.getAverageWindVelocity())
+                .map(FanStatisticsDTO::getAverageWindVelocity);
+        long count = bigDecimalStream.count();
+        BigDecimal averageWindVelocity = bigDecimalStream.reduce(init, BigDecimal::add).divide(new BigDecimal(count), 2, RoundingMode.HALF_UP);
+        BigDecimal energyOutput = dtos.stream().map(FanStatisticsDTO::getEnergyOutput).reduce(init, BigDecimal::add);
+        BigDecimal reverseActivePower = dtos.stream().map(FanStatisticsDTO::getReverseActivePower).reduce(init, BigDecimal::add);
 
         FanStatisticsDTO dto = new FanStatisticsDTO();
         dto.setNum(63);
-        dto.setCapacity(63 * 4d);
+        dto.setCapacity(new BigDecimal(63 * 4));
         dto.setActivePower(activePower);
         dto.setAverageWindVelocity(averageWindVelocity);
-        dto.setDailyOnlinePower(reverseActivePower - dailyOnlinePower);
-        dto.setMonthlyOnlinePower(reverseActivePower - monthlyOnlinePower);
-        dto.setAnnualOnlinePower(reverseActivePower - annualOnlinePower);
-        dto.setDailyPowerGeneration(energyOutput - dailyPowerGeneration);
-        dto.setMonthlyPowerGeneration(energyOutput - monthlyPowerGeneration);
-        dto.setAnnualPowerGeneration(energyOutput - annualPowerGeneration);
+        dto.setDailyOnlinePower(reverseActivePower.subtract(dailyOnlinePower));
+        dto.setMonthlyOnlinePower(reverseActivePower.subtract(monthlyOnlinePower));
+        dto.setAnnualOnlinePower(reverseActivePower.subtract(annualOnlinePower));
+        dto.setDailyPowerGeneration(energyOutput.subtract(dailyPowerGeneration));
+        dto.setMonthlyPowerGeneration(energyOutput.subtract(monthlyPowerGeneration));
+        dto.setAnnualPowerGeneration(energyOutput.subtract(annualPowerGeneration));
         return dto;
     }
 

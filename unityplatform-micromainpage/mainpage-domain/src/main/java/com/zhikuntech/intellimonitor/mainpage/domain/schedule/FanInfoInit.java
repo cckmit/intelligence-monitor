@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +44,7 @@ public class FanInfoInit implements CommandLineRunner {
 
     public static Map<String, Integer> GOLDEN_ID_MAP = new HashMap<>();
 
-    public static Map<String, Double> POWER_MAP = new HashMap<>();
+    public static Map<String, BigDecimal> POWER_MAP = new HashMap<>();
 
     @Autowired
     private BackendToGoldenService backendToGoldenService;
@@ -58,15 +59,16 @@ public class FanInfoInit implements CommandLineRunner {
                 GOLDEN_ID_MAP.put(FanConstant.GOLDEN_ID + e.getBackendId() + "_" + i, e.getGoldenId());
             }
         }
+        BigDecimal value = BigDecimal.ZERO;
         for (int i = 1; i < 64; i++) {
-            POWER_MAP.put(FanConstant.MONTHLY_POWER + i, 0.0);
+            POWER_MAP.put(FanConstant.MONTHLY_POWER + i, value);
         }
-        POWER_MAP.put(FanConstant.DAILY_POWER_ALL, 0.0);
-        POWER_MAP.put(FanConstant.MONTHLY_POWER_ALL, 0.0);
-        POWER_MAP.put(FanConstant.ANNUAL_POWER_ALL, 0.0);
-        POWER_MAP.put(FanConstant.DAILY_ONLINE_ALL, 0.0);
-        POWER_MAP.put(FanConstant.MONTHLY_ONLINE_ALL, 0.0);
-        POWER_MAP.put(FanConstant.ANNUAL_ONLINE_ALL, 0.0);
+        POWER_MAP.put(FanConstant.DAILY_POWER_ALL, value);
+        POWER_MAP.put(FanConstant.MONTHLY_POWER_ALL, value);
+        POWER_MAP.put(FanConstant.ANNUAL_POWER_ALL, value);
+        POWER_MAP.put(FanConstant.DAILY_ONLINE_ALL, value);
+        POWER_MAP.put(FanConstant.MONTHLY_ONLINE_ALL, value);
+        POWER_MAP.put(FanConstant.ANNUAL_ONLINE_ALL, value);
         GoldenUtil.init(ip, port, user, password, poolSize, maxSize);
         log.info("初始化数据完成！");
     }

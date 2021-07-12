@@ -5,12 +5,14 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @author 代志豪
  * 2021/7/9 10:46
  */
 @Data
-@ApiModel("变压器实时数据")
+@ApiModel("(海/陆)变压器实时数据")
 public class TransformerRuntimeDTO {
 
     @ApiModelProperty("变压器编号")
@@ -18,69 +20,69 @@ public class TransformerRuntimeDTO {
 
     @GoldenId(value = 1)
     @ApiModelProperty("甲烷")
-    private Double ch4;
+    private BigDecimal ch4;
 
     @GoldenId(value = 2)
     @ApiModelProperty("乙炔")
-    private Double c2h2;
+    private BigDecimal c2h2;
 
     @GoldenId(value = 3)
     @ApiModelProperty("乙烯")
-    private Double c2h4;
+    private BigDecimal c2h4;
 
     @GoldenId(value = 4)
     @ApiModelProperty("乙烷")
-    private Double c2h6;
+    private BigDecimal c2h6;
 
     @GoldenId(value = 5)
     @ApiModelProperty("一氧化碳")
-    private Double co;
+    private BigDecimal co;
 
     @GoldenId(value = 6)
     @ApiModelProperty("二氧化碳")
-    private Double co2;
+    private BigDecimal co2;
 
     @GoldenId(value = 7)
     @ApiModelProperty("氧气")
-    private Double o2;
+    private BigDecimal o2;
 
     @GoldenId(value = 8)
     @ApiModelProperty("氢气")
-    private Double h2;
+    private BigDecimal h2;
 
     @GoldenId(value = 9)
     @ApiModelProperty("氮气")
-    private Double n2;
+    private BigDecimal n2;
 
     @GoldenId(value = 10)
     @ApiModelProperty("微水")
-    private Double ppm;
+    private BigDecimal ppm;
 
     @GoldenId(value = 11)
     @ApiModelProperty("总溶解可燃气体")
-    private Long combustibleGas;
+    private BigDecimal combustibleGas;
 
     @GoldenId(value = 12)
     @ApiModelProperty("总溶解气体")
-    private Long dissolvedGas;
+    private BigDecimal dissolvedGas;
 
     @GoldenId(value = 13)
     @ApiModelProperty("油压")
-    private Double oilPressure;
+    private BigDecimal oilPressure;
 
     @GoldenId(value = 14)
     @ApiModelProperty("油温")
-    private Double oilTemp;
+    private BigDecimal oilTemp;
 
     @GoldenId(value = 15)
     @ApiModelProperty("环境温度")
-    private Double ambientTemp;
+    private BigDecimal ambientTemp;
 
     @GoldenId(value = 16)
     @ApiModelProperty("标准温度")
-    private Double standardTemp;
+    private BigDecimal standardTemp;
 
     @GoldenId(value = 17)
     @ApiModelProperty("甲烷")
-    private Double humidity;
+    private BigDecimal humidity;
 }

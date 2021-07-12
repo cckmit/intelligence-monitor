@@ -54,6 +54,12 @@ public class AlarmMonitorDTO implements Serializable {
     private LocalDateTime updateTime;
 
     /**
+     * 测点描述
+     */
+    @ApiModelProperty("测点描述")
+    private String monitorDescribe;
+
+    /**
      * 0number1bool
      */
     @JsonIgnore

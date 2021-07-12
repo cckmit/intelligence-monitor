@@ -5,6 +5,8 @@ import com.zhikuntech.intellimonitor.core.commons.golden.annotation.GoldenId;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.math.BigDecimal;
+
 /**
  * @author 代志豪
  * 2021/6/7 16:24
@@ -21,61 +23,61 @@ public class FanStatisticsDTO {
     /**
      * 装机容量
      */
-    private Double capacity;
+    private BigDecimal capacity;
 
     /**
      * 当前有功功率
      */
     @GoldenId(value = 2)
-    private Double activePower;
+    private BigDecimal activePower;
 
     /**
      * 平均风速
      */
     @GoldenId(value = 1)
-    private Double averageWindVelocity;
+    private BigDecimal averageWindVelocity;
 
     /**
      * 日发电量
      */
-    private Double dailyPowerGeneration;
+    private BigDecimal dailyPowerGeneration;
 
     /**
      * 月发电量
      */
-    private Double monthlyPowerGeneration;
+    private BigDecimal monthlyPowerGeneration;
 
     /**
      * 年发电量
      */
-    private Double annualPowerGeneration;
+    private BigDecimal annualPowerGeneration;
 
     /**
      * 日上网电量
      */
-    private Double dailyOnlinePower;
+    private BigDecimal dailyOnlinePower;
 
     /**
      * 月上网电量
      */
-    private Double monthlyOnlinePower;
+    private BigDecimal monthlyOnlinePower;
 
     /**
      * 年上网电量
      */
-    private Double annualOnlinePower;
+    private BigDecimal annualOnlinePower;
 
     /**
      * 能量输出
      */
     @JsonIgnore
     @GoldenId(value = 13)
-    private Double energyOutput;
+    private BigDecimal energyOutput;
 
     /**
      * 反向有功
      */
     @JsonIgnore
     @GoldenId(value = 14)
-    private Double reverseActivePower;
+    private BigDecimal reverseActivePower;
 }
