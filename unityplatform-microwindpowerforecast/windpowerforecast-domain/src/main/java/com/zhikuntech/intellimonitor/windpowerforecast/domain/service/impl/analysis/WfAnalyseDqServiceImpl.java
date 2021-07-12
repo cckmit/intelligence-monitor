@@ -146,7 +146,7 @@ public class WfAnalyseDqServiceImpl extends ServiceImpl<WfAnalyseDqMapper, WfAna
      * 短期功率分析 曲线模式
      */
     @Override
-    public List<DqPowerAnalysisDTO> DqPowerAnalysisCurve(PowerAnalysisQuery query) {
+    public List<DqPowerAnalysisDTO> dqPowerAnalysisCurve(PowerAnalysisQuery query) {
         if (Objects.isNull(query)) {
             return new ArrayList<>();
         }

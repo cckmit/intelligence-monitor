@@ -227,7 +227,7 @@ public class WfDataCfServiceImpl extends ServiceImpl<WfDataCfMapper, WfDataCf> i
         Page<WfDataCf> results = getBaseMapper().selectPage(queryPage, queryWrapper);
         // 数据转换
         List<WfDataCf> records = results.getRecords();
-        List<CfListDTO> dtoList=zhuanhuan(records);
+        List<CfListDTO> dtoList=conversion(records);
         pager.setList(dtoList);
         pager.setTotalCount((int) results.getTotal());
         return pager;
@@ -236,7 +236,7 @@ public class WfDataCfServiceImpl extends ServiceImpl<WfDataCfMapper, WfDataCf> i
     /**
      * 转换功能 List<WfDataCf>转List<CfListDTO>
      */
-    public List<CfListDTO> zhuanhuan(List<WfDataCf> list){
+    public List<CfListDTO> conversion(List<WfDataCf> list){
         if (CollectionUtils.isNotEmpty(list)) {
             List<CfListDTO> dtoList = list.stream().filter(Objects::nonNull).map(item -> {
                 BigDecimal pressure = item.getPressure();
