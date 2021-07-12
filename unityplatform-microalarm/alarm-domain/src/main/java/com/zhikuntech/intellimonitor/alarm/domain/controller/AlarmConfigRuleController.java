@@ -54,6 +54,11 @@ public class AlarmConfigRuleController {
                 如果存在告警信息关联相关规则, 是否可以修改对应的告警规则
      */
 
-
+    @ApiOperation("修改告警规则")
+    @PostMapping("/change-rule")
+    public BaseResponse<AddNewAlarmRuleQuery> changeRule(@RequestBody AddNewAlarmRuleQuery query) {
+        AddNewAlarmRuleQuery result = ruleService.changeRule(query);
+        return BaseResponse.success(result);
+    }
 
 }

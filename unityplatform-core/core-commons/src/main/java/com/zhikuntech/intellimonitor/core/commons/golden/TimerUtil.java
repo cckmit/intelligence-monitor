@@ -1,4 +1,4 @@
-package com.zhikuntech.intellimonitor.mainpage.domain.schedule;
+package com.zhikuntech.intellimonitor.core.commons.golden;
 
 import java.util.Timer;
 import java.util.TimerTask;
