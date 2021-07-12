@@ -186,6 +186,7 @@ public class AlarmConfigRuleServiceImpl extends ServiceImpl<AlarmConfigRuleMappe
         alarmConfigRule.setPreAlarmTwoValue(query.getPreAlarmTwoValue());
         alarmConfigRule.setLevelNoTwo(query.getLevelNoTwoInfo().getLevelNo());
 
+        getBaseMapper().updateById(alarmConfigRule);
         /* 断开测点关系 */
         monitorService.disconnectMonitorWithRule(alarmConfigRule.getRuleNo());
         /* 关联测点关系 */
