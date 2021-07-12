@@ -2,7 +2,10 @@ package com.zhikuntech.intellimonitor.alarm.domain.query.alarmrule;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -11,6 +14,9 @@ import java.util.List;
  *
  * @author liukai
  */
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Data
 @ApiModel("新增告警规则")
 public class AddNewAlarmRuleQuery {
