@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,7 @@ public class EasyExcelUtil {
         for (int i = 0; i < 10; i++) {
             FanRuntimeDTO data = new FanRuntimeDTO();
             data.setNumber(i);
-            data.setWindVelocity(2.5);
+            data.setWindVelocity(new BigDecimal("2.5"));
             list.add(data);
         }
         return list;

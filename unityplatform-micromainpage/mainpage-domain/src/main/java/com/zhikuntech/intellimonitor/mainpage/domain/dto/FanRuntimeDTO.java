@@ -9,6 +9,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.math.BigDecimal;
+
 /**
  * @author 代志豪
  * @date 2021-06-07
@@ -32,7 +34,7 @@ public class FanRuntimeDTO {
     @GoldenId(value = 1)
     @ApiModelProperty("风速")
     @ExcelProperty(value = "风速(m/s)", index = 1)
-    private Double windVelocity;
+    private BigDecimal windVelocity;
 
     /**
      * 有功功率
@@ -40,7 +42,7 @@ public class FanRuntimeDTO {
     @GoldenId(value = 2)
     @ApiModelProperty("有功功率")
     @ExcelProperty(value = "功率(kW)", index = 2)
-    private Double activePower;
+    private BigDecimal activePower;
 
     /**
      * 发电机转速
@@ -48,7 +50,7 @@ public class FanRuntimeDTO {
     @GoldenId(value = 3)
     @ApiModelProperty("发电机转速")
     @ExcelProperty(value = "发电机转速(rpm)", index = 3)
-    private Double generatorRate;
+    private BigDecimal generatorRate;
 
     /**
      * 月发电量
@@ -56,7 +58,7 @@ public class FanRuntimeDTO {
     @GoldenId(value = 4)
     @ApiModelProperty("月发电量")
     @ExcelProperty(value = "月总发电量(万kWh)", index = 4)
-    private Double monthlyPowerGeneration;
+    private BigDecimal monthlyPowerGeneration;
 
     /**
      * 环境温度
@@ -64,7 +66,7 @@ public class FanRuntimeDTO {
     @GoldenId(value = 5)
     @ApiModelProperty("环境温度")
     @ExcelProperty(value = "环境温度(℃)", index = 5)
-    private Double ambientTemp;
+    private BigDecimal ambientTemp;
 
     /**
      * 前轴承温度
@@ -72,7 +74,7 @@ public class FanRuntimeDTO {
     @GoldenId(value = 6)
     @ApiModelProperty("前轴承温度")
     @ExcelProperty(value = "前轴承温度(℃)", index = 6)
-    private Double frontBearingTemp;
+    private BigDecimal frontBearingTemp;
 
     /**
      * 后轴承温度
@@ -80,7 +82,7 @@ public class FanRuntimeDTO {
     @GoldenId(value = 7)
     @ApiModelProperty("后轴承温度")
     @ExcelProperty(value = "后轴承温度(℃)", index = 7)
-    private Double rearBearingTemp;
+    private BigDecimal rearBearingTemp;
 
     /**
      * 齿轮主轴承温度
@@ -88,7 +90,7 @@ public class FanRuntimeDTO {
     @GoldenId(value = 8)
     @ApiModelProperty("齿轮主轴承温度")
     @ExcelProperty(value = "齿轮轴承温度(℃)", index = 8)
-    private Double gearBearingTemp;
+    private BigDecimal gearBearingTemp;
 
     /**
      * 变压器室温
@@ -96,7 +98,7 @@ public class FanRuntimeDTO {
     @GoldenId(value = 9)
     @ApiModelProperty("机舱温度")
     @ExcelProperty(value = "机舱温度(℃)", index = 9)
-    private Double transformerTemp;
+    private BigDecimal transformerTemp;
 
     /**
      * 变压器油温
@@ -104,7 +106,7 @@ public class FanRuntimeDTO {
     @GoldenId(value = 10)
     @ApiModelProperty("变压器油温")
     @ExcelProperty(value = "变压器油温(℃)", index = 10)
-    private Double transformerOilTemp;
+    private BigDecimal transformerOilTemp;
 
     /**
      * 故障代码
@@ -112,7 +114,7 @@ public class FanRuntimeDTO {
     @GoldenId(value = 11)
     @ApiModelProperty("故障代码")
     @ExcelProperty(value = "故障代码", index = 11)
-    private Long errorCode;
+    private BigDecimal errorCode;
 
     /**
      * 运行状态
@@ -120,7 +122,7 @@ public class FanRuntimeDTO {
     @GoldenId(value = 12)
     @ApiModelProperty("运行状态")
     @ExcelIgnore
-    private Long runningStatus;
+    private BigDecimal runningStatus;
 
     /**
      * 运行状态图片uri

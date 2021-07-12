@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 /**
@@ -26,7 +27,7 @@ public class InjectPropertiesUtil<T> {
                 if (value == rtdbData.getId()) {
                     try {
                         field.setAccessible(true);
-                        field.set(t, rtdbData.getValue());
+                        field.set(t, new BigDecimal(rtdbData.getValue().toString()).setScale(2, RoundingMode.HALF_UP));
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                         return null;
@@ -48,7 +49,7 @@ public class InjectPropertiesUtil<T> {
                     if (value == rtdbData.getId()) {
                         try {
                             field.setAccessible(true);
-                            field.set(item, rtdbData.getValue());
+                            field.set(item, new BigDecimal(rtdbData.getValue().toString()).setScale(2, RoundingMode.HALF_UP));
                         } catch (IllegalAccessException e) {
                             e.printStackTrace();
                             return null;
@@ -71,18 +72,10 @@ public class InjectPropertiesUtil<T> {
                     if (value == valueData.getId()) {
                         try {
                             field.setAccessible(true);
-                            if (field.getType().equals(BigDecimal.class)) {
-                                if (valueData.getValue() == 0) {
-                                    field.set(item, new BigDecimal(valueData.getState()));
-                                } else {
-                                    field.set(item, BigDecimal.valueOf(valueData.getValue()));
-                                }
+                            if (valueData.getValue() == 0) {
+                                field.set(item, new BigDecimal(valueData.getState()).setScale(2, RoundingMode.HALF_UP));
                             } else {
-                                if (valueData.getValue() == 0) {
-                                    field.set(item, valueData.getState());
-                                } else {
-                                    field.set(item, valueData.getValue());
-                                }
+                                field.set(item, BigDecimal.valueOf(valueData.getValue()).setScale(2, RoundingMode.HALF_UP));
                             }
                         } catch (IllegalAccessException e) {
                             e.printStackTrace();
@@ -104,18 +97,10 @@ public class InjectPropertiesUtil<T> {
                 if (value == valueData.getId()) {
                     try {
                         field.setAccessible(true);
-                        if (field.getType().equals(BigDecimal.class)) {
-                            if (valueData.getValue() == 0) {
-                                field.set(t, new BigDecimal(valueData.getState()));
-                            } else {
-                                field.set(t, BigDecimal.valueOf(valueData.getValue()));
-                            }
+                        if (valueData.getValue() == 0) {
+                            field.set(t, new BigDecimal(valueData.getState()).setScale(2, RoundingMode.HALF_UP));
                         } else {
-                            if (valueData.getValue() == 0) {
-                                field.set(t, valueData.getState());
-                            } else {
-                                field.set(t, valueData.getValue());
-                            }
+                            field.set(t, BigDecimal.valueOf(valueData.getValue()).setScale(2, RoundingMode.HALF_UP));
                         }
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
