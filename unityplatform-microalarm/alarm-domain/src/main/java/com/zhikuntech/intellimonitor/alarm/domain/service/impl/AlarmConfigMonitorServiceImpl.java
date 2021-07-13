@@ -80,6 +80,7 @@ public class AlarmConfigMonitorServiceImpl extends ServiceImpl<AlarmConfigMonito
         }
         Page<AlarmConfigMonitor> page = new Page<>(query.getPageNumber(), query.getPageSize());
         QueryWrapper<AlarmConfigMonitor> criteria = new QueryWrapper<>();
+        criteria.isNull("rule_no");
         if (StringUtils.isNotBlank(query.getMonitorDescribe())) {
             criteria.like("monitor_describe", StringUtils.trim(query.getMonitorDescribe()));
         }

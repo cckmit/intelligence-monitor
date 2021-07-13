@@ -64,4 +64,12 @@ public class AlarmConfigRuleController {
         return BaseResponse.success(result);
     }
 
+    /*
+        todo
+            1.批量删除告警规则
+            2.告警规则分组
+            3.需求待确认(告警策略配置头部信息)
+     */
+
+
 }
