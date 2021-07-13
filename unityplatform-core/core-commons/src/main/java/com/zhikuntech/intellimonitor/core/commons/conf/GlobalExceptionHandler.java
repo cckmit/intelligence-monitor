@@ -1,6 +1,7 @@
 package com.zhikuntech.intellimonitor.core.commons.conf;
 
 import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
+import com.zhikuntech.intellimonitor.core.commons.base.ResultCode;
 import com.zhikuntech.intellimonitor.core.commons.exception.GetSnapshotsException;
 import com.zhikuntech.intellimonitor.core.commons.exception.RemoteInterfaceCallException;
 import com.zhikuntech.intellimonitor.core.commons.exception.SubscribeGoldenException;
@@ -19,6 +20,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    @ExceptionHandler(Exception.class)
+    public BaseResponse handleAll(Exception ex){
+        LOGGER.error(ex.getMessage());
+        return BaseResponse.failure(ResultCode.INTERNAL_SERVER_ERROR, ex.getMessage());
+    }
 
     @ExceptionHandler(GetSnapshotsException.class)
     public BaseResponse handleGetSnapshotsException(GetSnapshotsException getSnapshotsException){
