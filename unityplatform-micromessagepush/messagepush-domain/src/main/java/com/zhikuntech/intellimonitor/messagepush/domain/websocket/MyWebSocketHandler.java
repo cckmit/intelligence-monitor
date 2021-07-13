@@ -1,11 +1,9 @@
 package com.zhikuntech.intellimonitor.messagepush.domain.websocket;
 
-import com.mysql.cj.Messages;
 import com.zhikuntech.intellimonitor.core.commons.weabsocket.BaseWebSocketHandler;
 import com.zhikuntech.intellimonitor.core.commons.weabsocket.WebSocketServer;
 import com.zhikuntech.intellimonitor.messagepush.domain.constant.MessageConstant;
 import com.zhikuntech.intellimonitor.messagepush.domain.service.MessageService;
-import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -69,7 +67,6 @@ public class MyWebSocketHandler implements BaseWebSocketHandler {
             }
             messageService.alarmListMessagePush(MessageConstant.ALARM_GOLDEN_NAME);
         }
-
 
     }
 

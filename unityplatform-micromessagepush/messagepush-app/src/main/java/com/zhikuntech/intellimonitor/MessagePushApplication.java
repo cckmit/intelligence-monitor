@@ -12,7 +12,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * @create 2021/7/6 11:43
  **/
 @SpringBootApplication
-@EnableEurekaClient
+//@EnableEurekaClient
 //@EnableScheduling
 //@EnableFeignClients
 public class MessagePushApplication {
