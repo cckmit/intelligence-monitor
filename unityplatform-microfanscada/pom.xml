@@ -30,12 +30,12 @@
             <dependency>
                 <groupId>com.zhikuntech.intellimonitor</groupId>
                 <artifactId>fanscada-facade</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>${intelli-monitor.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.zhikuntech.intellimonitor</groupId>
                 <artifactId>fanscada-prototype</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>${intelli-monitor.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
