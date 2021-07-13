@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public BaseResponse handleAll(Exception ex){
-        LOGGER.error(ex.getMessage());
+        LOGGER.error("异常!, msg:[{}], stack:[{}]", ex.getMessage(), ex);
         return BaseResponse.failure(ResultCode.INTERNAL_SERVER_ERROR, ex.getMessage());
     }
 
