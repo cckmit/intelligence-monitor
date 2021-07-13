@@ -15,6 +15,7 @@ import com.zhikuntech.intellimonitor.alarm.domain.service.IAlarmConfigLevelServi
 import com.zhikuntech.intellimonitor.alarm.domain.service.IAlarmConfigMonitorService;
 import com.zhikuntech.intellimonitor.alarm.domain.service.IAlarmConfigRuleService;
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Lazy;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
  * @author liukai
  * @since 2021-07-06
  */
+@Slf4j
 @Service
 public class AlarmConfigRuleServiceImpl extends ServiceImpl<AlarmConfigRuleMapper, AlarmConfigRule> implements IAlarmConfigRuleService {
 
@@ -123,6 +125,7 @@ public class AlarmConfigRuleServiceImpl extends ServiceImpl<AlarmConfigRuleMappe
         }
         Page<AlarmConfigRule> pageCriteria = new Page<>(query.getPageNumber(), query.getPageSize());
         QueryWrapper<AlarmConfigRule> queryCriteria = new QueryWrapper<>();
+        queryCriteria.ne("delete_mark", 1);
         Page<AlarmConfigRule> pageResult = getBaseMapper().selectPage(pageCriteria, queryCriteria);
         List<AlarmConfigRule> records = pageResult.getRecords();
         if (CollectionUtils.isEmpty(records)) {
@@ -147,6 +150,7 @@ public class AlarmConfigRuleServiceImpl extends ServiceImpl<AlarmConfigRuleMappe
 
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     @Override public AlarmRuleDTO changeRule(AlarmRuleDTO query) {
+        log.info("changeRule入参[{}]", query);
         /*
             1.更新当前rule数据
             2.断开测点关系
@@ -171,10 +175,13 @@ public class AlarmConfigRuleServiceImpl extends ServiceImpl<AlarmConfigRuleMappe
         if (Objects.isNull(alarmConfigRule)) {
             throw new IllegalStateException(String.format("非法状态,规则编码[%s]对应的数据不存在", query.getRuleNo()));
         }
-        // 检验规则名称是否已存在
-        checkRuleNameExistOrNotThenThrowExc(query.getAlarmRuleName());
+        // 检验规则名称是否已存在 - 如果修改了规则名称
+        if (!StringUtils.equalsIgnoreCase(alarmConfigRule.getAlarmRuleName(), query.getAlarmRuleName())) {
+            checkRuleNameExistOrNotThenThrowExc(query.getAlarmRuleName());
+            // 修改规则名称
+            alarmConfigRule.setAlarmRuleName(query.getAlarmRuleName());
+        }
         /* 更新rule信息 */
-        alarmConfigRule.setAlarmRuleName(query.getAlarmRuleName());
         alarmConfigRule.setAlarmType(query.getAlarmType());
         // 告警
         alarmConfigRule.setAlarmValue(query.getAlarmValue());

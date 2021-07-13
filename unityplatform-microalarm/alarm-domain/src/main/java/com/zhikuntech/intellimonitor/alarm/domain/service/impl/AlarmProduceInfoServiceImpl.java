@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -37,16 +38,24 @@ public class AlarmProduceInfoServiceImpl extends ServiceImpl<AlarmProduceInfoMap
     public List<AlarmStatusGroupByModuleDTO> fetchStatusAllGroup() {
         QueryWrapper<AlarmProduceInfo> produceInfoQueryWrapper = new QueryWrapper<>();
         produceInfoQueryWrapper.isNull("next_info_no");
+        produceInfoQueryWrapper.eq("has_restore", 0);
         List<AlarmProduceInfo> alarmProduceInfos = getBaseMapper().selectList(produceInfoQueryWrapper);
         if (CollectionUtils.isEmpty(alarmProduceInfos)) {
             return Collections.emptyList();
         }
         final List<AlarmStatusGroupByModuleDTO> moduleDTOList = new ArrayList<>();
-        // todo 转换数据
-        alarmProduceInfos.stream()
+
+        final Map<Integer, Integer> groupTypeWithAlarmMap = alarmProduceInfos.stream()
                 .filter(Objects::nonNull)
                 .filter(p -> Objects.nonNull(p.getGroupType()))
-                .collect(Collectors.groupingBy(AlarmProduceInfo::getGroupType));
+                .collect(Collectors.groupingBy(AlarmProduceInfo::getGroupType, Collectors.reducing(0, e -> 1, Integer::sum)));
+        assert MapUtils.isNotEmpty(groupTypeWithAlarmMap);
+        groupTypeWithAlarmMap.forEach((k, v) -> {
+            AlarmStatusGroupByModuleDTO statusGroupByModuleDTO = new AlarmStatusGroupByModuleDTO();
+            statusGroupByModuleDTO.setGroupType(k);
+            statusGroupByModuleDTO.setAlarmNum(v);
+            moduleDTOList.add(statusGroupByModuleDTO);
+        });
         return moduleDTOList;
     }
 
