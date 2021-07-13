@@ -1,10 +1,10 @@
-package com.zhikuntech.intellimonitor.mainpage.domain.conf;
+package com.zhikuntech.intellimonitor.core.commons.conf;
 
 import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
+import com.zhikuntech.intellimonitor.core.commons.exception.GetSnapshotsException;
 import com.zhikuntech.intellimonitor.core.commons.exception.RemoteInterfaceCallException;
-import com.zhikuntech.intellimonitor.mainpage.domain.exception.GetSnapshotsException;
-import com.zhikuntech.intellimonitor.mainpage.domain.exception.SubscribeGoldenException;
-import com.zhikuntech.intellimonitor.mainpage.domain.exception.UserNotLoginException;
+import com.zhikuntech.intellimonitor.core.commons.exception.SubscribeGoldenException;
+import com.zhikuntech.intellimonitor.core.commons.exception.UserNotLoginException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ExceptionHandler;
