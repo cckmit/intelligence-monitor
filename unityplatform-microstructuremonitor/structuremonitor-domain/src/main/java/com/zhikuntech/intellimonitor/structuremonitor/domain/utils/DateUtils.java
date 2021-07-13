@@ -56,7 +56,7 @@ public class DateUtils {
      */
     public static Date string2Date(String stringDate, String pattern) {
         if (pattern == null || "".equals(pattern.trim())) {
-            pattern = "yyyy-MM-dd HH:mm:ss";
+            pattern = DEFAULT_PATTERN;
         }
         Date date = null;
         try {
