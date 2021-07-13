@@ -35,17 +35,17 @@ public class MessageListener {
     }
 
     @KafkaListener(topics = {"2"})
-    public void onlineAlarmMessagePush(String connectName) {
+    public void onlineAlarmMessagePush(ConsumerRecord<?, ?> record) {
         //
     }
 
     @KafkaListener(topics = {"3"})
-    public void structureAlarmMessagePush(String connectName) {
+    public void structureAlarmMessagePush(ConsumerRecord<?, ?> record) {
         //结构监测
     }
 
     @KafkaListener(topics = {"4"})
-    public void alarmListMessagePush(String connectName) {
+    public void alarmListMessagePush(ConsumerRecord<?, ?> record) {
         //分为十个标签页
     }
 }
