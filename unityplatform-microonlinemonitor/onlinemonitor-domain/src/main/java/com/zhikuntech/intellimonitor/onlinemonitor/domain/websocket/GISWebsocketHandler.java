@@ -64,16 +64,13 @@ public class GISWebsocketHandler implements BaseWebSocketHandler {
             Set<String> strings = Arrays.stream(description.split(",")).collect(Collectors.toSet());
             if (type == 0) {
                 //订阅
-                if (WebSocketConstant.ALL.equals(description)) {
-                    subscribeRuntime(username, 1);
-                    subscribeRuntime(username, 2);
-                } else {
-                    if (strings.contains(WebSocketConstant.ONLINE_MONITOR_RUNTIME_SEA)) {
-                        subscribeRuntime(username, 2);
-                    }
-                    if (strings.contains(WebSocketConstant.ONLINE_MONITOR_RUNTIME_LAND)) {
-                        subscribeRuntime(username, 1);
-                    }
+                //海上32个采集点
+                if (strings.contains(WebSocketConstant.ONLINE_MONITOR_GIS_RUNTIME_SEA)) {
+                    subscribeRuntime(username, 32);
+                }
+                //陆上8个采集点
+                if (strings.contains(WebSocketConstant.ONLINE_MONITOR_GIS_RUNTIME_LAND)) {
+                    subscribeRuntime(username, 8);
                 }
             } else if (type == 1) {
                 //取消订阅
@@ -81,10 +78,10 @@ public class GISWebsocketHandler implements BaseWebSocketHandler {
                     GROUP_RUNTIME_LAND.remove(username);
                     GROUP_RUNTIME_SEA.remove(username);
                 } else {
-                    if (strings.contains(WebSocketConstant.ONLINE_MONITOR_RUNTIME_LAND)) {
+                    if (strings.contains(WebSocketConstant.ONLINE_MONITOR_GIS_RUNTIME_LAND)) {
                         GROUP_RUNTIME_LAND.remove(username);
                         log.info("取消订阅---陆上GIS实时数据");
-                    } else if (strings.contains(WebSocketConstant.ONLINE_MONITOR_RUNTIME_SEA)) {
+                    } else if (strings.contains(WebSocketConstant.ONLINE_MONITOR_GIS_RUNTIME_SEA)) {
                         GROUP_RUNTIME_SEA.remove(username);
                         log.info("取消订阅---海上GIS实时数据");
                     }
@@ -99,12 +96,12 @@ public class GISWebsocketHandler implements BaseWebSocketHandler {
 
     private void subscribeRuntime(String username, Integer num) {
         String goldenUser = "";
-        if (num == 1) {
+        if (num == 8) {
             GROUP_RUNTIME_LAND.put(username, WebSocketServer.clients.get(username));
-            goldenUser = "online_runtime_land";
-        } else if (num == 2) {
+            goldenUser = "online_gis_runtime_land";
+        } else if (num == 32) {
             GROUP_RUNTIME_SEA.put(username, WebSocketServer.clients.get(username));
-            goldenUser = "online_runtime_sea";
+            goldenUser = "online_gis_runtime_sea";
         } else {
             return;
         }

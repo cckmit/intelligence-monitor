@@ -20,14 +20,14 @@ public class StationGISDTO {
     /**
      * SF6浓度值(ppm)
      */
-    @GoldenId(1)
+    @GoldenId(135)
     @ApiModelProperty("SF6浓度值(ppm)")
     private BigDecimal sf6Density;
 
     /**
      * O2浓度值(ppm)
      */
-    @GoldenId(2)
+    @GoldenId(136)
     @ApiModelProperty("O2浓度值(ppm)")
     private BigDecimal o2Density;
 
