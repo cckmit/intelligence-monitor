@@ -155,7 +155,7 @@ public class WfBasicParseResultServiceImpl extends ServiceImpl<WfBasicParseResul
     }
 
     @Override
-    public List<Integer> ZtJudge(ZtMonitorQuery query) {
+    public List<Integer> stateJudge(ZtMonitorQuery query) {
         List<Integer> result= new ArrayList<>();
         if (Objects.isNull(query)){
             return result;

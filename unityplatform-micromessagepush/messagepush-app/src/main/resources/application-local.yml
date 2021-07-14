@@ -19,7 +19,7 @@ mybatis-plus:
 
 logging:
   level:
-    com.zhikuntech.intellimonitor.fanscada.domain.mapper: debug
+    com.zhikuntech.intellimonitor.messagepush.domain.mapper: debug
 
 
 

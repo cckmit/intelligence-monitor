@@ -55,7 +55,7 @@ public class StatisticsAnalysisController {
     @ApiOperation("功率分析-短期功率-曲线")
     @PostMapping("/query-dq-curve")
     public BaseResponse<List<DqPowerAnalysisDTO>> dqPowerAnalysisCurve(@RequestBody PowerAnalysisQuery query) {
-       List<DqPowerAnalysisDTO> result = dqService.DqPowerAnalysisCurve(query);
+       List<DqPowerAnalysisDTO> result = dqService.dqPowerAnalysisCurve(query);
        return BaseResponse.success(result);
     }
 

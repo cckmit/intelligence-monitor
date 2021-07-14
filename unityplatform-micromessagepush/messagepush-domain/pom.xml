@@ -42,10 +42,18 @@
             <groupId>com.zhikuntech.intellimonitor</groupId>
             <artifactId>core-commons</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.zhikuntech.intellimonitor</groupId>
+            <artifactId>core-stream</artifactId>
+        </dependency>
         <!--websocket-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
         </dependency>
 <!--        lombok-->
         <dependency>

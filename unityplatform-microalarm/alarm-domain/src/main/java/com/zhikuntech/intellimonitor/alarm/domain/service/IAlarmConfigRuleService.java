@@ -47,6 +47,13 @@ public interface IAlarmConfigRuleService extends IService<AlarmConfigRule> {
      * @param query 待修改内容
      * @return 原样返回
      */
-    AddNewAlarmRuleQuery changeRule(AddNewAlarmRuleQuery query);
+    AlarmRuleDTO changeRule(AlarmRuleDTO query);
+
+    /**
+     * 删除告警规则
+     * @param ruleNo    规则编码
+     * @return          成功/失败
+     */
+    boolean deleteRule(String ruleNo);
 
 }

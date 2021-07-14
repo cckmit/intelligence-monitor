@@ -1,7 +1,6 @@
-package com.zhikuntech.intellimonitor.mainpage.domain.exception;
+package com.zhikuntech.intellimonitor.core.commons.exception;
 
 import com.zhikuntech.intellimonitor.core.commons.base.ResultCode;
-import com.zhikuntech.intellimonitor.core.commons.exception.BaseException;
 
 /**
  * @Author 杨锦程

@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
  * </p>
  *
  * @author liukai
- * @since 2021-07-08
+ * @since 2021-07-13
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -29,14 +29,29 @@ public class AlarmConfigMonitor implements Serializable {
     private String monitorNo;
 
     /**
+     * 测点名称
+     */
+    private String monitorName;
+
+    /**
      * 规则编码
      */
     private String ruleNo;
 
     /**
-     * 测点类型
+     * 测点类型(0遥信数据/1遥测数据)
      */
     private Integer monitorType;
+
+    /**
+     * 每个告警页面会有不同的模块
+     */
+    private Integer modelType;
+
+    /**
+     * 模块名称
+     */
+    private String modelName;
 
     /**
      * 分组类型(按照模块进行分组)

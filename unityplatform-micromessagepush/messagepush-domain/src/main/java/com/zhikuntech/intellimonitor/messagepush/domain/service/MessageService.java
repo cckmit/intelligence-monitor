@@ -1,5 +1,7 @@
 package com.zhikuntech.intellimonitor.messagepush.domain.service;
 
+import org.springframework.stereotype.Service;
+
 /**
  * @author 滕楠
  * @className MessageService

@@ -7,6 +7,7 @@
         <id column="info_no" property="infoNo" />
         <result column="version" property="version" />
         <result column="monitor_no" property="monitorNo" />
+        <result column="group_type" property="groupType" />
         <result column="rule_no" property="ruleNo" />
         <result column="event_time" property="eventTime" />
         <result column="process_time" property="processTime" />
@@ -15,6 +16,7 @@
         <result column="create_time" property="createTime" />
         <result column="with_history" property="withHistory" />
         <result column="pre_info_no" property="preInfoNo" />
+        <result column="next_info_no" property="nextInfoNo" />
         <result column="has_confirm" property="hasConfirm" />
         <result column="confirm_person" property="confirmPerson" />
         <result column="confirm_time" property="confirmTime" />
@@ -24,7 +26,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        version, info_no, monitor_no, rule_no, event_time, process_time, monitor_num, monitor_num_str, create_time, with_history, pre_info_no, has_confirm, confirm_person, confirm_time, has_restore, restore_time
+        version, info_no, monitor_no, group_type, rule_no, event_time, process_time, monitor_num, monitor_num_str, create_time, with_history, pre_info_no, next_info_no, has_confirm, confirm_person, confirm_time, has_restore, restore_time
     </sql>
 
 </mapper>

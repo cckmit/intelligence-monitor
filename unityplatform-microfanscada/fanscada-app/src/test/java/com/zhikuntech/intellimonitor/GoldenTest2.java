@@ -30,7 +30,7 @@ public class GoldenTest2 {
         HistorianImpl his = new HistorianImpl(serverImpl);
         int id = 1;
         Date dateStart = DateUtil.stringToDate("2021-07-02 15:40:00");
-        Date dateEnd = DateUtil.stringToDate("2021-07-02 15:50:00");
+        Date dateEnd = DateUtil.stringToDate("2021-07-08 15:50:00");
 
         long s = System.currentTimeMillis();
         //该标签点这段时间内的存储值数量
@@ -40,8 +40,8 @@ public class GoldenTest2 {
 
         List<RtdbData> archivedValues = his.getArchivedValues(id, realCount, dateStart, dateEnd);
         long e = System.currentTimeMillis();
+        System.out.println(archivedValues.toString());
         log.info(count + "_______" + realCount);
         log.info(archivedValues.size() + "  条记录,用时 : " + (e - s) + "  ms");
-        System.out.println(archivedValues.toString());
     }
 }

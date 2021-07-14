@@ -21,19 +21,19 @@ public interface MessageConstant {
      */
     String ALARM_MODULE = "alarm";
     /**
-     *
+     * 海缆告警信息
      */
     String CABLE_GOLDEN_NAME = "cableAlarmMessage";
     /**
-     *
+     * 在线监测告警信息
      */
     String ONLINE_GOLDEN_NAME = "onlineAlarmMessage";
     /**
-     *
+     * 结构监测告警信息
      */
     String STRUCTURE_GOLDEN_NAME = "structureAlarmMessage";
     /**
-     *
+     * 告警列表信息
      */
     String ALARM_GOLDEN_NAME = "AlarmListMessage";
 }

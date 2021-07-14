@@ -1,6 +1,7 @@
 package com.zhikuntech.intellimonitor.alarm.domain.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhikuntech.intellimonitor.alarm.domain.convert.AlarmConfigMonitorToDtoConvert;
@@ -79,6 +80,7 @@ public class AlarmConfigMonitorServiceImpl extends ServiceImpl<AlarmConfigMonito
         }
         Page<AlarmConfigMonitor> page = new Page<>(query.getPageNumber(), query.getPageSize());
         QueryWrapper<AlarmConfigMonitor> criteria = new QueryWrapper<>();
+        criteria.isNull("rule_no");
         if (StringUtils.isNotBlank(query.getMonitorDescribe())) {
             criteria.like("monitor_describe", StringUtils.trim(query.getMonitorDescribe()));
         }
@@ -96,6 +98,13 @@ public class AlarmConfigMonitorServiceImpl extends ServiceImpl<AlarmConfigMonito
         List<AlarmMonitorDTO> monitorDTOList = AlarmConfigMonitorToDtoConvert.INSTANCE.to(alarmConfigMonitors);
         return monitorDTOList.stream().filter(Objects::nonNull).filter(p -> StringUtils.isNotBlank(p.getRuleNo()))
                 .collect(Collectors.groupingBy(AlarmMonitorDTO::getRuleNo));
+    }
+
+    @Override public void disconnectMonitorWithRule(String ruleNo) {
+        UpdateWrapper<AlarmConfigMonitor> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.setSql("rule_no = null");
+        updateWrapper.eq("rule_no", StringUtils.trim(ruleNo));
+        getBaseMapper().update(null, updateWrapper);
     }
 
 }

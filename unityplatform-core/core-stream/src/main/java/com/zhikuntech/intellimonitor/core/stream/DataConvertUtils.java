@@ -1,8 +1,7 @@
 package com.zhikuntech.intellimonitor.core.stream;
 
 import com.rtdb.api.model.RtdbData;
-import com.zhikuntech.intellimonitor.core.stream.DataProduceUtils;
-import com.zhikuntech.intellimonitor.core.stream.dto.MonitorStructDTO;
+import com.zhikuntech.intellimonitor.core.prototype.MonitorStructDTO;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
 package com.zhikuntech.intellimonitor.core.stream;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.zhikuntech.intellimonitor.core.stream.dto.MonitorStructDTO;
+import com.zhikuntech.intellimonitor.core.prototype.MonitorStructDTO;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;

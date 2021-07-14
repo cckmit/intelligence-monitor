@@ -41,4 +41,23 @@ public interface HttpConstant {
     Integer SFTP_FAILURE = 4100;
     //远程接口调用异常
     Integer REMOTE_INTERFACE_CALL_EXCEPTION = 4200;
+
+    //空指针异常
+    Integer NULL_POINTER_EXCEPTION = 9001;
+    //数组角标越界异常
+    Integer ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION = 9002;
+    //类转换异常
+    Integer CLASS_CAST_EXCEPTION = 9003;
+    //数据库异常
+    Integer SQL_EXCEPTION = 9004;
+    //算数计算异常
+    Integer ARITHMETIC_EXCEPTION = 9005;
+    //非法参数异常
+    Integer ILLEGAL_ARGUMENT_EXCEPTION = 9006;
+    //非法权限异常
+    Integer ILLEGAL_ACCESS_EXCEPTION = 9007;
+    //栈溢出
+    Integer STACK_OVER_FLOW_ERROR = 9008;
+    //非法状态异常
+    Integer ILLEGAL_STATE_EXCEPTION = 9009;
 }

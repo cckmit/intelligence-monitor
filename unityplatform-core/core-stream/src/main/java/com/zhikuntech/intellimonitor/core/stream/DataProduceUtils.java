@@ -3,7 +3,7 @@ package com.zhikuntech.intellimonitor.core.stream;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhikuntech.intellimonitor.core.stream.constants.TopicConstants;
-import com.zhikuntech.intellimonitor.core.stream.dto.MonitorStructDTO;
+import com.zhikuntech.intellimonitor.core.prototype.MonitorStructDTO;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;

@@ -1,9 +1,18 @@
 package com.zhikuntech.intellimonitor.alarm.domain.controller;
 
 
+import com.zhikuntech.intellimonitor.alarm.domain.dto.AlarmInfoDTO;
+import com.zhikuntech.intellimonitor.alarm.domain.query.alarminfo.AlarmConfirmQuery;
+import com.zhikuntech.intellimonitor.alarm.domain.query.alarminfo.AlarmInfoSimpleQuery;
+import com.zhikuntech.intellimonitor.alarm.domain.service.IAlarmProduceInfoService;
+import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
+import com.zhikuntech.intellimonitor.core.commons.base.Pager;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
@@ -22,9 +31,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AlarmProduceInfoController {
 
-    // TODO 告警信息分页查询
 
-    // TODO 告警确认（单个/批次/页面全部[groupType]）
+    private final IAlarmProduceInfoService infoService;
+
+    @ApiOperation("告警信息分页查询")
+    @PostMapping("/query-by-page")
+    public BaseResponse<Pager<AlarmInfoDTO>> queryByPage(@RequestBody AlarmInfoSimpleQuery simpleQuery) {
+        Pager<AlarmInfoDTO> pageResult = infoService.queryByPage(simpleQuery);
+        return BaseResponse.success(pageResult);
+    }
+
+
+    @ApiOperation("告警确认（单个/批次/页面全部[groupType]）")
+    @PostMapping("/alarm-confirm")
+    public BaseResponse<Boolean> alarmConfirm(@RequestBody AlarmConfirmQuery query) {
+        boolean result = infoService.alarmConfirm(query);
+        return BaseResponse.success(result);
+    }
+
 
     // TODO 事故追忆
 

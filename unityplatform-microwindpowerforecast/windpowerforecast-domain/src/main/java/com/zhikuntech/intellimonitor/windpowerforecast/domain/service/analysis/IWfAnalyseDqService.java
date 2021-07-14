@@ -25,6 +25,6 @@ public interface IWfAnalyseDqService extends IService<WfAnalyseDq> {
      */
     DqListAggregateDTO dqPowerAnalysis(PowerAnalysisQuery query);
     //短期功率分析 曲线
-    List<DqPowerAnalysisDTO> DqPowerAnalysisCurve(PowerAnalysisQuery query);
+    List<DqPowerAnalysisDTO> dqPowerAnalysisCurve(PowerAnalysisQuery query);
 
 }

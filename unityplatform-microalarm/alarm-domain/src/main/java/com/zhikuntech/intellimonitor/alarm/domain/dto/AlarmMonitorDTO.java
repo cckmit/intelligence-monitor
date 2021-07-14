@@ -42,16 +42,22 @@ public class AlarmMonitorDTO implements Serializable {
     /**
      * 创建时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("创建时间")
     private LocalDateTime createTime;
 
     /**
      * 更新时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("更新时间")
     private LocalDateTime updateTime;
+
+    /**
+     * 测点描述
+     */
+    @ApiModelProperty("测点描述")
+    private String monitorDescribe;
 
     /**
      * 0number1bool

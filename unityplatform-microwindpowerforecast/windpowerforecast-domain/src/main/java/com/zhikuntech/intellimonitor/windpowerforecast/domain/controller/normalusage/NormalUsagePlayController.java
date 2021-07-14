@@ -54,8 +54,8 @@ public class NormalUsagePlayController {
     //# 状态监视 数据上报
     @ApiOperation("曲线展示-状态监视")
     @PostMapping("/zt")
-    public BaseResponse<List<Integer>> ZtJudge(@RequestBody ZtMonitorQuery query) {
-        List<Integer> results = parseResultService.ZtJudge(query);
+    public BaseResponse<List<Integer>> stateJudge(@RequestBody ZtMonitorQuery query) {
+        List<Integer> results = parseResultService.stateJudge(query);
         return BaseResponse.success(results);
     }
     //# 状态监视 数据上报

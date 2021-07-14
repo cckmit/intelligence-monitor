@@ -40,7 +40,7 @@ public interface IWfBasicParseResultService extends IService<WfBasicParseResult>
      * @param  query  要查询的时间
      * @return int[] 结果 三个数 超短期 短期 天气 1已读取 |0未读取
      */
-    List<Integer> ZtJudge(ZtMonitorQuery query);
+    List<Integer> stateJudge(ZtMonitorQuery query);
 
     /**
      * 根据类型和时间查三种文件的状态 0-已读取入库|2-未读取
