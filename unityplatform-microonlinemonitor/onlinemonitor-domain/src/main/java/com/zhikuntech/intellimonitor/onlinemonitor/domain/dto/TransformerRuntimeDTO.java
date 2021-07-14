@@ -4,6 +4,7 @@ import com.zhikuntech.intellimonitor.core.commons.golden.annotation.GoldenId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
  * 2021/7/9 10:46
  */
 @Data
+@Accessors(chain = true)
 @ApiModel("(海/陆)变压器实时数据")
 public class TransformerRuntimeDTO {
 
@@ -83,6 +85,9 @@ public class TransformerRuntimeDTO {
     private BigDecimal standardTemp;
 
     @GoldenId(value = 17)
-    @ApiModelProperty("甲烷")
+    @ApiModelProperty("湿度")
     private BigDecimal humidity;
+
+    @ApiModelProperty("时间戳")
+    private Long timeStamp;
 }

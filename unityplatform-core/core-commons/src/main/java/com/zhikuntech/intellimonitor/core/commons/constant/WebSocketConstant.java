@@ -29,6 +29,16 @@ public interface WebSocketConstant {
     String ONLINE_MONITOR_RUNTIME_LAND = "onlineMonitorRuntimeLand";
 
     /**
+     * 海上在线监测曲线图消息
+     */
+    String ONLINE_MONITOR_GRAPH_SEA = "onlineMonitorGraphSea";
+
+    /**
+     * 陆上在线监测曲线图消息
+     */
+    String ONLINE_MONITOR_GRAPH_LAND = "onlineMonitorGraphLand";
+
+    /**
      * 订阅(取消)所有
      */
     String ALL = "all";

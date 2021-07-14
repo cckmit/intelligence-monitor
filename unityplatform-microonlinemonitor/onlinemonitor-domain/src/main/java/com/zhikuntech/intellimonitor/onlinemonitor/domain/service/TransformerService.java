@@ -12,5 +12,7 @@ public interface TransformerService {
     /**
      * 获取变压器实时数据
      */
-    void getTransformerRuntime(String user, Integer num) throws Exception;
+    void getTransformerRuntime(String user, Integer num,String websocketDescription) throws Exception;
+
+    void getCache(String username, Integer num);
 }

@@ -31,6 +31,8 @@ public class TransformerWebsocketHandler implements BaseWebSocketHandler {
 
     public static ConcurrentHashMap<String, Session> GROUP_RUNTIME_LAND = new ConcurrentHashMap<>();
     public static ConcurrentHashMap<String, Session> GROUP_RUNTIME_SEA = new ConcurrentHashMap<>();
+    public static final String GOLDEN_USER_LAND = "online_runtime_land";
+    public static final String GOLDEN_USER_SEA = "online_runtime_sea";
 
     @Override
     public void onOpen(String username) {
@@ -61,32 +63,35 @@ public class TransformerWebsocketHandler implements BaseWebSocketHandler {
             Integer type = vo.getOrderType();
             String description = vo.getDescription();
             Set<String> strings = Arrays.stream(description.split(",")).collect(Collectors.toSet());
+            String runtimeSea = WebSocketConstant.ONLINE_MONITOR_RUNTIME_SEA;
+            String runtimeLand = WebSocketConstant.ONLINE_MONITOR_RUNTIME_LAND;
+            String graphSea = WebSocketConstant.ONLINE_MONITOR_GRAPH_SEA;
+            String graphLand = WebSocketConstant.ONLINE_MONITOR_GRAPH_LAND;
             if (type == 0) {
                 //订阅
-                if (WebSocketConstant.ALL.equals(description)) {
-                    subscribeRuntime(username, 1);
-                    subscribeRuntime(username, 2);
-                } else {
-                    if (strings.contains(WebSocketConstant.ONLINE_MONITOR_RUNTIME_SEA)) {
-                        subscribeRuntime(username, 2);
-                    }
-                    if (strings.contains(WebSocketConstant.ONLINE_MONITOR_RUNTIME_LAND)) {
-                        subscribeRuntime(username, 1);
-                    }
+                if (strings.contains(runtimeSea)) {
+                    subscribeRuntime(username, 2, runtimeSea);
+                }
+                if (strings.contains(runtimeLand)) {
+                    subscribeRuntime(username, 1, runtimeLand);
+                }
+                if (strings.contains(graphSea)) {
+                    transformerService.getCache(username, 2);
+                    subscribeRuntime(username, 2, graphSea);
+                }
+                if (strings.contains(graphLand)) {
+                    transformerService.getCache(username, 1);
+                    subscribeRuntime(username, 1, graphLand);
                 }
             } else if (type == 1) {
                 //取消订阅
-                if (WebSocketConstant.ALL.equals(description)) {
+                if (strings.contains(runtimeLand)||strings.contains(graphLand)) {
                     GROUP_RUNTIME_LAND.remove(username);
+                    log.info("取消订阅---陆上变压器实时数据");
+                }
+                if (strings.contains(runtimeSea) || strings.contains(graphSea)) {
                     GROUP_RUNTIME_SEA.remove(username);
-                } else {
-                    if (strings.contains(WebSocketConstant.ONLINE_MONITOR_RUNTIME_LAND)) {
-                        GROUP_RUNTIME_LAND.remove(username);
-                        log.info("取消订阅---陆上变压器实时数据");
-                    } else if (strings.contains(WebSocketConstant.ONLINE_MONITOR_RUNTIME_SEA)) {
-                        GROUP_RUNTIME_SEA.remove(username);
-                        log.info("取消订阅---海上变压器实时数据");
-                    }
+                    log.info("取消订阅---海上变压器实时数据");
                 }
             }
         } catch (JSONException e) {
@@ -96,20 +101,20 @@ public class TransformerWebsocketHandler implements BaseWebSocketHandler {
         }
     }
 
-    private void subscribeRuntime(String username, Integer num) {
-        String goldenUser = "";
+    private void subscribeRuntime(String username, Integer num, String websocketDescription) {
+        String goldenUser;
         if (num == 1) {
             GROUP_RUNTIME_LAND.put(username, WebSocketServer.clients.get(username));
-            goldenUser = "online_runtime_land";
+            goldenUser = GOLDEN_USER_LAND;
         } else if (num == 2) {
             GROUP_RUNTIME_SEA.put(username, WebSocketServer.clients.get(username));
-            goldenUser = "online_runtime_sea";
+            goldenUser = GOLDEN_USER_SEA;
         } else {
             return;
         }
         log.info("用户{}，订阅变压器实时数据", username);
         try {
-            transformerService.getTransformerRuntime(goldenUser, num);
+            transformerService.getTransformerRuntime(goldenUser, num, websocketDescription);
             log.info("订阅golden实时消息---变压器实时数据");
         } catch (Exception e) {
             GoldenUtil.cancelAll();

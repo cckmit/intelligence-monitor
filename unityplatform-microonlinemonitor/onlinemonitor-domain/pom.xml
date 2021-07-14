@@ -57,5 +57,16 @@
             <groupId>com.zhikuntech.intellimonitor</groupId>
             <artifactId>core-stream</artifactId>
         </dependency>
+
+        <!--caffeine基于内存的缓存   开始-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>${caffeine.version}</version>
+        </dependency>
     </dependencies>
 </project>
