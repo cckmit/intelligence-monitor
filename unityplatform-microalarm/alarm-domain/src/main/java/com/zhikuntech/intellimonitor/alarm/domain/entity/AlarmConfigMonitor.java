@@ -78,5 +78,10 @@ public class AlarmConfigMonitor implements Serializable {
      */
     private String monitorDescribe;
 
+    /**
+     * 告警描述单位需要用到此字段(如果不为空就拼接上该信息)
+     */
+    private String engineeringUnit;
+
 
 }

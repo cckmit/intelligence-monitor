@@ -27,6 +27,13 @@ public class AlarmInfoDTO {
     @ApiModelProperty("告警时间,格式[yyyy-MM-dd HH:mm:ss]")
     private LocalDateTime alarmTime;
 
+    /**
+     * 告警描述规则如下：
+     *
+     *    “【场站名】+【测点名】+描述”，比如“普陀风场陆上计量站#1 主变油温越限，当前值80℃”
+     *
+     *    告警描述
+     */
     @ApiModelProperty("告警描述")
     private String alarmDescribe;
 

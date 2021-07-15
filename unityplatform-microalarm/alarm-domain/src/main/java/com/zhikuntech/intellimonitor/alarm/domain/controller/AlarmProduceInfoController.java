@@ -41,6 +41,10 @@ public class AlarmProduceInfoController {
         return BaseResponse.success(pageResult);
     }
 
+    // TODO 告警信息查询暂时不需要分页查询
+
+
+
 
     @ApiOperation("告警确认（单个/批次/页面全部[groupType]）")
     @PostMapping("/alarm-confirm")

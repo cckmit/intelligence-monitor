@@ -12,7 +12,6 @@ import com.zhikuntech.intellimonitor.core.commons.alarm.AlarmResultDTO;
 import com.zhikuntech.intellimonitor.core.commons.alarm.AlarmRuleDTO;
 import com.zhikuntech.intellimonitor.core.commons.alarm.JudgeRuleWithAlarmUtil;
 import com.zhikuntech.intellimonitor.core.prototype.MonitorStructDTO;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -21,7 +20,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
@@ -70,6 +68,21 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
 
     public static final String REDIS_RULE = "hash_cache_redis_rule";
 
+
+    /**
+     * 遥信数据
+     */
+    public static final Integer MONITOR_BOOLEAN = 0;
+
+    /**
+     * 遥测数据
+     */
+    public static final Integer MONITOR_NUM = 1;
+
+
+    public static final BigDecimal BOOLEAN_ALARM = BigDecimal.valueOf(1);
+
+
     public void testRedisAccess() {
 
     }
@@ -77,9 +90,17 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
     public void processAlarm() {
         // 0. kafka中获取原始数据
         final MonitorStructDTO monitorStructDTO = obtainRawMonitorData();
-        // check -> todo 校验数据
+        if (Objects.isNull(monitorStructDTO)) {
+            log.error("数据异常状态,获取的原始数据为null");
+            return;
+        }
         final String monitorNo = monitorStructDTO.getMonitorNo();
         final BigDecimal monitorValue = monitorStructDTO.getMonitorValue();
+        final Long eventTimeStamp = monitorStructDTO.getEventTimeStamp();
+        if (Objects.isNull(monitorNo) || Objects.isNull(monitorValue) || Objects.isNull(eventTimeStamp)) {
+            log.error("数据(测点编号/测点值/测点时间戳)均不能为空,测点数据:[{}]", monitorStructDTO);
+            return;
+        }
 
         //#
         /*
@@ -92,21 +113,78 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
 
         // 获取测点的配置详情信息
         AlarmConfigMonitor alarmConfigMonitor = obtainMonitor(monitorNo);
-        // todo 校验
-        String ruleNo = alarmConfigMonitor.getRuleNo();
-        // 获取规则规则详情信息
-        AlarmConfigRule alarmConfigRule = obtainRule(ruleNo);
-        // 判断告警(遥测数据 -> 告警/一级预警/二级预警/无告警)
-        AlarmResultDTO alarmResultDTO = judgeAlarmOccur(monitorValue, alarmConfigRule);
-        /* 是否产生了告警(1产生了告警) */
-        @NotNull Integer produce = alarmResultDTO.getProduce();
+
+        Integer monitorType = alarmConfigMonitor.getMonitorType();
+        if (MONITOR_BOOLEAN.equals(monitorType)) {
+            // 遥信数据 告警 -> 1告警 0不告警
+            boolean alarmOccur = BOOLEAN_ALARM.equals(monitorValue);
+
+            //# 告警信息处理
+
+
+
+
+            //# 状态变更处理
+
+            // 获取当前测点状态
+
+
+            //# 状态变更处理
+
+        } else if (MONITOR_NUM.equals(monitorType)){
+            // 遥测数据 告警
+            String ruleNo = alarmConfigMonitor.getRuleNo();
+            // 获取规则规则详情信息
+            AlarmConfigRule alarmConfigRule = obtainRule(ruleNo);
+            // 判断告警(遥测数据 -> 告警/一级预警/二级预警/无告警)
+            AlarmResultDTO alarmResultDTO = judgeAlarmOccur(monitorValue, alarmConfigRule);
+            /* 是否产生了告警(1产生了告警) */
+            @NotNull Integer produce = alarmResultDTO.getProduce();
+            //# 告警信息处理
+
+
+            //# 告警信息处理
+
+            //# 状态变更处理
+
+            // ------------------------提取当前状态------------------------
+            Integer curStatus = null;
+            if (MONITOR_NUM.equals(produce)) {
+                switch (alarmResultDTO.getLevel()) {
+                    case 1:
+                        curStatus = 100;
+                        break;
+                    case 2:
+                        curStatus = 1;
+                        break;
+                    case 3:
+                        curStatus = 2;
+                        break;
+                    default:
+                        // exception
+                }
+            } else {
+                curStatus = 0;
+            }
+            if (Objects.isNull(curStatus)) {
+                // 异常
+                log.error("提取当前状态时出现异常状态,告警判断结果[{}],测点配置信息:[{}]", alarmResultDTO, alarmConfigMonitor);
+                return;
+            }
+            // ------------------------提取当前状态------------------------
+
+            // 获取当前测点状态
+            MonitorStatusInfo monitorStatusInfo = obtainAlarmStatusByMonitorId(monitorNo);
+            monitorStatusInfo.swapCurStatusAndPre(curStatus, eventTimeStamp);
+
+            //# 状态变更处理
+        }
+
         //#
 
-        // 3. 记录状态变化
 
 
-        // 获取当前告警状态
-        CurrentAlarmStatusDTO currentAlarmStatusDTO = obtainAlarmStatusByMonitorId(monitorNo);
+
 
 
     }
@@ -126,18 +204,18 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
      * @param monitorId     测点id
      * @return  告警状态
      */
-    CurrentAlarmStatusDTO obtainAlarmStatusByMonitorId(String monitorId) {
+    MonitorStatusInfo obtainAlarmStatusByMonitorId(String monitorId) {
         String cacheEntry = (String) redisTemplate.opsForHash().get(REDIS_STATUS, monitorId);
         if (Objects.isNull(cacheEntry)) {
             return null;
         }
-        CurrentAlarmStatusDTO currentAlarmStatusDTO = null;
+        MonitorStatusInfo monitorStatusInfo = null;
         try {
-            currentAlarmStatusDTO = objectMapper.readValue(cacheEntry, CurrentAlarmStatusDTO.class);
+            monitorStatusInfo = objectMapper.readValue(cacheEntry, MonitorStatusInfo.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return currentAlarmStatusDTO;
+        return monitorStatusInfo;
     }
 
     /**
@@ -225,53 +303,6 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
         AlarmResultDTO process = JudgeRuleWithAlarmUtil.process(monitorNum, alarmRuleDTO);
         log.info("[{}]告警判断调用结果,result:[{}]", uuidMark, process);
         return process;
-    }
-
-    @Data
-    public static class CurrentAlarmStatusDTO implements Serializable {
-
-        private static final long serialVersionUID = -1354999979597391922L;
-
-        /**
-         * 测点id
-         */
-        private String monitorId;
-
-        /**
-         * 测点状态
-         * 0 -> 无告警
-         * 1 -> 一级预警
-         * 2 -> 二级预警
-         * 100 -> 告警
-         */
-        private Integer monitorStatus;
-
-        /**
-         * 测点类型
-         */
-        private Integer monitorType;
-    }
-
-    @Data
-    public static class StatusChangeDTO implements Serializable {
-
-        private static final long serialVersionUID = 2466245788607178014L;
-
-        /**
-         * 测点类型
-         */
-        private Integer monitorType;
-
-        /**
-         * 上一个状态
-         */
-        private Integer lastStatus;
-
-        /**
-         * 当前状态
-         */
-        private Integer currentStatus;
-
     }
 
 }
