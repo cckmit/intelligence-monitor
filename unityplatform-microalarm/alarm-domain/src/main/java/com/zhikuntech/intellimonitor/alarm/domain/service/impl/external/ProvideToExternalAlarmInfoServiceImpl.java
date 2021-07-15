@@ -65,11 +65,15 @@ public class ProvideToExternalAlarmInfoServiceImpl implements ProvideToExternalA
             }
 
             for (String monitorId : monitorIds) {
+                boolean b = ThreadLocalRandom.current().nextBoolean();
+
                 CurrentStatusByMonitorDTO monitorDTO = CurrentStatusByMonitorDTO.builder()
                         .monitorId(monitorId)
                         .monitorName(monitorId)
                         .isFlash(ThreadLocalRandom.current().nextBoolean())
                         .textColor("rgb(255,255,255)")
+                        .isAlarmStatus(b)
+                        .alarmTime(b ? System.currentTimeMillis() : null)
                         .build();
                 // yyyy-MM-dd HH:mm:ss
                 mocks.add(monitorDTO);

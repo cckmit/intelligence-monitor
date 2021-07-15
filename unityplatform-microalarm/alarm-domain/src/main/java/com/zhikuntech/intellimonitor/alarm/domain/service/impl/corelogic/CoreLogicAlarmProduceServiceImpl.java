@@ -9,6 +9,7 @@ import com.zhikuntech.intellimonitor.alarm.domain.service.IAlarmConfigMonitorSer
 import com.zhikuntech.intellimonitor.alarm.domain.service.IAlarmConfigRuleService;
 import com.zhikuntech.intellimonitor.alarm.domain.service.corelogic.CoreLogicAlarmProduceService;
 import com.zhikuntech.intellimonitor.core.commons.alarm.AlarmResultDTO;
+import com.zhikuntech.intellimonitor.core.commons.alarm.AlarmRuleDTO;
 import com.zhikuntech.intellimonitor.core.commons.alarm.JudgeRuleWithAlarmUtil;
 import com.zhikuntech.intellimonitor.core.prototype.MonitorStructDTO;
 import lombok.Data;
@@ -23,6 +24,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * 核心逻辑 -> 告警生成
@@ -79,9 +81,6 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
         final String monitorNo = monitorStructDTO.getMonitorNo();
         final BigDecimal monitorValue = monitorStructDTO.getMonitorValue();
 
-        // 1. 获取当前告警状态
-        CurrentAlarmStatusDTO currentAlarmStatusDTO = obtainAlarmStatusByMonitorId(monitorNo);
-
         //#
         /*
             2. 判断当前数值是否产生相关告警
@@ -106,6 +105,8 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
         // 3. 记录状态变化
 
 
+        // 获取当前告警状态
+        CurrentAlarmStatusDTO currentAlarmStatusDTO = obtainAlarmStatusByMonitorId(monitorNo);
 
 
     }
@@ -205,16 +206,25 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
         return alarmConfigRule;
     }
 
+    /**
+     *
+     * @param monitorNum        数值
+     * @param alarmConfigRule   告警规则
+     * @return  判断结果
+     */
     AlarmResultDTO judgeAlarmOccur(BigDecimal monitorNum, AlarmConfigRule alarmConfigRule) {
-        // todo
 
-//        AlarmRuleDTO
+        AlarmRuleDTO alarmRuleDTO = AlarmRuleDTO.builder()
+                .alarmRange(alarmConfigRule.getAlarmValue())
+                .preWarningRangeLevelOne(alarmConfigRule.getPreAlarmOneValue())
+                .preWarningRangeLevelTwe(alarmConfigRule.getPreAlarmTwoValue())
+                .build();
 
-
-
-//        JudgeRuleWithAlarmUtil.process();
-
-        return null;
+        String uuidMark = UUID.randomUUID().toString();
+        log.info("[{}]告警判断调用,入参: num[{}], rule[{}]", uuidMark, monitorNum, alarmRuleDTO);
+        AlarmResultDTO process = JudgeRuleWithAlarmUtil.process(monitorNum, alarmRuleDTO);
+        log.info("[{}]告警判断调用结果,result:[{}]", uuidMark, process);
+        return process;
     }
 
     @Data
@@ -240,6 +250,28 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
          * 测点类型
          */
         private Integer monitorType;
+    }
+
+    @Data
+    public static class StatusChangeDTO implements Serializable {
+
+        private static final long serialVersionUID = 2466245788607178014L;
+
+        /**
+         * 测点类型
+         */
+        private Integer monitorType;
+
+        /**
+         * 上一个状态
+         */
+        private Integer lastStatus;
+
+        /**
+         * 当前状态
+         */
+        private Integer currentStatus;
+
     }
 
 }
