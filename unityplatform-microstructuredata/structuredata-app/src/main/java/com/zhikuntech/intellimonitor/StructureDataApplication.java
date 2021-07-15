@@ -6,14 +6,14 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * @author 滕楠
- * @className StructureMonitorApplication
- * @create 2021/7/6 15:03
+ * @className StructureDataApplication
+ * @create 2021/7/15 11:42
  **/
 @SpringBootApplication
 @EnableScheduling
-public class StructureMonitorApplication {
-    public static void main(String[] args) {
+public class StructureDataApplication {
 
-        SpringApplication.run(StructureMonitorApplication.class,args);
+    public static void main(String[] args) {
+        SpringApplication.run(StructureDataApplication.class,args);
     }
 }

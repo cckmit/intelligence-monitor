@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhikuntech.intellimonitor.structuredata.domain.mapper.ShakeDataMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zhikuntech.intellimonitor.structuredata.domain.entity.ShakeData">
+        <result column="时间" property="时间"/>
+        <result column="通道1峰峰值" property="通道1峰峰值"/>
+        <result column="通道2峰峰值" property="通道2峰峰值"/>
+        <result column="通道3峰峰值" property="通道3峰峰值"/>
+        <result column="通道4峰峰值" property="通道4峰峰值"/>
+        <result column="通道5峰峰值" property="通道5峰峰值"/>
+        <result column="通道6峰峰值" property="通道6峰峰值"/>
+        <result column="通道7峰峰值" property="通道7峰峰值"/>
+        <result column="通道8峰峰值" property="通道8峰峰值"/>
+        <result column="通道9峰峰值" property="通道9峰峰值"/>
+        <result column="通道10峰峰值" property="通道10峰峰值"/>
+        <result column="通道11峰峰值" property="通道11峰峰值"/>
+        <result column="通道12峰峰值" property="通道12峰峰值"/>
+        <result column="通道1有效值" property="通道1有效值"/>
+        <result column="通道2有效值" property="通道2有效值"/>
+        <result column="通道3有效值" property="通道3有效值"/>
+        <result column="通道4有效值" property="通道4有效值"/>
+        <result column="通道5有效值" property="通道5有效值"/>
+        <result column="通道6有效值" property="通道6有效值"/>
+        <result column="通道7有效值" property="通道7有效值"/>
+        <result column="通道8有效值" property="通道8有效值"/>
+        <result column="通道9有效值" property="通道9有效值"/>
+        <result column="通道10有效值" property="通道10有效值"/>
+        <result column="通道11有效值" property="通道11有效值"/>
+        <result column="通道12有效值" property="通道12有效值"/>
+        <result column="通道1均值" property="通道1均值"/>
+        <result column="通道2均值" property="通道2均值"/>
+        <result column="通道3均值" property="通道3均值"/>
+        <result column="通道4均值" property="通道4均值"/>
+        <result column="通道5均值" property="通道5均值"/>
+        <result column="通道6均值" property="通道6均值"/>
+        <result column="通道7均值" property="通道7均值"/>
+        <result column="通道8均值" property="通道8均值"/>
+        <result column="通道9均值" property="通道9均值"/>
+        <result column="通道10均值" property="通道10均值"/>
+        <result column="通道11均值" property="通道11均值"/>
+        <result column="通道12均值" property="通道12均值"/>
+        <result column="通道1主频率值" property="通道1主频率值"/>
+        <result column="通道2主频率值" property="通道2主频率值"/>
+        <result column="通道3主频率值" property="通道3主频率值"/>
+        <result column="通道4主频率值" property="通道4主频率值"/>
+        <result column="通道5主频率值" property="通道5主频率值"/>
+        <result column="通道6主频率值" property="通道6主频率值"/>
+        <result column="通道7主频率值" property="通道7主频率值"/>
+        <result column="通道8主频率值" property="通道8主频率值"/>
+        <result column="通道9主频率值" property="通道9主频率值"/>
+        <result column="通道10主频率值" property="通道10主频率值"/>
+        <result column="通道11主频率值" property="通道11主频率值"/>
+        <result column="通道12主频率值" property="通道12主频率值"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        时间
+        , 通道1峰峰值, 通道2峰峰值, 通道3峰峰值, 通道4峰峰值, 通道5峰峰值, 通道6峰峰值, 通道7峰峰值, 通道8峰峰值, 通道9峰峰值, 通道10峰峰值, 通道11峰峰值, 通道12峰峰值, 通道1有效值, 通道2有效值, 通道3有效值, 通道4有效值, 通道5有效值, 通道6有效值, 通道7有效值, 通道8有效值, 通道9有效值, 通道10有效值, 通道11有效值, 通道12有效值, 通道1均值, 通道2均值, 通道3均值, 通道4均值, 通道5均值, 通道6均值, 通道7均值, 通道8均值, 通道9均值, 通道10均值, 通道11均值, 通道12均值, 通道1主频率值, 通道2主频率值, 通道3主频率值, 通道4主频率值, 通道5主频率值, 通道6主频率值, 通道7主频率值, 通道8主频率值, 通道9主频率值, 通道10主频率值, 通道11主频率值, 通道12主频率值
+    </sql>
+    <select id="getFanData" resultType="com.zhikuntech.intellimonitor.structuredata.domain.entity.ShakeData">
+        select top 1 *
+        from ${fanNumber} order by "时间" desc
+    </select>
+
+</mapper>
