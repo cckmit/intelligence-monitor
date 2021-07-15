@@ -88,7 +88,19 @@ public class MonitorStatusInfo implements Serializable {
     }
 
     public void swapCurStatusAndPre(Integer newestStatus, Long newestTimeStamp) {
+        // 是否可以被处理
+        if (!canJoinProcess(newestTimeStamp)) {
+            return;
+        }
+        // 上一个状态保存为当前状态
+        monitorPreStatus = monitorCurStatus;
+        preTimeStamp = curTimeStamp;
+        // 当前状态保存最新的状态
+        monitorCurStatus = newestStatus;
+        curTimeStamp = newestTimeStamp;
 
+        // 刷新状态变更信息
+        assignStatusChangeAndFlushStatus();
     }
 
 }

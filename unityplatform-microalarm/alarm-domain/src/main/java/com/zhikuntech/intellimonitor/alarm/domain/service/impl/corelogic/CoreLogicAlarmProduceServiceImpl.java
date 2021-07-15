@@ -5,8 +5,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhikuntech.intellimonitor.alarm.domain.entity.AlarmConfigMonitor;
 import com.zhikuntech.intellimonitor.alarm.domain.entity.AlarmConfigRule;
+import com.zhikuntech.intellimonitor.alarm.domain.entity.AlarmProduceInfo;
 import com.zhikuntech.intellimonitor.alarm.domain.service.IAlarmConfigMonitorService;
 import com.zhikuntech.intellimonitor.alarm.domain.service.IAlarmConfigRuleService;
+import com.zhikuntech.intellimonitor.alarm.domain.service.IAlarmProduceInfoService;
 import com.zhikuntech.intellimonitor.alarm.domain.service.corelogic.CoreLogicAlarmProduceService;
 import com.zhikuntech.intellimonitor.core.commons.alarm.AlarmResultDTO;
 import com.zhikuntech.intellimonitor.core.commons.alarm.AlarmRuleDTO;
@@ -21,6 +23,9 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -36,7 +41,7 @@ import java.util.UUID;
  * </p>
  *
  * <p>
- *     告警恢复：
+ *     告警恢复：(前提->存在告警)
  *      告警恢复
  *          1.需要恢复当前告警及历史告警
  *          2.是根据当前策略进行判断【即不需要存储历史策略】
@@ -60,6 +65,8 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
     private final IAlarmConfigMonitorService configMonitorService;
 
     private final IAlarmConfigRuleService configRuleService;
+
+    private final IAlarmProduceInfoService produceInfoService;
 
 
     public static final String REDIS_STATUS = "hash_cache_redis_status";
@@ -96,11 +103,15 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
         }
         final String monitorNo = monitorStructDTO.getMonitorNo();
         final BigDecimal monitorValue = monitorStructDTO.getMonitorValue();
+        final String monitorValueStr = monitorStructDTO.getMonitorValueStr();
         final Long eventTimeStamp = monitorStructDTO.getEventTimeStamp();
-        if (Objects.isNull(monitorNo) || Objects.isNull(monitorValue) || Objects.isNull(eventTimeStamp)) {
+        if (Objects.isNull(monitorNo)
+                || Objects.isNull(monitorValue) || Objects.isNull(monitorValueStr)
+                || Objects.isNull(eventTimeStamp)) {
             log.error("数据(测点编号/测点值/测点时间戳)均不能为空,测点数据:[{}]", monitorStructDTO);
             return;
         }
+        LocalDateTime eventDateTime = Instant.ofEpochMilli(eventTimeStamp).atZone(ZoneId.systemDefault()).toLocalDateTime();
 
         //#
         /*
@@ -140,12 +151,71 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
             AlarmResultDTO alarmResultDTO = judgeAlarmOccur(monitorValue, alarmConfigRule);
             /* 是否产生了告警(1产生了告警) */
             @NotNull Integer produce = alarmResultDTO.getProduce();
-            //# 告警信息处理
+            // check produce
 
 
-            //# 告警信息处理
+            //# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~告警信息处理~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-            //# 状态变更处理
+            // 查询当前告警信息 todo 此处需要在缓存中进行处理
+            QueryWrapper<AlarmProduceInfo> produceInfoQueryWrapper = new QueryWrapper<>();
+            produceInfoQueryWrapper.eq("monitor_no", monitorNo);
+            produceInfoQueryWrapper.eq("has_restore", 0);
+            produceInfoQueryWrapper.eq("with_history", 0);
+            final AlarmProduceInfo alarmProduceInfo = produceInfoService.getBaseMapper().selectOne(produceInfoQueryWrapper);
+
+
+            if (Integer.valueOf(1).equals(produce)) {
+                // 告警生成(没有对应的告警信息)
+
+                if (Objects.isNull(alarmProduceInfo)) {
+                    // 不在相关告警 -> 直接生成
+                    LocalDateTime curTime = LocalDateTime.now();
+                    final AlarmProduceInfo produceInfo = AlarmProduceInfo.builder()
+                            .version(0)
+                            .monitorNo(monitorNo)
+                            .groupType(alarmConfigMonitor.getGroupType())
+                            .ruleNo(alarmConfigMonitor.getRuleNo())
+                            .eventTime(eventDateTime)
+                            .processTime(curTime)
+                            .monitorNum(monitorValue)
+                            .monitorNumStr(monitorValueStr)
+                            .createTime(curTime)
+                            .withHistory(0)
+                            .preInfoNo(null)
+                            .nextInfoNo(null)
+                            .hasConfirm(0)
+                            .confirmPerson(null)
+                            .confirmTime(null)
+                            .hasRestore(0)
+                            .restoreTime(null)
+                            .alarmDate(curTime)
+                            .alarmTimestamp(curTime)
+                            .build();
+
+                } else {
+                    /*
+                        已存在相关告警, 告警级别没有发生改变
+                            1.如果未确认 -> 不生成告警
+                            2.如果已确认 -> 生成相关告警
+                     */
+
+                    // 已存在相关告警, 告警级别发生了改变  -> 生成告警, 之前告警变为历史告警
+
+
+                }
+            }
+
+            if (Integer.valueOf(0).equals(produce)) {
+                // 告警恢复(存在对应的告警信息)
+
+            }
+
+
+
+
+            //# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~告警信息处理~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+            //# --------------------------------------------------------状态变更处理--------------------------------------------------------
 
             // ------------------------提取当前状态------------------------
             Integer curStatus = null;
@@ -175,16 +245,12 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
 
             // 获取当前测点状态
             MonitorStatusInfo monitorStatusInfo = obtainAlarmStatusByMonitorId(monitorNo);
+            // 转换状态
             monitorStatusInfo.swapCurStatusAndPre(curStatus, eventTimeStamp);
-
-            //# 状态变更处理
+            //# --------------------------------------------------------状态变更处理--------------------------------------------------------
         }
 
         //#
-
-
-
-
 
 
     }
