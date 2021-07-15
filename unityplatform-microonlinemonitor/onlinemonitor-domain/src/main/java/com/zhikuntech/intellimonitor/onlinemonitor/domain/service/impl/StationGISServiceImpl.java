@@ -35,12 +35,12 @@ public class StationGISServiceImpl implements StationGISService {
     public void getGISRuntime(String user, Integer num) throws Exception {
         Set<String> strings;
         String s = "";
-        if (num == 1) {
+        if (num == 8) {
             strings = GISWebsocketHandler.GROUP_RUNTIME_LAND.keySet();
-            s = WebSocketConstant.ONLINE_MONITOR_RUNTIME_LAND + WebSocketConstant.PATTERN;
-        } else if (num == 2) {
+            s = WebSocketConstant.ONLINE_MONITOR_GIS_RUNTIME_LAND + WebSocketConstant.PATTERN;
+        } else if (num == 32) {
             strings = GISWebsocketHandler.GROUP_RUNTIME_SEA.keySet();
-            s = WebSocketConstant.ONLINE_MONITOR_RUNTIME_SEA + WebSocketConstant.PATTERN;
+            s = WebSocketConstant.ONLINE_MONITOR_GIS_RUNTIME_SEA + WebSocketConstant.PATTERN;
         } else {
             return;
         }
@@ -56,7 +56,7 @@ public class StationGISServiceImpl implements StationGISService {
             list.add(dto);
         }
         if (strings.size() > 0) {
-            int[] ids = {1, 2};
+            int[] ids = new int[]{135,136};
             try {
                 String finalString = s;
                 GoldenUtil.subscribeSnapshots(user, ids, (data) -> {

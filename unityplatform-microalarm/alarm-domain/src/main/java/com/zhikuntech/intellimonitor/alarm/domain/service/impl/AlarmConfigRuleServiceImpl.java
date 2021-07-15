@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhikuntech.intellimonitor.alarm.domain.convert.AlarmConfigRuleToDtoConvert;
 import com.zhikuntech.intellimonitor.alarm.domain.dto.AlarmLevelDTO;
 import com.zhikuntech.intellimonitor.alarm.domain.dto.AlarmMonitorDTO;
-import com.zhikuntech.intellimonitor.alarm.domain.dto.AlarmRuleDTO;
+import com.zhikuntech.intellimonitor.alarm.domain.dto.InnerAlarmRuleDTO;
 import com.zhikuntech.intellimonitor.alarm.domain.entity.AlarmConfigRule;
 import com.zhikuntech.intellimonitor.alarm.domain.mapper.AlarmConfigRuleMapper;
 import com.zhikuntech.intellimonitor.alarm.domain.query.alarmrule.AddNewAlarmRuleQuery;
@@ -119,7 +119,7 @@ public class AlarmConfigRuleServiceImpl extends ServiceImpl<AlarmConfigRuleMappe
         }
     }
 
-    @Override public Pager<AlarmRuleDTO> queryByPage(AlarmRuleSimpleQuery query) {
+    @Override public Pager<InnerAlarmRuleDTO> queryByPage(AlarmRuleSimpleQuery query) {
         if (Objects.isNull(query)) {
             throw new IllegalArgumentException("查询参数不能为空");
         }
@@ -131,7 +131,7 @@ public class AlarmConfigRuleServiceImpl extends ServiceImpl<AlarmConfigRuleMappe
         if (CollectionUtils.isEmpty(records)) {
             return new Pager<>((int) pageResult.getTotal(), Collections.emptyList());
         }
-        List<AlarmRuleDTO> dtoList = AlarmConfigRuleToDtoConvert.INSTANCE.to(records);
+        List<InnerAlarmRuleDTO> dtoList = AlarmConfigRuleToDtoConvert.INSTANCE.to(records);
         // 查询测点信息
         List<String> ruleNos = records.stream().filter(Objects::nonNull).map(AlarmConfigRule::getRuleNo).filter(StringUtils::isNotBlank).collect(Collectors.toList());
         if (CollectionUtils.isNotEmpty(ruleNos)) {
@@ -149,7 +149,7 @@ public class AlarmConfigRuleServiceImpl extends ServiceImpl<AlarmConfigRuleMappe
     }
 
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
-    @Override public AlarmRuleDTO changeRule(AlarmRuleDTO query) {
+    @Override public InnerAlarmRuleDTO changeRule(InnerAlarmRuleDTO query) {
         log.info("changeRule入参[{}]", query);
         /*
             1.更新当前rule数据

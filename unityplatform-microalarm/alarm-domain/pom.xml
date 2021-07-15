@@ -32,6 +32,11 @@
             <artifactId>core-commons</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.zhikuntech.intellimonitor</groupId>
+            <artifactId>core-stream</artifactId>
+        </dependency>
+
         <!-- MySql -->
         <dependency>
             <groupId>mysql</groupId>

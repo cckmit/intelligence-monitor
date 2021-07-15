@@ -1,4 +1,4 @@
-package com.zhikuntech.intellimonitor.core.stream.dto;
+package com.zhikuntech.intellimonitor.core.prototype;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

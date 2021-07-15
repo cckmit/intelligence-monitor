@@ -47,6 +47,12 @@ public class OnlineMonitorInit implements CommandLineRunner {
                 GOLDEN_ID_MAP.put(FanConstant.GOLDEN_ID + i + "_" + j, ids[i - 1]);
             }
         }
+        int[] ids_gis = {135,136};
+        for (Integer i : ids_gis) {
+            for (int j = 1; j < 41; j++) {
+                GOLDEN_ID_MAP.put(FanConstant.GOLDEN_ID + i + "_" + j, i);
+            }
+        }
         GoldenUtil.init(ip, port, user, password, poolSize, maxSize);
         log.info("初始化数据完成！");
     }

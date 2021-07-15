@@ -77,7 +77,7 @@ public class FanInfoServiceImpl implements FanInfoService {
             try {
                 GoldenUtil.subscribeSnapshots(user, ids, (data) -> {
                     try {
-                        if (MyWebSocketHandler.GROUP_RUNTIME.keySet().size() > 0) {
+                        if (MyWebSocketHandler.GROUP_RUNTIME.keySet().size() > 0 && GoldenUtil.servers.containsKey(user)) {
                             long l0 = System.currentTimeMillis();
 //                            DataConvertUtils.convertAndSend(data);
 //                            long l01 = System.currentTimeMillis();
@@ -155,7 +155,7 @@ public class FanInfoServiceImpl implements FanInfoService {
             try {
                 GoldenUtil.subscribeSnapshots(user, ids, (data) -> {
                     try {
-                        if (MyWebSocketHandler.GROUP_STATISTICS.keySet().size() > 0) {
+                        if (MyWebSocketHandler.GROUP_STATISTICS.keySet().size() > 0 && GoldenUtil.servers.containsKey(user)) {
                             long l0 = System.currentTimeMillis();
                             List<FanStatisticsDTO> dtos = InjectPropertiesUtil.injectByAnnotation(list, data, (key) -> FanInfoInit.GOLDEN_ID_MAP.get(key));
                             if (null != dtos) {
@@ -243,10 +243,9 @@ public class FanInfoServiceImpl implements FanInfoService {
         BigDecimal annualOnlinePower = null == obj6 ? init : obj6;
 
         BigDecimal activePower = dtos.stream().map(FanStatisticsDTO::getActivePower).reduce(init, BigDecimal::add);
-        Stream<BigDecimal> bigDecimalStream = dtos.stream().filter(e -> null != e.getAverageWindVelocity())
-                .map(FanStatisticsDTO::getAverageWindVelocity);
-        long count = bigDecimalStream.count();
-        BigDecimal averageWindVelocity = bigDecimalStream.reduce(init, BigDecimal::add).divide(new BigDecimal(count), 2, RoundingMode.HALF_UP);
+        BigDecimal windVelocity = dtos.stream().filter(e -> null != e.getAverageWindVelocity()).map(FanStatisticsDTO::getAverageWindVelocity).reduce(init, BigDecimal::add);
+        long count = dtos.stream().filter(e -> null != e.getAverageWindVelocity()).count();
+        BigDecimal averageWindVelocity = windVelocity.divide(new BigDecimal(count), 2, RoundingMode.HALF_UP);
         BigDecimal energyOutput = dtos.stream().map(FanStatisticsDTO::getEnergyOutput).reduce(init, BigDecimal::add);
         BigDecimal reverseActivePower = dtos.stream().map(FanStatisticsDTO::getReverseActivePower).reduce(init, BigDecimal::add);
 
@@ -271,20 +270,18 @@ public class FanInfoServiceImpl implements FanInfoService {
         TimerUtil.start(new TimerTask() {
             @Override
             public void run() {
-                GoldenUtil.servers.remove(user);
+                GoldenUtil.cancel(user);
                 if ("runtime".equals(user)) {
                     try {
-                        getRuntimeInfos(user);
+                        myWebSocketHandler.sendGroupMessage("重新订阅", MyWebSocketHandler.GROUP_STATISTICS.keySet());
                     } catch (Exception e) {
                         e.printStackTrace();
-                        myWebSocketHandler.sendGroupMessage("重新订阅", MyWebSocketHandler.GROUP_STATISTICS.keySet());
                     }
                 } else {
                     try {
-                        getStatistics(user);
+                        myWebSocketHandler.sendGroupMessage("重新订阅", MyWebSocketHandler.GROUP_STATISTICS.keySet());
                     } catch (Exception e) {
                         e.printStackTrace();
-                        myWebSocketHandler.sendGroupMessage("重新订阅", MyWebSocketHandler.GROUP_STATISTICS.keySet());
                     }
                 }
                 log.info("定时任务取消golden连接,{}", user);
