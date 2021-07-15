@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Data
 @ApiModel("告警规则")
-public class AlarmRuleDTO {
+public class InnerAlarmRuleDTO {
 
 
     @ApiModelProperty("规则编码")

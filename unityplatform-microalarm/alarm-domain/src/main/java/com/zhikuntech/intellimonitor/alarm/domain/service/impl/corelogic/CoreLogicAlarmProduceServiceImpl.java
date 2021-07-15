@@ -9,6 +9,7 @@ import com.zhikuntech.intellimonitor.alarm.domain.service.IAlarmConfigMonitorSer
 import com.zhikuntech.intellimonitor.alarm.domain.service.IAlarmConfigRuleService;
 import com.zhikuntech.intellimonitor.alarm.domain.service.corelogic.CoreLogicAlarmProduceService;
 import com.zhikuntech.intellimonitor.core.commons.alarm.AlarmResultDTO;
+import com.zhikuntech.intellimonitor.core.commons.alarm.JudgeRuleWithAlarmUtil;
 import com.zhikuntech.intellimonitor.core.prototype.MonitorStructDTO;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -206,6 +207,12 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
 
     AlarmResultDTO judgeAlarmOccur(BigDecimal monitorNum, AlarmConfigRule alarmConfigRule) {
         // todo
+
+//        AlarmRuleDTO
+
+
+
+//        JudgeRuleWithAlarmUtil.process();
 
         return null;
     }
