@@ -7,6 +7,9 @@ import com.zhikuntech.intellimonitor.messagepush.domain.service.MessageService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
+import javax.websocket.OnMessage;
 import javax.websocket.Session;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -39,6 +42,7 @@ public class MyWebSocketHandler implements BaseWebSocketHandler {
     }
 
     @Override
+    @OnMessage
     public void onMessage(String message, String username) {
         String moduleName = username.split("_")[1];
         Session session = WebSocketServer.clients.get(username);
@@ -47,30 +51,27 @@ public class MyWebSocketHandler implements BaseWebSocketHandler {
             if (cable.size()>1){
                 return;
             }
-            messageService.cableAlarmMessagePush(MessageConstant.CABLE_GOLDEN_NAME);
         } else if (MessageConstant.ONLINE_MODULE.equals(moduleName)) {
             online.put(username,session);
             if (online.size()>1){
                 return;
             }
-            messageService.onlineAlarmMessagePush(MessageConstant.ONLINE_GOLDEN_NAME);
         } else if (MessageConstant.STRUCTURE_MODULE.equals(moduleName)) {
             structure.put(username,session);
             if (structure.size()>1){
                 return;
             }
-            messageService.structureAlarmMessagePush(MessageConstant.STRUCTURE_GOLDEN_NAME);
         } else if (MessageConstant.ALARM_MODULE.equals(moduleName)) {
             alarm.put(username,session);
             if (alarm.size()>1){
                 return;
             }
-            messageService.alarmListMessagePush(MessageConstant.ALARM_GOLDEN_NAME);
         }
 
     }
 
     @Override
+    @OnError
     public void onError(String username) {
 
     }

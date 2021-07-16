@@ -25,6 +25,8 @@
             <groupId>com.zhikuntech.intellimonitor</groupId>
             <artifactId>messagepush-prototype</artifactId>
         </dependency>
+
+
     </dependencies>
 
 </project>
