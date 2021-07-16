@@ -43,4 +43,4 @@ ribbon:
   ConnectTimeout: 5000
   ReadTimeout: 5000
 
-websocket.config: true
+#websocket.config: true

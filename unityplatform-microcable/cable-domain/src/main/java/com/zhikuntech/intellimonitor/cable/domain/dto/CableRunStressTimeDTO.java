@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Data
 @Accessors(chain = true)
 @ApiModel("海缆运行实时应力数据")
-public class CableRunStressTime {
+public class CableRunStressTimeDTO {
     /**
      * 海缆应力分段编号
      */
