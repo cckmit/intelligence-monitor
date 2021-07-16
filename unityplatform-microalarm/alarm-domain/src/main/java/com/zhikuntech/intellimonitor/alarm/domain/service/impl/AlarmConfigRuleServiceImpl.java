@@ -95,7 +95,7 @@ public class AlarmConfigRuleServiceImpl extends ServiceImpl<AlarmConfigRuleMappe
                     .updateTime(createTime)
                     .deleteMark(0)
                     .ruleType(query.getRuleType())
-                    .groupType(query.getRuleType())
+                    .groupType(query.getGroupType())
                     .build();
             getBaseMapper().insert(alarmConfigRule);
             final String ruleNo = alarmConfigRule.getRuleNo();
@@ -205,46 +205,87 @@ public class AlarmConfigRuleServiceImpl extends ServiceImpl<AlarmConfigRuleMappe
         if (Objects.isNull(query)) {
             throw new IllegalArgumentException("参数不能为空");
         }
-        final Set<String> monitorNos = query.getWithMonitors().stream().filter(Objects::nonNull).map(AlarmMonitorDTO::getMonitorNo).filter(Objects::nonNull).collect(Collectors.toSet());
-        if (StringUtils.isBlank(query.getRuleNo())
-                || StringUtils.isBlank(query.getAlarmRuleName())
-                || StringUtils.isBlank(query.getAlarmType())
-                || CollectionUtils.isEmpty(query.getWithMonitors()) || CollectionUtils.isEmpty(monitorNos)
-                || StringUtils.isBlank(query.getAlarmValue())
-                || Objects.isNull(query.getLevelNoAlarmInfo())) {
-            throw new IllegalArgumentException("(规则编码,规则名称,告警类型,告警区间,告警区间-关联告警等级)必传且不能为空");
-        }
-        // 根据规则编码查询
-        QueryWrapper<AlarmConfigRule> ruleQueryWrapper = new QueryWrapper<>();
-        ruleQueryWrapper.eq("rule_no", StringUtils.trim(query.getRuleNo()));
-        AlarmConfigRule alarmConfigRule = getBaseMapper().selectOne(ruleQueryWrapper);
-        if (Objects.isNull(alarmConfigRule)) {
-            throw new IllegalStateException(String.format("非法状态,规则编码[%s]对应的数据不存在", query.getRuleNo()));
-        }
-        // 检验规则名称是否已存在 - 如果修改了规则名称
-        if (!StringUtils.equalsIgnoreCase(alarmConfigRule.getAlarmRuleName(), query.getAlarmRuleName())) {
-            checkRuleNameExistOrNotThenThrowExc(query.getAlarmRuleName());
-            // 修改规则名称
-            alarmConfigRule.setAlarmRuleName(query.getAlarmRuleName());
-        }
-        /* 更新rule信息 */
-        alarmConfigRule.setAlarmType(query.getAlarmType());
-        // 告警
-        alarmConfigRule.setAlarmValue(query.getAlarmValue());
-        alarmConfigRule.setLevelNoAlarm(query.getLevelNoAlarmInfo().getLevelNo());
-        // 一级预警
-        alarmConfigRule.setPreAlarmOneValue(query.getPreAlarmOneValue());
-        alarmConfigRule.setLevelNoOne(query.getLevelNoOneInfo().getLevelNo());
-        // 二级预警
-        alarmConfigRule.setPreAlarmTwoValue(query.getPreAlarmTwoValue());
-        alarmConfigRule.setLevelNoTwo(query.getLevelNoTwoInfo().getLevelNo());
 
-        getBaseMapper().updateById(alarmConfigRule);
-        /* 断开测点关系 */
-        monitorService.disconnectMonitorWithRule(alarmConfigRule.getRuleNo());
-        /* 关联测点关系 */
-        monitorService.updateRuleNoByIds(alarmConfigRule.getRuleNo(), monitorNos);
+        Integer ruleType = query.getRuleType();
+        if (Objects.isNull(ruleType)) {
+            throw new IllegalArgumentException("规则类型必传");
+        }
+        if (ruleType == 0) {
+            // 遥信数据
+            final Set<String> monitorNos = query.getWithMonitors().stream().filter(Objects::nonNull).map(AlarmMonitorDTO::getMonitorNo).filter(Objects::nonNull).collect(Collectors.toSet());
+            if (StringUtils.isBlank(query.getRuleNo())
+                    || StringUtils.isBlank(query.getAlarmRuleName())
+                    || StringUtils.isBlank(query.getAlarmType())
+                    || CollectionUtils.isEmpty(query.getWithMonitors()) || CollectionUtils.isEmpty(monitorNos)
+                    || Objects.isNull(query.getLevelNoAlarmInfo())) {
+                throw new IllegalArgumentException("(规则编码,规则名称,告警类型,告警区间-关联告警等级)必传且不能为空");
+            }
+            // 根据规则编码查询
+            QueryWrapper<AlarmConfigRule> ruleQueryWrapper = new QueryWrapper<>();
+            ruleQueryWrapper.eq("rule_no", StringUtils.trim(query.getRuleNo()));
+            AlarmConfigRule alarmConfigRule = getBaseMapper().selectOne(ruleQueryWrapper);
+            if (Objects.isNull(alarmConfigRule)) {
+                throw new IllegalStateException(String.format("非法状态,规则编码[%s]对应的数据不存在", query.getRuleNo()));
+            }
+            // 检验规则名称是否已存在 - 如果修改了规则名称
+            if (!StringUtils.equalsIgnoreCase(alarmConfigRule.getAlarmRuleName(), query.getAlarmRuleName())) {
+                checkRuleNameExistOrNotThenThrowExc(query.getAlarmRuleName());
+                // 修改规则名称
+                alarmConfigRule.setAlarmRuleName(query.getAlarmRuleName());
+            }
+            /* 更新rule信息 */
+            alarmConfigRule.setAlarmType(query.getAlarmType());
+            alarmConfigRule.setLevelNoAlarm(query.getLevelNoAlarmInfo().getLevelNo());
 
+            getBaseMapper().updateById(alarmConfigRule);
+            /* 断开测点关系 */
+            monitorService.disconnectMonitorWithRule(alarmConfigRule.getRuleNo());
+            /* 关联测点关系 */
+            monitorService.updateRuleNoByIds(alarmConfigRule.getRuleNo(), monitorNos);
+        } else if (ruleType == 1) {
+            // 遥测数据
+            final Set<String> monitorNos = query.getWithMonitors().stream().filter(Objects::nonNull).map(AlarmMonitorDTO::getMonitorNo).filter(Objects::nonNull).collect(Collectors.toSet());
+            if (StringUtils.isBlank(query.getRuleNo())
+                    || StringUtils.isBlank(query.getAlarmRuleName())
+                    || StringUtils.isBlank(query.getAlarmType())
+                    || CollectionUtils.isEmpty(query.getWithMonitors()) || CollectionUtils.isEmpty(monitorNos)
+                    || StringUtils.isBlank(query.getAlarmValue())
+                    || Objects.isNull(query.getLevelNoAlarmInfo())) {
+                throw new IllegalArgumentException("(规则编码,规则名称,告警类型,告警区间,告警区间-关联告警等级)必传且不能为空");
+            }
+            // 根据规则编码查询
+            QueryWrapper<AlarmConfigRule> ruleQueryWrapper = new QueryWrapper<>();
+            ruleQueryWrapper.eq("rule_no", StringUtils.trim(query.getRuleNo()));
+            AlarmConfigRule alarmConfigRule = getBaseMapper().selectOne(ruleQueryWrapper);
+            if (Objects.isNull(alarmConfigRule)) {
+                throw new IllegalStateException(String.format("非法状态,规则编码[%s]对应的数据不存在", query.getRuleNo()));
+            }
+            // 检验规则名称是否已存在 - 如果修改了规则名称
+            if (!StringUtils.equalsIgnoreCase(alarmConfigRule.getAlarmRuleName(), query.getAlarmRuleName())) {
+                checkRuleNameExistOrNotThenThrowExc(query.getAlarmRuleName());
+                // 修改规则名称
+                alarmConfigRule.setAlarmRuleName(query.getAlarmRuleName());
+            }
+            /* 更新rule信息 */
+            alarmConfigRule.setAlarmType(query.getAlarmType());
+            // 告警
+            alarmConfigRule.setAlarmValue(query.getAlarmValue());
+            alarmConfigRule.setLevelNoAlarm(query.getLevelNoAlarmInfo().getLevelNo());
+            // 一级预警
+            alarmConfigRule.setPreAlarmOneValue(query.getPreAlarmOneValue());
+            alarmConfigRule.setLevelNoOne(query.getLevelNoOneInfo().getLevelNo());
+            // 二级预警
+            alarmConfigRule.setPreAlarmTwoValue(query.getPreAlarmTwoValue());
+            alarmConfigRule.setLevelNoTwo(query.getLevelNoTwoInfo().getLevelNo());
+
+            getBaseMapper().updateById(alarmConfigRule);
+            /* 断开测点关系 */
+            monitorService.disconnectMonitorWithRule(alarmConfigRule.getRuleNo());
+            /* 关联测点关系 */
+            monitorService.updateRuleNoByIds(alarmConfigRule.getRuleNo(), monitorNos);
+        } else {
+            throw new IllegalArgumentException("不能识别的规则类型");
+        }
         return query;
     }
 
