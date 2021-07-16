@@ -7,6 +7,8 @@ import com.zhikuntech.intellimonitor.alarm.domain.query.alarmrule.AddNewAlarmRul
 import com.zhikuntech.intellimonitor.alarm.domain.query.alarmrule.AlarmRuleSimpleQuery;
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
 
+import java.util.List;
+
 /**
  * <p>
  * 规则表 服务类
@@ -55,5 +57,12 @@ public interface IAlarmConfigRuleService extends IService<AlarmConfigRule> {
      * @return          成功/失败
      */
     boolean deleteRule(String ruleNo);
+
+    /**
+     * 批量删除告警规则
+     * @param ruleNos   告警规则
+     * @return          成功/失败
+     */
+    boolean batchDelete(List<String> ruleNos);
 
 }

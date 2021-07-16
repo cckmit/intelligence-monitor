@@ -86,6 +86,7 @@ public class AlarmConfigMonitorServiceImpl extends ServiceImpl<AlarmConfigMonito
         QueryWrapper<AlarmConfigMonitor> criteria = new QueryWrapper<>();
         criteria.isNull("rule_no");
         criteria.eq("group_type", query.getGroupType());
+        criteria.eq("monitor_type", query.getMonitorType());
         if (StringUtils.isNotBlank(query.getMonitorDescribe())) {
             criteria.like("monitor_describe", StringUtils.trim(query.getMonitorDescribe()));
         }

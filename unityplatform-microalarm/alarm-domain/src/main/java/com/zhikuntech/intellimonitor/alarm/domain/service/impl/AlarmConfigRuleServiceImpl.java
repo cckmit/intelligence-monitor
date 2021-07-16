@@ -43,11 +43,15 @@ public class AlarmConfigRuleServiceImpl extends ServiceImpl<AlarmConfigRuleMappe
 
     private final IAlarmConfigLevelService levelService;
 
+    private final IAlarmConfigRuleService configRuleService;
+
     public AlarmConfigRuleServiceImpl(IAlarmConfigMonitorService monitorService,
                                       // 解决循环依赖
-                                      @Lazy IAlarmConfigLevelService levelService) {
+                                      @Lazy IAlarmConfigLevelService levelService,
+                                      @Lazy IAlarmConfigRuleService configRuleService) {
         this.monitorService = monitorService;
         this.levelService = levelService;
+        this.configRuleService = configRuleService;
     }
 
     @Override public Integer queryCountByLevelNo(String levelNo) {
@@ -123,10 +127,13 @@ public class AlarmConfigRuleServiceImpl extends ServiceImpl<AlarmConfigRuleMappe
         if (Objects.isNull(query)) {
             throw new IllegalArgumentException("查询参数不能为空");
         }
+        if (Objects.isNull(query.getGroupType())) {
+            throw new IllegalArgumentException("分组类型必须");
+        }
         Page<AlarmConfigRule> pageCriteria = new Page<>(query.getPageNumber(), query.getPageSize());
         QueryWrapper<AlarmConfigRule> queryCriteria = new QueryWrapper<>();
         queryCriteria.ne("delete_mark", 1);
-        queryCriteria.eq("", query.getGroupType());
+        queryCriteria.eq("group_type", query.getGroupType());
         Page<AlarmConfigRule> pageResult = getBaseMapper().selectPage(pageCriteria, queryCriteria);
         List<AlarmConfigRule> records = pageResult.getRecords();
         if (CollectionUtils.isEmpty(records)) {
@@ -223,6 +230,17 @@ public class AlarmConfigRuleServiceImpl extends ServiceImpl<AlarmConfigRuleMappe
         // 断开测点与规则的关系
         monitorService.disconnectMonitorWithRule(ruleNo);
         // todo 对应规则已删除, 需要删除缓存
+        return true;
+    }
+
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    @Override public boolean batchDelete(List<String> ruleNos) {
+        if (CollectionUtils.isEmpty(ruleNos)) {
+            throw new IllegalArgumentException("告警规则为空.");
+        }
+        for (String ruleNo : ruleNos) {
+            configRuleService.deleteRule(ruleNo);
+        }
         return true;
     }
 

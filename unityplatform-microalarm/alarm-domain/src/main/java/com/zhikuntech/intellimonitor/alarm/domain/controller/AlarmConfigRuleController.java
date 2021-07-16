@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * <p>
  * 规则表 前端控制器
@@ -64,10 +66,18 @@ public class AlarmConfigRuleController {
         return BaseResponse.success(result);
     }
 
+    @ApiOperation("批量删除告警规则")
+    @PostMapping("/batch-delete")
+    public BaseResponse<Boolean> batchDelete(@RequestBody List<String> ruleNos) {
+        boolean result = ruleService.batchDelete(ruleNos);
+        return BaseResponse.success(result);
+    }
+
+
     /*
         todo
-            1.批量删除告警规则
-            2.告警规则分组
+            ok.1.批量删除告警规则
+            ok.2.告警规则分组
             3.需求待确认(告警策略配置头部信息)
             --
 

@@ -22,6 +22,10 @@ public class AlarmMonitorSimpleQuery {
     @NotNull
     private Integer groupType;
 
+    @ApiModelProperty(value = "测点类型(0遥信数据/1遥测数据)", required = true)
+    @NotNull
+    private Integer monitorType;
+
     @ApiModelProperty(value = "页码", required = true)
     @NotNull
     private Integer pageNumber;
