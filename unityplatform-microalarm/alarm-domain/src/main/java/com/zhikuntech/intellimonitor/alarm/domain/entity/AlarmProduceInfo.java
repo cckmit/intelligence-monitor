@@ -15,7 +15,7 @@ import lombok.*;
  * </p>
  *
  * @author liukai
- * @since 2021-07-08
+ * @since 2021-07-16
  */
 @AllArgsConstructor
 @NoArgsConstructor
@@ -124,6 +124,11 @@ public class AlarmProduceInfo implements Serializable {
      * 告警产生时间戳
      */
     private LocalDateTime alarmTimestamp;
+
+    /**
+     * 行号(唯一不重复)
+     */
+    private Long rowStamp;
 
 
 }

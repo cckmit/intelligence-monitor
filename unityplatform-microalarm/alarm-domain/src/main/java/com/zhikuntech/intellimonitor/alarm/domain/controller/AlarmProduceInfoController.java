@@ -1,8 +1,10 @@
 package com.zhikuntech.intellimonitor.alarm.domain.controller;
 
 
+import com.zhikuntech.intellimonitor.alarm.domain.dto.AlarmInfoBatchDTO;
 import com.zhikuntech.intellimonitor.alarm.domain.dto.AlarmInfoDTO;
 import com.zhikuntech.intellimonitor.alarm.domain.query.alarminfo.AlarmConfirmQuery;
+import com.zhikuntech.intellimonitor.alarm.domain.query.alarminfo.AlarmInfoLimitQuery;
 import com.zhikuntech.intellimonitor.alarm.domain.query.alarminfo.AlarmInfoSimpleQuery;
 import com.zhikuntech.intellimonitor.alarm.domain.service.IAlarmProduceInfoService;
 import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * <p>
@@ -34,16 +38,20 @@ public class AlarmProduceInfoController {
 
     private final IAlarmProduceInfoService infoService;
 
-    @ApiOperation("告警信息分页查询")
+    @Deprecated
+    @ApiOperation("(废弃的接口)告警信息分页查询-[告警信息查询暂时不需要分页查询]")
     @PostMapping("/query-by-page")
     public BaseResponse<Pager<AlarmInfoDTO>> queryByPage(@RequestBody AlarmInfoSimpleQuery simpleQuery) {
         Pager<AlarmInfoDTO> pageResult = infoService.queryByPage(simpleQuery);
         return BaseResponse.success(pageResult);
     }
 
-    // TODO 告警信息查询暂时不需要分页查询
-
-
+    @ApiOperation("根据行号查询")
+    @PostMapping("/query-batch-limit")
+    public BaseResponse<List<AlarmInfoBatchDTO>> fetchBatchLimit(@RequestBody AlarmInfoLimitQuery limitQuery) {
+        List<AlarmInfoBatchDTO> results = infoService.fetchBatchLimit(limitQuery);
+        return BaseResponse.success(results);
+    }
 
 
     @ApiOperation("告警确认（单个/批次/页面全部[groupType]）")
