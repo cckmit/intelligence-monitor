@@ -7,7 +7,7 @@ import java.util.Properties;
  * @className produce
  * @create 2021/7/13 10:31
  **/
-public class produce {
+public class produce2 {
     public static void main(String[] args) {
 
         //添加kafka的配置信息
@@ -24,7 +24,7 @@ public class produce {
         int i = 1;
         while (true) {
             //封装消息
-            ProducerRecord<String, String> record = new ProducerRecord<String, String>("1", "00001", "hello,kafka,我是" + (i++) + "号葫芦娃");
+            ProducerRecord<String, String> record = new ProducerRecord<String, String>("2", "00001", "hello,kafka,我是" + (i++) + "号葫芦娃");
             //发送消息
             try {
                 Thread.sleep(10000);

@@ -3,10 +3,12 @@ package com.zhikuntech.intellimonitor.messagepush.domain.config;
 import com.zhikuntech.intellimonitor.core.commons.weabsocket.WebSocketServer;
 import com.zhikuntech.intellimonitor.messagepush.domain.constant.MessageConstant;
 import com.zhikuntech.intellimonitor.messagepush.domain.websocket.MyWebSocketHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
+import sun.util.locale.provider.LocaleServiceProviderPool;
 
 import java.util.Optional;
 
@@ -16,6 +18,7 @@ import java.util.Optional;
  * @create 2021/7/8 11:38
  **/
 @Component
+@Slf4j
 public class MessageListener {
 
     @Autowired
@@ -26,17 +29,24 @@ public class MessageListener {
         //卡夫卡拉取消息  topic
         Optional<? extends ConsumerRecord<?, ?>> result = Optional.ofNullable(record);
         if (result.isPresent()) {
-            Object value = record.value();
-            Object key = record.key();
-            if (record.topic().equals(MessageConstant.CABLE_GOLDEN_NAME)) {
-                webSocketServer.sendGroupMessage(value.toString(), MyWebSocketHandler.cable.keySet());
-            }
+            ConsumerRecord<?, ?> consumerRecord = result.get();
+            Object value = consumerRecord.value();
+            Object key = consumerRecord.key();
+            log.info("topic{},partition{}",consumerRecord.topic(),consumerRecord.partition());
+            webSocketServer.sendGroupMessage(value.toString(), MyWebSocketHandler.cable.keySet());
+
         }
     }
 
     @KafkaListener(topics = {"2"})
     public void onlineAlarmMessagePush(ConsumerRecord<?, ?> record) {
         //
+        Optional<? extends ConsumerRecord<?, ?>> result = Optional.ofNullable(record);
+        if (result.isPresent()) {
+            Object value = record.value();
+            Object key = record.key();
+            webSocketServer.sendGroupMessage(value.toString(), MyWebSocketHandler.online.keySet());
+        }
     }
 
     @KafkaListener(topics = {"3"})
