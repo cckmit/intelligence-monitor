@@ -2,6 +2,7 @@ package com.zhikuntech.intellimonitor.structuremonitor.domain.service;
 
 import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
 import com.zhikuntech.intellimonitor.structuremonitor.domain.query.StructureMonitoringQuery;
+import com.zhikuntech.intellimonitor.structuremonitor.domain.vo.LiveData;
 
 import java.util.List;
 
@@ -19,4 +20,10 @@ public interface IStructureMonitoringService {
      */
     BaseResponse<List<StructureMonitoringQuery>> getList(StructureMonitoringQuery query);
 
+    /**
+     * 获取实时数据
+     * @param type
+     * @return
+     */
+    BaseResponse<LiveData> getData(String type);
 }

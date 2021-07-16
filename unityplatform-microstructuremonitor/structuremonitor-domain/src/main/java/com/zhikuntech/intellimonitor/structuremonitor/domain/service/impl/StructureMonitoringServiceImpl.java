@@ -10,6 +10,7 @@ import com.zhikuntech.intellimonitor.core.commons.base.ResultCode;
 import com.zhikuntech.intellimonitor.structuremonitor.domain.query.StructureMonitoringQuery;
 import com.zhikuntech.intellimonitor.structuremonitor.domain.service.IStructureMonitoringService;
 import com.zhikuntech.intellimonitor.structuremonitor.domain.utils.DateUtils;
+import com.zhikuntech.intellimonitor.structuremonitor.domain.vo.LiveData;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,6 +93,15 @@ public class StructureMonitoringServiceImpl implements IStructureMonitoringServi
         // TODO 数据查询 未完成
         // 从数据库查询查询GoldenId
         // int realCount = his.archivedValuesRealCount(id, sTime, sTime); realCount非0判断 否则抛异常
+
+        return null;
+    }
+
+    @Override
+    public BaseResponse<LiveData> getData(String type) {
+
+        //todo 获取庚顿id映射关系
+
 
         return null;
     }
