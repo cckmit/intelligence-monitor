@@ -70,45 +70,82 @@ public class AlarmConfigRuleServiceImpl extends ServiceImpl<AlarmConfigRuleMappe
         if (Objects.isNull(query)) {
             throw new IllegalArgumentException("参数不能为空");
         }
-        /*
-            告警策略名称
-            关联测点
-            告警类型
-            告警区间
-            告警区间-关联告警等级
-         */
-        if (StringUtils.isBlank(query.getAlarmRuleName())
-                || CollectionUtils.isEmpty(query.getMonitors())
-                || StringUtils.isBlank(query.getAlarmType())
-                || StringUtils.isBlank(query.getAlarmRegion())
-                || StringUtils.isBlank(query.getAlarmRegionConnLevel()) || Objects.isNull(query.getRuleType())) {
-            throw new IllegalArgumentException("(告警策略名称,关联测点,告警类型,告警区间,告警区间-关联告警等级,规则类型)必传且不能为空");
+        Integer ruleType = query.getRuleType();
+        if (Objects.isNull(query.getRuleType()) || Objects.isNull(query.getGroupType())) {
+            throw new IllegalArgumentException("规则类型和分组类型必传");
         }
-        final String alarmRuleName = StringUtils.trim(query.getAlarmRuleName());
-        // 校验该名称是否存在
-        checkRuleNameExistOrNotThenThrowExc(alarmRuleName);
-        // 存储
-        final LocalDateTime createTime = LocalDateTime.now();
-        AlarmConfigRule alarmConfigRule = AlarmConfigRule.builder()
-                .version(0)
-                .alarmRuleName(query.getAlarmRuleName())
-                .alarmType(query.getAlarmType())
-                .alarmValue(query.getAlarmRegion())
-                .levelNoAlarm(query.getAlarmRegionConnLevel())
-                .preAlarmOneValue(query.getPreAlarmOne())
-                .levelNoOne(query.getPreAlarmOneConnLevel())
-                .preAlarmTwoValue(query.getPreAlarmTwo())
-                .levelNoTwo(query.getPreAlarmTwoConnLevel())
-                .createTime(createTime)
-                .updateTime(createTime)
-                .deleteMark(0)
-                .ruleType(query.getRuleType())
-                .build();
-        getBaseMapper().insert(alarmConfigRule);
-        final String ruleNo = alarmConfigRule.getRuleNo();
-        assert StringUtils.isNotBlank(ruleNo);
-        // 更新测点关联的规则值
-        monitorService.updateRuleNoByIds(ruleNo, new HashSet<>(query.getMonitors()));
+        if (ruleType == 0) {
+            // 遥信数据
+            if (StringUtils.isBlank(query.getAlarmRuleName())
+                    || CollectionUtils.isEmpty(query.getMonitors())
+                    || StringUtils.isBlank(query.getAlarmType())
+                    || StringUtils.isBlank(query.getAlarmRegionConnLevel()) || Objects.isNull(query.getRuleType())) {
+                throw new IllegalArgumentException("(告警策略名称,关联测点,告警类型,告警区间-关联告警等级,规则类型)必传且不能为空");
+            }
+            // 校验该名称是否存在
+            checkRuleNameExistOrNotThenThrowExc(StringUtils.trim(query.getAlarmRuleName()));
+            // 存储
+            final LocalDateTime createTime = LocalDateTime.now();
+            AlarmConfigRule alarmConfigRule = AlarmConfigRule.builder()
+                    .version(0)
+                    .alarmRuleName(query.getAlarmRuleName())
+                    .alarmType(query.getAlarmType())
+                    .levelNoAlarm(query.getAlarmRegionConnLevel())
+                    .createTime(createTime)
+                    .updateTime(createTime)
+                    .deleteMark(0)
+                    .ruleType(query.getRuleType())
+                    .groupType(query.getRuleType())
+                    .build();
+            getBaseMapper().insert(alarmConfigRule);
+            final String ruleNo = alarmConfigRule.getRuleNo();
+            assert StringUtils.isNotBlank(ruleNo);
+            // 更新测点关联的规则值
+            monitorService.updateRuleNoByIds(ruleNo, new HashSet<>(query.getMonitors()));
+        } else if (ruleType == 1) {
+            // 遥测数据
+            /*
+                告警策略名称
+                关联测点
+                告警类型
+                告警区间
+                告警区间-关联告警等级
+             */
+            if (StringUtils.isBlank(query.getAlarmRuleName())
+                    || CollectionUtils.isEmpty(query.getMonitors())
+                    || StringUtils.isBlank(query.getAlarmType())
+                    || StringUtils.isBlank(query.getAlarmRegion())
+                    || StringUtils.isBlank(query.getAlarmRegionConnLevel()) || Objects.isNull(query.getRuleType())) {
+                throw new IllegalArgumentException("(告警策略名称,关联测点,告警类型,告警区间,告警区间-关联告警等级,规则类型)必传且不能为空");
+            }
+            // 校验该名称是否存在
+            checkRuleNameExistOrNotThenThrowExc(StringUtils.trim(query.getAlarmRuleName()));
+            // 存储
+            final LocalDateTime createTime = LocalDateTime.now();
+            AlarmConfigRule alarmConfigRule = AlarmConfigRule.builder()
+                    .version(0)
+                    .alarmRuleName(query.getAlarmRuleName())
+                    .alarmType(query.getAlarmType())
+                    .alarmValue(query.getAlarmRegion())
+                    .levelNoAlarm(query.getAlarmRegionConnLevel())
+                    .preAlarmOneValue(query.getPreAlarmOne())
+                    .levelNoOne(query.getPreAlarmOneConnLevel())
+                    .preAlarmTwoValue(query.getPreAlarmTwo())
+                    .levelNoTwo(query.getPreAlarmTwoConnLevel())
+                    .createTime(createTime)
+                    .updateTime(createTime)
+                    .deleteMark(0)
+                    .ruleType(query.getRuleType())
+                    .groupType(query.getGroupType())
+                    .build();
+            getBaseMapper().insert(alarmConfigRule);
+            final String ruleNo = alarmConfigRule.getRuleNo();
+            assert StringUtils.isNotBlank(ruleNo);
+            // 更新测点关联的规则值
+            monitorService.updateRuleNoByIds(ruleNo, new HashSet<>(query.getMonitors()));
+        } else {
+            throw new IllegalArgumentException("不能识别的规则类型");
+        }
         return true;
     }
 
@@ -134,6 +171,7 @@ public class AlarmConfigRuleServiceImpl extends ServiceImpl<AlarmConfigRuleMappe
         QueryWrapper<AlarmConfigRule> queryCriteria = new QueryWrapper<>();
         queryCriteria.ne("delete_mark", 1);
         queryCriteria.eq("group_type", query.getGroupType());
+        queryCriteria.eq("rule_type", query.getRuleType());
         Page<AlarmConfigRule> pageResult = getBaseMapper().selectPage(pageCriteria, queryCriteria);
         List<AlarmConfigRule> records = pageResult.getRecords();
         if (CollectionUtils.isEmpty(records)) {

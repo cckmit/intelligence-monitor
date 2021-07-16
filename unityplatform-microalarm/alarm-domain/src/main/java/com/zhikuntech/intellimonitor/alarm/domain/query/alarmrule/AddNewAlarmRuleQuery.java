@@ -42,7 +42,7 @@ public class AddNewAlarmRuleQuery {
     /**
      * 告警区间
      */
-    @ApiModelProperty(value = "告警区间", required = true)
+    @ApiModelProperty(value = "告警区间[遥测数据必传]")
     private String alarmRegion;
 
     /**
@@ -56,6 +56,9 @@ public class AddNewAlarmRuleQuery {
      */
     @ApiModelProperty(value = "规则类型(0遥信数据/1遥测数据)", required = true)
     private Integer ruleType;
+
+    @ApiModelProperty(value = "分组类型", required = true)
+    private Integer groupType;
 
     // ------------------------------------------------ 以上必传
 
