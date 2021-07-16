@@ -2,11 +2,13 @@ package com.zhikuntech.intellimonitor.alarm.domain.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.zhikuntech.intellimonitor.alarm.domain.dto.AlarmInfoBatchDTO;
 import com.zhikuntech.intellimonitor.alarm.domain.dto.AlarmInfoDTO;
 import com.zhikuntech.intellimonitor.alarm.domain.dto.AlarmStatusGroupByModuleDTO;
 import com.zhikuntech.intellimonitor.alarm.domain.entity.AlarmProduceInfo;
 import com.zhikuntech.intellimonitor.alarm.domain.mapper.AlarmProduceInfoMapper;
 import com.zhikuntech.intellimonitor.alarm.domain.query.alarminfo.AlarmConfirmQuery;
+import com.zhikuntech.intellimonitor.alarm.domain.query.alarminfo.AlarmInfoLimitQuery;
 import com.zhikuntech.intellimonitor.alarm.domain.query.alarminfo.AlarmInfoSimpleQuery;
 import com.zhikuntech.intellimonitor.alarm.domain.service.IAlarmProduceInfoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -61,8 +63,15 @@ public class AlarmProduceInfoServiceImpl extends ServiceImpl<AlarmProduceInfoMap
 
     @Override
     public Pager<AlarmInfoDTO> queryByPage(AlarmInfoSimpleQuery simpleQuery) {
-        // todo
 
+        throw new UnsupportedOperationException("告警信息暂不提供分页查询");
+    }
+
+
+    @Override
+    public List<AlarmInfoBatchDTO> fetchBatchLimit(AlarmInfoLimitQuery limitQuery) {
+        // todo
+        
         return null;
     }
 
