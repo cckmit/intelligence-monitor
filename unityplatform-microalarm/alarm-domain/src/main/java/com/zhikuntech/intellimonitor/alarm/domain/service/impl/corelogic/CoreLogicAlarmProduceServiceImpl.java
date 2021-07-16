@@ -191,7 +191,7 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
                             .alarmDate(curTime)
                             .alarmTimestamp(curTime)
                             .build();
-
+                    produceInfoService.getBaseMapper().insert(produceInfo);
                 } else {
                     /*
                         已存在相关告警, 告警级别没有发生改变

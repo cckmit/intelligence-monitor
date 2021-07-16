@@ -78,9 +78,14 @@ public class AlarmConfigMonitorServiceImpl extends ServiceImpl<AlarmConfigMonito
         if (Objects.isNull(query)) {
             throw new IllegalArgumentException("查询参数不能为空.");
         }
+        if (Objects.isNull(query.getGroupType())) {
+            // group_type 必须
+            throw new IllegalArgumentException("分组类型必须.");
+        }
         Page<AlarmConfigMonitor> page = new Page<>(query.getPageNumber(), query.getPageSize());
         QueryWrapper<AlarmConfigMonitor> criteria = new QueryWrapper<>();
         criteria.isNull("rule_no");
+        criteria.eq("group_type", query.getGroupType());
         if (StringUtils.isNotBlank(query.getMonitorDescribe())) {
             criteria.like("monitor_describe", StringUtils.trim(query.getMonitorDescribe()));
         }

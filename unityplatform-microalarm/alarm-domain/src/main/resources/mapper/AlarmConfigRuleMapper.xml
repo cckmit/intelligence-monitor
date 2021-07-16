@@ -18,11 +18,12 @@
         <result column="update_time" property="updateTime" />
         <result column="delete_mark" property="deleteMark" />
         <result column="rule_type" property="ruleType" />
+        <result column="group_type" property="groupType" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        rule_no, version, alarm_rule_name, alarm_type, alarm_value, pre_alarm_one_value, pre_alarm_two_value, level_no_alarm, level_no_one, level_no_two, create_time, update_time, delete_mark, rule_type
+        rule_no, version, alarm_rule_name, alarm_type, alarm_value, pre_alarm_one_value, pre_alarm_two_value, level_no_alarm, level_no_one, level_no_two, create_time, update_time, delete_mark, rule_type, group_type
     </sql>
 
 </mapper>

@@ -18,6 +18,10 @@ public class AlarmMonitorSimpleQuery {
     @ApiModelProperty(value = "测点描述")
     private String monitorDescribe;
 
+    @ApiModelProperty(value = "分组类型(按照模块进行划分)", required = true)
+    @NotNull
+    private Integer groupType;
+
     @ApiModelProperty(value = "页码", required = true)
     @NotNull
     private Integer pageNumber;

@@ -126,6 +126,7 @@ public class AlarmConfigRuleServiceImpl extends ServiceImpl<AlarmConfigRuleMappe
         Page<AlarmConfigRule> pageCriteria = new Page<>(query.getPageNumber(), query.getPageSize());
         QueryWrapper<AlarmConfigRule> queryCriteria = new QueryWrapper<>();
         queryCriteria.ne("delete_mark", 1);
+        queryCriteria.eq("", query.getGroupType());
         Page<AlarmConfigRule> pageResult = getBaseMapper().selectPage(pageCriteria, queryCriteria);
         List<AlarmConfigRule> records = pageResult.getRecords();
         if (CollectionUtils.isEmpty(records)) {
