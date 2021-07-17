@@ -15,12 +15,10 @@ public class AlarmInfoLimitQuery implements Serializable {
 
     private static final long serialVersionUID = 8948437571026272809L;
 
-    @ApiModelProperty(value = "数据量(最大30条), 不能为0", required = true)
+    @ApiModelProperty(value = "数据条数(最大30条), 不能为0", required = true)
     private Integer dataNum;
 
     @ApiModelProperty(value = "行号", required = true)
     private Long rowNum;
-
-
 
 }

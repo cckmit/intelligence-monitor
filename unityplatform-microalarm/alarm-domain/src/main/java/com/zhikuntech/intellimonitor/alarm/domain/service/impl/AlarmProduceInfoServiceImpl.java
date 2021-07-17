@@ -70,9 +70,31 @@ public class AlarmProduceInfoServiceImpl extends ServiceImpl<AlarmProduceInfoMap
 
     @Override
     public List<AlarmInfoBatchDTO> fetchBatchLimit(AlarmInfoLimitQuery limitQuery) {
-        // todo
-        
-        return null;
+        if (Objects.isNull(limitQuery)) {
+            throw new IllegalArgumentException("查询参数必须");
+        }
+        if (Objects.isNull(limitQuery.getDataNum()) || Objects.isNull(limitQuery.getRowNum())) {
+            throw new IllegalArgumentException("(数据条数,行号)必须");
+        }
+        QueryWrapper<AlarmProduceInfo> produceInfoQueryWrapper = new QueryWrapper<>();
+        produceInfoQueryWrapper.gt("row_stamp", limitQuery.getRowNum());
+        produceInfoQueryWrapper.last(String.format("limit %d", limitQuery.getDataNum()));
+        List<AlarmProduceInfo> alarmProduceInfos = getBaseMapper().selectList(produceInfoQueryWrapper);
+        if (CollectionUtils.isEmpty(alarmProduceInfos)) {
+            return Collections.emptyList();
+        }
+        // 转换数据
+        List<AlarmInfoBatchDTO> results = new ArrayList<>(alarmProduceInfos.size());
+        for (AlarmProduceInfo produceInfo : alarmProduceInfos) {
+            AlarmInfoBatchDTO tmp = AlarmInfoBatchDTO.builder()
+                    .alarmInfoNo(produceInfo.getInfoNo())
+                    .alarmTime(produceInfo.getAlarmDate())
+
+
+                    .build();
+            results.add(tmp);
+        }
+        return results;
     }
 
     @Override
