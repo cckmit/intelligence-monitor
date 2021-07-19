@@ -25,11 +25,13 @@
         <result column="alarm_date" property="alarmDate" />
         <result column="alarm_timestamp" property="alarmTimestamp" />
         <result column="row_stamp" property="rowStamp" />
+        <result column="alarm_describe" property="alarmDescribe" />
+        <result column="alarm_level" property="alarmLevel" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        version, info_no, monitor_no, group_type, rule_no, event_time, process_time, monitor_num, monitor_num_str, create_time, with_history, pre_info_no, next_info_no, has_confirm, confirm_person, confirm_time, has_restore, restore_time, alarm_date, alarm_timestamp, row_stamp
+        version, info_no, monitor_no, group_type, rule_no, event_time, process_time, monitor_num, monitor_num_str, create_time, with_history, pre_info_no, next_info_no, has_confirm, confirm_person, confirm_time, has_restore, restore_time, alarm_date, alarm_timestamp, row_stamp, alarm_describe, alarm_level
     </sql>
 
 </mapper>

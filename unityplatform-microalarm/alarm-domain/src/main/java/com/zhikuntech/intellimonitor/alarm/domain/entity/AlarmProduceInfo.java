@@ -130,5 +130,15 @@ public class AlarmProduceInfo implements Serializable {
      */
     private Long rowStamp;
 
+    /**
+     * 告警描述
+     */
+    private String alarmDescribe;
+
+    /**
+     * 告警等级(严重/一般/告知)
+     */
+    private String alarmLevel;
+
 
 }
