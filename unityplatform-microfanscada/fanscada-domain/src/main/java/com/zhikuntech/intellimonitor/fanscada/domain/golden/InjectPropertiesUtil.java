@@ -12,6 +12,7 @@ import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGolden;
 import com.zhikuntech.intellimonitor.fanscada.domain.vo.FanBaseInfoVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
+
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -247,6 +248,7 @@ public class InjectPropertiesUtil<T> {
             log.info("##############injectByAnnotationCustomize方法执行完毕，用时：{}{}", System.currentTimeMillis() - start, "毫秒");
         } catch (Exception e) {
             e.printStackTrace();
+            log.error("获取庚顿数据异常", e);
         }
         return t;
     }
