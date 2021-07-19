@@ -73,16 +73,43 @@ public class AlarmProduceInfoServiceImpl extends ServiceImpl<AlarmProduceInfoMap
         if (Objects.isNull(limitQuery)) {
             throw new IllegalArgumentException("查询参数必须");
         }
+        final Integer queryType = limitQuery.getQueryType();
+        if (Objects.isNull(limitQuery.getQueryType())) {
+            throw new IllegalArgumentException("查询类型必须");
+        }
         if (Objects.isNull(limitQuery.getDataNum()) || Objects.isNull(limitQuery.getRowNum())) {
             throw new IllegalArgumentException("(数据条数,行号)必须");
         }
         if (limitQuery.getDataNum() > 30) {
             throw new IllegalArgumentException("单次获取的最大数据量不能超过30行");
         }
-        QueryWrapper<AlarmProduceInfo> produceInfoQueryWrapper = new QueryWrapper<>();
-        produceInfoQueryWrapper.gt("row_stamp", limitQuery.getRowNum());
-        produceInfoQueryWrapper.last(String.format("limit %d", limitQuery.getDataNum()));
-        List<AlarmProduceInfo> alarmProduceInfos = getBaseMapper().selectList(produceInfoQueryWrapper);
+
+        List<AlarmProduceInfo> alarmProduceInfos = null;
+        if (queryType == 1) {
+            /*
+                待确认重要告警:
+                    criteria
+                    1.当前告警(非历史告警)
+                    2.严重告警
+             */
+            QueryWrapper<AlarmProduceInfo> produceInfoQueryWrapper = new QueryWrapper<>();
+            produceInfoQueryWrapper.gt("row_stamp", limitQuery.getRowNum());
+            produceInfoQueryWrapper.eq("alarm_level", "严重");
+            produceInfoQueryWrapper.eq("with_history", 0);
+            produceInfoQueryWrapper.last(String.format("limit %d", limitQuery.getDataNum()));
+            alarmProduceInfos = getBaseMapper().selectList(produceInfoQueryWrapper);
+        } else if (queryType == 0) {
+            /*
+                查询全部告警
+             */
+            QueryWrapper<AlarmProduceInfo> produceInfoQueryWrapper = new QueryWrapper<>();
+            produceInfoQueryWrapper.gt("row_stamp", limitQuery.getRowNum());
+            produceInfoQueryWrapper.last(String.format("limit %d", limitQuery.getDataNum()));
+            alarmProduceInfos = getBaseMapper().selectList(produceInfoQueryWrapper);
+        } else {
+            throw new IllegalArgumentException("不能识别的查询类型:[" + queryType + "]");
+        }
+
         if (CollectionUtils.isEmpty(alarmProduceInfos)) {
             return Collections.emptyList();
         }
