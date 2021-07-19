@@ -1,6 +1,7 @@
 package com.zhikuntech.intellimonitor.cable.domain.controller;
 
 import com.zhikuntech.intellimonitor.cable.domain.dto.CableRunStressTimeDTO;
+import com.zhikuntech.intellimonitor.cable.domain.dto.CableStressAlarmDTO;
 import com.zhikuntech.intellimonitor.cable.domain.dto.CableTemperatureAlarmDTO;
 import com.zhikuntech.intellimonitor.cable.domain.query.AlarmQuery;
 import com.zhikuntech.intellimonitor.cable.domain.service.CableAlarmService;
@@ -26,7 +27,7 @@ public class CableAlarmController {
     private CableAlarmService cableAlarmService;
 
     @GetMapping("/getTemperatureAlarm")
-    @ApiOperation("获取当前告警海缆告警位置的前后12小时数据")
+    @ApiOperation("获取当前温度告警海缆告警位置的前后12小时数据")
     public BaseResponse<List<CableTemperatureAlarmDTO>> getAlarmTemperature(@RequestBody AlarmQuery query) throws Exception {
         return BaseResponse.success(cableAlarmService.getAlarmTemperature(query));
     }
@@ -35,5 +36,17 @@ public class CableAlarmController {
     @ApiOperation("获取当前告警海缆告警时间的整条海缆的温度数据")
     public BaseResponse<List<CableTemperatureAlarmDTO>> getAlarmAllTemperature(@RequestBody AlarmQuery query) throws Exception {
         return BaseResponse.success(cableAlarmService.getAlarmAllTemperature(query));
+    }
+
+    @GetMapping("/getStressAlarm")
+    @ApiOperation("获取当前应力告警海缆告警位置的前后12小时数据")
+    public BaseResponse<List<CableStressAlarmDTO>> getAlarmStress(@RequestBody AlarmQuery query) throws Exception {
+        return BaseResponse.success(cableAlarmService.getAlarmStress(query));
+    }
+
+    @GetMapping("/getStressAllAlarm")
+    @ApiOperation("获取当前告警海缆告警时间的整条海缆的温度数据")
+    public BaseResponse<List<CableStressAlarmDTO>> getAlarmAllStress(@RequestBody AlarmQuery query) throws Exception {
+        return BaseResponse.success(cableAlarmService.getAlarmAllStress(query));
     }
 }

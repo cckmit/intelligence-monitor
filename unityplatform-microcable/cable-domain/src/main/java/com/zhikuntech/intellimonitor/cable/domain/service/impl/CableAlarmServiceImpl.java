@@ -1,6 +1,7 @@
 package com.zhikuntech.intellimonitor.cable.domain.service.impl;
 
 import com.rtdb.api.model.RtdbData;
+import com.zhikuntech.intellimonitor.cable.domain.dto.CableStressAlarmDTO;
 import com.zhikuntech.intellimonitor.cable.domain.dto.CableTemperatureAlarmDTO;
 import com.zhikuntech.intellimonitor.cable.domain.query.AlarmQuery;
 import com.zhikuntech.intellimonitor.cable.domain.service.CableAlarmService;
@@ -31,18 +32,8 @@ public class CableAlarmServiceImpl implements CableAlarmService {
     @Override
     public List<CableTemperatureAlarmDTO> getAlarmTemperature(AlarmQuery query) throws Exception {
         List<CableTemperatureAlarmDTO> result=new ArrayList<>();
-        if(Objects.isNull(query)){
-            return result;
-        }
+        List<RtdbData> list = getListByQuery(query);
         int id=query.getId();
-        String date=query.getDate();
-        if (Objects.isNull(date)){
-            return result;
-        }
-        Date time=stringToDate(date);
-        Date dateStart=dateRoll(time,-12);
-        Date dateEnd=dateRoll(time,12);
-        List<RtdbData> list=getArchivedValues(id,dateStart,dateEnd);
         if (list.isEmpty()){
             return result;
         }
@@ -86,7 +77,75 @@ public class CableAlarmServiceImpl implements CableAlarmService {
         }
         return result;
     }
+    /**
+     * 获取当前报警海缆分段的一段时间的应力数据
+     */
+    @Override
+    public List<CableStressAlarmDTO> getAlarmStress(AlarmQuery query) throws Exception {
+        List<CableStressAlarmDTO> result=new ArrayList<>();
+        List<RtdbData> list = getListByQuery(query);
+        int id=query.getId();
+        for (RtdbData data : list){
+            CableStressAlarmDTO cableStressAlarmDTO=new CableStressAlarmDTO();
+            cableStressAlarmDTO.setNumber(id);
+            cableStressAlarmDTO.setDate(data.getDate());
+            BigDecimal temperature= MathUtil.getBigDecimal(data.getValue());
+            cableStressAlarmDTO.setStress(temperature);
+            result.add(cableStressAlarmDTO);
+        }
+        return result;
+    }
 
+    @Override
+    public List<CableStressAlarmDTO> getAlarmAllStress(AlarmQuery query) throws Exception {
+        List<CableStressAlarmDTO> result=new ArrayList<>();
+        if (Objects.isNull(query)){
+            return result;
+        }
+        int id = query.getId();
+        int[] ids=findCableById(id);
+        String date=query.getDate();
+        if (Objects.isNull(date)){
+            return result;
+        }
+        int j=1;
+        Date time=stringToDate(date);
+        for (int i : ids){
+            Double value = getFloat(i,date);
+            String valueStr=String.valueOf(value);
+            BigDecimal bigDecimal=MathUtil.getBigDecimal(valueStr);
+            CableStressAlarmDTO cableStressAlarmDTO=new CableStressAlarmDTO();
+            cableStressAlarmDTO.setStress(bigDecimal);
+            cableStressAlarmDTO.setDate(time);
+            cableStressAlarmDTO.setNumber(j);
+            j++;
+            result.add(cableStressAlarmDTO);
+        }
+        return result;
+    }
+
+    /**
+     * 根据query 在庚顿数据库查询出数据 查询点前后12小时的全部数据
+     */
+    public List<RtdbData> getListByQuery(AlarmQuery query) throws Exception {
+        List<RtdbData> result=new ArrayList<>();
+        if(Objects.isNull(query)){
+            return result;
+        }
+        int id=query.getId();
+        String date=query.getDate();
+        if (Objects.isNull(date)){
+            return result;
+        }
+        Date time=stringToDate(date);
+        Date dateStart=dateRoll(time,-12);
+        Date dateEnd=dateRoll(time,12);
+        List<RtdbData> list=getArchivedValues(id,dateStart,dateEnd);
+        if (list.isEmpty()){
+            return result;
+        }
+        return list;
+    }
     /**
      * 根据报警的id 查是哪条海缆的 写出查询庚顿数据库用的数组
      * A海缆温度点位8804-9803 14803-14842
@@ -124,9 +183,9 @@ public class CableAlarmServiceImpl implements CableAlarmService {
                     c++;
                 }
             }
-        }else if ((id>10803 && id<11803) || (id>14882 && id<14923)){
-            int a=8804;
-            int b=14803;
+        }else if ((id>=10803 && id<=11802) || (id>=14883 && id<=14922)){
+            int a=10803;
+            int b=14883;
             ids=abToInts(a,b,1000);
         }else if ((id>=11803 && id<=12802)||(id>=14923 && id<=15484)){
             int a=11803;
