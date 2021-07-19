@@ -64,10 +64,9 @@ public class CableAlarmServiceImpl implements CableAlarmService {
         }
         int j=1;
         Date time=stringToDate(date);
-        for (int i : ids){
-            Double value = getFloat(i,date);
-            String valueStr=String.valueOf(value);
-            BigDecimal bigDecimal=MathUtil.getBigDecimal(valueStr);
+        List<RtdbData> list = getCrossSectionValues(ids,time);
+        for (RtdbData i : list){
+            BigDecimal bigDecimal= MathUtil.getBigDecimal(i.getValue());
             CableTemperatureAlarmDTO cableTemperatureAlarmDTO=new CableTemperatureAlarmDTO();
             cableTemperatureAlarmDTO.setTemperature(bigDecimal);
             cableTemperatureAlarmDTO.setDate(time);
@@ -110,10 +109,9 @@ public class CableAlarmServiceImpl implements CableAlarmService {
         }
         int j=1;
         Date time=stringToDate(date);
-        for (int i : ids){
-            Double value = getFloat(i,date);
-            String valueStr=String.valueOf(value);
-            BigDecimal bigDecimal=MathUtil.getBigDecimal(valueStr);
+        List<RtdbData> list = getCrossSectionValues(ids,time);
+        for (RtdbData i : list){
+            BigDecimal bigDecimal= MathUtil.getBigDecimal(i.getValue());
             CableStressAlarmDTO cableStressAlarmDTO=new CableStressAlarmDTO();
             cableStressAlarmDTO.setStress(bigDecimal);
             cableStressAlarmDTO.setDate(time);
@@ -290,15 +288,15 @@ public class CableAlarmServiceImpl implements CableAlarmService {
      * getFloat (int id, String dateTime)
      * "2021-07-02 15:40:00"
      */
-    private double getFloat(int id, String dateTime) throws Exception {
-        double value;
+    private List<RtdbData> getCrossSectionValues(int[] ids,Date datetime) throws Exception {
+        List<RtdbData> value;
         try {
-            value = GoldenUtil.getFloat(id,dateTime);
+            value = GoldenUtil.getCrossSectionValues(ids,datetime);
         } catch (SocketException e) {
             CableAlarmServiceImpl.log.info("golden连接失败，重连后取消之前所有连接");
             GoldenUtil.servers.clear();
             //myWebSocketHandler.sendAllMessage("重新订阅");
-            return 0;
+            return null;
         }
         return value;
     }

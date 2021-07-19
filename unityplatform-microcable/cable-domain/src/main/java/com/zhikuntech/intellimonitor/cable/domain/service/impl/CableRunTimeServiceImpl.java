@@ -76,9 +76,6 @@ public class CableRunTimeServiceImpl implements CableRunTimeService {
                 }
             }
         }
-        for (int a : ids){
-            System.out.println(a);
-        }
         return valueDateToTemperatureList(ids);
     }
 

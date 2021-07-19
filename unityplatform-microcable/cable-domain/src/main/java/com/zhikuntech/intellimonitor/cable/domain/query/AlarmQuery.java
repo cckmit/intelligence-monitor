@@ -16,12 +16,12 @@ public class AlarmQuery {
     /**
      * 告警海缆id
      */
-    @ApiModelProperty(value = "告警海缆编号")
-    private int id;
+    @ApiModelProperty(value = "告警海缆编号", required = true)
+    private Integer id;
 
     /**
      * 告警时间
      */
-    @ApiModelProperty(value = "告警时间")
+    @ApiModelProperty(value = "日期字符串:[yyyy-MM-dd HH:mm:ss]", required = true)
     private String date;
 }

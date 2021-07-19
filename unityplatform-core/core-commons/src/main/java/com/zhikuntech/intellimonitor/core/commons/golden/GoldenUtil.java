@@ -1,12 +1,15 @@
 package com.zhikuntech.intellimonitor.core.commons.golden;
 
 import com.rtdb.api.callbackInter.RSDataChange;
+import com.rtdb.api.exception.EncodePacketErrorException;
+import com.rtdb.api.exception.NoAuthorityException;
 import com.rtdb.api.model.RtdbData;
 import com.rtdb.api.model.ValueData;
 import com.rtdb.api.util.DateUtil;
 import com.rtdb.enums.DataSort;
 import com.rtdb.enums.RtdbHisMode;
 import com.rtdb.model.MinPoint;
+import com.rtdb.model.ErrorParse;
 import com.rtdb.model.SearchCondition;
 import com.rtdb.service.impl.*;
 import com.rtdb.service.inter.Base;
@@ -15,6 +18,9 @@ import com.rtdb.service.inter.Snapshot;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
+import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -205,6 +211,19 @@ public class GoldenUtil {
         return archivedValues;
     }
 
+
+    /**
+     * 获取指定标签点指定时间的历史存储值
+     * @param ids          标签点id
+     * @param datetime     时间
+     */
+    public static List<RtdbData> getCrossSectionValues(int[] ids,Date datetime) throws UnsupportedEncodingException, NoAuthorityException, IOException,
+            EncodePacketErrorException, Exception {
+        ServerImpl serverImpl = pool.getServerImpl();
+        HistorianImpl his = new HistorianImpl(serverImpl);
+        List<RtdbData> list = his.getCrossSectionValues(ids, datetime, RtdbHisMode.RTDB_NEXT);
+        return list;
+    }
 
     /**
      * 获取指定id当前最新快照信息
