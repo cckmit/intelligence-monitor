@@ -86,6 +86,11 @@ public class AlarmProduceInfo implements Serializable {
     private String preInfoNo;
 
     /**
+     * 标识告警唯一链
+     */
+    private String chainInfo;
+
+    /**
      * 下一条状态编码
      */
     private String nextInfoNo;
