@@ -89,8 +89,7 @@ public class AlarmProduceInfoServiceImpl extends ServiceImpl<AlarmProduceInfoMap
             AlarmInfoBatchDTO tmp = AlarmInfoBatchDTO.builder()
                     .alarmInfoNo(produceInfo.getInfoNo())
                     .alarmTime(produceInfo.getAlarmDate())
-
-
+//                    .alarmDescribe()
                     .build();
             results.add(tmp);
         }
