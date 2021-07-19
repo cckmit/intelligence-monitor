@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
@@ -25,18 +26,21 @@ public class HistoryRecallQuery {
     /**
      * 点位id
      */
-    @ApiModelProperty("点位id")
+    @ApiModelProperty(value = "点位id",required = true)
+    @NotNull(message = "点位id不能为空")
     private Integer id;
     /**
      * 开始时间
      */
-    @ApiModelProperty("开始时间")
+    @ApiModelProperty(value = "开始时间",required = true)
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @NotNull(message = "开始时间不能为空")
     private Date startTime;
     /**
      * 结束时间
      */
-    @ApiModelProperty("结束时间")
+    @ApiModelProperty(value = "结束时间",required = true)
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @NotNull(message = "结束时间不能为空")
     private Date endTime;
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 @Api(tags = "事故追忆")
 @RestController
@@ -28,7 +29,7 @@ public class HistoryRecallController {
      */
     @ApiOperation("获取事故追忆数据")
     @PostMapping("/getHistory")
-    public BaseResponse getArchivedValues(@RequestBody HistoryRecallQuery historyRecallQuery){
+    public BaseResponse getArchivedValues(@Valid @RequestBody HistoryRecallQuery historyRecallQuery){
         log.info("获取事故追忆数据,参数historyRecallQuery->{}",historyRecallQuery);
         return BaseResponse.success(historyRecallService.getHistory(historyRecallQuery));
     }
