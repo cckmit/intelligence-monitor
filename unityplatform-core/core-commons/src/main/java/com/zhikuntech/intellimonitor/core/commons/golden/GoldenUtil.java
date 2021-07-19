@@ -176,9 +176,6 @@ public class GoldenUtil {
     public static List<RtdbData> getArchivedValues(int id, Date dateStart, Date dateEnd) throws Exception {
         ServerImpl serverImpl = pool.getServerImpl();
         HistorianImpl his = new HistorianImpl(serverImpl);
-        id = 1;
-        dateStart = DateUtil.stringToDate("2021-07-02 15:40:00");
-        dateEnd = DateUtil.stringToDate("2021-07-02 15:50:00");
 
         long s = System.currentTimeMillis();
         //该标签点这段时间内的存储值数量
