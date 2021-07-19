@@ -6,15 +6,15 @@ import com.rtdb.api.model.ValueData;
 import com.rtdb.api.util.DateUtil;
 import com.rtdb.enums.DataSort;
 import com.rtdb.enums.RtdbHisMode;
+import com.rtdb.model.MinPoint;
 import com.rtdb.model.SearchCondition;
 import com.rtdb.service.impl.*;
+import com.rtdb.service.inter.Base;
 import com.rtdb.service.inter.Historian;
 import com.rtdb.service.inter.Snapshot;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,11 +29,18 @@ public class GoldenUtil {
 
     public static ServerImplPool pool;
 
+    public static Base base;
+
     /**
      * 初始化庚顿数据库连接池
      */
     public static void init(String ip, int port, String user, String passWord, int poolSize, int maxSize) {
         pool = new ServerImplPool(ip, port, user, passWord, poolSize, maxSize);
+        try {
+            base = new BaseImpl(new ServerImpl(ip, port, user, passWord));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static ConcurrentHashMap<String, ServerImpl> servers = new ConcurrentHashMap<>();
@@ -176,9 +183,9 @@ public class GoldenUtil {
     public static List<RtdbData> getArchivedValues(int id, Date dateStart, Date dateEnd) throws Exception {
         ServerImpl serverImpl = pool.getServerImpl();
         HistorianImpl his = new HistorianImpl(serverImpl);
-        id = 1;
-        dateStart = DateUtil.stringToDate("2021-07-02 15:40:00");
-        dateEnd = DateUtil.stringToDate("2021-07-02 15:50:00");
+//        id = 1;
+//        dateStart = DateUtil.stringToDate("2021-07-02 15:40:00");
+//        dateEnd = DateUtil.stringToDate("2021-07-02 15:50:00");
 
         long s = System.currentTimeMillis();
         //该标签点这段时间内的存储值数量
@@ -186,10 +193,15 @@ public class GoldenUtil {
         //该标签点这段时间内的真实存储值数量
         int realCount = his.archivedValuesRealCount(id, dateStart, dateEnd);
 
-        List<RtdbData> archivedValues = his.getArchivedValues(id, realCount, dateStart, dateEnd);
-        long e = System.currentTimeMillis();
-        log.info(count + "_______" + realCount);
-        log.info(archivedValues.size() + "  条记录,用时 : " + (e - s) + "  ms");
+        List<RtdbData> archivedValues = null;
+        try {
+            archivedValues = his.getArchivedValues(id, realCount, dateStart, dateEnd);
+            long e = System.currentTimeMillis();
+            log.info(count + "_______" + realCount);
+            log.info(archivedValues.size() + "  条记录,用时 : " + (e - s) + "  ms");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return archivedValues;
     }
 
@@ -223,4 +235,22 @@ public class GoldenUtil {
             throw new Exception("golden数据库连接池已满，连接失败！");
         }
     }
+
+    /**
+     * 根据 "表名.标签点名" 格式批量获取标签点标识stms.stmsp0082
+     * @param strings
+     * @return
+     * @throws Exception
+     */
+    public static List<MinPoint> findPoints(String[] strings) throws Exception {
+        log.info("strings->"+ Arrays.toString(strings));
+        List<MinPoint> list = base.findPoints(strings);
+        if(list!=null){
+            log.info(list.toString());
+        }else {
+            log.info("根据 表名.标签点名 格式批量获取标签点标识为空!");
+        }
+        return list;
+    }
+
 }
