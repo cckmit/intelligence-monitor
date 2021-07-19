@@ -2,13 +2,19 @@ package com.zhikuntech.intellimonitor.alarm.domain.query.alarminfo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
 /**
  * @author liukai
  */
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Data
 @ApiModel("告警信息批量查询")
 public class AlarmInfoLimitQuery implements Serializable {

@@ -76,6 +76,9 @@ public class AlarmProduceInfoServiceImpl extends ServiceImpl<AlarmProduceInfoMap
         if (Objects.isNull(limitQuery.getDataNum()) || Objects.isNull(limitQuery.getRowNum())) {
             throw new IllegalArgumentException("(数据条数,行号)必须");
         }
+        if (limitQuery.getDataNum() > 30) {
+            throw new IllegalArgumentException("单次获取的最大数据量不能超过30行");
+        }
         QueryWrapper<AlarmProduceInfo> produceInfoQueryWrapper = new QueryWrapper<>();
         produceInfoQueryWrapper.gt("row_stamp", limitQuery.getRowNum());
         produceInfoQueryWrapper.last(String.format("limit %d", limitQuery.getDataNum()));
@@ -89,7 +92,16 @@ public class AlarmProduceInfoServiceImpl extends ServiceImpl<AlarmProduceInfoMap
             AlarmInfoBatchDTO tmp = AlarmInfoBatchDTO.builder()
                     .alarmInfoNo(produceInfo.getInfoNo())
                     .alarmTime(produceInfo.getAlarmDate())
-//                    .alarmDescribe()
+                    .alarmDescribe(produceInfo.getAlarmDescribe())
+                    //# 需要查询规则
+                    .alarmLevel(produceInfo.getRuleNo())
+                    .alarmType(produceInfo.getRuleNo())
+                    //# 需要查询规则
+                    .confirm(produceInfo.getHasConfirm())
+                    .confirmPerson(produceInfo.getConfirmPerson())
+                    .confirmTime(produceInfo.getConfirmTime())
+                    .restoreTime(produceInfo.getRestoreTime())
+                    .rowNum(produceInfo.getRowStamp())
                     .build();
             results.add(tmp);
         }
