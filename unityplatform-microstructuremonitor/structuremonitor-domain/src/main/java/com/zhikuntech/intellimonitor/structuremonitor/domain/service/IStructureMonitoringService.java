@@ -25,5 +25,5 @@ public interface IStructureMonitoringService {
      * @param type
      * @return
      */
-    BaseResponse<LiveData> getData(String type);
+    BaseResponse<List<LiveData>> getData(String type,Integer fanNumber);
 }
