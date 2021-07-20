@@ -20,9 +20,30 @@ public class StatusDataReceiveEvent extends ApplicationEvent {
     @Getter
     private final String monitorNo;
 
-    public StatusDataReceiveEvent(String monitorNo) {
+    /**
+     * 测点类型
+     */
+    @Getter
+    private final Integer monitorType;
+
+    /**
+     * 事件时间戳
+     */
+    @Getter
+    private final Long eventTimeStamp;
+
+    /**
+     * 测点状态
+     */
+    @Getter
+    private final Integer newestStatus;
+
+    public StatusDataReceiveEvent(String monitorNo, Integer monitorType, Long eventTimeStamp, Integer newestStatus) {
         super(UUID.randomUUID().toString());
         this.monitorNo = monitorNo;
+        this.monitorType = monitorType;
+        this.eventTimeStamp = eventTimeStamp;
+        this.newestStatus = newestStatus;
     }
 
 }
