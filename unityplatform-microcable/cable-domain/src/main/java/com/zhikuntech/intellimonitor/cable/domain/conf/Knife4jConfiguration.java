@@ -32,7 +32,7 @@ public class Knife4jConfiguration {
                 .groupName("1.0版本")
                 .select()
                 //这里指定Controller扫描包路径
-                .apis(RequestHandlerSelectors.basePackage("com.zhikuntech.intellimonitor.mainpage.domain.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.zhikuntech.intellimonitor.cable.domain.controller"))
                 .paths(PathSelectors.any())
                 .build();
         return docket;

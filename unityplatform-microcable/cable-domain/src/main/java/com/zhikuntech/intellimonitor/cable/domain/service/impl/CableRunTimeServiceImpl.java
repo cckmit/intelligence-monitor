@@ -12,65 +12,40 @@ import java.math.BigDecimal;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 @Service
 @Slf4j
 public class CableRunTimeServiceImpl implements CableRunTimeService {
     @Override
     public List<CableRunStressTimeDTO> getRuntimeStress1() throws Exception {
-        int[] ids = new int[1562];
-        for (int j=0;j<=1561; j++){
-            if(j<1000){
-                for(int i =11803;i<=12802;i++){
-                    ids[j] = i;
-                }
-            }else{
-                for (int i=14803;i<=15484;i++){
-                    ids[j] =i;
-                }
-            }
-        }
+        //A海缆应力点位11803-12802 14923-15484
+        int a=11803;
+        int b=14923;
+        int[] ids=abToInts(a,b,1562);
         return valueDateToStressList(ids);
     }
 
     @Override
     public List<CableRunStressTimeDTO> getRuntimeStress2() throws Exception {
-        int[] ids = new int[1562];
-        for (int j=0;j<=1561; j++){
-            if(j<1000){
-                for(int i =12803;i<=13802;i++){
-                    ids[j] = i;
-                }
-            }else{
-                for (int i=15485;i<=16046;i++){
-                    ids[j] =i;
-                }
-            }
-        }
+        //B海缆应力点位12803-13802 15485-16046
+        int a=12803;
+        int b=15485;
+        int[] ids=abToInts(a,b,1562);
         return valueDateToStressList(ids);
     }
 
     @Override
     public List<CableRunStressTimeDTO> getRuntimeStress3() throws Exception {
-        int[] ids = new int[1562];
-        for (int j=0;j<=1561; j++){
-            if(j<1000){
-                for(int i =13803;i<=14802;i++){
-                    ids[j] = i;
-                }
-            }else{
-                for (int i=16047;i<=16608;i++){
-                    ids[j] =i;
-                }
-            }
-        }
+        //C海缆应力点位13803-14802 16047-16608
+        int a=13803;
+        int b=16047;
+        int[] ids=abToInts(a,b,1562);
         return valueDateToStressList(ids);
     }
 
     @Override
     public List<CableRunStressTimeDTO> getRuntimeStressTest() throws Exception {
-        int[] ids = new int[1562];
+        int[] ids = new int[1562];//海缆应力点位 测试
         for (int j = 0 ; j <= 156 ; j++ ){
             ids[0]=1;
             if (j<156){
@@ -87,7 +62,7 @@ public class CableRunTimeServiceImpl implements CableRunTimeService {
 
     @Override
     public List<CableRunTimeTemperatureDTO> getRuntimeTemperatureTest() throws Exception {
-        int[] ids = new int[1040];
+        int[] ids = new int[1040];//海缆温度点位 测试
         ids[0]=1;
 
         for (int j = 0 ; j <= 103 ; j++ ){
@@ -106,33 +81,31 @@ public class CableRunTimeServiceImpl implements CableRunTimeService {
 
     @Override
     public List<CableRunTimeTemperatureDTO> getRuntimeTemperature1() throws Exception {
-        int[] ids = new int[1040];
-        for (int j=0;j<=1040; j++){
-            if(j<1000){
-                for(int i =8804;i<=9803;i++){
-                    ids[j] = i;
-                }
-            }else{
-                for (int i=14803;i<=14842;i++){
-                    ids[j] =i;
-                }
-            }
-        }
+        //A海缆温度点位8804-9803 14803-14842
+        int a=8804;
+        int b=14803;
+        int[] ids=abToInts(a,b,1000);
         return valueDateToTemperatureList(ids);
     }
 
     @Override
     public List<CableRunTimeTemperatureDTO> getRuntimeTemperature2() throws Exception {
-        int[] ids = new int[1040];
-        for (int j=0;j<=1040; j++){
-            if(j<1000){
-                for(int i =9804;i<=10802;i++){
-                    ids[j] = i;
-                }
+        int[] ids = new int[1040];//B海缆温度点位9804-9932(1-129) 9933-10802(131-1000) 14843-14882(1001-1040)  (2号海缆温度传感器130号 庚顿里没有这个点)
+        int a=9804;
+        int b=9933;
+        int c=14843;
+        for (int j=0 ; j<1040; j++){
+            if (j<129){//0-128
+               ids[j] = a;
+                a++;
+            } else if (j==129){//129 130号海缆
+                ids[j] = 0;//先写成1
+            }else if (j>129 && j<1000){//130-999 131号到1000号
+                ids[j] = b;
+                b++;
             }else{
-                for (int i=14843;i<=14882;i++){
-                    ids[j] =i;
-                }
+                ids[j] = c;
+                c++;
             }
         }
         return valueDateToTemperatureList(ids);
@@ -140,19 +113,25 @@ public class CableRunTimeServiceImpl implements CableRunTimeService {
 
     @Override
     public List<CableRunTimeTemperatureDTO> getRuntimeTemperature3() throws Exception {
-        int[] ids = new int[1040];
-        for (int j=0;j<=1040; j++){
-            if(j<1000){
-                for(int i =10803;i<=11802;i++){
-                    ids[j] = i;
-                }
-            }else{
-                for (int i=14883;i<=14922;i++){
-                    ids[j] =i;
-                }
+        //C海缆温度点位10803-11802 14883-14922
+        int a=10803;
+        int b=14883;
+        int[] ids=abToInts(a,b,1000);
+        return valueDateToTemperatureList(ids);
+    }
+
+    public synchronized int[] abToInts(int a,int b,int c){
+        int[] ids = new int[c];
+        for (int j=0 ; j<ids.length; j++){
+            if (j<1000){
+                ids[j] = a;
+                a++;
+            } else{
+                ids[j] = b;
+                b++;
             }
         }
-        return valueDateToTemperatureList(ids);
+        return ids;
     }
 
     public synchronized List<CableRunTimeTemperatureDTO> valueDateToTemperatureList(int[] ids) throws Exception{

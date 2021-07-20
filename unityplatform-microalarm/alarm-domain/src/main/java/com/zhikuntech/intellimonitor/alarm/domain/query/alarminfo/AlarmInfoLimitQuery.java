@@ -27,4 +27,7 @@ public class AlarmInfoLimitQuery implements Serializable {
     @ApiModelProperty(value = "行号", required = true)
     private Long rowNum;
 
+    @ApiModelProperty(value = "查询类型(0全部告警,1待确认重要告警)", required = true)
+    private Integer queryType;
+
 }

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>intelli-monitor-unityplatform</artifactId>
+        <groupId>com.zhikuntech.intellimonitor</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>unityplatform-microintegratedautomation</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>integratedautomation-app</module>
+        <module>integratedautomation-data</module>
+        <module>integratedautomation-domain</module>
+        <module>integratedautomation-facade</module>
+        <module>integratedautomation-prototype</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.zhikuntech.intellimonitor</groupId>
+                <artifactId>integratedautomation-data</artifactId>
+                <version>${intelli-monitor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zhikuntech.intellimonitor</groupId>
+                <artifactId>integratedautomation-domain</artifactId>
+                <version>${intelli-monitor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zhikuntech.intellimonitor</groupId>
+                <artifactId>integratedautomation-prototype</artifactId>
+                <version>${intelli-monitor.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
