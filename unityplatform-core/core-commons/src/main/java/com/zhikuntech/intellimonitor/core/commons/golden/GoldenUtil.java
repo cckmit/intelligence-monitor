@@ -36,11 +36,6 @@ public class GoldenUtil {
      */
     public static void init(String ip, int port, String user, String passWord, int poolSize, int maxSize) {
         pool = new ServerImplPool(ip, port, user, passWord, poolSize, maxSize);
-        try {
-            base = new BaseImpl(new ServerImpl(ip, port, user, passWord));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public static ConcurrentHashMap<String, ServerImpl> servers = new ConcurrentHashMap<>();
@@ -237,20 +232,21 @@ public class GoldenUtil {
     }
 
     /**
-     * 根据 "表名.标签点名" 格式批量获取标签点标识stms.stmsp0082
+     * 根据 "表名.标签点名" 格式批量获取标签点数据 stms.stmsp0082
      * @param strings
      * @return
-     * @throws Exception
      */
-    public static List<MinPoint> findPoints(String[] strings) throws Exception {
-        log.info("strings->"+ Arrays.toString(strings));
-        List<MinPoint> list = base.findPoints(strings);
-        if(list!=null){
-            log.info(list.toString());
-        }else {
-            log.info("根据 表名.标签点名 格式批量获取标签点标识为空!");
+    public static List<MinPoint> findPoints(String[] strings){
+        ServerImpl serverImpl = null;
+        try {
+            serverImpl = pool.getServerImpl();
+            base = new BaseImpl(serverImpl);
+            List<MinPoint> list = base.findPoints(strings);
+            return list;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return list;
+        return null;
     }
 
 }
