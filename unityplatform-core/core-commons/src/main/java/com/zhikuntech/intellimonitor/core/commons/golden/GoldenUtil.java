@@ -42,6 +42,11 @@ public class GoldenUtil {
      */
     public static void init(String ip, int port, String user, String passWord, int poolSize, int maxSize) {
         pool = new ServerImplPool(ip, port, user, passWord, poolSize, maxSize);
+        try {
+            base = new BaseImpl(new ServerImpl(ip, port, user, passWord));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static ConcurrentHashMap<String, ServerImpl> servers = new ConcurrentHashMap<>();
