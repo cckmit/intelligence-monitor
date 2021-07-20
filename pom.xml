@@ -30,6 +30,7 @@
         <module>unityplatform-microonlinemonitor</module>
         <module>unityplatform-microstructuredata</module>
         <module>unityplatform-microcable</module>
+        <module>unityplatform-microintegratedautomation</module>
     </modules>
 
     <properties>

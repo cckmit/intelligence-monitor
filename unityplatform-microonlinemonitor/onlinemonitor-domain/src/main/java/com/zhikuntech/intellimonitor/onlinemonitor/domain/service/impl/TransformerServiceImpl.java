@@ -31,7 +31,7 @@ public class TransformerServiceImpl implements TransformerService {
     @Autowired
     private TransformerWebsocketHandler websocketHandler;
 
-    private final static int CAPACITY = 200;
+    private final static int CAPACITY = 1800;
 
     public static List<TransformerRuntimeDTO> list_land = new ArrayList<>();
     public static List<TransformerRuntimeDTO> list_sea_1 = new ArrayList<>();

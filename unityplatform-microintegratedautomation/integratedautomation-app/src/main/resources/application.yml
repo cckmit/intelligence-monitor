@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    active: local
+  application:
+    name: integratedautomation-app
+
+server:
+  port: 18093
