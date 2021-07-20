@@ -34,6 +34,8 @@ public interface BackendToGoldenService extends IService<BackendToGolden> {
     List<Integer> listGoldenIdByBackendIdOrNumber(BackendToGoldenQueryList backendToGoldenQueryList);
 
     /**
+     * 根据数据库表中编号批量查询golden数据库表中id
+     *
      * @param goldenIdQuery
      * @return
      */

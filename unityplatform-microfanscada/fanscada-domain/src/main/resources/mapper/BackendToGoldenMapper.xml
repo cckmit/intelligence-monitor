@@ -31,7 +31,7 @@
         select goldenId
         from mp_backen_to_golden
         <choose>
-            <when test="backendToGoldenQueryList.backendIdList.size gt 0">
+            <when test="backendToGoldenQueryList.backendIdList != null and backendToGoldenQueryList.backendIdList.size gt 0">
                 where
                 backendId
                 in
@@ -40,7 +40,7 @@
                     #{backendId}
                 </foreach>
             </when>
-            <when test="backendToGoldenQueryList.numberList.size gt 0">
+            <when test="backendToGoldenQueryList.numberList != null and backendToGoldenQueryList.numberList.size gt 0">
                 where
                 number
                 in
