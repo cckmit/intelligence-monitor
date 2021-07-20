@@ -1,16 +1,22 @@
 package com.zhikuntech.intellimonitor.structuremonitor.domain.service.impl;
 
+import com.rtdb.api.model.ValueData;
 import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
 import com.zhikuntech.intellimonitor.core.commons.base.ResultCode;
 import com.zhikuntech.intellimonitor.core.commons.constant.StructureConstant;
+import com.zhikuntech.intellimonitor.core.commons.golden.GoldenUtil;
+import com.zhikuntech.intellimonitor.structuremonitor.domain.pojo.StructureToGolden;
 import com.zhikuntech.intellimonitor.structuremonitor.domain.query.StructureMonitoringQuery;
 import com.zhikuntech.intellimonitor.structuremonitor.domain.service.IStructureMonitoringService;
+import com.zhikuntech.intellimonitor.structuremonitor.domain.service.StructureToGoldenService;
 import com.zhikuntech.intellimonitor.structuremonitor.domain.utils.DateUtil;
+import com.zhikuntech.intellimonitor.structuremonitor.domain.utils.InjectPropertiesUtil;
 import com.zhikuntech.intellimonitor.structuremonitor.domain.vo.LiveData;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 /**
@@ -64,9 +70,24 @@ public class StructureMonitoringServiceImpl implements IStructureMonitoringServi
         return null;
     }
 
+    @Resource
+    private StructureToGoldenService structureToGoldenService;
+
     @Override
-    public BaseResponse<List<LiveData>> getData(String type, Integer fanNumber) {
-    //todo 获取庚顿id映射关系
+    public BaseResponse<LiveData> getData(String type, Integer fanNumber) {
+        // 获取庚顿id映射关系
+        List<StructureToGolden> map = structureToGoldenService.getMap(fanNumber);
+        int[] ids = map.stream().mapToInt(StructureToGolden::getGoldenId).toArray();
+        // 查询庚顿
+        List<ValueData> snapshots = null;
+        try {
+            snapshots = GoldenUtil.getSnapshots(ids);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        StructureToGolden structureToGolden = new StructureToGolden();
+        InjectPropertiesUtil.injectByAnnotation(structureToGolden,snapshots,map);
 
         return null;
     }
