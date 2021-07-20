@@ -202,6 +202,9 @@ public class GoldenUtil {
             log.info(archivedValues.size() + "  条记录,用时 : " + (e - s) + "  ms");
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            serverImpl.close();
+            his.close();
         }
         return archivedValues;
     }
