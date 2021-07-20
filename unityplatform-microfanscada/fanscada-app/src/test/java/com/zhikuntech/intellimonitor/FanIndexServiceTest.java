@@ -24,6 +24,7 @@ public class FanIndexServiceTest {
     @Autowired
     private FanIndexService fanIndexService;
 
+
     @Test
     public void getFanBaseInfoList() {
         System.out.println(fanIndexService.getFanBaseInfoList());

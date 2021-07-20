@@ -26,13 +26,11 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FanDetailOneServiceTest {
     @Autowired
     private FanDetailOneService detailOneService;
-    //风机编号
+    //风机编号，
     String num = "44";
-
     @Test
     public void getData() {
         BaseResponse<FanModelDataVO> data = detailOneService.getData(num);
         System.out.println(data);
-
     }
 }
