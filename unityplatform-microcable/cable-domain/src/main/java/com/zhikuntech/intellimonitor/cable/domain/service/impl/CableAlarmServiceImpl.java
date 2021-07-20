@@ -6,19 +6,14 @@ import com.zhikuntech.intellimonitor.cable.domain.dto.CableTemperatureAlarmDTO;
 import com.zhikuntech.intellimonitor.cable.domain.query.AlarmQuery;
 import com.zhikuntech.intellimonitor.cable.domain.query.CableIdQuery;
 import com.zhikuntech.intellimonitor.cable.domain.service.CableAlarmService;
-import com.zhikuntech.intellimonitor.cable.domain.service.CableRunTimeService;
 import com.zhikuntech.intellimonitor.cable.domain.utils.CableIdCalc;
 import com.zhikuntech.intellimonitor.cable.domain.utils.MathUtil;
 import com.zhikuntech.intellimonitor.core.commons.golden.GoldenUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.util.StringUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.net.SocketException;
-import java.text.DecimalFormat;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -61,13 +56,12 @@ public class CableAlarmServiceImpl implements CableAlarmService {
         }
         int id = queryToQuery(query).getId();
         int[] ids=findCableById(id);
-        String date=query.getDate();
-        if (Objects.isNull(date)){
+        if (Objects.isNull(query.getDate())){
             return result;
         }
-        Date time=stringToDate(date);
-        List<RtdbData> list = getCrossSectionValues(ids,time);
+        Date time=stringToDate(query.getDate());
         int j=1;
+        List<RtdbData> list = getCrossSectionValues(ids,time);
         assert list != null;
         for (RtdbData i : list){
             BigDecimal bigDecimal= MathUtil.getBigDecimal(i.getValue());
@@ -130,6 +124,7 @@ public class CableAlarmServiceImpl implements CableAlarmService {
         return result;
     }
 
+
     /**
      * 根据CableIdQuery 得到 AlarmQuery
      */
@@ -158,6 +153,7 @@ public class CableAlarmServiceImpl implements CableAlarmService {
         Date dateStart=dateRoll(time,-12);
         Date dateEnd=dateRoll(time,12);
         List<RtdbData> list=getArchivedValues(id,dateStart,dateEnd);
+        assert list != null;
         if (list.isEmpty()){
             return result;
         }
@@ -174,9 +170,6 @@ public class CableAlarmServiceImpl implements CableAlarmService {
      */
     public int[] findCableById(int id){
         int[] ids;
-        if (Objects.isNull(id)){
-            return new int[0];
-        }
         if ((id>=8804 && id<=9803) || (id>=14803 && id<=14842)){
             int a=8804;
             int b=14803;
@@ -192,7 +185,7 @@ public class CableAlarmServiceImpl implements CableAlarmService {
                     a++;
                 } else if (j==129){//129 130号海缆
                     ids[j] = 0;//先写成1
-                }else if (j>129 && j<1000){//130-999 131号到1000号
+                }else if (j>=130 && j<=999){//130-999 131号到1000号
                     ids[j] = b;
                     b++;
                 }else{
@@ -241,35 +234,13 @@ public class CableAlarmServiceImpl implements CableAlarmService {
     }
 
     /**
-     * Object 转 BigDecimal
-     */
-    public static BigDecimal toBigDecimal(Object value) {
-        BigDecimal bigDec = null;
-        if (value != null) {
-            if (value instanceof BigDecimal) {
-                bigDec = (BigDecimal) value;
-            } else if (value instanceof String) {
-                bigDec = new BigDecimal((String) value);
-            } else if (value instanceof BigInteger) {
-                bigDec = new BigDecimal((BigInteger) value);
-            } else if (value instanceof Number) {
-                bigDec = new BigDecimal(((Number) value).doubleValue());
-            } else {
-                throw new ClassCastException("Can Not make [" + value + "] into a BigDecimal.");
-            }
-        }
-        return bigDec;
-    }
-
-    /**
      * Date 格式 加小时
      */
     public static Date dateRoll(Date date, int i) {
         Calendar c = Calendar.getInstance();
         c.setTime(date);
         c.add(Calendar.HOUR_OF_DAY, i);
-        Date newDate = c.getTime();
-        return newDate;
+        return c.getTime();
     }
 
     /**
@@ -278,8 +249,7 @@ public class CableAlarmServiceImpl implements CableAlarmService {
     public Date stringToDate(String str){
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         ParsePosition pos = new ParsePosition(0);
-        Date date = formatter.parse(str, pos);
-        return date;
+        return formatter.parse(str, pos);
     }
 
     /**
