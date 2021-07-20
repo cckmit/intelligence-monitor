@@ -87,7 +87,7 @@ public class StructureMonitoringServiceImpl implements IStructureMonitoringServi
         }
 
         StructureToGolden structureToGolden = new StructureToGolden();
-        InjectPropertiesUtil.injectByAnnotation(structureToGolden,snapshots,map);
+        StructureToGolden structureToGolden1 = InjectPropertiesUtil.injectByAnnotation(structureToGolden, snapshots, map);
 
         return null;
     }
