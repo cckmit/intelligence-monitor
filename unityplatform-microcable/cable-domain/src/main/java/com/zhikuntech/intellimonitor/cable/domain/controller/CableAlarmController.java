@@ -3,6 +3,7 @@ package com.zhikuntech.intellimonitor.cable.domain.controller;
 import com.zhikuntech.intellimonitor.cable.domain.dto.CableStressAlarmDTO;
 import com.zhikuntech.intellimonitor.cable.domain.dto.CableTemperatureAlarmDTO;
 import com.zhikuntech.intellimonitor.cable.domain.query.AlarmQuery;
+import com.zhikuntech.intellimonitor.cable.domain.query.CableIdQuery;
 import com.zhikuntech.intellimonitor.cable.domain.service.CableAlarmService;
 import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
 import io.swagger.annotations.Api;
@@ -26,25 +27,25 @@ public class CableAlarmController {
 
     @PostMapping("/getTemperatureAlarm")
     @ApiOperation("海缆温度告警的前后12小时数据")
-    public BaseResponse<List<CableTemperatureAlarmDTO>> getAlarmTemperature(@RequestBody AlarmQuery query) throws Exception {
+    public BaseResponse<List<CableTemperatureAlarmDTO>> getAlarmTemperature(@RequestBody CableIdQuery query) throws Exception {
         return BaseResponse.success(cableAlarmService.getAlarmTemperature(query));
     }
 
     @PostMapping("/getTemperatureAllAlarm")
     @ApiOperation("温度告警海缆告警时间的整条海缆的温度数据")
-    public BaseResponse<List<CableTemperatureAlarmDTO>> getAlarmAllTemperature(@RequestBody AlarmQuery query) throws Exception {
+    public BaseResponse<List<CableTemperatureAlarmDTO>> getAlarmAllTemperature(@RequestBody CableIdQuery query) throws Exception {
         return BaseResponse.success(cableAlarmService.getAlarmAllTemperature(query));
     }
 
     @PostMapping("/getStressAlarm")
     @ApiOperation("海缆应力告警前后12小时数据")
-    public BaseResponse<List<CableStressAlarmDTO>> getAlarmStress(@RequestBody AlarmQuery query) throws Exception {
+    public BaseResponse<List<CableStressAlarmDTO>> getAlarmStress(@RequestBody CableIdQuery query) throws Exception {
         return BaseResponse.success(cableAlarmService.getAlarmStress(query));
     }
 
     @PostMapping("/getStressAllAlarm")
     @ApiOperation("应力告警海缆告警时间的整条海缆的应力数据")
-    public BaseResponse<List<CableStressAlarmDTO>> getAlarmAllStress(@RequestBody AlarmQuery query) throws Exception {
+    public BaseResponse<List<CableStressAlarmDTO>> getAlarmAllStress(@RequestBody CableIdQuery query) throws Exception {
         return BaseResponse.success(cableAlarmService.getAlarmAllStress(query));
     }
 }

@@ -217,6 +217,7 @@ public class GoldenUtil {
         ServerImpl serverImpl = pool.getServerImpl();
         HistorianImpl his = new HistorianImpl(serverImpl);
         List<RtdbData> list = his.getCrossSectionValues(ids, datetime, RtdbHisMode.RTDB_NEXT);
+        System.out.println(list.size());
         return list;
     }
 

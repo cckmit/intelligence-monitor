@@ -4,8 +4,10 @@ import com.rtdb.api.model.RtdbData;
 import com.zhikuntech.intellimonitor.cable.domain.dto.CableStressAlarmDTO;
 import com.zhikuntech.intellimonitor.cable.domain.dto.CableTemperatureAlarmDTO;
 import com.zhikuntech.intellimonitor.cable.domain.query.AlarmQuery;
+import com.zhikuntech.intellimonitor.cable.domain.query.CableIdQuery;
 import com.zhikuntech.intellimonitor.cable.domain.service.CableAlarmService;
 import com.zhikuntech.intellimonitor.cable.domain.service.CableRunTimeService;
+import com.zhikuntech.intellimonitor.cable.domain.utils.CableIdCalc;
 import com.zhikuntech.intellimonitor.cable.domain.utils.MathUtil;
 import com.zhikuntech.intellimonitor.core.commons.golden.GoldenUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -30,10 +32,11 @@ public class CableAlarmServiceImpl implements CableAlarmService {
      * 获取当前报警海缆分段的一段时间的温度数据
      */
     @Override
-    public List<CableTemperatureAlarmDTO> getAlarmTemperature(AlarmQuery query) throws Exception {
+    public List<CableTemperatureAlarmDTO> getAlarmTemperature(CableIdQuery query) throws Exception {
         List<CableTemperatureAlarmDTO> result=new ArrayList<>();
-        List<RtdbData> list = getListByQuery(query);
-        int id=query.getId();
+        AlarmQuery alarmQuery=queryToQuery(query);
+        List<RtdbData> list = getListByQuery(alarmQuery);
+        int id=alarmQuery.getId();
         if (list.isEmpty()){
             return result;
         }
@@ -51,20 +54,21 @@ public class CableAlarmServiceImpl implements CableAlarmService {
      * 获取当前报警海缆分段 报警时间 的 整条海缆 的温度数据
      */
     @Override
-    public List<CableTemperatureAlarmDTO> getAlarmAllTemperature(AlarmQuery query) throws Exception {
+    public List<CableTemperatureAlarmDTO> getAlarmAllTemperature(CableIdQuery query) throws Exception {
         List<CableTemperatureAlarmDTO> result=new ArrayList<>();
         if (Objects.isNull(query)){
             return result;
         }
-        int id = query.getId();
+        int id = queryToQuery(query).getId();
         int[] ids=findCableById(id);
         String date=query.getDate();
         if (Objects.isNull(date)){
             return result;
         }
-        int j=1;
         Date time=stringToDate(date);
         List<RtdbData> list = getCrossSectionValues(ids,time);
+        int j=1;
+        assert list != null;
         for (RtdbData i : list){
             BigDecimal bigDecimal= MathUtil.getBigDecimal(i.getValue());
             CableTemperatureAlarmDTO cableTemperatureAlarmDTO=new CableTemperatureAlarmDTO();
@@ -80,10 +84,11 @@ public class CableAlarmServiceImpl implements CableAlarmService {
      * 获取当前报警海缆分段的一段时间的应力数据
      */
     @Override
-    public List<CableStressAlarmDTO> getAlarmStress(AlarmQuery query) throws Exception {
+    public List<CableStressAlarmDTO> getAlarmStress(CableIdQuery query) throws Exception {
         List<CableStressAlarmDTO> result=new ArrayList<>();
-        List<RtdbData> list = getListByQuery(query);
-        int id=query.getId();
+        AlarmQuery alarmQuery=queryToQuery(query);
+        List<RtdbData> list = getListByQuery(alarmQuery);
+        int id=alarmQuery.getId();
         for (RtdbData data : list){
             CableStressAlarmDTO cableStressAlarmDTO=new CableStressAlarmDTO();
             cableStressAlarmDTO.setNumber(id);
@@ -94,14 +99,16 @@ public class CableAlarmServiceImpl implements CableAlarmService {
         }
         return result;
     }
-
+    /**
+     * 获取当前报警海缆分段 报警时间 的 整条海缆 的应力数据
+     */
     @Override
-    public List<CableStressAlarmDTO> getAlarmAllStress(AlarmQuery query) throws Exception {
+    public List<CableStressAlarmDTO> getAlarmAllStress(CableIdQuery query) throws Exception {
         List<CableStressAlarmDTO> result=new ArrayList<>();
         if (Objects.isNull(query)){
             return result;
         }
-        int id = query.getId();
+        int id = queryToQuery(query).getId();
         int[] ids=findCableById(id);
         String date=query.getDate();
         if (Objects.isNull(date)){
@@ -110,6 +117,7 @@ public class CableAlarmServiceImpl implements CableAlarmService {
         int j=1;
         Date time=stringToDate(date);
         List<RtdbData> list = getCrossSectionValues(ids,time);
+        assert list != null;
         for (RtdbData i : list){
             BigDecimal bigDecimal= MathUtil.getBigDecimal(i.getValue());
             CableStressAlarmDTO cableStressAlarmDTO=new CableStressAlarmDTO();
@@ -120,6 +128,17 @@ public class CableAlarmServiceImpl implements CableAlarmService {
             result.add(cableStressAlarmDTO);
         }
         return result;
+    }
+
+    /**
+     * 根据CableIdQuery 得到 AlarmQuery
+     */
+    public AlarmQuery queryToQuery(CableIdQuery query){
+        AlarmQuery query1=new AlarmQuery();
+        int queryId= CableIdCalc.numToId(query.getType(),query.getId(),query.getNum());
+        query1.setId(queryId);
+        query1.setDate(query.getDate());
+        return query1;
     }
 
     /**
@@ -264,7 +283,6 @@ public class CableAlarmServiceImpl implements CableAlarmService {
     }
 
     /**
-     * 处理golden socket连接异常后原有连接失效问题
      * 获取指定标签点一段时间内的历史存储值
      * "2021-07-02 15:40:00"
      */
@@ -283,9 +301,7 @@ public class CableAlarmServiceImpl implements CableAlarmService {
 
 
     /**
-     * 处理golden socket连接异常后原有连接失效问题
-     * 获取指定时间的数据
-     * getFloat (int id, String dateTime)
+     * 获取指定时间的整条海缆的数据
      * "2021-07-02 15:40:00"
      */
     private List<RtdbData> getCrossSectionValues(int[] ids,Date datetime) throws Exception {
