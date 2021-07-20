@@ -144,7 +144,7 @@ public class CableRunTimeServiceImpl implements CableRunTimeService {
         for (ValueData a:valueData){
             CableRunTimeTemperatureDTO cableRunTimeTemperatureDTO=new CableRunTimeTemperatureDTO();
             cableRunTimeTemperatureDTO.setNumber(i);
-            BigDecimal b=new BigDecimal(a.getValue());
+            BigDecimal b= BigDecimal.valueOf(a.getValue());
             cableRunTimeTemperatureDTO.setTemperature(b);
             list.add(cableRunTimeTemperatureDTO);
             i++;
@@ -162,7 +162,7 @@ public class CableRunTimeServiceImpl implements CableRunTimeService {
         for (ValueData a:valueData){
             CableRunStressTimeDTO cableRunStressTimeDTO=new CableRunStressTimeDTO();
             cableRunStressTimeDTO.setNumber(i);
-            BigDecimal b=new BigDecimal(a.getValue());
+            BigDecimal b= BigDecimal.valueOf(a.getValue());
             cableRunStressTimeDTO.setStress(b);
             list.add(cableRunStressTimeDTO);
             i++;
