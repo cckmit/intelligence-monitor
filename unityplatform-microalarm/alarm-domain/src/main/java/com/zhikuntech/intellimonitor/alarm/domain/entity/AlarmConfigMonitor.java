@@ -88,5 +88,10 @@ public class AlarmConfigMonitor implements Serializable {
      */
     private String engineeringUnit;
 
+    /**
+     * 逻辑分区(汇总一个页面的所有的测点)
+     */
+    private String logicPartition;
+
 
 }

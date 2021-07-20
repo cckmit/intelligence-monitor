@@ -173,4 +173,17 @@ public class AlarmProduceInfoServiceImpl extends ServiceImpl<AlarmProduceInfoMap
         }
         return true;
     }
+
+    @Override
+    public AlarmProduceInfo fetchCurAlarmInfoByMonitorNo(String monitorNo) {
+        QueryWrapper<AlarmProduceInfo> produceInfoQueryWrapper = new QueryWrapper<>();
+        produceInfoQueryWrapper.eq("monitor_no", monitorNo);
+        produceInfoQueryWrapper.eq("with_history", 0);
+        AlarmProduceInfo produceInfo = getBaseMapper().selectOne(produceInfoQueryWrapper);
+        if (log.isDebugEnabled()) {
+            log.debug("查询条件:[{}], 返回结果:[{}]", monitorNo, produceInfo);
+        }
+        return produceInfo;
+    }
+
 }
