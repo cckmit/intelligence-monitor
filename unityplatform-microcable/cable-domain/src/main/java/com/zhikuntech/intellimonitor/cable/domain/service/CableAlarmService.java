@@ -26,7 +26,7 @@ public interface CableAlarmService {
 
     /**
      * 获取当前报警海缆分段的一段时间的应力数据
-     * @param  query // id 查1 , date "2021-07-01 15:40:00" 现在就 7月1有数据
+     * @param  query // id 查1 , date "2021-07-01 15:40:00"
      * @return 报警的海缆分段 报警时间前后12小时的应力数据
      */
     List<CableStressAlarmDTO> getAlarmStress(AlarmQuery query) throws Exception;

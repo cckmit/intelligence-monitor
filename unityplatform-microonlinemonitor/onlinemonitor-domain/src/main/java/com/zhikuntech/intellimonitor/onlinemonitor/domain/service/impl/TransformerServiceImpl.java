@@ -39,9 +39,6 @@ public class TransformerServiceImpl implements TransformerService {
 
     @Override
     public void getTransformerRuntime(String user, Integer num, String websocketDescription) throws Exception {
-        if (GoldenUtil.servers.containsKey(user)) {
-            return;
-        }
         Set<String> strings;
         String string = websocketDescription + WebSocketConstant.PATTERN;
         if (num == 1) {
@@ -49,6 +46,10 @@ public class TransformerServiceImpl implements TransformerService {
         } else if (num == 2) {
             strings = TransformerWebsocketHandler.GROUP_RUNTIME_SEA.keySet();
         } else {
+            return;
+        }
+        if (GoldenUtil.servers.containsKey(user)) {
+            startTimer(user, num, websocketDescription, strings);
             return;
         }
         List<TransformerRuntimeDTO> list = new ArrayList<>();
@@ -69,13 +70,13 @@ public class TransformerServiceImpl implements TransformerService {
 //                            long l01 = System.currentTimeMillis();
 //                            log.info("发送kafka耗时{}",l01-l0);
                             List<TransformerRuntimeDTO> dtos = InjectPropertiesUtil.injectByAnnotation(list, data, (key) -> OnlineMonitorInit.GOLDEN_ID_MAP.get(key));
-                            log.info(data[0].getDate().getTime()+"");
+                            log.info(data[0].getDate().getTime() + "");
                             if (null != dtos) {
                                 dtos.forEach(e -> e.setTimeStamp((data[0].getDate().getTime() / 1000) * 1000));
                                 //缓存数据，用于前端页面曲线图展示
                                 fillList(dtos);
                                 if (strings.size() > 0) {
-                                    startTimer(user,strings);
+                                    startTimer(user, num, websocketDescription, strings);
                                     String jsonString = JSONObject.toJSONString(dtos, WriteMapNullValue);
                                     jsonString = string + jsonString;
                                     try {
@@ -147,13 +148,18 @@ public class TransformerServiceImpl implements TransformerService {
     /**
      * 开启定时任务
      */
-    private void startTimer(String user, Set<String> strings) {
+    private void startTimer(String user, Integer num, String websocketDescription, Set<String> strings) {
         TimerUtil.start(new TimerTask() {
             @Override
             public void run() {
                 GoldenUtil.cancel(user);
-                websocketHandler.sendGroupMessage("重新订阅", strings);
-                log.info("定时任务取消golden连接,{}", user);
+                try {
+                    getTransformerRuntime(user, num, websocketDescription);
+                } catch (Exception e) {
+                    websocketHandler.sendGroupMessage("重新订阅", strings);
+                    e.printStackTrace();
+                    log.info("定时任务取消golden连接,{}", user);
+                }
             }
         }, user);
     }
