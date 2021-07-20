@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    active: local
+  application:
+    name: cable-app
+
+server:
+  port: 18089

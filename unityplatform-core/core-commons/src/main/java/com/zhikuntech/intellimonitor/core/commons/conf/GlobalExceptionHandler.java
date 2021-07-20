@@ -8,6 +8,7 @@ import com.zhikuntech.intellimonitor.core.commons.exception.SubscribeGoldenExcep
 import com.zhikuntech.intellimonitor.core.commons.exception.UserNotLoginException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -106,5 +107,11 @@ public class GlobalExceptionHandler {
     public BaseResponse handIllegalStateException(IllegalStateException ex){
         LOGGER.error("异常!, msg:[{}], stack:[{}]", ex.getMessage(), ex);
         return BaseResponse.failure(ResultCode.ILLEGAL_STATE_EXCEPTION,ex.getMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public BaseResponse handMethodArgumentNotValidException(MethodArgumentNotValidException ex){
+        LOGGER.error("异常!, msg:[{}], stack:[{}]", ex.getMessage(), ex);
+        return BaseResponse.failure(ResultCode.PARAMETERS_CALIBRATION_FAILURE,ex.getMessage()   );
     }
 }

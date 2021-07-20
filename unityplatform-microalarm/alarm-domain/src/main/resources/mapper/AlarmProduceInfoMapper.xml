@@ -16,17 +16,23 @@
         <result column="create_time" property="createTime" />
         <result column="with_history" property="withHistory" />
         <result column="pre_info_no" property="preInfoNo" />
+        <result column="chain_info" property="chainInfo" />
         <result column="next_info_no" property="nextInfoNo" />
         <result column="has_confirm" property="hasConfirm" />
         <result column="confirm_person" property="confirmPerson" />
         <result column="confirm_time" property="confirmTime" />
         <result column="has_restore" property="hasRestore" />
         <result column="restore_time" property="restoreTime" />
+        <result column="alarm_date" property="alarmDate" />
+        <result column="alarm_timestamp" property="alarmTimestamp" />
+        <result column="row_stamp" property="rowStamp" />
+        <result column="alarm_describe" property="alarmDescribe" />
+        <result column="alarm_level" property="alarmLevel" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        version, info_no, monitor_no, group_type, rule_no, event_time, process_time, monitor_num, monitor_num_str, create_time, with_history, pre_info_no, next_info_no, has_confirm, confirm_person, confirm_time, has_restore, restore_time
+        version, info_no, monitor_no, group_type, rule_no, event_time, process_time, monitor_num, monitor_num_str, create_time, with_history, pre_info_no, chain_info, next_info_no, has_confirm, confirm_person, confirm_time, has_restore, restore_time, alarm_date, alarm_timestamp, row_stamp, alarm_describe, alarm_level
     </sql>
 
 </mapper>

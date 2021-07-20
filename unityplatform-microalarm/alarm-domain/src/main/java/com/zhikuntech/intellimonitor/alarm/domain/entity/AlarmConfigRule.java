@@ -92,5 +92,10 @@ public class AlarmConfigRule implements Serializable {
      */
     private Integer ruleType;
 
+    /**
+     * 分组类型
+     */
+    private Integer groupType;
+
 
 }

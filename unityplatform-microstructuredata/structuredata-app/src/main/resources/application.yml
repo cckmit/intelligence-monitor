@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: structuredata-app
+
+server:
+  port: 18088

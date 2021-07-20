@@ -1,0 +1,43 @@
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*.xml
+  global-config:
+    db-config:
+      id-type: auto
+      table-underline: true
+      logic-not-delete-value: 0
+      logic-delete-value: 1
+spring:
+  datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://192.168.30.60:1433;databaseName=振动监测数据库
+    username: sa
+    password: develop
+logging:
+  level:
+    com.zhikuntech.intellimonitor.structure.domain.mapper: debug
+
+
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka/
+      fetch-registry: true #是否从注册中心服务注册信息
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
+
+golden:
+  ip: 1.117.33.103
+  port: 6327
+  user: sa
+  password: golden
+  poolSize: 25
+  maxSize: 50
+
+ribbon:
+  ConnectTimeout: 5000
+  ReadTimeout: 5000
+
+websocket.config: true

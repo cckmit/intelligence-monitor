@@ -59,6 +59,11 @@ public class AlarmConfigMonitor implements Serializable {
     private Integer groupType;
 
     /**
+     * 分组名称
+     */
+    private String groupName;
+
+    /**
      * 创建时间
      */
     private LocalDateTime createTime;
@@ -77,6 +82,11 @@ public class AlarmConfigMonitor implements Serializable {
      * 测点描述
      */
     private String monitorDescribe;
+
+    /**
+     * 告警描述单位需要用到此字段(如果不为空就拼接上该信息)
+     */
+    private String engineeringUnit;
 
 
 }

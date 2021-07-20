@@ -1,24 +1,29 @@
 package com.zhikuntech.intellimonitor.structuremonitor.domain.service.impl;
 
-import com.rtdb.api.model.RtdbData;
-import com.rtdb.api.util.DateUtil;
-import com.rtdb.service.impl.HistorianImpl;
-import com.rtdb.service.impl.ServerImpl;
-import com.rtdb.service.impl.ServerImplPool;
+import com.rtdb.api.model.ValueData;
 import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
 import com.zhikuntech.intellimonitor.core.commons.base.ResultCode;
+import com.zhikuntech.intellimonitor.core.commons.golden.GoldenUtil;
+import com.zhikuntech.intellimonitor.structuremonitor.domain.pojo.StructureToGolden;
 import com.zhikuntech.intellimonitor.structuremonitor.domain.query.StructureMonitoringQuery;
 import com.zhikuntech.intellimonitor.structuremonitor.domain.service.IStructureMonitoringService;
+import com.zhikuntech.intellimonitor.structuremonitor.domain.service.StructureToGoldenService;
 import com.zhikuntech.intellimonitor.structuremonitor.domain.utils.DateUtils;
+import com.zhikuntech.intellimonitor.structuremonitor.domain.utils.InjectPropertiesUtil;
+import com.zhikuntech.intellimonitor.structuremonitor.domain.vo.LiveData;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author： DAI
@@ -92,6 +97,28 @@ public class StructureMonitoringServiceImpl implements IStructureMonitoringServi
         // TODO 数据查询 未完成
         // 从数据库查询查询GoldenId
         // int realCount = his.archivedValuesRealCount(id, sTime, sTime); realCount非0判断 否则抛异常
+
+        return null;
+    }
+
+    @Resource
+    private StructureToGoldenService structureToGoldenService;
+
+    @Override
+    public BaseResponse<List<LiveData>> getData(String type,Integer fanNumber) {
+        // 获取庚顿id映射关系
+        List<StructureToGolden> map = structureToGoldenService.getMap(fanNumber);
+        int[] ids = map.stream().mapToInt(StructureToGolden::getGoldenId).toArray();
+        // 查询庚顿
+        List<ValueData> snapshots = null;
+        try {
+            snapshots = GoldenUtil.getSnapshots(ids);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        StructureToGolden structureToGolden = new StructureToGolden();
+        InjectPropertiesUtil.injectByAnnotation(structureToGolden,snapshots,map);
 
         return null;
     }

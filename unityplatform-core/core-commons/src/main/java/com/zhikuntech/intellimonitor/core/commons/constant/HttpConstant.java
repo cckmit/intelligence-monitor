@@ -60,4 +60,6 @@ public interface HttpConstant {
     Integer STACK_OVER_FLOW_ERROR = 9008;
     //非法状态异常
     Integer ILLEGAL_STATE_EXCEPTION = 9009;
+    //参数校验失败
+    Integer PARAMETERS_CALIBRATION_FAILURE = 9010;
 }

@@ -1,11 +1,13 @@
 package com.zhikuntech.intellimonitor.alarm.domain.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zhikuntech.intellimonitor.alarm.domain.dto.AlarmRuleDTO;
+import com.zhikuntech.intellimonitor.alarm.domain.dto.InnerAlarmRuleDTO;
 import com.zhikuntech.intellimonitor.alarm.domain.entity.AlarmConfigRule;
 import com.zhikuntech.intellimonitor.alarm.domain.query.alarmrule.AddNewAlarmRuleQuery;
 import com.zhikuntech.intellimonitor.alarm.domain.query.alarmrule.AlarmRuleSimpleQuery;
 import com.zhikuntech.intellimonitor.core.commons.base.Pager;
+
+import java.util.List;
 
 /**
  * <p>
@@ -39,7 +41,7 @@ public interface IAlarmConfigRuleService extends IService<AlarmConfigRule> {
      * @param query 查询条件
      * @return      分页结果
      */
-    Pager<AlarmRuleDTO> queryByPage(AlarmRuleSimpleQuery query);
+    Pager<InnerAlarmRuleDTO> queryByPage(AlarmRuleSimpleQuery query);
 
 
     /**
@@ -47,7 +49,7 @@ public interface IAlarmConfigRuleService extends IService<AlarmConfigRule> {
      * @param query 待修改内容
      * @return 原样返回
      */
-    AlarmRuleDTO changeRule(AlarmRuleDTO query);
+    InnerAlarmRuleDTO changeRule(InnerAlarmRuleDTO query);
 
     /**
      * 删除告警规则
@@ -55,5 +57,12 @@ public interface IAlarmConfigRuleService extends IService<AlarmConfigRule> {
      * @return          成功/失败
      */
     boolean deleteRule(String ruleNo);
+
+    /**
+     * 批量删除告警规则
+     * @param ruleNos   告警规则
+     * @return          成功/失败
+     */
+    boolean batchDelete(List<String> ruleNos);
 
 }

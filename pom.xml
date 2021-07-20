@@ -28,6 +28,8 @@
         <module>unityplatform-micromessagepush</module>
         <module>unityplatform-microstructuremonitor</module>
         <module>unityplatform-microonlinemonitor</module>
+        <module>unityplatform-microstructuredata</module>
+        <module>unityplatform-microcable</module>
     </modules>
 
     <properties>

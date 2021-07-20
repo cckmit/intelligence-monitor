@@ -1,7 +1,7 @@
 package com.zhikuntech.intellimonitor.alarm.domain.controller;
 
 
-import com.zhikuntech.intellimonitor.alarm.domain.dto.AlarmRuleDTO;
+import com.zhikuntech.intellimonitor.alarm.domain.dto.InnerAlarmRuleDTO;
 import com.zhikuntech.intellimonitor.alarm.domain.query.alarmrule.AddNewAlarmRuleQuery;
 import com.zhikuntech.intellimonitor.alarm.domain.query.alarmrule.AlarmRuleSimpleQuery;
 import com.zhikuntech.intellimonitor.alarm.domain.service.IAlarmConfigRuleService;
@@ -12,6 +12,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -39,8 +41,8 @@ public class AlarmConfigRuleController {
 
     @ApiOperation("分页查询告警规则")
     @PostMapping("/query-by-page")
-    public BaseResponse<Pager<AlarmRuleDTO>> queryByPage(@RequestBody AlarmRuleSimpleQuery query) {
-        Pager<AlarmRuleDTO> results = ruleService.queryByPage(query);
+    public BaseResponse<Pager<InnerAlarmRuleDTO>> queryByPage(@RequestBody AlarmRuleSimpleQuery query) {
+        Pager<InnerAlarmRuleDTO> results = ruleService.queryByPage(query);
         return BaseResponse.success(results);
     }
 
@@ -51,8 +53,8 @@ public class AlarmConfigRuleController {
 
     @ApiOperation("修改告警规则")
     @PostMapping("/change-rule")
-    public BaseResponse<AlarmRuleDTO> changeRule(@RequestBody AlarmRuleDTO query) {
-        AlarmRuleDTO result = ruleService.changeRule(query);
+    public BaseResponse<InnerAlarmRuleDTO> changeRule(@RequestBody InnerAlarmRuleDTO query) {
+        InnerAlarmRuleDTO result = ruleService.changeRule(query);
         return BaseResponse.success(result);
     }
 
@@ -64,16 +66,11 @@ public class AlarmConfigRuleController {
         return BaseResponse.success(result);
     }
 
-    /*
-        todo
-            1.批量删除告警规则
-            2.告警规则分组
-            3.需求待确认(告警策略配置头部信息)
-            --
-
-            todo 遥信数据(增删改查)
-
-     */
-
+    @ApiOperation("批量删除告警规则")
+    @PostMapping("/batch-delete")
+    public BaseResponse<Boolean> batchDelete(@RequestBody List<String> ruleNos) {
+        boolean result = ruleService.batchDelete(ruleNos);
+        return BaseResponse.success(result);
+    }
 
 }

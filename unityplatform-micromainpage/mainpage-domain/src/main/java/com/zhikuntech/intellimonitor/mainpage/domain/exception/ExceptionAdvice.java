@@ -1,8 +1,8 @@
 package com.zhikuntech.intellimonitor.mainpage.domain.exception;//package com.monitor.aop.exception;
 //
 //import com.alibaba.fastjson.JSONObject;
-//import com.monitor.base.ResultCode;
-//import com.monitor.base.BaseResponse;
+//import com.monitor.com.zhikuntech.intellimonitor.cable.domain.base.ResultCode;
+//import com.monitor.com.zhikuntech.intellimonitor.cable.domain.base.BaseResponse;
 //import lombok.extern.slf4j.Slf4j;
 //import org.apache.commons.lang3.StringUtils;
 //import org.springframework.validation.BindException;

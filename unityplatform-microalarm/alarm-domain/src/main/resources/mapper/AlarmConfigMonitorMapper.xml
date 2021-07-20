@@ -11,15 +11,17 @@
         <result column="model_type" property="modelType" />
         <result column="model_name" property="modelName" />
         <result column="group_type" property="groupType" />
+        <result column="group_name" property="groupName" />
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
         <result column="value_type" property="valueType" />
         <result column="monitor_describe" property="monitorDescribe" />
+        <result column="engineering_unit" property="engineeringUnit" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        monitor_no, monitor_name, rule_no, monitor_type, model_type, model_name, group_type, create_time, update_time, value_type, monitor_describe
+        monitor_no, monitor_name, rule_no, monitor_type, model_type, model_name, group_type, group_name, create_time, update_time, value_type, monitor_describe, engineering_unit
     </sql>
 
 </mapper>

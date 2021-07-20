@@ -19,6 +19,10 @@ public class AlarmRuleSimpleQuery {
     @NotNull
     private Integer ruleType;
 
+    @ApiModelProperty(value = "分组类型(按照模块进行划分)", required = true)
+    @NotNull
+    private Integer groupType;
+
     @ApiModelProperty(value = "页码", required = true)
     @NotNull
     private Integer pageNumber;

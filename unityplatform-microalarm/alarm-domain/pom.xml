@@ -32,6 +32,11 @@
             <artifactId>core-commons</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.zhikuntech.intellimonitor</groupId>
+            <artifactId>core-stream</artifactId>
+        </dependency>
+
         <!-- MySql -->
         <dependency>
             <groupId>mysql</groupId>
@@ -52,6 +57,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <!--  caffeine缓存  -->
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
         </dependency>
 
         <dependency>

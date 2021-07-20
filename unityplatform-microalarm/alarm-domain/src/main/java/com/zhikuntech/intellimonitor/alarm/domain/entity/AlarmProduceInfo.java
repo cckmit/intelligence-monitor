@@ -7,8 +7,7 @@ import java.io.Serializable;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.Version;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 /**
  * <p>
@@ -16,8 +15,11 @@ import lombok.EqualsAndHashCode;
  * </p>
  *
  * @author liukai
- * @since 2021-07-08
+ * @since 2021-07-16
  */
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class AlarmProduceInfo implements Serializable {
@@ -84,6 +86,11 @@ public class AlarmProduceInfo implements Serializable {
     private String preInfoNo;
 
     /**
+     * 标识告警唯一链
+     */
+    private String chainInfo;
+
+    /**
      * 下一条状态编码
      */
     private String nextInfoNo;
@@ -112,6 +119,31 @@ public class AlarmProduceInfo implements Serializable {
      * 恢复时间
      */
     private LocalDateTime restoreTime;
+
+    /**
+     * 告警产生日期(同createTime)
+     */
+    private LocalDateTime alarmDate;
+
+    /**
+     * 告警产生时间戳
+     */
+    private LocalDateTime alarmTimestamp;
+
+    /**
+     * 行号(唯一不重复)
+     */
+    private Long rowStamp;
+
+    /**
+     * 告警描述
+     */
+    private String alarmDescribe;
+
+    /**
+     * 告警等级(严重/一般/告知)
+     */
+    private String alarmLevel;
 
 
 }

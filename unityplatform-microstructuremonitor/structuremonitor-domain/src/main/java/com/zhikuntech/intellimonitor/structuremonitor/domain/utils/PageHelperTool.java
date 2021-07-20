@@ -28,10 +28,10 @@ public class PageHelperTool {
         pageInfo.setIsLastPage(currentPage == (total + pageSize - 1) / pageSize ? true : false);
         pageInfo.setHasPreviousPage(currentPage == 1 ? false : true);
         pageInfo.setHasNextPage(currentPage == (total + pageSize - 1) / pageSize ? false : true);
-        return calcNavigatepageNums(pageInfo);
+        return calcNavigatePageNums(pageInfo);
     }
 
-    private static <T> PageInfo<T> calcNavigatepageNums(PageInfo<T> pageInfo) {
+    private static <T> PageInfo<T> calcNavigatePageNums(PageInfo<T> pageInfo) {
         //当总页数小于或等于导航页码数时
         if (pageInfo.getPages() <= pageInfo.getNavigatePages()) {
             pageInfo.setNavigatepageNums(new int[pageInfo.getPages()]);
