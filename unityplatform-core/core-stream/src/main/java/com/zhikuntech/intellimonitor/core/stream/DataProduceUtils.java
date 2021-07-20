@@ -49,7 +49,7 @@ public class DataProduceUtils {
             final String dataForSend = serial.writeValueAsString(structDTO);
             ProducerRecord<String, String> record = new ProducerRecord<>(
                     TopicConstants.PUSH_TOPIC,
-                    TopicConstants.TOPIC_KEY,
+                    structDTO.getMonitorNo(),
                     dataForSend);
             // TODO routing
             Future<RecordMetadata> future = producer.send(record, new Callback() {
