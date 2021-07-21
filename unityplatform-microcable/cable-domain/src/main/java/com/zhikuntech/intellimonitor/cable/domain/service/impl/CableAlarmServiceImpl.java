@@ -18,8 +18,6 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static com.sun.activation.registries.LogSupport.log;
-
 @Service
 @Slf4j
 public class CableAlarmServiceImpl implements CableAlarmService {
@@ -211,7 +209,7 @@ public class CableAlarmServiceImpl implements CableAlarmService {
             ids=abToInts(a,b,1562);
         } else{
             ids=new int[0];
-            log("输入海缆id错误 没有查询结果");
+            log.info("输入海缆id错误 没有查询结果");
         }
         return ids;
     }
