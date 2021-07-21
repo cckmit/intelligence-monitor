@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import javax.websocket.OnClose;
 import javax.websocket.Session;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -38,8 +39,9 @@ public class MyWebSocketHandle implements BaseWebSocketHandler {
     }
 
     @Override
+    @OnClose
     public void onClose(String username) {
-
+        groupRuntime.remove(username);
     }
 
     @Override

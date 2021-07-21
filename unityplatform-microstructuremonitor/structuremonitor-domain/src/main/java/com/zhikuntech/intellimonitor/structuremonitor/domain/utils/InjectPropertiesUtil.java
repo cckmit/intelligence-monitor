@@ -4,7 +4,7 @@ package com.zhikuntech.intellimonitor.structuremonitor.domain.utils;
 import com.rtdb.api.model.RtdbData;
 import com.rtdb.api.model.ValueData;
 import com.zhikuntech.intellimonitor.core.commons.golden.annotation.GoldenId;
-import com.zhikuntech.intellimonitor.structuremonitor.domain.pojo.StructureToGolden;
+import com.zhikuntech.intellimonitor.structuremonitor.domain.pojo.StructureToGoldenMin;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
@@ -48,22 +48,22 @@ public class InjectPropertiesUtil<T> {
         return t;
     }
 
-    public static <T> T injectByAnnotation(T t, List<ValueData> data, List<StructureToGolden> list) {
+    public static <T> T injectByAnnotation(T t, List<ValueData> data, List<StructureToGoldenMin> list) {
         Field[] fields = t.getClass().getDeclaredFields();
         for (Field field : fields) {
             if (field.getAnnotation(GoldenId.class) != null) {
                 GoldenId goldenId = field.getDeclaredAnnotation(GoldenId.class);
                 int value = goldenId.value();
                 //筛选相同backid的映射关系实体类
-                List<StructureToGolden> collect = list.stream().filter(item -> {
+                List<StructureToGoldenMin> collect = list.stream().filter(item -> {
                     return item.getBackenId() == value;
                 }).collect(Collectors.toList());
                 if (collect.size() != 1) {
                     continue;
                 }
-                StructureToGolden structureToGolden = collect.get(0);
+                StructureToGoldenMin structureToGoldenMin = collect.get(0);
                 for (ValueData valueData : data) {
-                    if (structureToGolden.getGoldenId() == valueData.getId()) {
+                    if (structureToGoldenMin.getGoldenId() == valueData.getId()) {
                         try {
                             field.setAccessible(true);
                             if (valueData.getValue() == 0) {

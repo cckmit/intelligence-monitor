@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("mp_structure_to_golden")
-public class StructureToGolden {
+@TableName("mp_structure_to_golden_max")
+public class StructureToGoldenMax {
 
     private Integer id;
 
@@ -23,4 +23,6 @@ public class StructureToGolden {
     private Integer backenId;
 
     private Integer fanNumber;
+
+    private Integer dataType;
 }

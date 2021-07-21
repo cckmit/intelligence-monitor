@@ -2,7 +2,8 @@ package com.zhikuntech.intellimonitor.structuremonitor.domain.service;
 
 import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
 import com.zhikuntech.intellimonitor.structuremonitor.domain.query.StructureMonitoringQuery;
-import com.zhikuntech.intellimonitor.structuremonitor.domain.vo.LiveData;
+import com.zhikuntech.intellimonitor.structuremonitor.domain.vo.LiveSedimentationData;
+import com.zhikuntech.intellimonitor.structuremonitor.domain.vo.LiveSpeedData;
 
 import java.util.List;
 
@@ -21,9 +22,18 @@ public interface IStructureMonitoringService {
     BaseResponse<List<StructureMonitoringQuery>> getList(StructureMonitoringQuery query);
 
     /**
-     * 获取实时数据
+     * 获取实时加速度数据
      * @param type
-     * @return
+     * @param fanNumber
+     * @return LiveSpeedData
      */
-    BaseResponse<List<LiveData>> getData(String type,Integer fanNumber);
+    BaseResponse<LiveSpeedData> getSpeedData(Integer type, Integer fanNumber);
+
+    /**
+     * 获取实时沉降数据
+     * @param fanNumber
+     * @param type
+     * @return LiveSedimentationData
+     */
+    BaseResponse<LiveSedimentationData> getSedimentationData(Integer type, Integer fanNumber);
 }

@@ -5,13 +5,17 @@ import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
 import com.zhikuntech.intellimonitor.core.commons.base.ResultCode;
 import com.zhikuntech.intellimonitor.core.commons.constant.StructureConstant;
 import com.zhikuntech.intellimonitor.core.commons.golden.GoldenUtil;
-import com.zhikuntech.intellimonitor.structuremonitor.domain.pojo.StructureToGolden;
+import com.zhikuntech.intellimonitor.structuremonitor.domain.constant.DataConstant;
+import com.zhikuntech.intellimonitor.structuremonitor.domain.pojo.StructureToGoldenAvg;
+import com.zhikuntech.intellimonitor.structuremonitor.domain.pojo.StructureToGoldenMax;
+import com.zhikuntech.intellimonitor.structuremonitor.domain.pojo.StructureToGoldenMin;
 import com.zhikuntech.intellimonitor.structuremonitor.domain.query.StructureMonitoringQuery;
 import com.zhikuntech.intellimonitor.structuremonitor.domain.service.IStructureMonitoringService;
 import com.zhikuntech.intellimonitor.structuremonitor.domain.service.StructureToGoldenService;
 import com.zhikuntech.intellimonitor.structuremonitor.domain.utils.DateUtil;
 import com.zhikuntech.intellimonitor.structuremonitor.domain.utils.InjectPropertiesUtil;
-import com.zhikuntech.intellimonitor.structuremonitor.domain.vo.LiveData;
+import com.zhikuntech.intellimonitor.structuremonitor.domain.vo.LiveSedimentationData;
+import com.zhikuntech.intellimonitor.structuremonitor.domain.vo.LiveSpeedData;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -66,30 +70,62 @@ public class StructureMonitoringServiceImpl implements IStructureMonitoringServi
         /* TODO 数据查询 */
 
 
-
         return null;
     }
 
     @Resource
     private StructureToGoldenService structureToGoldenService;
 
+    /**
+     * 加速度数据,一分钟一次,
+     *
+     * @param type      1:最大值 2:平均值 3:最小值
+     * @param fanNumber 风机编号
+     * @return
+     */
     @Override
-    public BaseResponse<LiveData> getData(String type, Integer fanNumber) {
+    public BaseResponse<LiveSpeedData> getSpeedData(Integer type, Integer fanNumber) {
+        int[] ids = null;
         // 获取庚顿id映射关系
-        List<StructureToGolden> map = structureToGoldenService.getMap(fanNumber);
-        int[] ids = map.stream().mapToInt(StructureToGolden::getGoldenId).toArray();
-        // 查询庚顿
-        List<ValueData> snapshots = null;
-        try {
-            snapshots = GoldenUtil.getSnapshots(ids);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (type == 1) {
+            List<StructureToGoldenMax> maxMap = structureToGoldenService.getMaxMap(fanNumber, DataConstant.SPEED_DATA);
+            ids = maxMap.stream().mapToInt(StructureToGoldenMax::getGoldenId).toArray();
         }
-
-        StructureToGolden structureToGolden = new StructureToGolden();
-        StructureToGolden structureToGolden1 = InjectPropertiesUtil.injectByAnnotation(structureToGolden, snapshots, map);
-
+        if (type == 2) {
+            List<StructureToGoldenAvg> avgMap = structureToGoldenService.getAvgMap(fanNumber, DataConstant.SPEED_DATA);
+            ids = avgMap.stream().mapToInt(StructureToGoldenAvg::getGoldenId).toArray();
+        }
+        if (type == 3) {
+            List<StructureToGoldenMin> minMap = structureToGoldenService.getMinMap(fanNumber, DataConstant.SPEED_DATA);
+            ids = minMap.stream().mapToInt(StructureToGoldenMin::getGoldenId).toArray();
+        }
+        if (ids == null) {
+            return null;
+        }
+        // 查询庚顿
+        //try {
+        //    List<ValueData> snapshots = GoldenUtil.getSnapshots(ids);
+        //    LiveSpeedData liveSpeedData = new LiveSpeedData();
+        //    liveSpeedData = InjectPropertiesUtil.injectByAnnotation(liveSpeedData, snapshots, );
+        //    if (liveSpeedData == null) {
+        //        return BaseResponse.failure(null, "");
+        //    }
+        //    return BaseResponse.success(liveSpeedData);
+        //} catch (Exception e) {
+        //    e.printStackTrace();
+        //}
         return null;
     }
 
+    /**
+     * 查询沉降数据,一小时一次
+     *
+     * @param type      1:最大值 2:平均值 3:最小值
+     * @param fanNumber 风机编号
+     * @return
+     */
+    @Override
+    public BaseResponse<LiveSedimentationData> getSedimentationData(Integer type, Integer fanNumber) {
+        return null;
+    }
 }
