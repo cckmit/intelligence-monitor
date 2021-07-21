@@ -1,7 +1,7 @@
 package com.zhikuntech.intellimonitor.fanscada.domain.vo;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.zhikuntech.intellimonitor.fanscada.domain.golden.annotation.GoldenId;
+import com.zhikuntech.intellimonitor.core.commons.golden.annotation.GoldenId;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;

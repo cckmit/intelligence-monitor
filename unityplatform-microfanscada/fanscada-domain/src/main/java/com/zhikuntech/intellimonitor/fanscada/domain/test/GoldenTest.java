@@ -4,7 +4,6 @@ import com.rtdb.model.IntData;
 import com.rtdb.service.impl.ServerImpl;
 import com.rtdb.service.impl.ServerImplPool;
 import com.rtdb.service.impl.SnapshotImpl;
-import com.zhikuntech.intellimonitor.fanscada.domain.golden.GoldenUtil;
 
 
 import java.util.ArrayList;

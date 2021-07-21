@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,6 +18,9 @@ import java.util.List;
  */
 @Slf4j
 public class InjectPropertiesUtil<T> {
+
+    private static final String FANSCADA_BASE_PACKAGE = "com.zhikuntech.intellimonitor.fanscada.domain.vo";
+
 
     public static <T> T injectByAnnotation(T t, Integer num, RtdbData[] data, GetCache cache) {
         Field[] fields = t.getClass().getDeclaredFields();
@@ -126,4 +130,54 @@ public class InjectPropertiesUtil<T> {
         Integer integer = cache.getValue(redisKey);
         return null == integer ? 0 : integer;
     }
+
+    /**
+     * @param t 映射实体
+     * @return : T
+     * @date: Creat in 2021/6/21 11:43
+     * @describe: 获取实体的注解信息
+     */
+    public static <T> List<Integer> injectByAnnotationCustomize(T t) {
+        // 获取注解的backendList
+        Field[] fields = t.getClass().getDeclaredFields();
+        List<Integer> backendList = new ArrayList<>();
+        for (Field field : fields) {
+            GoldenId annotation = field.getDeclaredAnnotation(GoldenId.class);
+            field.setAccessible(true);
+            if (annotation != null) {
+                backendList.add(annotation.value());
+            } else {
+                Class<?> clazz = field.getType();
+                // 判断该类属于哪个包
+                String pack = clazz.getPackage().getName();
+                if (FANSCADA_BASE_PACKAGE.equals(pack)) {
+                    // 回调获取某个字段的值
+                    Object obj = null;
+                    try {
+                        backendList.addAll(injectByAnnotationCustomize(clazz.newInstance()));
+                    } catch (Exception e) {
+                        log.error("获取实体注解失败", e);
+                    }
+                }
+            }
+        }
+        return backendList;
+    }
+
+    /**
+     * 初始化赋值
+     */
+    public static Object dataProcess(Double dataValue, Class<?> fieldType) {
+        Object obj = null;
+        if (BigDecimal.class.equals(fieldType)) {
+            obj = BigDecimal.valueOf(dataValue).setScale(2, RoundingMode.HALF_UP);
+        } else if (Integer.class.equals(fieldType)) {
+            obj = dataValue.intValue();
+        } else if (String.class.equals(fieldType)) {
+            String value = String.valueOf(dataValue);
+            obj = "0.00".equals(value) ? "0" : value;
+        }
+        return obj;
+    }
+
 }

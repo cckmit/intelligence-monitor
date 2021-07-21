@@ -38,6 +38,9 @@ public class StructureMonitoringController {
             @ApiImplicitParam(name = "dataType", value = "1:加速度 2:沉降")
     })
     public Object getData(@RequestParam(defaultValue = "1") Integer type, @RequestParam Integer fanNumber, @RequestParam(defaultValue = "1") Integer dataType) {
+        if (fanNumber != 1) {
+            fanNumber = 1;
+        }
         if (dataType == 1) {
             return monitoringService.getSpeedData(type, fanNumber);
         }

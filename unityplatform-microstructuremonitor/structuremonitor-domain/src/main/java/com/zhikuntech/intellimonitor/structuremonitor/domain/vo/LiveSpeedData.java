@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 
 /**
  * @author 滕楠
@@ -21,49 +23,49 @@ public class LiveSpeedData extends Object{
 
     @ApiModelProperty("测点1x加速度")
     @GoldenId(value = 1)
-    private Long a1xAcceleration;
+    private BigDecimal a1xAcceleration;
 
     @GoldenId(value = 2)
     @ApiModelProperty("测点1y加速度")
-    private Long a1yAcceleration;
+    private BigDecimal a1yAcceleration;
 
     @GoldenId(value = 3)
     @ApiModelProperty("测点2x加速度")
-    private Long a2xAcceleration;
+    private BigDecimal a2xAcceleration;
 
     @GoldenId(value = 4)
     @ApiModelProperty("测点2y加速度")
-    private Long a2yAcceleration;
+    private BigDecimal a2yAcceleration;
 
     @GoldenId(value = 5)
     @ApiModelProperty("测点3x加速度")
-    private Long a3xAcceleration;
+    private BigDecimal a3xAcceleration;
 
     @GoldenId(value = 6)
     @ApiModelProperty("测点3y加速度")
-    private Long a3yAcceleration;
+    private BigDecimal a3yAcceleration;
 
     @GoldenId(value = 7)
     @ApiModelProperty("测点4x加速度")
-    private Long a4xAcceleration;
+    private BigDecimal a4xAcceleration;
 
     @GoldenId(value = 8)
     @ApiModelProperty("测点4y加速度")
-    private Long a4yAcceleration;
+    private BigDecimal a4yAcceleration;
 
     @GoldenId(value = 9)
     @ApiModelProperty("测点5x加速度")
-    private Long a5xAcceleration;
+    private BigDecimal a5xAcceleration;
 
     @GoldenId(value = 10)
     @ApiModelProperty("测点5y加速度")
-    private Long a5yAcceleration;
+    private BigDecimal a5yAcceleration;
 
     @GoldenId(value = 11)
     @ApiModelProperty("测点6x加速度")
-    private Long a6xAcceleration;
+    private BigDecimal a6xAcceleration;
 
     @GoldenId(value = 12)
     @ApiModelProperty("测点6y加速度")
-    private Long a6yAcceleration;
+    private BigDecimal a6yAcceleration;
 }

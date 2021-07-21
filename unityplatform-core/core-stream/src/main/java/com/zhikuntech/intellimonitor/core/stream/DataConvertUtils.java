@@ -1,6 +1,7 @@
 package com.zhikuntech.intellimonitor.core.stream;
 
 import com.rtdb.api.model.RtdbData;
+import com.rtdb.api.model.ValueData;
 import com.zhikuntech.intellimonitor.core.prototype.MonitorStructDTO;
 
 import java.math.BigDecimal;
@@ -23,6 +24,22 @@ public class DataConvertUtils {
             dto.setUuid(UUID.randomUUID().toString());
             dto.setMonitorNo(String.valueOf(rtdbData.getId()));
             value = rtdbData.getValue().toString();
+            dto.setMonitorValue(new BigDecimal(value));
+            dto.setMonitorValueStr(value);
+            dtos.add(dto);
+        }
+        DataProduceUtils.sendData(dtos);
+    }
+
+    public static void convertAndSend(List<ValueData> data) {
+        List<MonitorStructDTO> dtos = new ArrayList<>();
+        MonitorStructDTO dto = new MonitorStructDTO();
+        String value;
+        dto.setEventTimeStamp(data.get(0).getDate().getTime());
+        for (ValueData valueData : data) {
+            dto.setUuid(UUID.randomUUID().toString());
+            dto.setMonitorNo(String.valueOf(valueData.getId()));
+            value = valueData.getValue().toString();
             dto.setMonitorValue(new BigDecimal(value));
             dto.setMonitorValueStr(value);
             dtos.add(dto);

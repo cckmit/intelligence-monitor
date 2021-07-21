@@ -136,6 +136,17 @@ public class AlarmProduceInfoServiceImpl extends ServiceImpl<AlarmProduceInfoMap
     }
 
     @Override
+    public Long maxRow() {
+        QueryWrapper<AlarmProduceInfo> infoQueryWrapper = new QueryWrapper<>();
+        infoQueryWrapper.select("max(row_stamp) as rowStamp");
+        AlarmProduceInfo produceInfo = getBaseMapper().selectOne(infoQueryWrapper);
+        if (Objects.isNull(produceInfo)) {
+            return null;
+        }
+        return produceInfo.getRowStamp();
+    }
+
+    @Override
     public boolean alarmConfirm(AlarmConfirmQuery query) {
         log.info("告警确认, 入参[{}]", query);
         if (Objects.isNull(query)) {

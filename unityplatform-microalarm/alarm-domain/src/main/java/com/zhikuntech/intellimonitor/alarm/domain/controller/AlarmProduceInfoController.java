@@ -13,11 +13,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -53,7 +49,13 @@ public class AlarmProduceInfoController {
         return BaseResponse.success(results);
     }
 
-    // TODO 获取最大行号
+
+    @ApiOperation("获取最大行号")
+    @GetMapping("/fetch-max-row")
+    public BaseResponse<Long> maxRow() {
+        Long maxRow = infoService.maxRow();
+        return BaseResponse.success(maxRow);
+    }
 
 
     @ApiOperation("告警确认（单个/批次/页面全部[groupType]）")
@@ -65,19 +67,6 @@ public class AlarmProduceInfoController {
 
 
     // TODO 事故追忆
-
-
-
-    // ---------------------后台执行---------------------
-
-    // TODO 告警恢复（后台执行, 无需查询条件）
-
-    // TODO 告警生成
-
-    // ---------------------后台执行---------------------
-
-
-
 
 
 }

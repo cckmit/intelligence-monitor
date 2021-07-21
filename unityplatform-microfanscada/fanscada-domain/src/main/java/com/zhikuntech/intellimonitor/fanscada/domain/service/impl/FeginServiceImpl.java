@@ -2,10 +2,9 @@ package com.zhikuntech.intellimonitor.fanscada.domain.service.impl;
 
 
 import com.rtdb.api.model.ValueData;
-import com.zhikuntech.intellimonitor.fanscada.domain.golden.GoldenUtil;
+import com.zhikuntech.intellimonitor.core.commons.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.fanscada.domain.service.FeginService;
 import com.zhikuntech.intellimonitor.fanscada.prototype.dto.ActPowerDataDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -19,16 +18,13 @@ import java.util.List;
 @Service
 public class FeginServiceImpl implements FeginService {
 
-
-    @Autowired
-    private GoldenUtil goldenUtil;
     @Override
     public ActPowerDataDTO getPowerSum() {
 
         //获取风机状态,获取有功功率,做和
         int[] a = {12};
         try {
-            List<ValueData> snapshots = goldenUtil.getSnapshots(a);
+            List<ValueData> snapshots = GoldenUtil.getSnapshots(a);
             ValueData valueData = snapshots.get(0);
             Double value = valueData.getValue();
             ActPowerDataDTO actPowerDataDTO = new ActPowerDataDTO();
