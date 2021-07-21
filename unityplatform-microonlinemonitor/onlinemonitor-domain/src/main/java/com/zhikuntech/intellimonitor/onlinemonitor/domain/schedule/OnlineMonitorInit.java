@@ -47,8 +47,8 @@ public class OnlineMonitorInit implements CommandLineRunner {
                 GOLDEN_ID_MAP.put(FanConstant.GOLDEN_ID + i + "_" + j, ids[i - 1]);
             }
         }
-        int[] ids_gis = {135,136};
-        for (Integer i : ids_gis) {
+        int[] idsGis = {135,136};
+        for (Integer i : idsGis) {
             for (int j = 1; j < 41; j++) {
                 GOLDEN_ID_MAP.put(FanConstant.GOLDEN_ID + i + "_" + j, i);
             }

@@ -17,8 +17,8 @@ public class DataConvertUtils {
     public static void convertAndSend(RtdbData[] data) {
         List<MonitorStructDTO> dtos = new ArrayList<>();
         MonitorStructDTO dto = new MonitorStructDTO();
-        String value = "";
-        dto.setEventTimeStamp(data[0].getDate().getTime() / 1000);
+        String value;
+        dto.setEventTimeStamp(data[0].getDate().getTime());
         for (RtdbData rtdbData : data) {
             dto.setUuid(UUID.randomUUID().toString());
             dto.setMonitorNo(String.valueOf(rtdbData.getId()));
