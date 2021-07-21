@@ -178,6 +178,7 @@ public class AlarmProduceInfoServiceImpl extends ServiceImpl<AlarmProduceInfoMap
     public AlarmProduceInfo fetchCurAlarmInfoByMonitorNo(String monitorNo) {
         QueryWrapper<AlarmProduceInfo> produceInfoQueryWrapper = new QueryWrapper<>();
         produceInfoQueryWrapper.eq("monitor_no", monitorNo);
+        produceInfoQueryWrapper.eq("has_restore", 0);
         produceInfoQueryWrapper.eq("with_history", 0);
         AlarmProduceInfo produceInfo = getBaseMapper().selectOne(produceInfoQueryWrapper);
         if (log.isDebugEnabled()) {

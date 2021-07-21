@@ -34,7 +34,7 @@ public class StationGISServiceImpl implements StationGISService {
     @Override
     public void getGISRuntime(String user, Integer num) throws Exception {
         Set<String> strings;
-        String s = "";
+        String s;
         if (num == 8) {
             strings = GISWebsocketHandler.GROUP_RUNTIME_LAND.keySet();
             s = WebSocketConstant.ONLINE_MONITOR_GIS_RUNTIME_LAND + WebSocketConstant.PATTERN;
@@ -56,9 +56,8 @@ public class StationGISServiceImpl implements StationGISService {
             list.add(dto);
         }
         if (strings.size() > 0) {
-            int[] ids = new int[]{135,136};
+            int[] ids = new int[]{135, 136};
             try {
-                String finalString = s;
                 GoldenUtil.subscribeSnapshots(user, ids, (data) -> {
                     try {
                         if (strings.size() > 0) {
@@ -69,7 +68,7 @@ public class StationGISServiceImpl implements StationGISService {
                                 map.put("time", data[0].getDate().getTime() / 1000);
                                 map.put("items", dtos);
                                 String jsonString = JSONObject.toJSONString(map, WriteMapNullValue);
-                                jsonString = finalString + jsonString;
+                                jsonString = s + jsonString;
                                 try {
                                     gisWebsocketHandler.sendGroupMessage(jsonString, strings);
                                 } catch (Exception e) {
@@ -107,16 +106,14 @@ public class StationGISServiceImpl implements StationGISService {
         TimerUtil.start(new TimerTask() {
             @Override
             public void run() {
-                GoldenUtil.servers.remove(user);
-                if ("runtime".equals(user)) {
-                    try {
-                        getGISRuntime(user, num);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        gisWebsocketHandler.sendGroupMessage("重新订阅", strings);
-                    }
+                GoldenUtil.cancel(user);
+                try {
+                    getGISRuntime(user, num);
+                } catch (Exception e) {
+                    gisWebsocketHandler.sendGroupMessage("重新订阅", strings);
+                    e.printStackTrace();
+                    log.info("定时任务取消golden连接,{}", user);
                 }
-                log.info("定时任务取消golden连接,{}", user);
             }
         }, user);
     }

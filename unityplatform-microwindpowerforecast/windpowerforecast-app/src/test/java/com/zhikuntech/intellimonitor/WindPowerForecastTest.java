@@ -15,6 +15,8 @@ import com.zhikuntech.intellimonitor.windpowerforecast.domain.query.statisticsan
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.*;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.analysis.IWfAnalyseCdqService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.analysis.IWfAnalyseDqService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.assess.IWfAssessChangeService;
+import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.assess.IWfAssessDayService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.assess.IWfAssessMonthService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.assesscalc.AssessCalcService;
 import com.zhikuntech.intellimonitor.windpowerforecast.domain.service.cdqcalc.CdqCalcService;
@@ -41,6 +43,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadLocalRandom;
@@ -216,7 +219,7 @@ public class WindPowerForecastTest {
     //# 自定义查询pager
 
     @Autowired
-    private WfTimeBaseMapper timeBaseMapper;
+  //  private WfTimeBaseMapper timeBaseMapper;
 
     @Test public void
     timeBase() {
@@ -486,11 +489,30 @@ public class WindPowerForecastTest {
 
     @Autowired
     AssessCalcService assessCalcService;
-
+    @Autowired
+    IWfAssessDayService assessDayService;
+    @Autowired
+    IWfAssessChangeService changeService;
     @Test public void calcLeak() {
 
         String yesterdayStr = LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         assessCalcService.calcYesterdayAssess(yesterdayStr);
     }
 
+    @Test public void calcMonthCheckData(){
+        LocalDateTime monthBg=LocalDateTime.of(LocalDate.from(LocalDateTime.now().with(TemporalAdjusters.firstDayOfMonth())), LocalTime.MIN).minusMonths(1);
+        LocalDateTime monthNextBg = monthBg.plusMonths(1);
+        String monthBgStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(monthBg);
+        String monthNextBgStr = TimeProcessUtils.formatLocalDateTimeWithSecondPattern(monthNextBg);
+        QueryWrapper<WfAssessDay> assessDayQueryWrapper = new QueryWrapper<>();
+        assessDayQueryWrapper.gt("calc_date", monthBgStr);
+        assessDayQueryWrapper.lt("calc_date", monthNextBgStr);
+        List<WfAssessDay> wfAssessDays = assessDayService.getBaseMapper().selectList(assessDayQueryWrapper);
+        QueryWrapper<WfAssessChange> changeQueryWrapper = new QueryWrapper<>();
+        changeQueryWrapper.eq("newest", 0);
+        changeQueryWrapper.gt("calc_date", monthBgStr);
+        changeQueryWrapper.lt("calc_date", monthNextBgStr);
+        List<WfAssessChange> changeList = changeService.getBaseMapper().selectList(changeQueryWrapper);
+        assessCalcService.calcMonthCheckData(monthBg,wfAssessDays,changeList);
+    }
 }

@@ -79,8 +79,12 @@ public class GoldenUtil {
         check();
         ServerImpl server = pool.getServerImpl();
         Snapshot snap = new SnapshotImpl(server);
-        servers.put(username, server);
-        snaps.put(username, snap);
+        if (servers.containsKey(username) && snaps.containsKey(username)) {
+            return;
+        } else {
+            servers.put(username, server);
+            snaps.put(username, snap);
+        }
         snap.subscribeSnapshots(ids, rsDataChange);
 //        RSDataChange rs = (datas) -> {
 //            //todo 后续处理
@@ -177,9 +181,10 @@ public class GoldenUtil {
 
     /**
      * 获取指定标签点一段时间内的历史存储值
-     * @param id          标签点id
-     * @param dateStart   开始时间
-     * @param dateEnd     结束时间
+     *
+     * @param id        标签点id
+     * @param dateStart 开始时间
+     * @param dateEnd   结束时间
      */
     public static List<RtdbData> getArchivedValues(int id, Date dateStart, Date dateEnd) throws Exception {
         ServerImpl serverImpl = pool.getServerImpl();
@@ -212,10 +217,11 @@ public class GoldenUtil {
 
     /**
      * 获取指定标签点指定时间的历史存储值
-     * @param ids          标签点id
-     * @param datetime     时间
+     *
+     * @param ids      标签点id
+     * @param datetime 时间
      */
-    public static List<RtdbData> getCrossSectionValues(int[] ids,Date datetime) throws UnsupportedEncodingException, NoAuthorityException, IOException,
+    public static List<RtdbData> getCrossSectionValues(int[] ids, Date datetime) throws UnsupportedEncodingException, NoAuthorityException, IOException,
             EncodePacketErrorException, Exception {
         check();
         ServerImpl serverImpl = pool.getServerImpl();
@@ -260,10 +266,11 @@ public class GoldenUtil {
 
     /**
      * 根据 "表名.标签点名" 格式批量获取标签点数据 stms.stmsp0082
+     *
      * @param strings
      * @return
      */
-    public static List<MinPoint> findPoints(String[] strings){
+    public static List<MinPoint> findPoints(String[] strings) {
         ServerImpl serverImpl = null;
         try {
             serverImpl = pool.getServerImpl();

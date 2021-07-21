@@ -4,6 +4,7 @@ import com.rtdb.service.impl.ServerImpl;
 import com.rtdb.service.impl.ServerImplPool;
 import com.zhikuntech.intellimonitor.core.commons.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.core.commons.weabsocket.WebSocketServer;
+import com.zhikuntech.intellimonitor.onlinemonitor.domain.websocket.GISWebsocketHandler;
 import com.zhikuntech.intellimonitor.onlinemonitor.domain.websocket.TransformerWebsocketHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -25,6 +26,11 @@ public class Monitor {
         String runtimeSea = String.join(",", TransformerWebsocketHandler.GROUP_RUNTIME_SEA.keySet());
         log.info("当前连接的websocket数量是{}，订阅陆上变压器实时数据的有{}，订阅海上变压器实时数据的有{}",
                 WebSocketServer.clients.size(), runtimeLand, runtimeSea);
+
+        String gisRuntimeLand = String.join(",", GISWebsocketHandler.GROUP_RUNTIME_LAND.keySet());
+        String gisRuntimeSea = String.join(",", GISWebsocketHandler.GROUP_RUNTIME_SEA.keySet());
+        log.info("当前连接的websocket数量是{}，订阅陆上GIS实时数据的有{}，订阅海上GIS实时数据的有{}",
+                WebSocketServer.clients.size(), gisRuntimeLand, gisRuntimeSea);
 
         ServerImplPool pool = GoldenUtil.pool;
         ConcurrentHashMap<String, ServerImpl> servers = GoldenUtil.servers;
