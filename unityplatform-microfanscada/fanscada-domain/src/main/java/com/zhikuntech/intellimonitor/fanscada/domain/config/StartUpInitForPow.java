@@ -2,11 +2,10 @@ package com.zhikuntech.intellimonitor.fanscada.domain.config;
 
 import com.rtdb.api.model.ValueData;
 import com.zhikuntech.intellimonitor.core.commons.constant.FanConstant;
-import com.zhikuntech.intellimonitor.fanscada.domain.golden.GoldenUtil;
+import com.zhikuntech.intellimonitor.core.commons.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGolden;
 import com.zhikuntech.intellimonitor.fanscada.domain.service.BackendToGoldenService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -32,9 +31,6 @@ public class StartUpInitForPow implements CommandLineRunner {
     @Resource
     private BackendToGoldenService backendToGoldenService;
 
-    @Resource
-    private GoldenUtil goldenUtil;
-
     /**
      * 获取项目启动时零点的发电量数据
      * @param args
@@ -46,7 +42,7 @@ public class StartUpInitForPow implements CommandLineRunner {
         list.add(192);
         List<BackendToGolden> backendToGoldens = backendToGoldenService.selectList(list);
         int[] ints = backendToGoldens.stream().mapToInt(BackendToGolden::getGoldenId).toArray();
-        List<ValueData> snapshots = goldenUtil.getSnapshots(ints);
+        List<ValueData> snapshots = GoldenUtil.getSnapshots(ints);
 
         for (BackendToGolden backendToGolden : backendToGoldens) {
             for (ValueData snapshot : snapshots) {

@@ -1,14 +1,14 @@
 package com.zhikuntech.intellimonitor.fanscada.domain.config;
 
-import com.rtdb.api.model.ValueData;
 import com.zhikuntech.intellimonitor.core.commons.constant.FanConstant;
+import com.zhikuntech.intellimonitor.core.commons.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGolden;
 import com.zhikuntech.intellimonitor.fanscada.domain.service.BackendToGoldenService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -22,6 +22,24 @@ import java.util.*;
 @Slf4j
 @Order(value = 1)
 public class StartUpInitForGoldenId implements CommandLineRunner {
+
+    @Value("${golden.ip}")
+    private String ip;
+
+    @Value("${golden.port}")
+    private Integer port;
+
+    @Value("${golden.user}")
+    private String user;
+
+    @Value("${golden.password}")
+    private String password;
+
+    @Value("${golden.poolSize}")
+    private Integer poolSize;
+
+    @Value("${golden.maxSize}")
+    private Integer maxSize;
 
     public static Map<String, Integer> initMap = new HashMap<>();
 
@@ -50,6 +68,7 @@ public class StartUpInitForGoldenId implements CommandLineRunner {
                 initMap.put(FanConstant.DAILY_POWER_ALL + backendToGolden.getBackendId() + "_" + i, backendToGolden.getGoldenId());
             }
         }
+        GoldenUtil.init(ip, port, user, password, poolSize, maxSize);
         log.info("初始化数据完成");
     }
 

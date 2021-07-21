@@ -4,8 +4,8 @@ import com.rtdb.api.model.ValueData;
 import com.rtdb.service.impl.ServerImpl;
 import com.rtdb.service.impl.ServerImplPool;
 import com.zhikuntech.intellimonitor.core.commons.constant.FanConstant;
+import com.zhikuntech.intellimonitor.core.commons.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.core.commons.weabsocket.WebSocketServer;
-import com.zhikuntech.intellimonitor.fanscada.domain.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.BackendToGolden;
 import com.zhikuntech.intellimonitor.fanscada.domain.service.BackendToGoldenService;
 import lombok.extern.slf4j.Slf4j;
@@ -27,9 +27,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Monitor {
 
     @Autowired
-    private GoldenUtil goldenUtil;
-
-    @Autowired
     private BackendToGoldenService backendToGoldenService;
 
     @Scheduled(cron = "*/30 * * * * ?")
@@ -38,8 +35,8 @@ public class Monitor {
         String clientKeys = String.join(",", clients.keySet());
         log.info("当前连接的websocket数量是{}，名称为{}", clients.size(), clientKeys);
 
-        ServerImplPool pool = goldenUtil.getPool();
-        ConcurrentHashMap<String, ServerImpl> servers = goldenUtil.getServer();
+        ServerImplPool pool = GoldenUtil.pool;
+        ConcurrentHashMap<String, ServerImpl> servers = GoldenUtil.servers;
         String serverKeys = String.join(",", servers.keySet());
         log.info("当前庚顿数据库连接池实际连接是{}，订阅庚顿数量是{}，名称为{}", pool.getRealSize(), servers.size(), serverKeys);
     }
@@ -70,7 +67,7 @@ public class Monitor {
         list.add(192);
         List<BackendToGolden> backendToGoldens = backendToGoldenService.selectList(list);
         int[] ints = backendToGoldens.stream().mapToInt(BackendToGolden::getGoldenId).toArray();
-        List<ValueData> snapshots = goldenUtil.getSnapshots(ints);
+        List<ValueData> snapshots = GoldenUtil.getSnapshots(ints);
 
         for (BackendToGolden backendToGolden : backendToGoldens) {
             for (ValueData snapshot : snapshots) {

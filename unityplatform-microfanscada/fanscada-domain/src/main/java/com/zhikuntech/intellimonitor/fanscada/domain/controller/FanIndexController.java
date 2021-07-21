@@ -2,7 +2,7 @@ package com.zhikuntech.intellimonitor.fanscada.domain.controller;
 
 import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
 import com.zhikuntech.intellimonitor.core.commons.base.ResultCode;
-import com.zhikuntech.intellimonitor.fanscada.domain.golden.GoldenUtil;
+import com.zhikuntech.intellimonitor.core.commons.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.fanscada.domain.service.FanIndexService;
 import com.zhikuntech.intellimonitor.fanscada.domain.vo.LoopVO;
 import io.swagger.annotations.Api;
@@ -27,8 +27,6 @@ public class FanIndexController {
 
     @Autowired
     private FanIndexService fanIndexService;
-    @Autowired
-    private GoldenUtil goldenUtil;
 
     @ApiOperation("实时获取scada首页的风机列表")
     @GetMapping("/getList/{userName}")
@@ -38,7 +36,7 @@ public class FanIndexController {
             fanIndexService.getFanBaseInfoList(userName);
         } catch (Exception e) {
             e.printStackTrace();
-            goldenUtil.cancelAll();
+            GoldenUtil.cancelAll();
         }
         //return BaseResponse.success(null);
     }

@@ -1,6 +1,6 @@
 package com.zhikuntech.intellimonitor.fanscada.domain.vo;
 
-import com.zhikuntech.intellimonitor.fanscada.domain.golden.annotation.GoldenId;
+import com.zhikuntech.intellimonitor.core.commons.golden.annotation.GoldenId;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

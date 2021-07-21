@@ -4,10 +4,11 @@ package com.zhikuntech.intellimonitor.fanscada.domain.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.rtdb.api.model.ValueData;
 import com.zhikuntech.intellimonitor.core.commons.constant.FanConstant;
+import com.zhikuntech.intellimonitor.core.commons.golden.GoldenUtil;
+import com.zhikuntech.intellimonitor.core.commons.golden.InjectPropertiesUtil;
+import com.zhikuntech.intellimonitor.fanscada.domain.config.StartUpInitForGoldenId;
 import com.zhikuntech.intellimonitor.fanscada.domain.config.StartUpInitForPow;
 import com.zhikuntech.intellimonitor.fanscada.domain.constant.FanLoopNumber;
-import com.zhikuntech.intellimonitor.fanscada.domain.golden.GoldenUtil;
-import com.zhikuntech.intellimonitor.fanscada.domain.golden.InjectPropertiesUtil;
 import com.zhikuntech.intellimonitor.fanscada.domain.pojo.GoldenIdQuery;
 import com.zhikuntech.intellimonitor.fanscada.domain.service.BackendToGoldenService;
 import com.zhikuntech.intellimonitor.fanscada.domain.service.FanIndexService;
@@ -30,9 +31,6 @@ import java.util.*;
 @Service
 @Slf4j
 public class FanIndexServiceImpl implements FanIndexService {
-
-    @Autowired
-    private GoldenUtil goldenUtil;
 
     @Autowired
     private MyWebSocketHandle myWebSocketHandle;
@@ -68,10 +66,10 @@ public class FanIndexServiceImpl implements FanIndexService {
             fanBaseInfoVOList.add(fanBaseInfoVO);
         }
         try {
-            goldenUtil.subscribeSnapshots(username, ints, (data) -> {
+            GoldenUtil.subscribeSnapshots(username, ints, (data) -> {
                 try {
                     long l = System.currentTimeMillis();
-                    List<FanBaseInfoVO> result = InjectPropertiesUtil.injectByAnnotationForBigdecimal(fanBaseInfoVOList, data);
+                    List<FanBaseInfoVO> result = InjectPropertiesUtil.injectByAnnotation(fanBaseInfoVOList, data, (key) -> StartUpInitForGoldenId.initMap.get(key));
                     if (result == null) {
                         return;
                     }
@@ -181,13 +179,13 @@ public class FanIndexServiceImpl implements FanIndexService {
 
                 } catch (Exception e) {
                     log.info("庚顿数据异常{}", e.getMessage());
-                    goldenUtil.cancel(username);
+                    GoldenUtil.cancel(username);
                     myWebSocketHandle.sendGroupMessage("重新订阅", MyWebSocketHandle.groupRuntime.keySet());
                 }
             });
         } catch (Exception e) {
             log.info("庚顿链接异常{},取消重连", e.getMessage());
-            goldenUtil.cancelAll();
+            GoldenUtil.cancelAll();
             myWebSocketHandle.sendGroupMessage("重新订阅", MyWebSocketHandle.groupRuntime.keySet());
         }
     }
@@ -225,11 +223,13 @@ public class FanIndexServiceImpl implements FanIndexService {
         List<FanBaseInfoVO> list10 = new ArrayList<>();
         List<ValueData> snapshots = null;
         try {
-            snapshots = goldenUtil.getSnapshots(ints);
+            snapshots = GoldenUtil.getSnapshots(ints);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        List<FanBaseInfoVO> fanBaseInfoVOS = InjectPropertiesUtil.injectByAnnotationForBigdecimal(list, snapshots);
+       //  List<FanBaseInfoVO> fanBaseInfoVOS = InjectPropertiesUtil.injectByAnnotationForBigdecimal(list, snapshots);
+        List<FanBaseInfoVO> fanBaseInfoVOS = InjectPropertiesUtil.injectByAnnotation(list, snapshots, (key) -> StartUpInitForGoldenId.initMap.get(key));
+
         if (null == fanBaseInfoVOS) {
             return null;
         }
