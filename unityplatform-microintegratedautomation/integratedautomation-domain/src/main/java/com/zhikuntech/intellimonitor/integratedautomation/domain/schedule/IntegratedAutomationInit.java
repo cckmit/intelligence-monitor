@@ -1,13 +1,12 @@
 package com.zhikuntech.intellimonitor.integratedautomation.domain.schedule;
 
 import com.zhikuntech.intellimonitor.core.commons.golden.GoldenUtil;
+import com.zhikuntech.intellimonitor.integratedautomation.domain.service.impl.IntegratedAutomationServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author 代志豪
@@ -35,11 +34,22 @@ public class IntegratedAutomationInit implements CommandLineRunner {
     @Value("${golden.maxSize}")
     private Integer maxSize;
 
-    public static Map<String, Integer> GOLDEN_ID_MAP = new HashMap<>();
+    @Autowired
+    private IntegratedAutomationServiceImpl service;
 
     @Override
     public void run(String... args) {
         GoldenUtil.init(ip, port, user, password, poolSize, maxSize);
+        int[] land = new int[]{};
+        int[] sea = new int[]{};
+        int[] controlCenter = new int[]{};
+        try {
+            service.subscribe("land", land);
+            service.subscribe("sea", sea);
+            service.subscribe("controlCenter", controlCenter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         log.info("初始化数据完成！");
     }
 }
