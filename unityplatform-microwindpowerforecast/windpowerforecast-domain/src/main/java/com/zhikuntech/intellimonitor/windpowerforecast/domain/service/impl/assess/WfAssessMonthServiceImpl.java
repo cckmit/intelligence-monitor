@@ -135,7 +135,7 @@ public class WfAssessMonthServiceImpl extends ServiceImpl<WfAssessMonthMapper, W
             String yearStrPost = queryYearPost + "-01-01";
             LocalDate preYear = DateProcessUtils.parseToLocalDate(yearStrPre);
             LocalDate postYear = DateProcessUtils.parseToLocalDate(yearStrPost);
-            postYear = postYear.plusDays(1);
+            postYear = postYear.plusYears(1);
             criteria.ge("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(preYear));
             criteria.lt("calc_date", TimeProcessUtils.formatLocalDateTimeWithSecondPattern(postYear));
         }
