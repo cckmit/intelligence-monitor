@@ -85,36 +85,50 @@ public class StructureMonitoringServiceImpl implements IStructureMonitoringServi
      */
     @Override
     public BaseResponse<LiveSpeedData> getSpeedData(Integer type, Integer fanNumber) {
-        int[] ids = null;
         // 获取庚顿id映射关系
         if (type == 1) {
             List<StructureToGoldenMax> maxMap = structureToGoldenService.getMaxMap(fanNumber, DataConstant.SPEED_DATA);
-            ids = maxMap.stream().mapToInt(StructureToGoldenMax::getGoldenId).toArray();
+            int[] ids = maxMap.stream().mapToInt(StructureToGoldenMax::getGoldenId).toArray();
+            // 查询庚顿
+            try {
+                List<ValueData> snapshots = GoldenUtil.getSnapshots(ids);
+                LiveSpeedData liveSpeedData = new LiveSpeedData();
+                liveSpeedData = InjectPropertiesUtil.injectByAnnotationMax(liveSpeedData, snapshots, maxMap);
+
+                return BaseResponse.success(liveSpeedData);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         if (type == 2) {
             List<StructureToGoldenAvg> avgMap = structureToGoldenService.getAvgMap(fanNumber, DataConstant.SPEED_DATA);
-            ids = avgMap.stream().mapToInt(StructureToGoldenAvg::getGoldenId).toArray();
+            int[] ids = avgMap.stream().mapToInt(StructureToGoldenAvg::getGoldenId).toArray();
+            // 查询庚顿
+            try {
+                List<ValueData> snapshots = GoldenUtil.getSnapshots(ids);
+                LiveSpeedData liveSpeedData = new LiveSpeedData();
+                liveSpeedData = InjectPropertiesUtil.injectByAnnotationAvg(liveSpeedData, snapshots, avgMap);
+
+                return BaseResponse.success(liveSpeedData);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         if (type == 3) {
             List<StructureToGoldenMin> minMap = structureToGoldenService.getMinMap(fanNumber, DataConstant.SPEED_DATA);
-            ids = minMap.stream().mapToInt(StructureToGoldenMin::getGoldenId).toArray();
+            int[] ids = minMap.stream().mapToInt(StructureToGoldenMin::getGoldenId).toArray();
+            // 查询庚顿
+            try {
+                List<ValueData> snapshots = GoldenUtil.getSnapshots(ids);
+                LiveSpeedData liveSpeedData = new LiveSpeedData();
+                liveSpeedData = InjectPropertiesUtil.injectByAnnotationMin(liveSpeedData, snapshots, minMap);
+
+                return BaseResponse.success(liveSpeedData);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        if (ids == null) {
-            return null;
-        }
-        // 查询庚顿
-        //try {
-        //    List<ValueData> snapshots = GoldenUtil.getSnapshots(ids);
-        //    LiveSpeedData liveSpeedData = new LiveSpeedData();
-        //    liveSpeedData = InjectPropertiesUtil.injectByAnnotation(liveSpeedData, snapshots, );
-        //    if (liveSpeedData == null) {
-        //        return BaseResponse.failure(null, "");
-        //    }
-        //    return BaseResponse.success(liveSpeedData);
-        //} catch (Exception e) {
-        //    e.printStackTrace();
-        //}
-        return null;
+        return BaseResponse.failure(ResultCode.PARAMETER_ERROR);
     }
 
     /**
@@ -126,6 +140,48 @@ public class StructureMonitoringServiceImpl implements IStructureMonitoringServi
      */
     @Override
     public BaseResponse<LiveSedimentationData> getSedimentationData(Integer type, Integer fanNumber) {
-        return null;
+        if (type == 1) {
+            List<StructureToGoldenMax> maxMap = structureToGoldenService.getMaxMap(fanNumber, DataConstant.SEDIMENTATION_DATA);
+            int[] ids = maxMap.stream().mapToInt(StructureToGoldenMax::getGoldenId).toArray();
+            // 查询庚顿
+            try {
+                List<ValueData> snapshots = GoldenUtil.getSnapshots(ids);
+                LiveSedimentationData liveSedimentationData = new LiveSedimentationData();
+                liveSedimentationData = InjectPropertiesUtil.injectByAnnotationMax(liveSedimentationData, snapshots, maxMap);
+
+                return BaseResponse.success(liveSedimentationData);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (type == 2) {
+            List<StructureToGoldenAvg> avgMap = structureToGoldenService.getAvgMap(fanNumber, DataConstant.SEDIMENTATION_DATA);
+            int[] ids = avgMap.stream().mapToInt(StructureToGoldenAvg::getGoldenId).toArray();
+            // 查询庚顿
+            try {
+                List<ValueData> snapshots = GoldenUtil.getSnapshots(ids);
+                LiveSedimentationData liveSedimentationData = new LiveSedimentationData();
+                liveSedimentationData = InjectPropertiesUtil.injectByAnnotationAvg(liveSedimentationData, snapshots, avgMap);
+
+                return BaseResponse.success(liveSedimentationData);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (type == 3) {
+            List<StructureToGoldenMin> minMap = structureToGoldenService.getMinMap(fanNumber, DataConstant.SEDIMENTATION_DATA);
+            int[] ids = minMap.stream().mapToInt(StructureToGoldenMin::getGoldenId).toArray();
+            // 查询庚顿
+            try {
+                List<ValueData> snapshots = GoldenUtil.getSnapshots(ids);
+                LiveSedimentationData liveSedimentationData = new LiveSedimentationData();
+                liveSedimentationData = InjectPropertiesUtil.injectByAnnotationMin(liveSedimentationData, snapshots, minMap);
+
+                return BaseResponse.success(liveSedimentationData);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return BaseResponse.failure(ResultCode.PARAMETER_ERROR);
     }
 }

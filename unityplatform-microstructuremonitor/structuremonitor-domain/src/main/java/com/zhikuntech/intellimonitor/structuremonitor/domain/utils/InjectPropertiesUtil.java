@@ -4,11 +4,14 @@ package com.zhikuntech.intellimonitor.structuremonitor.domain.utils;
 import com.rtdb.api.model.RtdbData;
 import com.rtdb.api.model.ValueData;
 import com.zhikuntech.intellimonitor.core.commons.golden.annotation.GoldenId;
+import com.zhikuntech.intellimonitor.structuremonitor.domain.pojo.StructureToGoldenAvg;
+import com.zhikuntech.intellimonitor.structuremonitor.domain.pojo.StructureToGoldenMax;
 import com.zhikuntech.intellimonitor.structuremonitor.domain.pojo.StructureToGoldenMin;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,7 +51,7 @@ public class InjectPropertiesUtil<T> {
         return t;
     }
 
-    public static <T> T injectByAnnotation(T t, List<ValueData> data, List<StructureToGoldenMin> list) {
+    public static <T> T injectByAnnotationMin(T t, List<ValueData> data, List<StructureToGoldenMin> list) {
         Field[] fields = t.getClass().getDeclaredFields();
         for (Field field : fields) {
             if (field.getAnnotation(GoldenId.class) != null) {
@@ -67,13 +70,77 @@ public class InjectPropertiesUtil<T> {
                         try {
                             field.setAccessible(true);
                             if (valueData.getValue() == 0) {
-                                field.set(t, valueData.getState());
+                                field.set(t, BigDecimal.valueOf(valueData.getState()).setScale(2, RoundingMode.HALF_UP));
                             } else {
-                                if (field.getDeclaringClass() == BigDecimal.class) {
-                                    field.set(t, BigDecimal.valueOf(valueData.getValue()));
-                                } else {
-                                    field.set(t, valueData.getValue());
-                                }
+                                field.set(t, BigDecimal.valueOf(valueData.getValue()).setScale(2,RoundingMode.HALF_UP));
+                            }
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                            return null;
+                        }
+                    }
+                }
+            }
+        }
+        return t;
+    }
+
+    public static <T> T injectByAnnotationAvg(T t, List<ValueData> data, List<StructureToGoldenAvg> list) {
+        Field[] fields = t.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            if (field.getAnnotation(GoldenId.class) != null) {
+                GoldenId goldenId = field.getDeclaredAnnotation(GoldenId.class);
+                int value = goldenId.value();
+                //筛选相同backid的映射关系实体类
+                List<StructureToGoldenAvg> collect = list.stream().filter(item -> {
+                    return item.getBackenId() == value;
+                }).collect(Collectors.toList());
+                if (collect.size() != 1) {
+                    continue;
+                }
+                StructureToGoldenAvg structureToGoldenAvg = collect.get(0);
+                for (ValueData valueData : data) {
+                    if (structureToGoldenAvg.getGoldenId() == valueData.getId()) {
+                        try {
+                            field.setAccessible(true);
+                            if (valueData.getValue() == 0) {
+                                field.set(t, BigDecimal.valueOf(valueData.getState()).setScale(2, RoundingMode.HALF_UP));
+                            } else {
+                                field.set(t, BigDecimal.valueOf(valueData.getValue()).setScale(2,RoundingMode.HALF_UP));
+                            }
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                            return null;
+                        }
+                    }
+                }
+            }
+        }
+        return t;
+    }
+
+    public static <T> T injectByAnnotationMax(T t, List<ValueData> data, List<StructureToGoldenMax> list) {
+        Field[] fields = t.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            if (field.getAnnotation(GoldenId.class) != null) {
+                GoldenId goldenId = field.getDeclaredAnnotation(GoldenId.class);
+                int value = goldenId.value();
+                //筛选相同backid的映射关系实体类
+                List<StructureToGoldenMax> collect = list.stream().filter(item -> {
+                    return item.getBackenId() == value;
+                }).collect(Collectors.toList());
+                if (collect.size() != 1) {
+                    continue;
+                }
+                StructureToGoldenMax structureToGoldenMax = collect.get(0);
+                for (ValueData valueData : data) {
+                    if (structureToGoldenMax.getGoldenId() == valueData.getId()) {
+                        try {
+                            field.setAccessible(true);
+                            if (valueData.getValue() == 0) {
+                                field.set(t, BigDecimal.valueOf(valueData.getState()).setScale(2, RoundingMode.HALF_UP));
+                            } else {
+                                field.set(t, BigDecimal.valueOf(valueData.getValue()).setScale(2,RoundingMode.HALF_UP));
                             }
                         } catch (IllegalAccessException e) {
                             e.printStackTrace();
