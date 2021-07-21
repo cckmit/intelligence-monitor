@@ -3,7 +3,6 @@ package com.zhikuntech.intellimonitor.structuremonitor.domain.query;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 /**
  * @author liukai
@@ -11,6 +10,9 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 @Data
 @ApiModel("结构监测查询")
 public class StructureMonitoringQuery {
+
+    @ApiModelProperty(value = "风机编号", required = true)
+    private String number;
 
     @ApiModelProperty(value = "查询模式:[日/月]->[day/month]", required = true)
     private String queryMode;

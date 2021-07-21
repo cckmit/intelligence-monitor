@@ -1,6 +1,9 @@
 package com.zhikuntech.intellimonitor.alarm.domain.service.impl.corelogic;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -10,15 +13,18 @@ import java.util.Objects;
  *
  * @author liukai
  */
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Data
 public class MonitorStatusInfo implements Serializable {
 
     private static final long serialVersionUID = -1354999979597391922L;
 
     /**
-     * 测点id
+     * 测点编码
      */
-    private String monitorId;
+    private String monitorNo;
 
     /**
      * 测点类型
@@ -69,12 +75,21 @@ public class MonitorStatusInfo implements Serializable {
     private Integer statusChange;
 
     /**
+     * 状态是否发生了变化
+     *
+     * @return true -> 有变化 / false -> 无变化
+     */
+    public boolean statusChangeOrNot() {
+        return statusChange == 1;
+    }
+
+    /**
      * 晚于当前时间的事件直接舍弃
      *
      * @param timeStamp 新数据的时间戳
      * @return  是否可以被处理
      */
-    public boolean canJoinProcess(long timeStamp) {
+    private boolean canJoinProcess(long timeStamp) {
         return curTimeStamp < timeStamp;
     }
 
@@ -93,11 +108,11 @@ public class MonitorStatusInfo implements Serializable {
             return;
         }
         // 上一个状态保存为当前状态
-        monitorPreStatus = monitorCurStatus;
-        preTimeStamp = curTimeStamp;
+        this.monitorPreStatus = this.monitorCurStatus;
+        this.preTimeStamp = this.curTimeStamp;
         // 当前状态保存最新的状态
-        monitorCurStatus = newestStatus;
-        curTimeStamp = newestTimeStamp;
+        this.monitorCurStatus = newestStatus;
+        this.curTimeStamp = newestTimeStamp;
 
         // 刷新状态变更信息
         assignStatusChangeAndFlushStatus();

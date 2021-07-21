@@ -54,4 +54,14 @@ public interface IAlarmProduceInfoService extends IService<AlarmProduceInfo> {
      */
     boolean alarmConfirm(AlarmConfirmQuery query);
 
+
+    /**
+     * 根据测点编码获取测点信息
+     * 每个测点只有一条或零条告警信息
+     *
+     * @param monitorNo 测点编码
+     * @return          测点信息
+     */
+    AlarmProduceInfo fetchCurAlarmInfoByMonitorNo(String monitorNo);
+
 }

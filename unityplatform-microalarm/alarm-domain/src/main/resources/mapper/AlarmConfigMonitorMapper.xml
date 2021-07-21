@@ -17,11 +17,12 @@
         <result column="value_type" property="valueType" />
         <result column="monitor_describe" property="monitorDescribe" />
         <result column="engineering_unit" property="engineeringUnit" />
+        <result column="logic_partition" property="logicPartition" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        monitor_no, monitor_name, rule_no, monitor_type, model_type, model_name, group_type, group_name, create_time, update_time, value_type, monitor_describe, engineering_unit
+        monitor_no, monitor_name, rule_no, monitor_type, model_type, model_name, group_type, group_name, create_time, update_time, value_type, monitor_describe, engineering_unit, logic_partition
     </sql>
 
 </mapper>

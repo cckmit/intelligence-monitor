@@ -207,6 +207,9 @@ public class GoldenUtil {
             log.info(archivedValues.size() + "  条记录,用时 : " + (e - s) + "  ms");
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            serverImpl.close();
+            his.close();
         }
         return archivedValues;
     }
@@ -220,10 +223,14 @@ public class GoldenUtil {
      */
     public static List<RtdbData> getCrossSectionValues(int[] ids, Date datetime) throws UnsupportedEncodingException, NoAuthorityException, IOException,
             EncodePacketErrorException, Exception {
+        check();
         ServerImpl serverImpl = pool.getServerImpl();
+        serverImpl.setTimeOut(5);
         HistorianImpl his = new HistorianImpl(serverImpl);
         List<RtdbData> list = his.getCrossSectionValues(ids, datetime, RtdbHisMode.RTDB_NEXT);
         System.out.println(list.size());
+        his.close();
+        serverImpl.close();
         return list;
     }
 

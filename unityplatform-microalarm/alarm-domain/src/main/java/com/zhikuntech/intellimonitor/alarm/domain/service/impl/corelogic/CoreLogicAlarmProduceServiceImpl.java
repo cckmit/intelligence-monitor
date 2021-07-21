@@ -17,7 +17,10 @@ import com.zhikuntech.intellimonitor.core.prototype.MonitorStructDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +59,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceService {
+public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceService, ApplicationContextAware {
 
     private final RedisTemplate<String, String> redisTemplate;
 
@@ -67,13 +70,6 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
     private final IAlarmConfigRuleService configRuleService;
 
     private final IAlarmProduceInfoService produceInfoService;
-
-
-    public static final String REDIS_STATUS = "hash_cache_redis_status";
-
-    public static final String REDIS_MONITOR = "hash_cache_redis_monitor";
-
-    public static final String REDIS_RULE = "hash_cache_redis_rule";
 
 
     /**
@@ -89,6 +85,16 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
 
     public static final BigDecimal BOOLEAN_ALARM = BigDecimal.valueOf(1);
 
+
+    /**
+     * use this to publish event
+     */
+    private ApplicationContext applicationContext;
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
 
     public void testRedisAccess() {
 
@@ -129,19 +135,24 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
         if (MONITOR_BOOLEAN.equals(monitorType)) {
             // 遥信数据 告警 -> 1告警 0不告警
             boolean alarmOccur = BOOLEAN_ALARM.equals(monitorValue);
+            // 获取当前告警信息
+            AlarmProduceInfo produceInfo = produceInfoService.fetchCurAlarmInfoByMonitorNo(monitorNo);
+            if /* 产生告警 */ (alarmOccur) {
 
-            //# 告警信息处理
-
-
-
-
-            //# 状态变更处理
-
-            // 获取当前测点状态
-
-
-            //# 状态变更处理
-
+            } /* 不产生告警 */ else {
+                if /* 不存在当前告警 */ (Objects.isNull(produceInfo)) {
+                    /*
+                        todo
+                             状态机制
+                     */
+                } /* 存在当前告警 */ else {
+                    /*
+                    todo
+                        1.告警恢复机制
+                        2.状态机制
+                     */
+                }
+            }
         } else if (MONITOR_NUM.equals(monitorType)){
             // 遥测数据 告警
             String ruleNo = alarmConfigMonitor.getRuleNo();
@@ -243,10 +254,10 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
             }
             // ------------------------提取当前状态------------------------
 
-            // 获取当前测点状态
-            MonitorStatusInfo monitorStatusInfo = obtainAlarmStatusByMonitorId(monitorNo);
-            // 转换状态
-            monitorStatusInfo.swapCurStatusAndPre(curStatus, eventTimeStamp);
+//            // 获取当前测点状态
+//            MonitorStatusInfo monitorStatusInfo = obtainAlarmStatusByMonitorId(monitorNo);
+//            // 转换状态
+//            monitorStatusInfo.swapCurStatusAndPre(curStatus, eventTimeStamp);
             //# --------------------------------------------------------状态变更处理--------------------------------------------------------
         }
 
@@ -265,13 +276,14 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
         return null;
     }
 
+
     /**
      * 获取告警状态
      * @param monitorId     测点id
      * @return  告警状态
      */
-    MonitorStatusInfo obtainAlarmStatusByMonitorId(String monitorId) {
-        String cacheEntry = (String) redisTemplate.opsForHash().get(REDIS_STATUS, monitorId);
+    public MonitorStatusInfo obtainAlarmStatusByMonitorId(String monitorId) {
+        String cacheEntry = (String) redisTemplate.opsForHash().get(RedisCacheKeyNameConstants.REDIS_STATUS, monitorId);
         if (Objects.isNull(cacheEntry)) {
             return null;
         }
@@ -292,7 +304,7 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
     AlarmConfigMonitor obtainMonitor(String monitorId) {
         AlarmConfigMonitor alarmConfigMonitor = null;
         // read from cache
-        String cacheEntry = (String) redisTemplate.opsForHash().get(REDIS_MONITOR, monitorId);
+        String cacheEntry = (String) redisTemplate.opsForHash().get(RedisCacheKeyNameConstants.REDIS_MONITOR, monitorId);
         if (StringUtils.isNotBlank(cacheEntry)) {
             try {
                 alarmConfigMonitor = objectMapper.readValue(cacheEntry, AlarmConfigMonitor.class);
@@ -310,7 +322,7 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
             try {
                 String monitorNo = alarmConfigMonitor.getMonitorNo();
                 String storeToRedis = objectMapper.writeValueAsString(alarmConfigMonitor);
-                redisTemplate.opsForHash().put(REDIS_MONITOR, monitorNo, storeToRedis);
+                redisTemplate.opsForHash().put(RedisCacheKeyNameConstants.REDIS_MONITOR, monitorNo, storeToRedis);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
@@ -325,7 +337,7 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
      */
     AlarmConfigRule obtainRule(/* 规则编码 */ String ruleNo) {
         AlarmConfigRule alarmConfigRule = null;
-        final String ruleEntry = (String) redisTemplate.opsForHash().get(REDIS_RULE, ruleNo);
+        final String ruleEntry = (String) redisTemplate.opsForHash().get(RedisCacheKeyNameConstants.REDIS_RULE, ruleNo);
         if (Objects.nonNull(ruleEntry)) {
             try {
                 alarmConfigRule = objectMapper.readValue(ruleEntry, AlarmConfigRule.class);
@@ -341,7 +353,7 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
                 try {
                     String perRuleNo = alarmConfigRule.getRuleNo();
                     String ruleStr = objectMapper.writeValueAsString(alarmConfigRule);
-                    redisTemplate.opsForHash().put(REDIS_RULE, perRuleNo, ruleStr);
+                    redisTemplate.opsForHash().put(RedisCacheKeyNameConstants.REDIS_RULE, perRuleNo, ruleStr);
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
