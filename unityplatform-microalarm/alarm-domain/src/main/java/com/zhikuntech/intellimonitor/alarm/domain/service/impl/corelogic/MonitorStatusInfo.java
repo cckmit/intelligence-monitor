@@ -21,6 +21,12 @@ public class MonitorStatusInfo implements Serializable {
 
     private static final long serialVersionUID = -1354999979597391922L;
 
+    public static final Integer SIGNAL_DATA_ALARM = 11;
+
+    public static final Integer SIGNAL_DATA_NO_ALARM = 22;
+
+
+
     /**
      * 测点编码
      */

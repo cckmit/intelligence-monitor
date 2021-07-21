@@ -12,4 +12,5 @@ public class RedisCacheKeyNameConstants {
 
     public static final String REDIS_RULE = "hash_cache_redis_rule";
 
+    public static final String REDIS_LEVEL = "hash_cache_redis_level";
 }
