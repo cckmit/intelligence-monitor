@@ -17,7 +17,7 @@ eureka:
     instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
 
 golden:
-  ip: 1.117.33.103
+  ip: 192.168.3.165
   port: 6327
   user: sa
   password: golden
@@ -28,4 +28,4 @@ ribbon:
   ConnectTimeout: 5000
   ReadTimeout: 5000
 
-websocket.config: true
+websocket.config: false

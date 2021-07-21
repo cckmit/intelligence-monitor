@@ -22,8 +22,8 @@ public class Knife4jConfiguration {
     public Docket defaultApi2() {
         Docket docket=new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(new ApiInfoBuilder()
-                        .title("智能监视系统首页接口文档")
-                        .description("智能监视系统首页接口文档")
+                        .title("智能监视系统综自接口文档")
+                        .description("智能监视系统综自接口文档")
                         .termsOfServiceUrl("http://www.xx.com/")
                         .contact("智鹍")
                         .version("1.0")
@@ -32,7 +32,7 @@ public class Knife4jConfiguration {
                 .groupName("1.0版本")
                 .select()
                 //这里指定Controller扫描包路径
-                .apis(RequestHandlerSelectors.basePackage("com.zhikuntech.intellimonitor.mainpage.domain.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.zhikuntech.intellimonitor.integratedautomation.domain.controller"))
                 .paths(PathSelectors.any())
                 .build();
         return docket;
