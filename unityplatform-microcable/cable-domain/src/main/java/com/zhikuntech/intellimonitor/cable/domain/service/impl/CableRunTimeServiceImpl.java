@@ -5,6 +5,7 @@ import com.zhikuntech.intellimonitor.cable.domain.dto.CableRunStressTimeDTO;
 import com.zhikuntech.intellimonitor.cable.domain.dto.CableRunTimeTemperatureDTO;
 import com.zhikuntech.intellimonitor.cable.domain.service.CableRunTimeService;
 import com.zhikuntech.intellimonitor.core.commons.golden.GoldenUtil;
+import com.zhikuntech.intellimonitor.core.stream.DataConvertUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -149,6 +150,10 @@ public class CableRunTimeServiceImpl implements CableRunTimeService {
             list.add(cableRunTimeTemperatureDTO);
             i++;
         }
+        long l0 = System.currentTimeMillis();
+        DataConvertUtils.convertAndSend(valueData);
+        long l01 = System.currentTimeMillis();
+        log.info("温度数据发送kafka耗时{}",l01-l0);
         return list;
     }
 
@@ -167,6 +172,10 @@ public class CableRunTimeServiceImpl implements CableRunTimeService {
             list.add(cableRunStressTimeDTO);
             i++;
         }
+        long l0 = System.currentTimeMillis();
+        DataConvertUtils.convertAndSend(valueData);
+        long l01 = System.currentTimeMillis();
+        log.info("应力数据发送kafka耗时{}",l01-l0);
         return list;
     }
 
