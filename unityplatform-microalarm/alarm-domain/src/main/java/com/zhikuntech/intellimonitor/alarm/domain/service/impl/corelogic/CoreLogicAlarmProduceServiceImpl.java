@@ -276,77 +276,139 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
             @NotNull Integer produce = alarmResultDTO.getProduce();
             @NotNull Integer levelProduce = alarmResultDTO.getLevel();
             // 提取状态
-            Integer curStatus = extractNumDataStatus(levelProduce, produce);
+            final Integer curStatus = extractNumDataStatus(levelProduce, produce);
             // 查询当前告警信息
-            AlarmProduceInfo produceInfo = produceInfoService.fetchCurAlarmInfoByMonitorNo(monitorNo);
+            final AlarmProduceInfo produceInfo = produceInfoService.fetchCurAlarmInfoByMonitorNo(monitorNo);
             if /* 产生告警 */ (NUM_ALARM.equals(produce)) {
-                // todo
+                if /* 无告警信息 */ (Objects.isNull(produceInfo)) {
+                    // 1.生成告警信息并保存
+                    LocalDateTime curTime = LocalDateTime.now();
+                    AlarmProduceInfo produceAlarmInfo = AlarmProduceInfo.builder()
+                            .version(0)
+                            .monitorNo(monitorNo)
+                            .groupType(alarmConfigMonitor.getGroupType())
+                            .ruleNo(alarmConfigMonitor.getRuleNo())
+                            .eventTime(eventDateTime)
+                            .processTime(curTime)
+                            .monitorNum(monitorValue)
+                            .monitorNumStr(monitorValueStr)
+                            .createTime(curTime)
+                            .withHistory(0)
+                            .preInfoNo(null)
+                            .chainInfo(UUID.randomUUID().toString())
+                            .nextInfoNo(null)
+                            .hasConfirm(0)
+                            .confirmPerson(null)
+                            .confirmTime(null)
+                            .hasRestore(0)
+                            .restoreTime(null)
+                            .alarmDate(curTime)
+                            .alarmTimestamp(curTime)
+                            // todo 行号 -> 雪花算法
+                            // todo 告警描述
+                            // todo 告警等级
+                            .build();
+                    int insert = produceInfoService.getBaseMapper().insert(produceAlarmInfo);
+                    assert insert == 1;
+                    // 2.状态机制
+                    applicationContext.publishEvent(new StatusDataReceiveEvent(
+                            monitorNo,
+                            monitorType,
+                            eventTimeStamp,
+                            curStatus
+                    ));
+                } /* 有告警信息 */ else {
+
+                    //# --------------------获取告警等级--------------------
+                    String levelNo = null;
+                    switch (levelProduce) {
+                        case 1:
+                            levelNo = alarmConfigRule.getLevelNoAlarm();
+                            break;
+                        case 2:
+                            levelNo = alarmConfigRule.getLevelNoOne();
+                            break;
+                        case 3:
+                            levelNo = alarmConfigRule.getLevelNoTwo();
+                            break;
+                        default:
+                            // never here
+                    }
+                    assert levelNo != null;
+                    AlarmConfigLevel alarmConfigLevel = obtainAlarmLevelByLevelNo(levelNo);
+                    final String alarmLevelCur = alarmConfigLevel.getLevelIllustrate();
+                    //# --------------------获取告警等级--------------------
+
+                    // 1.告警等级是否发生变化
+                    String alarmLevel = produceInfo.getAlarmLevel();
+                    if /* 告警等级没有发生变化 */ (StringUtils.equalsIgnoreCase(alarmLevelCur, alarmLevel)) {
+                        final Integer hasConfirm = produceInfo.getHasConfirm();
+                        if /* 已确认 */ (Integer.valueOf(1).equals(hasConfirm)) {
+                            // 1.生成最新告警
+                            AlarmProduceInfo newestAlarmInfo = generateNewestAlarmByPreAlarm(monitorValue, monitorValueStr, eventDateTime, produceInfo);
+                            // 2.之前告警转为历史告警
+                            produceInfo.setNextInfoNo(newestAlarmInfo.getInfoNo());
+                            produceInfo.setWithHistory(1);
+                            produceInfoService.getBaseMapper().updateById(produceInfo);
+                            // 3.状态机制
+                            applicationContext.publishEvent(new StatusDataReceiveEvent(
+                                    monitorNo,
+                                    monitorType,
+                                    eventTimeStamp,
+                                    curStatus
+                            ));
+                        } /* 未确认 */ else {
+                            // 不生成告警, 直接进入状态机制
+                            applicationContext.publishEvent(new StatusDataReceiveEvent(
+                                    monitorNo,
+                                    monitorType,
+                                    eventTimeStamp,
+                                    curStatus
+                            ));
+                        }
+                    } /* 告警等级发生变化 */ else {
+                        // 1.生成最新告警
+                        AlarmProduceInfo newestAlarmInfo = generateNewestAlarmByPreAlarm(monitorValue, monitorValueStr, eventDateTime, produceInfo);
+                        // 2.之前告警转为历史告警
+                        produceInfo.setNextInfoNo(newestAlarmInfo.getInfoNo());
+                        produceInfo.setWithHistory(1);
+                        produceInfoService.getBaseMapper().updateById(produceInfo);
+                        // 3.状态机制
+                        applicationContext.publishEvent(new StatusDataReceiveEvent(
+                                monitorNo,
+                                monitorType,
+                                eventTimeStamp,
+                                curStatus
+                        ));
+                    }
+                }
             } /* 无告警产生 */ else {
                 if /* 无告警信息 */ (Objects.isNull(produceInfo)) {
                     // 状态机制
-
+                    applicationContext.publishEvent(new StatusDataReceiveEvent(
+                            monitorNo,
+                            monitorType,
+                            eventTimeStamp,
+                            curStatus
+                    ));
                 } /* 有告警信息 */ else {
                     // 1.告警恢复机制
-
+                    String chainInfo = produceInfo.getChainInfo();
+                    applicationContext.publishEvent(new AlarmRelieveEvent(
+                            monitorNo,
+                            chainInfo
+                    ));
                     // 2.状态机制
-
+                    applicationContext.publishEvent(new StatusDataReceiveEvent(
+                            monitorNo,
+                            monitorType,
+                            eventTimeStamp,
+                            curStatus
+                    ));
                 }
             }
 
-
-
-
-
-            //# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~告警信息处理~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-            // 查询当前告警信息 todo 此处需要在缓存中进行处理
-//            QueryWrapper<AlarmProduceInfo> produceInfoQueryWrapper = new QueryWrapper<>();
-//            produceInfoQueryWrapper.eq("monitor_no", monitorNo);
-//            produceInfoQueryWrapper.eq("has_restore", 0);
-//            produceInfoQueryWrapper.eq("with_history", 0);
-//            final AlarmProduceInfo alarmProduceInfo = produceInfoService.getBaseMapper().selectOne(produceInfoQueryWrapper);
-//
-//
-//            if (Integer.valueOf(1).equals(produce)) {
-//                // 告警生成(没有对应的告警信息)
-//
-//                if (Objects.isNull(alarmProduceInfo)) {
-//                    // 不在相关告警 -> 直接生成
-//                    LocalDateTime curTime = LocalDateTime.now();
-//                    final AlarmProduceInfo produceInfo = AlarmProduceInfo.builder()
-//                            .version(0)
-//                            .monitorNo(monitorNo)
-//                            .groupType(alarmConfigMonitor.getGroupType())
-//                            .ruleNo(alarmConfigMonitor.getRuleNo())
-//                            .eventTime(eventDateTime)
-//                            .processTime(curTime)
-//                            .monitorNum(monitorValue)
-//                            .monitorNumStr(monitorValueStr)
-//                            .createTime(curTime)
-//                            .withHistory(0)
-//                            .preInfoNo(null)
-//                            .chainInfo(UUID.randomUUID().toString())
-//                            .nextInfoNo(null)
-//                            .hasConfirm(0)
-//                            .confirmPerson(null)
-//                            .confirmTime(null)
-//                            .hasRestore(0)
-//                            .restoreTime(null)
-//                            .alarmDate(curTime)
-//                            .alarmTimestamp(curTime)
-//                            // todo 行号 -> 雪花算法
-//                            // todo 告警描述
-//                            // todo 告警等级
-//                            .build();
-//                    produceInfoService.getBaseMapper().insert(produceInfo);
-//                }
-//            }
-
-
         }
-
-        //#
-
 
     }
 

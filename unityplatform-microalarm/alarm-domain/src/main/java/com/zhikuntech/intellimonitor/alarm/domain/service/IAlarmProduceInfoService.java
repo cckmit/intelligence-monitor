@@ -37,7 +37,6 @@ public interface IAlarmProduceInfoService extends IService<AlarmProduceInfo> {
      */
     Pager<AlarmInfoDTO> queryByPage(AlarmInfoSimpleQuery simpleQuery);
 
-
     /**
      * 滚动条滚动时查询批次 (取代分页查询)
      *
@@ -47,13 +46,19 @@ public interface IAlarmProduceInfoService extends IService<AlarmProduceInfo> {
     List<AlarmInfoBatchDTO> fetchBatchLimit(AlarmInfoLimitQuery limitQuery);
 
     /**
+     * 获取最大行号
+     *
+     * @return 行号
+     */
+    Long maxRow();
+
+    /**
      * 告警信息确认
      *
      * @param query 查询条件
      * @return 确认结果
      */
     boolean alarmConfirm(AlarmConfirmQuery query);
-
 
     /**
      * 根据测点编码获取测点信息
