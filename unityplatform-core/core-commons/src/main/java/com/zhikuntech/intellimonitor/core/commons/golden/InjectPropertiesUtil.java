@@ -19,8 +19,6 @@ import java.util.List;
 @Slf4j
 public class InjectPropertiesUtil<T> {
 
-    private static final String FANSCADA_BASE_PACKAGE = "com.zhikuntech.intellimonitor.fanscada.domain.vo";
-
 
     public static <T> T injectByAnnotation(T t, Integer num, RtdbData[] data, GetCache cache) {
         Field[] fields = t.getClass().getDeclaredFields();
@@ -138,27 +136,22 @@ public class InjectPropertiesUtil<T> {
      * @describe: 获取实体的注解信息
      */
     public static <T> List<Integer> injectByAnnotationCustomize(T t) {
-        // 获取注解的backendList
         Field[] fields = t.getClass().getDeclaredFields();
         List<Integer> backendList = new ArrayList<>();
         for (Field field : fields) {
             GoldenId annotation = field.getDeclaredAnnotation(GoldenId.class);
-            field.setAccessible(true);
-            if (annotation != null) {
-                backendList.add(annotation.value());
-            } else {
-                Class<?> clazz = field.getType();
-                // 判断该类属于哪个包
-                String pack = clazz.getPackage().getName();
-                if (FANSCADA_BASE_PACKAGE.equals(pack)) {
-                    // 回调获取某个字段的值
-                    Object obj = null;
-                    try {
-                        backendList.addAll(injectByAnnotationCustomize(clazz.newInstance()));
-                    } catch (Exception e) {
-                        log.error("获取实体注解失败", e);
-                    }
+            if(annotation == null){
+                continue;
+            }
+            if(annotation.required()){
+                field.setAccessible(true);
+                try {
+                    backendList.addAll(injectByAnnotationCustomize(field.getType().newInstance()));
+                } catch (Exception e) {
+                    log.error("获取实体注解失败", e);
                 }
+            }else{
+                backendList.add(annotation.value());
             }
         }
         return backendList;

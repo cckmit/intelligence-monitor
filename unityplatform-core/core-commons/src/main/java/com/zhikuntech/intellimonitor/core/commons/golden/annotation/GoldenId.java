@@ -16,4 +16,10 @@ public @interface GoldenId {
      int value() default 0;
 
      String scope() default "";
+
+     /**
+      * 实体属性注解。
+      * 使用例子：com.zhikuntech.intellimonitor.fanscada.domain.vo.FanDetailDataVO
+      */
+     boolean required() default false;
 }

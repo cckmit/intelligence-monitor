@@ -28,8 +28,6 @@ public class FanDetailServiceImpl implements FanDetailService {
     @Resource
     private BackendToGoldenMapper backend;
 
-    private static final String BASE_PACKAGE = "com.zhikuntech.intellimonitor.fanscada.domain.vo";
-
     @Override
     public <T> T getMatchData(T t, List<Integer> backendList, String number) {
         List<Integer> goldenIdList = backend.getGoldenIdByWindNumberAndId(backendList);
@@ -44,16 +42,9 @@ public class FanDetailServiceImpl implements FanDetailService {
             for (Field field : fields) {
                 field.setAccessible(true);
                 GoldenId annotation = field.getAnnotation(GoldenId.class);
-                if (annotation == null) {
-                    Class<?> clazz = field.getType();
-                    // 判断该类属于哪个包
-                    String pack = clazz.getPackage().getName();
-                    if (BASE_PACKAGE.equals(pack)) {
-                        // 回调获取某个字段的值
-                        field.setAccessible(true);
-                        Object obj = getMatchData(clazz.newInstance(), backendList, number);
-                        field.set(t, obj);
-                    }
+                if (annotation.required()) {
+                    Object obj = getMatchData(field.getType().newInstance(), backendList, number);
+                    field.set(t, obj);
                     continue;
                 }
                 // 设置初值
