@@ -77,7 +77,7 @@ public class InjectPropertiesUtil<T> {
                         try {
                             field.setAccessible(true);
                             if (valueData.getValue() == 0) {
-                                field.set(item, new BigDecimal(valueData.getState()).setScale(2, RoundingMode.HALF_UP));
+                                field.set(item, new BigDecimal(valueData.getState()));
                             } else {
                                 field.set(item, BigDecimal.valueOf(valueData.getValue()).setScale(2, RoundingMode.HALF_UP));
                             }
@@ -102,7 +102,7 @@ public class InjectPropertiesUtil<T> {
                     try {
                         field.setAccessible(true);
                         if (valueData.getValue() == 0) {
-                            field.set(t, new BigDecimal(valueData.getState()).setScale(2, RoundingMode.HALF_UP));
+                            field.set(t, new BigDecimal(valueData.getState()));
                         } else {
                             field.set(t, BigDecimal.valueOf(valueData.getValue()).setScale(2, RoundingMode.HALF_UP));
                         }
