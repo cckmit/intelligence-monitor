@@ -10,6 +10,7 @@ import com.zhikuntech.intellimonitor.fanscada.domain.service.FanIndexService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.Resource;
 import javax.websocket.OnClose;
@@ -74,7 +75,7 @@ public class MyWebSocketHandle implements BaseWebSocketHandler {
     }
 
     @Override
-    public void onError(String username) {
+    public void onError( String username) {
 
     }
 }

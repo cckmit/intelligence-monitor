@@ -16,4 +16,8 @@ public interface DataConstant {
      * 沉降数据
      */
     Integer SEDIMENTATION_DATA = 2;
+
+    Integer MAX = 1;
+    Integer AVG = 2;
+    Integer MIN = 3;
 }

@@ -1,6 +1,7 @@
 package com.zhikuntech.intellimonitor.structuremonitor.domain.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zhikuntech.intellimonitor.structuremonitor.domain.mapper.StructureToGoldenAvgMapper;
 import com.zhikuntech.intellimonitor.structuremonitor.domain.mapper.StructureToGoldenMaxMapper;
 import com.zhikuntech.intellimonitor.structuremonitor.domain.mapper.StructureToGoldenMinMapper;
@@ -58,13 +59,9 @@ public class StructureToGoldenServiceImpl implements StructureToGoldenService {
     }
 
 
-
-
-
     @Override
     public List<StructureToGoldenMin> getInitData(List<Integer> list) {
-
-
-        return null;
+        QueryWrapper<StructureToGoldenMin> wrapper = new QueryWrapper<>();
+        return minMapper.selectList(wrapper);
     }
 }

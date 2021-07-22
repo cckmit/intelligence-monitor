@@ -32,8 +32,7 @@ public interface IStructureMonitoringService {
     /**
      * 获取实时沉降数据
      * @param fanNumber
-     * @param type
      * @return LiveSedimentationData
      */
-    BaseResponse<LiveSedimentationData> getSedimentationData(Integer type, Integer fanNumber);
+    BaseResponse<LiveSedimentationData> getSedimentationData( Integer fanNumber);
 }

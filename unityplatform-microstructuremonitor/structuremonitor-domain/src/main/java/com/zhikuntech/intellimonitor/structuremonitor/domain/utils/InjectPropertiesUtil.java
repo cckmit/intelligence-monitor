@@ -4,14 +4,18 @@ package com.zhikuntech.intellimonitor.structuremonitor.domain.utils;
 import com.rtdb.api.model.RtdbData;
 import com.rtdb.api.model.ValueData;
 import com.zhikuntech.intellimonitor.core.commons.golden.annotation.GoldenId;
+import com.zhikuntech.intellimonitor.structuremonitor.domain.constant.DataConstant;
+import com.zhikuntech.intellimonitor.structuremonitor.domain.init.MyStartUp;
 import com.zhikuntech.intellimonitor.structuremonitor.domain.pojo.StructureToGoldenAvg;
 import com.zhikuntech.intellimonitor.structuremonitor.domain.pojo.StructureToGoldenMax;
 import com.zhikuntech.intellimonitor.structuremonitor.domain.pojo.StructureToGoldenMin;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,9 +55,47 @@ public class InjectPropertiesUtil<T> {
         return t;
     }
 
+    public static <T> List<T> injectByAnnotation(List<T> t, List<ValueData> data) {
+        Field[] fields = t.get(0).getClass().getDeclaredFields();
+        for (int i = 1; i <= t.size(); i++) {
+            for (Field field : fields) {
+                if (field.getAnnotation(GoldenId.class) != null) {
+                    GoldenId goldenId = field.getDeclaredAnnotation(GoldenId.class);
+                    int value = goldenId.value();
+                    Integer gid = MyStartUp.initMap.get(DataConstant.STRUCTURE_TO_GOLDEN + 1 + "_" + value);
+                    for (ValueData valueData : data) {
+                        if (gid == valueData.getId()) {
+                            try {
+                                field.setAccessible(true);
+                                if (valueData.getValue() == 0) {
+                                    field.set(t.get(i - 1), BigDecimal.valueOf(valueData.getState()).setScale(2, RoundingMode.HALF_UP));
+                                } else {
+                                    field.set(t.get(i - 1), BigDecimal.valueOf(valueData.getValue()).setScale(2, RoundingMode.HALF_UP));
+                                }
+                            } catch (IllegalAccessException e) {
+                                e.printStackTrace();
+                                return null;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return t;
+    }
+
+
     public static <T> T injectByAnnotationMin(T t, List<ValueData> data, List<StructureToGoldenMin> list) {
         Field[] fields = t.getClass().getDeclaredFields();
         for (Field field : fields) {
+            if (field.getDeclaringClass().equals(Date.class)){
+                try {
+                    field.set(t,data.get(0).getDate());
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
             if (field.getAnnotation(GoldenId.class) != null) {
                 GoldenId goldenId = field.getDeclaredAnnotation(GoldenId.class);
                 int value = goldenId.value();
@@ -72,7 +114,7 @@ public class InjectPropertiesUtil<T> {
                             if (valueData.getValue() == 0) {
                                 field.set(t, BigDecimal.valueOf(valueData.getState()).setScale(2, RoundingMode.HALF_UP));
                             } else {
-                                field.set(t, BigDecimal.valueOf(valueData.getValue()).setScale(2,RoundingMode.HALF_UP));
+                                field.set(t, BigDecimal.valueOf(valueData.getValue()).setScale(2, RoundingMode.HALF_UP));
                             }
                         } catch (IllegalAccessException e) {
                             e.printStackTrace();
@@ -88,6 +130,13 @@ public class InjectPropertiesUtil<T> {
     public static <T> T injectByAnnotationAvg(T t, List<ValueData> data, List<StructureToGoldenAvg> list) {
         Field[] fields = t.getClass().getDeclaredFields();
         for (Field field : fields) {
+            if (field.getDeclaringClass().equals(Date.class)){
+                try {
+                    field.set(t,data.get(0).getDate());
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
             if (field.getAnnotation(GoldenId.class) != null) {
                 GoldenId goldenId = field.getDeclaredAnnotation(GoldenId.class);
                 int value = goldenId.value();
@@ -106,7 +155,7 @@ public class InjectPropertiesUtil<T> {
                             if (valueData.getValue() == 0) {
                                 field.set(t, BigDecimal.valueOf(valueData.getState()).setScale(2, RoundingMode.HALF_UP));
                             } else {
-                                field.set(t, BigDecimal.valueOf(valueData.getValue()).setScale(2,RoundingMode.HALF_UP));
+                                field.set(t, BigDecimal.valueOf(valueData.getValue()).setScale(2, RoundingMode.HALF_UP));
                             }
                         } catch (IllegalAccessException e) {
                             e.printStackTrace();
@@ -122,6 +171,13 @@ public class InjectPropertiesUtil<T> {
     public static <T> T injectByAnnotationMax(T t, List<ValueData> data, List<StructureToGoldenMax> list) {
         Field[] fields = t.getClass().getDeclaredFields();
         for (Field field : fields) {
+            if (field.getDeclaringClass().equals(Date.class)){
+                try {
+                    field.set(t,data.get(0).getDate());
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
             if (field.getAnnotation(GoldenId.class) != null) {
                 GoldenId goldenId = field.getDeclaredAnnotation(GoldenId.class);
                 int value = goldenId.value();
@@ -140,7 +196,7 @@ public class InjectPropertiesUtil<T> {
                             if (valueData.getValue() == 0) {
                                 field.set(t, BigDecimal.valueOf(valueData.getState()).setScale(2, RoundingMode.HALF_UP));
                             } else {
-                                field.set(t, BigDecimal.valueOf(valueData.getValue()).setScale(2,RoundingMode.HALF_UP));
+                                field.set(t, BigDecimal.valueOf(valueData.getValue()).setScale(2, RoundingMode.HALF_UP));
                             }
                         } catch (IllegalAccessException e) {
                             e.printStackTrace();

@@ -3,6 +3,8 @@ package com.zhikuntech.intellimonitor.structuremonitor.domain.controller;
 import com.zhikuntech.intellimonitor.core.commons.base.BaseResponse;
 import com.zhikuntech.intellimonitor.structuremonitor.domain.query.StructureMonitoringQuery;
 import com.zhikuntech.intellimonitor.structuremonitor.domain.service.IStructureMonitoringService;
+import com.zhikuntech.intellimonitor.structuremonitor.domain.vo.LiveSedimentationData;
+import com.zhikuntech.intellimonitor.structuremonitor.domain.vo.LiveSpeedData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -31,22 +33,21 @@ public class StructureMonitoringController {
     }
 
     @GetMapping("getDataByType")
-    @ApiOperation("获取实时数据")
+    @ApiOperation("获取实时速度数据")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "type", value = "1:最大 2:平均 3:最小"),
-            @ApiImplicitParam(name = "fanNumber", value = "风机编号"),
-            @ApiImplicitParam(name = "dataType", value = "1:加速度 2:沉降")
+            @ApiImplicitParam(name = "fanNumber", value = "风机编号")
     })
-    public Object getData(@RequestParam(defaultValue = "1") Integer type, @RequestParam Integer fanNumber, @RequestParam(defaultValue = "1") Integer dataType) {
-        if (fanNumber != 1) {
-            fanNumber = 1;
-        }
-        if (dataType == 1) {
-            return monitoringService.getSpeedData(type, fanNumber);
-        }
-        if (dataType == 2) {
-            return monitoringService.getSedimentationData(type, fanNumber);
-        }
-        return BaseResponse.failure(null, "参数不对劲");
+    public BaseResponse<LiveSpeedData> getSpeedData(@RequestParam(defaultValue = "1") Integer type, @RequestParam Integer fanNumber) {
+
+        return monitoringService.getSpeedData(type, fanNumber);
+    }
+
+    @GetMapping("getDataByType")
+    @ApiOperation("获取实时沉降数据")
+    @ApiImplicitParam(name = "fanNumber", value = "风机编号")
+    public BaseResponse<LiveSedimentationData> getSedimentationData(@RequestParam Integer fanNumber) {
+
+        return monitoringService.getSedimentationData(fanNumber);
     }
 }
