@@ -3,11 +3,17 @@ spring:
     database: 7
     host: 192.168.3.179
     port: 6379
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://192.168.3.171:3306/monitor_sys?useUnicode=true&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8&useSSL=false
+    username: develop
+    password: Aman@2020
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
 
 logging:
   level:
-    com.zhikuntech.intellimonitor.mainpage.domain.mapper: debug
+    com.zhikuntech.intellimonitor.integratedautomation.domain.mapper: debug
 
 eureka:
   client:
@@ -17,6 +23,7 @@ eureka:
   instance:
     prefer-ip-address: true
     instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
+
 
 golden:
   ip: 192.168.3.165

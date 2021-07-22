@@ -11,5 +11,18 @@
 
     <artifactId>integratedautomation-facade</artifactId>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.zhikuntech.intellimonitor</groupId>
+            <artifactId>integratedautomation-prototype</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.zhikuntech.intellimonitor</groupId>
+            <artifactId>core-commons</artifactId>
+        </dependency>
+    </dependencies>
 </project>
