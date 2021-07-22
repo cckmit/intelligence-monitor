@@ -4,9 +4,9 @@ import org.springframework.stereotype.Service;
 
 /**
  * @author 代志豪
- * 2021/7/20 14:07
+ * 2021/7/21 14:38
  */
 @Service
-public interface SeaService {
-    void subscribe(String username, int[] ids) throws Exception;
+public interface IntegratedAutomationService {
+    void subscribe(String username, int[] ids);
 }

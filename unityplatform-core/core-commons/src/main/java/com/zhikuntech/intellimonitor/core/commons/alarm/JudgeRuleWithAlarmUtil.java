@@ -101,7 +101,8 @@ public class JudgeRuleWithAlarmUtil {
             //警告
             alarmInterval = alarmRange;
         } else {
-            alarmInterval = LEFTCLOSEDINTERVAL + alarmRange + RIGHTCLOSEDINTERVAL;
+//            alarmInterval = LEFTCLOSEDINTERVAL + alarmRange + RIGHTCLOSEDINTERVAL;
+            alarmInterval = alarmRange.charAt(0) + alarmRange.substring(1,alarmRange.length() - 1) + alarmRange.charAt(alarmRange.length() - 1);
             twoLevelWarningInterval = LEFTCLOSEDINTERVAL + preWarningRangeLevelTwe + RIGHTCLOSEDINTERVAL;
             oneLevelWarningInterval = LEFTCLOSEDINTERVAL + preWarningRangeLevelOne + RIGHTCLOSEDINTERVAL;
         }

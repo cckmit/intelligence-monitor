@@ -23,8 +23,10 @@ public class JudgeRuleWithAlarmUtilTest {
 
     @Test
     public void test1(){
-        valueStr = "30";
-        alarmRuleDTO = AlarmRuleDTO.builder().alarmRange("30,80").preWarningRangeLevelOne("5,95").preWarningRangeLevelTwe("10,90").build();
+//        valueStr = "30";
+//        alarmRuleDTO = AlarmRuleDTO.builder().alarmRange("30,80").preWarningRangeLevelOne("5,95").preWarningRangeLevelTwe("10,90").build();
+        valueStr = "22.5";
+        alarmRuleDTO = AlarmRuleDTO.builder().alarmRange("(11,22)").preWarningRangeLevelOne("2,3").preWarningRangeLevelTwe("44,55").build();
     }
 
     @Test

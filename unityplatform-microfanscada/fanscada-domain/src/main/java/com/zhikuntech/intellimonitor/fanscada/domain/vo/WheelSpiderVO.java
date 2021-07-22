@@ -23,7 +23,7 @@ public class WheelSpiderVO {
 
     @GoldenId(value = 105)
     @ApiModelProperty("偏航状态")
-    private Boolean yawingStatus;
+    private Integer yawingStatus;
 
     @GoldenId(value = 106)
     @ApiModelProperty("偏航角度")

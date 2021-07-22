@@ -93,7 +93,7 @@ public class AlarmProduceInfoServiceImpl extends ServiceImpl<AlarmProduceInfoMap
                     2.严重告警
              */
             QueryWrapper<AlarmProduceInfo> produceInfoQueryWrapper = new QueryWrapper<>();
-            produceInfoQueryWrapper.gt("row_stamp", limitQuery.getRowNum());
+            produceInfoQueryWrapper.lt("row_stamp", limitQuery.getRowNum());
             produceInfoQueryWrapper.eq("alarm_level", "严重");
             produceInfoQueryWrapper.eq("with_history", 0);
             produceInfoQueryWrapper.last(String.format("limit %d", limitQuery.getDataNum()));
@@ -103,7 +103,7 @@ public class AlarmProduceInfoServiceImpl extends ServiceImpl<AlarmProduceInfoMap
                 查询全部告警
              */
             QueryWrapper<AlarmProduceInfo> produceInfoQueryWrapper = new QueryWrapper<>();
-            produceInfoQueryWrapper.gt("row_stamp", limitQuery.getRowNum());
+            produceInfoQueryWrapper.lt("row_stamp", limitQuery.getRowNum());
             produceInfoQueryWrapper.last(String.format("limit %d", limitQuery.getDataNum()));
             alarmProduceInfos = getBaseMapper().selectList(produceInfoQueryWrapper);
         } else {
