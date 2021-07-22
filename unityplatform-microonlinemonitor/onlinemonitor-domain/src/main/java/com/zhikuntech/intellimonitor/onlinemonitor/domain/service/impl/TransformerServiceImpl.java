@@ -5,7 +5,6 @@ import com.zhikuntech.intellimonitor.core.commons.constant.WebSocketConstant;
 import com.zhikuntech.intellimonitor.core.commons.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.core.commons.golden.InjectPropertiesUtil;
 import com.zhikuntech.intellimonitor.core.commons.golden.TimerUtil;
-import com.zhikuntech.intellimonitor.core.stream.DataConvertUtils;
 import com.zhikuntech.intellimonitor.onlinemonitor.domain.dto.TransformerRuntimeDTO;
 import com.zhikuntech.intellimonitor.onlinemonitor.domain.schedule.OnlineMonitorInit;
 import com.zhikuntech.intellimonitor.onlinemonitor.domain.service.TransformerService;
@@ -16,7 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.net.SocketException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TimerTask;
 
 import static com.alibaba.fastjson.serializer.SerializerFeature.WriteMapNullValue;
 
@@ -59,7 +61,8 @@ public class TransformerServiceImpl implements TransformerService {
             list.add(dto);
         }
         if (strings.size() > 0) {
-            int[] ids = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 179, 192, 1196};
+            int[] ids = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17};
+            ids = OnlineMonitorInit.getInts(ids);
             try {
                 GoldenUtil.subscribeSnapshots(user, ids, (data) -> {
                     try {

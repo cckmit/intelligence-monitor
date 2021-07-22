@@ -75,6 +75,6 @@ public class MyWebSocketHandle implements BaseWebSocketHandler {
 
     @Override
     public void onError(String username) {
-
+        groupRuntime.remove(username);
     }
 }

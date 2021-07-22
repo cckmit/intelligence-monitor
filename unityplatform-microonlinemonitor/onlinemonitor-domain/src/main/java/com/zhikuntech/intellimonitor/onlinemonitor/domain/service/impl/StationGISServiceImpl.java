@@ -57,6 +57,7 @@ public class StationGISServiceImpl implements StationGISService {
         }
         if (strings.size() > 0) {
             int[] ids = new int[]{135, 136};
+            ids = OnlineMonitorInit.getInts(ids);
             try {
                 GoldenUtil.subscribeSnapshots(user, ids, (data) -> {
                     try {

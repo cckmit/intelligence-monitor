@@ -6,10 +6,10 @@ import com.zhikuntech.intellimonitor.core.commons.constant.FanConstant;
 import com.zhikuntech.intellimonitor.core.commons.constant.WebSocketConstant;
 import com.zhikuntech.intellimonitor.core.commons.golden.GoldenUtil;
 import com.zhikuntech.intellimonitor.core.commons.golden.InjectPropertiesUtil;
+import com.zhikuntech.intellimonitor.core.commons.golden.TimerUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanRuntimeDTO;
 import com.zhikuntech.intellimonitor.mainpage.domain.dto.FanStatisticsDTO;
 import com.zhikuntech.intellimonitor.mainpage.domain.schedule.FanInfoInit;
-import com.zhikuntech.intellimonitor.core.commons.golden.TimerUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.service.FanInfoService;
 import com.zhikuntech.intellimonitor.mainpage.domain.utils.EasyExcelUtil;
 import com.zhikuntech.intellimonitor.mainpage.domain.websocket.MyWebSocketHandler;
@@ -25,7 +25,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
-import java.util.stream.Stream;
 
 /**
  * @author 代志豪
@@ -42,6 +41,7 @@ public class FanInfoServiceImpl implements FanInfoService {
     public List<FanRuntimeDTO> getRuntimeInfos() throws Exception {
         List<FanRuntimeDTO> list = new ArrayList<>();
         int[] ids = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+        ids = FanInfoInit.getInts(ids);
         List<ValueData> valueData = getSnapShops(ids);
         if (null == valueData) {
             return null;
@@ -60,6 +60,7 @@ public class FanInfoServiceImpl implements FanInfoService {
         return list;
     }
 
+
     @Override
     public void getRuntimeInfos(String user) throws Exception {
         if (GoldenUtil.servers.containsKey(user)) {
@@ -68,6 +69,7 @@ public class FanInfoServiceImpl implements FanInfoService {
         }
         if (MyWebSocketHandler.GROUP_RUNTIME.keySet().size() > 0) {
             int[] ids = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+            ids = FanInfoInit.getInts(ids);
             List<FanRuntimeDTO> list = new ArrayList<>(10);
             for (int i = 1; i <= 63; i++) {
                 FanRuntimeDTO fanRuntimeDto = new FanRuntimeDTO();
@@ -124,6 +126,7 @@ public class FanInfoServiceImpl implements FanInfoService {
     @Override
     public FanStatisticsDTO getStatistics() throws Exception {
         int[] ids = {1, 2, 13, 14};
+        ids = FanInfoInit.getInts(ids);
         FanStatisticsDTO dto = new FanStatisticsDTO();
         List<ValueData> valueData = getSnapShops(ids);
         if (null == valueData) {
@@ -148,6 +151,7 @@ public class FanInfoServiceImpl implements FanInfoService {
         }
         if (MyWebSocketHandler.GROUP_STATISTICS.keySet().size() > 0) {
             int[] ids = {1, 2, 13, 14};
+            ids = FanInfoInit.getInts(ids);
             List<FanStatisticsDTO> list = new ArrayList<>();
             for (int i = 1; i <= 63; i++) {
                 list.add(new FanStatisticsDTO());

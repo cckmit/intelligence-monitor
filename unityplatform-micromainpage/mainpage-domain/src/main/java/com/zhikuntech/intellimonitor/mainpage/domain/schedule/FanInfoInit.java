@@ -12,9 +12,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author 代志豪
@@ -71,6 +69,21 @@ public class FanInfoInit implements CommandLineRunner {
         POWER_MAP.put(FanConstant.ANNUAL_ONLINE_ALL, value);
         GoldenUtil.init(ip, port, user, password, poolSize, maxSize);
         log.info("初始化数据完成！");
+    }
+
+    /**
+     * 自定义id与golden id转化
+     * @param ids 自定义id
+     * @return  golden ids
+     */
+    public static int[] getInts(int[] ids) {
+        Set<Integer> idSet = new HashSet<>();
+        for (Integer id : ids) {
+            Integer e = GOLDEN_ID_MAP.get(FanConstant.GOLDEN_ID + id + "_1");
+            idSet.add(e);
+        }
+        ids = idSet.stream().mapToInt(Integer::valueOf).toArray();
+        return ids;
     }
 
 //    /**
