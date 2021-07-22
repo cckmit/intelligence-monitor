@@ -17,6 +17,7 @@ import com.zhikuntech.intellimonitor.alarm.domain.service.impl.corelogic.event.S
 import com.zhikuntech.intellimonitor.core.commons.alarm.AlarmResultDTO;
 import com.zhikuntech.intellimonitor.core.commons.alarm.AlarmRuleDTO;
 import com.zhikuntech.intellimonitor.core.commons.alarm.JudgeRuleWithAlarmUtil;
+import com.zhikuntech.intellimonitor.core.commons.utils.SnowflakeArithmeticUtil;
 import com.zhikuntech.intellimonitor.core.prototype.MonitorStructDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -110,9 +111,14 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
 
     }
 
-    public void processAlarm() {
-        // 0. kafka中获取原始数据
+
+    @Override public void processAlarm() {
         final MonitorStructDTO monitorStructDTO = obtainRawMonitorData();
+        processAlarm(monitorStructDTO);
+    }
+
+    @Override public void processAlarm(final MonitorStructDTO monitorStructDTO) {
+
         if (Objects.isNull(monitorStructDTO)) {
             log.error("数据异常状态,获取的原始数据为null");
             return;
@@ -172,7 +178,7 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
                             .restoreTime(null)
                             .alarmDate(curTime)
                             .alarmTimestamp(curTime)
-                            // todo 行号 -> 雪花算法
+                            .rowStamp(genRow())
                             // todo 告警描述
                             // todo 告警等级
                             .build();
@@ -304,7 +310,7 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
                             .restoreTime(null)
                             .alarmDate(curTime)
                             .alarmTimestamp(curTime)
-                            // todo 行号 -> 雪花算法
+                            .rowStamp(genRow())
                             // todo 告警描述
                             // todo 告警等级
                             .build();
@@ -416,6 +422,11 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
     // --------------------------------------------------------auxiliary method--------------------------------------------------------
 
 
+    static Long genRow() {
+        return SnowflakeArithmeticUtil.nextId();
+    }
+
+
     static Integer extractNumDataStatus(Integer alarmLevel, Integer produce) {
         Integer curStatus = null;
         if (MONITOR_NUM.equals(produce)) {
@@ -467,7 +478,7 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
                 .restoreTime(null)
                 .alarmDate(curTime)
                 .alarmTimestamp(curTime)
-                // todo 行号 -> 雪花算法
+                .rowStamp(genRow())
                 // todo 告警描述
                 // todo 告警等级
                 .build();
@@ -592,6 +603,7 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
         }
         if (Objects.isNull(alarmConfigRule)) {
             QueryWrapper<AlarmConfigRule> ruleQueryWrapper = new QueryWrapper<>();
+            ruleQueryWrapper.eq("rule_no", ruleNo);
             alarmConfigRule = configRuleService.getBaseMapper().selectOne(ruleQueryWrapper);
             // load to cache
             if (Objects.nonNull(alarmConfigRule)) {
