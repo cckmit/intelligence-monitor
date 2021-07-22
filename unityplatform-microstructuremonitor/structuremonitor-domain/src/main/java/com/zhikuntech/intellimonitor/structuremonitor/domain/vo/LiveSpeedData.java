@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 
 /**
@@ -20,6 +21,9 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LiveSpeedData extends Object{
+
+    private Date dataTime;
+
 
     @ApiModelProperty("测点1x加速度")
     @GoldenId(value = 1)

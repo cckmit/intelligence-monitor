@@ -74,6 +74,15 @@ public class StructureMonitoringServiceImpl implements IStructureMonitoringServi
     @Resource
     private StructureToGoldenService structureToGoldenService;
 
+    @Resource
+    private StructureSpeedDataMinService minService;
+
+    @Resource
+    private StructureSpeedDataMaxService maxService;
+
+    @Resource
+    private StructureSpeedDataAvgService avgService;
+
     /**
      * 加速度数据,一分钟一次,
      *
@@ -93,10 +102,30 @@ public class StructureMonitoringServiceImpl implements IStructureMonitoringServi
                 LiveSpeedData liveSpeedData = new LiveSpeedData();
                 liveSpeedData = InjectPropertiesUtil.injectByAnnotationMax(liveSpeedData, snapshots, maxMap);
 
+                //历史数据入库
+                if (liveSpeedData != null) {
+                    StructureSpeedDataMax max = new StructureSpeedDataMax();
+                    max.setDate(liveSpeedData.getDataTime());
+                    max.setP1XSpeed(liveSpeedData.getA1xAcceleration().doubleValue());
+                    max.setP1YSpeed(liveSpeedData.getA1yAcceleration().doubleValue());
+                    max.setP2XSpeed(liveSpeedData.getA2xAcceleration().doubleValue());
+                    max.setP2YSpeed(liveSpeedData.getA2yAcceleration().doubleValue());
+                    max.setP3XSpeed(liveSpeedData.getA3xAcceleration().doubleValue());
+                    max.setP3YSpeed(liveSpeedData.getA3yAcceleration().doubleValue());
+                    max.setP4XSpeed(liveSpeedData.getA4xAcceleration().doubleValue());
+                    max.setP4YSpeed(liveSpeedData.getA4yAcceleration().doubleValue());
+                    max.setP5XSpeed(liveSpeedData.getA5xAcceleration().doubleValue());
+                    max.setP5YSpeed(liveSpeedData.getA5yAcceleration().doubleValue());
+                    max.setP6XSpeed(liveSpeedData.getA6xAcceleration().doubleValue());
+                    max.setP6YSpeed(liveSpeedData.getA6yAcceleration().doubleValue());
+
+                    maxService.save(max);
+                }
                 return BaseResponse.success(liveSpeedData);
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
         }
         if (type.equals(DataConstant.AVG)) {
             List<StructureToGoldenAvg> avgMap = structureToGoldenService.getAvgMap(fanNumber, DataConstant.SPEED_DATA);
@@ -107,6 +136,25 @@ public class StructureMonitoringServiceImpl implements IStructureMonitoringServi
                 LiveSpeedData liveSpeedData = new LiveSpeedData();
                 liveSpeedData = InjectPropertiesUtil.injectByAnnotationAvg(liveSpeedData, snapshots, avgMap);
 
+                //历史数据入库
+                if (liveSpeedData != null) {
+                    StructureSpeedDataAvg avg = new StructureSpeedDataAvg();
+                    avg.setDate(liveSpeedData.getDataTime());
+                    avg.setP1XSpeed(liveSpeedData.getA1xAcceleration().doubleValue());
+                    avg.setP1YSpeed(liveSpeedData.getA1yAcceleration().doubleValue());
+                    avg.setP2XSpeed(liveSpeedData.getA2xAcceleration().doubleValue());
+                    avg.setP2YSpeed(liveSpeedData.getA2yAcceleration().doubleValue());
+                    avg.setP3XSpeed(liveSpeedData.getA3xAcceleration().doubleValue());
+                    avg.setP3YSpeed(liveSpeedData.getA3yAcceleration().doubleValue());
+                    avg.setP4XSpeed(liveSpeedData.getA4xAcceleration().doubleValue());
+                    avg.setP4YSpeed(liveSpeedData.getA4yAcceleration().doubleValue());
+                    avg.setP5XSpeed(liveSpeedData.getA5xAcceleration().doubleValue());
+                    avg.setP5YSpeed(liveSpeedData.getA5yAcceleration().doubleValue());
+                    avg.setP6XSpeed(liveSpeedData.getA6xAcceleration().doubleValue());
+                    avg.setP6YSpeed(liveSpeedData.getA6yAcceleration().doubleValue());
+
+                    avgService.save(avg);
+                }
                 return BaseResponse.success(liveSpeedData);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -121,6 +169,26 @@ public class StructureMonitoringServiceImpl implements IStructureMonitoringServi
                 LiveSpeedData liveSpeedData = new LiveSpeedData();
                 liveSpeedData = InjectPropertiesUtil.injectByAnnotationMin(liveSpeedData, snapshots, minMap);
 
+                //历史数据入库
+                if (liveSpeedData != null) {
+                    StructureSpeedDataMin min = new StructureSpeedDataMin();
+                    min.setDate(liveSpeedData.getDataTime());
+                    min.setP1XSpeed(liveSpeedData.getA1xAcceleration().doubleValue());
+                    min.setP1YSpeed(liveSpeedData.getA1yAcceleration().doubleValue());
+                    min.setP2XSpeed(liveSpeedData.getA2xAcceleration().doubleValue());
+                    min.setP2YSpeed(liveSpeedData.getA2yAcceleration().doubleValue());
+                    min.setP3XSpeed(liveSpeedData.getA3xAcceleration().doubleValue());
+                    min.setP3YSpeed(liveSpeedData.getA3yAcceleration().doubleValue());
+                    min.setP4XSpeed(liveSpeedData.getA4xAcceleration().doubleValue());
+                    min.setP4YSpeed(liveSpeedData.getA4yAcceleration().doubleValue());
+                    min.setP5XSpeed(liveSpeedData.getA5xAcceleration().doubleValue());
+                    min.setP5YSpeed(liveSpeedData.getA5yAcceleration().doubleValue());
+                    min.setP6XSpeed(liveSpeedData.getA6xAcceleration().doubleValue());
+                    min.setP6YSpeed(liveSpeedData.getA6yAcceleration().doubleValue());
+
+                    minService.save(min);
+                }
+
                 return BaseResponse.success(liveSpeedData);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -132,8 +200,6 @@ public class StructureMonitoringServiceImpl implements IStructureMonitoringServi
     @Resource
     private SedimentService sedimentService;
 
-    @Resource
-    private StructureSpeedDataService structureSpeedDataService;
 
     @Resource
     private StructureSedimentationDataService structureSedimentationDataService;
@@ -145,7 +211,7 @@ public class StructureMonitoringServiceImpl implements IStructureMonitoringServi
      * @return
      */
     @Override
-    public BaseResponse<LiveSedimentationData> getSedimentationData( Integer fanNumber) {
+    public BaseResponse<LiveSedimentationData> getSedimentationData(Integer fanNumber) {
 
         List<StructureToGoldenMin> minMap = structureToGoldenService.getMinMap(fanNumber, DataConstant.SEDIMENTATION_DATA);
         int[] ids = minMap.stream().mapToInt(StructureToGoldenMin::getGoldenId).toArray();
@@ -158,7 +224,7 @@ public class StructureMonitoringServiceImpl implements IStructureMonitoringServi
             QueryWrapper<SedimentData> wrapper = new QueryWrapper<>();
             wrapper.eq("fan_number", fanNumber);
             SedimentData one = sedimentService.getOne(wrapper);
-            if (liveSedimentationData==null){
+            if (liveSedimentationData == null) {
                 return BaseResponse.success(null);
             }
             //计算值
