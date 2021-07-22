@@ -67,6 +67,9 @@ public class FanIndexServiceImpl implements FanIndexService {
         }
         try {
             GoldenUtil.subscribeSnapshots(username, ints, (data) -> {
+                if (MyWebSocketHandle.groupRuntime.keySet().size() == 0) {
+                    return;
+                }
                 try {
                     long l = System.currentTimeMillis();
                     List<FanBaseInfoVO> result = InjectPropertiesUtil.injectByAnnotation(fanBaseInfoVOList, data, (key) -> StartUpInitForGoldenId.initMap.get(key));
@@ -227,7 +230,7 @@ public class FanIndexServiceImpl implements FanIndexService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-       //  List<FanBaseInfoVO> fanBaseInfoVOS = InjectPropertiesUtil.injectByAnnotationForBigdecimal(list, snapshots);
+        //  List<FanBaseInfoVO> fanBaseInfoVOS = InjectPropertiesUtil.injectByAnnotationForBigdecimal(list, snapshots);
         List<FanBaseInfoVO> fanBaseInfoVOS = InjectPropertiesUtil.injectByAnnotation(list, snapshots, (key) -> StartUpInitForGoldenId.initMap.get(key));
 
         if (null == fanBaseInfoVOS) {
