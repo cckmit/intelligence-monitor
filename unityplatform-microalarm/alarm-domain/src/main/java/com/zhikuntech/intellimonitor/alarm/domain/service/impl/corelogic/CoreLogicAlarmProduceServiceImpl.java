@@ -157,6 +157,7 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
                 if /* 不存在当前告警信息 */ (Objects.isNull(produceInfo)) {
                     // 1.生成告警信息并保存
                     LocalDateTime curTime = LocalDateTime.now();
+                    String levelCur = fetchAlarmLevelByDataTypeAndLevel(alarmConfigMonitor.getRuleNo(), "bool", null);
                     AlarmProduceInfo produceAlarmInfo = AlarmProduceInfo.builder()
                             .version(0)
                             .monitorNo(monitorNo)
@@ -180,7 +181,7 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
                             .alarmTimestamp(curTime)
                             .rowStamp(genRow())
                             // todo 告警描述
-                            // todo 告警等级
+                            .alarmLevel(levelCur)
                             .build();
                     int insert = produceInfoService.getBaseMapper().insert(produceAlarmInfo);
                     assert insert == 1;
@@ -208,7 +209,8 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
                         Integer hasConfirm = produceInfo.getHasConfirm();
                         if /* 已确认 */ (Integer.valueOf(1).equals(hasConfirm)) {
                             // 1.生成最新告警
-                            AlarmProduceInfo newestAlarmInfo = generateNewestAlarmByPreAlarm(monitorValue, monitorValueStr, eventDateTime, produceInfo);
+//                            AlarmProduceInfo newestAlarmInfo = generateNewestAlarmByPreAlarm(monitorValue, monitorValueStr, eventDateTime, produceInfo);
+                            AlarmProduceInfo newestAlarmInfo = generateNewestAlarmByPreAlarm(monitorStructDTO, produceInfo, alarmLevel);
                             // 2.之前告警转为历史告警
                             produceInfo.setNextInfoNo(newestAlarmInfo.getInfoNo());
                             produceInfo.setWithHistory(1);
@@ -231,7 +233,8 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
                         }
                     } /* 告警等级发生变化 */ else {
                         // 1.生成最新告警
-                        AlarmProduceInfo newestAlarmInfo = generateNewestAlarmByPreAlarm(monitorValue, monitorValueStr, eventDateTime, produceInfo);
+//                        AlarmProduceInfo newestAlarmInfo = generateNewestAlarmByPreAlarm(monitorValue, monitorValueStr, eventDateTime, produceInfo);
+                        AlarmProduceInfo newestAlarmInfo = generateNewestAlarmByPreAlarm(monitorStructDTO, produceInfo, alarmLevel);
                         // 2.之前告警转为历史告警
                         produceInfo.setNextInfoNo(newestAlarmInfo.getInfoNo());
                         produceInfo.setWithHistory(1);
@@ -289,6 +292,7 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
                 if /* 无告警信息 */ (Objects.isNull(produceInfo)) {
                     // 1.生成告警信息并保存
                     LocalDateTime curTime = LocalDateTime.now();
+                    String levelCur = fetchAlarmLevelByDataTypeAndLevel(alarmConfigMonitor.getRuleNo(), "num", levelProduce);
                     AlarmProduceInfo produceAlarmInfo = AlarmProduceInfo.builder()
                             .version(0)
                             .monitorNo(monitorNo)
@@ -312,7 +316,7 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
                             .alarmTimestamp(curTime)
                             .rowStamp(genRow())
                             // todo 告警描述
-                            // todo 告警等级
+                            .alarmLevel(levelCur)
                             .build();
                     int insert = produceInfoService.getBaseMapper().insert(produceAlarmInfo);
                     assert insert == 1;
@@ -351,7 +355,8 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
                         final Integer hasConfirm = produceInfo.getHasConfirm();
                         if /* 已确认 */ (Integer.valueOf(1).equals(hasConfirm)) {
                             // 1.生成最新告警
-                            AlarmProduceInfo newestAlarmInfo = generateNewestAlarmByPreAlarm(monitorValue, monitorValueStr, eventDateTime, produceInfo);
+//                            AlarmProduceInfo newestAlarmInfo = generateNewestAlarmByPreAlarm(monitorValue, monitorValueStr, eventDateTime, produceInfo);
+                            AlarmProduceInfo newestAlarmInfo = generateNewestAlarmByPreAlarm(monitorStructDTO, produceInfo, alarmLevel);
                             // 2.之前告警转为历史告警
                             produceInfo.setNextInfoNo(newestAlarmInfo.getInfoNo());
                             produceInfo.setWithHistory(1);
@@ -374,7 +379,8 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
                         }
                     } /* 告警等级发生变化 */ else {
                         // 1.生成最新告警
-                        AlarmProduceInfo newestAlarmInfo = generateNewestAlarmByPreAlarm(monitorValue, monitorValueStr, eventDateTime, produceInfo);
+//                        AlarmProduceInfo newestAlarmInfo = generateNewestAlarmByPreAlarm(monitorValue, monitorValueStr, eventDateTime, produceInfo);
+                        AlarmProduceInfo newestAlarmInfo = generateNewestAlarmByPreAlarm(monitorStructDTO, produceInfo, alarmLevel);
                         // 2.之前告警转为历史告警
                         produceInfo.setNextInfoNo(newestAlarmInfo.getInfoNo());
                         produceInfo.setWithHistory(1);
@@ -422,6 +428,32 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
     // --------------------------------------------------------auxiliary method--------------------------------------------------------
 
 
+    String fetchAlarmLevelByDataTypeAndLevel(String ruleNo, String type, Integer level) {
+        AlarmConfigRule configRule = obtainRule(ruleNo);
+        String levelNo = null;
+        if ("num".equalsIgnoreCase(type)) {
+            assert level != null;
+            switch (level) {
+                case 1:
+                    levelNo = configRule.getLevelNoAlarm();
+                    break;
+                case 2:
+                    levelNo = configRule.getLevelNoOne();
+                    break;
+                case 3:
+                    levelNo = configRule.getLevelNoTwo();
+                    break;
+                default:
+                    // never here
+            }
+        } else if ("bool".equalsIgnoreCase(type)) {
+            levelNo = configRule.getLevelNoAlarm();
+        }
+        AlarmConfigLevel configLevel = obtainAlarmLevelByLevelNo(levelNo);
+        return configLevel.getLevelIllustrate();
+    }
+
+
     static Long genRow() {
         return SnowflakeArithmeticUtil.nextId();
     }
@@ -455,7 +487,23 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
         return curStatus;
     }
 
-    private AlarmProduceInfo generateNewestAlarmByPreAlarm(BigDecimal monitorValue, String monitorValueStr, LocalDateTime eventDateTime, AlarmProduceInfo produceInfo) {
+    // 生成最新的告警信息
+
+    AlarmProduceInfo generateNewestAlarmByPreAlarm(MonitorStructDTO monitorStructDTO, AlarmProduceInfo produceInfo, String alarmLevel) {
+        LocalDateTime eventDateTime = Instant.ofEpochMilli(monitorStructDTO.getEventTimeStamp()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+        return generateNewestAlarmByPreAlarm(
+                alarmLevel,
+                monitorStructDTO.getMonitorValue(),
+                monitorStructDTO.getMonitorValueStr(),
+                eventDateTime,
+                produceInfo
+        );
+    }
+
+    private AlarmProduceInfo generateNewestAlarmByPreAlarm(
+            String alarmLevel,
+            BigDecimal monitorValue, String monitorValueStr, LocalDateTime eventDateTime,
+            AlarmProduceInfo produceInfo) {
         LocalDateTime curTime = LocalDateTime.now();
         AlarmProduceInfo newestAlarmInfo = AlarmProduceInfo.builder()
                 .version(0)
@@ -480,7 +528,7 @@ public class CoreLogicAlarmProduceServiceImpl implements CoreLogicAlarmProduceSe
                 .alarmTimestamp(curTime)
                 .rowStamp(genRow())
                 // todo 告警描述
-                // todo 告警等级
+                .alarmLevel(alarmLevel)
                 .build();
         produceInfoService.getBaseMapper().insert(newestAlarmInfo);
         return newestAlarmInfo;

@@ -47,7 +47,7 @@ public class CoreLogicAlarmRelieveServiceImpl implements CoreLogicAlarmRelieveSe
         // 需要将当前告警改变为历史告警(待确认)
         UpdateWrapper<AlarmProduceInfo> updateCurAlarmWrapper = new UpdateWrapper<>();
         updateCurAlarmWrapper.eq("chain_info", chainInfo);
-        updateCurAlarmWrapper.isNull("nextInfo_no");
+        updateCurAlarmWrapper.isNull("next_info_no");
         updateCurAlarmWrapper.setSql("with_history=1");
         infoService.getBaseMapper().update(null, updateCurAlarmWrapper);
     }
