@@ -2,7 +2,7 @@ package com.zhikuntech.intellimonitor.structuremonitor.domain.mapper;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zhikuntech.intellimonitor.structuremonitor.domain.pojo.StructureSpeedData;
+import com.zhikuntech.intellimonitor.structuremonitor.domain.pojo.StructureSpeedDataMax;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
  */
 @Mapper
 @Repository
-public interface StructureSpeedDataMapper extends BaseMapper<StructureSpeedData> {
+public interface StructureSpeedDataMaxMapper extends BaseMapper<StructureSpeedDataMax> {
 }
