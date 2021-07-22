@@ -8,7 +8,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author 代志豪
@@ -41,21 +43,38 @@ public class OnlineMonitorInit implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        int[] ids = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 179, 192, 1196};
+        int[] goldenIds = {30404, 30405, 30406, 30407, 30408, 30409, 30410, 30411, 30412, 30413, 30414, 30415, 30416, 30417, 30418, 30419, 30420};
         for (int i = 1; i < 18; i++) {
             for (int j = 1; j < 3; j++) {
-                GOLDEN_ID_MAP.put(FanConstant.GOLDEN_ID + i + "_" + j, ids[i - 1]);
+                GOLDEN_ID_MAP.put(FanConstant.GOLDEN_ID + i + "_" + j, goldenIds[i - 1]);
             }
         }
-        int[] idsGis = {135,136};
+        int[] idsGis = {135, 136};
+        int[] goldenGis = {30404, 30405};
         for (Integer i : idsGis) {
             for (int j = 1; j < 41; j++) {
-                GOLDEN_ID_MAP.put(FanConstant.GOLDEN_ID + i + "_" + j, i);
+                GOLDEN_ID_MAP.put(FanConstant.GOLDEN_ID + i + "_" + j, goldenGis[i-135]);
             }
         }
         GoldenUtil.init(ip, port, user, password, poolSize, maxSize);
         log.info("初始化数据完成！");
     }
+
+    /**
+     * 自定义id与golden id转化
+     *
+     * @param ids 自定义id
+     * @return golden ids
+     */
+    public static int[] getInts(int[] ids) {
+        Set<Integer> idSet = new HashSet<>();
+        for (Integer id : ids) {
+            idSet.add(GOLDEN_ID_MAP.get(FanConstant.GOLDEN_ID + id + "_1"));
+        }
+        ids = idSet.stream().mapToInt(Integer::valueOf).toArray();
+        return ids;
+    }
+
 
 //    /**
 //     * 每日0:00执行
