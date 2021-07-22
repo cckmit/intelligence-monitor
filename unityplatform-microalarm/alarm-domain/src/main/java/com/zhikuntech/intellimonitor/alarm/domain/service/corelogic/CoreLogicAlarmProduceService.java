@@ -1,5 +1,7 @@
 package com.zhikuntech.intellimonitor.alarm.domain.service.corelogic;
 
+import com.zhikuntech.intellimonitor.core.prototype.MonitorStructDTO;
+
 /**
  * 核心逻辑 -> 告警生成
  * <p>
@@ -23,4 +25,7 @@ package com.zhikuntech.intellimonitor.alarm.domain.service.corelogic;
 public interface CoreLogicAlarmProduceService {
 
 
+    void processAlarm();
+
+    void processAlarm(final MonitorStructDTO monitorStructDTO);
 }
