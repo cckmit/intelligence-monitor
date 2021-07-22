@@ -11,8 +11,8 @@ import java.util.Date;
  * @create 2021/7/22 17:49
  **/
 @Data
-@TableName("structure_speed_data")
-public class StructureSpeedData {
+@TableName("structure_speed_data_avg")
+public class StructureSpeedDataAvg {
 
     private Date date;
 
